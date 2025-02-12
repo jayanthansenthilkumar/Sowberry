@@ -313,3 +313,223 @@ function handleSwipe() {
         }
     }
 }
+
+// Admin Course Management
+document.addEventListener('DOMContentLoaded', () => {
+    // Bulk selection handling
+    const bulkSelect = document.querySelector('.bulk-select');
+    const applyBtn = document.querySelector('.apply-btn');
+    const courseCheckboxes = document.querySelectorAll('.course-select');
+
+    applyBtn.addEventListener('click', () => {
+        const selectedCourses = Array.from(courseCheckboxes)
+            .filter(checkbox => checkbox.checked)
+            .map(checkbox => checkbox.closest('.course-card'));
+
+        const action = bulkSelect.value;
+        handleBulkAction(action, selectedCourses);
+    });
+
+    // Course modal handling
+    const settingsButtons = document.querySelectorAll('.action-btn');
+    const modal = document.getElementById('courseModal');
+
+    settingsButtons.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            if (btn.querySelector('.ri-settings-line')) {
+                e.stopPropagation();
+                modal.classList.add('active');
+            }
+        });
+    });
+
+    // Close modal
+    document.querySelector('.cancel-btn').addEventListener('click', () => {
+        modal.classList.remove('active');
+    });
+
+    // Handle course deletion
+    document.querySelectorAll('.danger').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (confirm('Are you sure you want to delete this course?')) {
+                // Add deletion logic here
+                console.log('Course deleted');
+            }
+        });
+    });
+});
+
+function handleBulkAction(action, courses) {
+    switch(action) {
+        case 'Publish Selected':
+            console.log('Publishing courses:', courses);
+            break;
+        case 'Archive Selected':
+            console.log('Archiving courses:', courses);
+            break;
+        case 'Delete Selected':
+            if (confirm(`Are you sure you want to delete ${courses.length} courses?`)) {
+                console.log('Deleting courses:', courses);
+            }
+            break;
+    }
+}
+
+// Fix document ready event listener
+document.addEventListener('DOMContentLoaded', () => {
+    // User Profile Dropdown
+    const userProfile = document.getElementById('userProfile');
+    const notificationEl = document.getElementById('notifications');
+
+    // Toggle user profile
+    userProfile.addEventListener('click', function(e) {
+        e.stopPropagation();
+        notificationEl.classList.remove('active');
+        this.classList.toggle('active');
+    });
+
+    // Toggle notifications
+    notificationEl?.addEventListener('click', function(e) {
+        e.stopPropagation();
+        userProfile.classList.remove('active');
+        this.classList.toggle('active');
+    });
+
+    // Close dropdowns when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!userProfile.contains(e.target)) {
+            userProfile.classList.remove('active');
+        }
+        if (notificationEl && !notificationEl.contains(e.target)) {
+            notificationEl.classList.remove('active');
+        }
+    });
+
+    // Course Management (only on courses page)
+    const modal = document.getElementById('courseModal');
+    if (modal) {
+        // Settings button click
+        document.querySelectorAll('.action-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                if (btn.querySelector('.ri-settings-line')) {
+                    e.stopPropagation();
+                    modal.classList.add('active');
+                }
+            });
+        });
+
+        // Close modal
+        modal.querySelector('.cancel-btn')?.addEventListener('click', () => {
+            modal.classList.remove('active');
+        });
+
+        // Close modal when clicking outside
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.remove('active');
+            }
+        });
+
+        // Handle course deletion with confirmation
+        document.querySelectorAll('.danger').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (confirm('Are you sure you want to delete this course?')) {
+                    const courseCard = btn.closest('.course-card');
+                    courseCard.remove();
+                }
+            });
+        });
+
+        // Bulk actions
+        const bulkSelect = document.querySelector('.bulk-select');
+        const applyBtn = document.querySelector('.apply-btn');
+        
+        applyBtn?.addEventListener('click', () => {
+            const selectedCourses = Array.from(document.querySelectorAll('.course-select:checked'))
+                .map(checkbox => checkbox.closest('.course-card'));
+
+            if (selectedCourses.length === 0) {
+                alert('Please select at least one course');
+                return;
+            }
+
+            handleBulkAction(bulkSelect.value, selectedCourses);
+        });
+    }
+});
+
+// Add navigation active state handling
+document.addEventListener('DOMContentLoaded', () => {
+    // Get current page path
+    const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+    
+    // Remove active class from all nav items
+    document.querySelectorAll('.sidebar nav a').forEach(link => {
+        link.classList.remove('active');
+        
+        // Add active class to current page link
+        if (link.getAttribute('href') === currentPage) {
+            link.classList.add('active');
+        }
+    });
+});
+
+// Initialize dropdowns and other common functionality
+function initializeDropdowns() {
+    const userProfile = document.getElementById('userProfile');
+    const notificationEl = document.getElementById('notifications');
+    const themeToggle = document.querySelector('.theme-toggle');
+
+    if (userProfile && notificationEl) {
+        // User Profile Toggle
+        userProfile.addEventListener('click', function(e) {
+            e.stopPropagation();
+            notificationEl.classList.remove('active');
+            this.classList.toggle('active');
+        });
+
+        // Notifications Toggle
+        notificationEl.addEventListener('click', function(e) {
+            e.stopPropagation();
+            userProfile.classList.remove('active');
+            this.classList.toggle('active');
+        });
+
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!userProfile.contains(e.target)) {
+                userProfile.classList.remove('active');
+            }
+            if (!notificationEl.contains(e.target)) {
+                notificationEl.classList.remove('active');
+            }
+        });
+    }
+
+    // Theme Toggle
+    if (themeToggle) {
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark-theme');
+            const icon = themeToggle.querySelector('i');
+            icon.classList.toggle('ri-sun-line');
+            icon.classList.toggle('ri-moon-line');
+        });
+    }
+}
+
+// Simplify page initialization
+document.addEventListener('DOMContentLoaded', () => {
+    initializeDropdowns();
+    
+    // Only handle index and courses pages
+    const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+    
+    if (currentPage === 'courses.html') {
+        initializeCoursePage();
+    }
+});
+
+// Remove unused page initializations
+// Remove: initializeAssignmentsPage, initializeDiscussionPage, etc.
