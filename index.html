@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sowberry Learning Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo">
+            <i class="ri-seedling-fill"></i>
+            <span>Sowberry</span>
+        </div>
+        <nav>
+            <a href="#" class="active"><i class="ri-home-4-line"></i><span>Overview</span></a>
+            <a href="#"><i class="ri-book-open-line"></i><span>Courses</span></a>
+            <a href="#"><i class="ri-user-follow-line"></i><span>Students</span></a>
+            <a href="#"><i class="ri-award-line"></i><span>Assignments</span></a>
+            <a href="#"><i class="ri-chat-1-line"></i><span>Discussion</span></a>
+            <a href="#"><i class="ri-settings-3-line"></i><span>Settings</span></a>
+        </nav>
+    </div>
+    <main>
+        <header>
+            <div class="search-bar">
+                <i class="ri-search-line"></i>
+                <input type="text" placeholder="Search...">
+            </div>
+            <div class="header-tools">
+                <div class="notification-bell">
+                    <i class="ri-notification-3-line"></i>
+                    <span class="notification-badge">3</span>
+                </div>
+                <div class="theme-toggle">
+                    <i class="ri-sun-line"></i>
+                </div>
+                <div class="user-profile" id="userProfile">
+                    <div class="user-info">
+                        <span class="user-name">John Doe</span>
+                        <span class="user-status">
+                            <i class="ri-checkbox-blank-circle-fill"></i>
+                            Active
+                        </span>
+                    </div>
+                    <img src="https://ui-avatars.com/api/?name=John+Doe&size=30" alt="User" class="user-avatar">
+                    <div class="profile-dropdown">
+                        <a href="#"><i class="ri-user-line"></i> My Profile</a>
+                        <a href="#"><i class="ri-lock-password-line"></i> Change Password</a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="logout"><i class="ri-logout-box-line"></i> Logout</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <div class="dashboard-grid">
+            <div class="card animate">
+                <div class="card-header">
+                    <h3>Active Learners</h3>
+                    <i class="ri-user-smile-line"></i>
+                </div>
+                <h2>2,847</h2>
+                <div class="chart-container">
+                    <canvas id="studentsChart"></canvas>
+                </div>
+            </div>
+            <div class="card animate">
+                <div class="card-header">
+                    <h3>Learning Progress</h3>
+                    <i class="ri-line-chart-line"></i>
+                </div>
+                <h2>78%</h2>
+                <div class="chart-container">
+                    <canvas id="completionChart"></canvas>
+                </div>
+            </div>
+            <div class="card animate">
+                <div class="card-header">
+                    <h3>Course Enrollments</h3>
+                    <i class="ri-book-mark-line"></i>
+                </div>
+                <h2>12,583</h2>
+                <div class="chart-container">
+                    <canvas id="enrollmentsChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="activity-section">
+            <div class="card animate">
+                <h3>Recent Activities</h3>
+                <div class="activity-list">
+                    <div class="activity-item">
+                        <i class="ri-video-line"></i>
+                        <div class="activity-info">
+                            <p>New course published: "Advanced JavaScript"</p>
+                            <span>2 hours ago</span>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <i class="ri-task-line"></i>
+                        <div class="activity-info">
+                            <p>Assignment submitted by 45 students</p>
+                            <span>5 hours ago</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script src="script.js"></script>
+</body>
+</html>
