@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="styles.css">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="assets/css/courses.css">
 </head>
 <body>
     <button class="mobile-menu-toggle">
@@ -246,7 +247,52 @@
                 </form>
             </div>
         </div>
+
+        <!-- New Course Modal -->
+        <div class="modal" id="newCourseModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Create New Course</h2>
+                    <button class="close-modal"><i class="ri-close-line"></i></button>
+                </div>
+                <form class="course-form" id="newCourseForm">
+                    <div class="form-group">
+                        <label>Course Title</label>
+                        <input type="text" name="title" required placeholder="Enter course title">
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea name="description" required placeholder="Enter course description"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Course Image</label>
+                        <input type="file" name="image" accept="image/*">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Duration (Hours)</label>
+                            <input type="number" name="duration" required min="1">
+                        </div>
+                        <div class="form-group">
+                            <label>Price ($)</label>
+                            <input type="number" name="price" required min="0" step="0.01">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select name="status" required>
+                            <option value="draft">Draft</option>
+                            <option value="published">Published</option>
+                        </select>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="cancel-btn">Cancel</button>
+                        <button type="submit" class="save-btn">Create Course</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </main>
-    <script src="script.js"></script>
+    <script src="assets/js/courses.js"></script>
 </body>
 </html>
