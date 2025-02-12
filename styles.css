@@ -29,7 +29,7 @@ body.dark-theme {
 }
 
 body {
-    font-family: 'Segoe UI', sans-serif;
+    font-family: 'Poppins', sans-serif;
     background: var(--background);
     background-image: 
         radial-gradient(circle at 10% 20%, var(--primary) 0%, transparent 20%),
@@ -55,6 +55,7 @@ body {
 .logo {
     display: flex;
     align-items: center;
+    justify-content: center;  /* Add this line */
     gap: 10px;
     font-size: 24px;
     margin-bottom: 30px;
@@ -287,72 +288,6 @@ header {
     opacity: 0.7;
 }
 
-.notification-bell {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    border-radius: 8px;
-    background: var(--background);
-    border: 1px solid var(--border-color);
-}
-
-.theme-toggle {
-    width: 40px;
-    height: 40px;
-    padding: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 8px;
-    background: var(--background);
-}
-
-.user-profile {
-    height: 40px;
-    padding: 0 8px 0 12px;
-    background: var(--background);
-    border-radius: 8px;
-    border: 1px solid var(--border-color);
-}
-
-.user-info {
-    padding: 0 8px;
-}
-
-.user-avatar {
-    width: 30px;
-    height: 30px;
-}
-
-.header-tools {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
-.notification-bell {
-    position: relative;
-    cursor: pointer;
-    font-size: 18px;
-}
-
-.notification-badge {
-    position: absolute;
-    top: -5px;
-    right: -5px;
-    background: var(--primary);
-    color: white;
-    border-radius: 50%;
-    width: 15px;
-    height: 15px;
-    font-size: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
 .user-profile {
     display: flex;
     align-items: center;
@@ -491,4 +426,170 @@ header {
     font-size: 24px;
     color: var(--primary);
     animation: pulse 2s ease-in-out infinite;
+}
+
+
+@media (max-width: 1200px) {
+    .dashboard-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 992px) {
+    .sidebar {
+        width: 80px;
+    }
+    
+    .sidebar .logo span,
+    .sidebar nav a span {
+        display: none;
+    }
+    
+    .sidebar nav a {
+        justify-content: center;
+    }
+    
+    main {
+        margin-left: 80px;
+    }
+    
+    .search-bar {
+        width: 180px;
+    }
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        transform: translateX(-100%);
+        z-index: 1000;
+    }
+    
+    .sidebar.active {
+        transform: translateX(0);
+    }
+    
+    main {
+        margin-left: 0;
+    }
+    
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    header {
+        flex-direction: column;
+        height: auto;
+        padding: 15px;
+        gap: 15px;
+    }
+    
+    .header-tools {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .search-bar {
+        width: 100%;
+    }
+    
+    .user-info {
+        display: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .card {
+        padding: 15px;
+    }
+    
+    .chart-container {
+        height: 160px;
+    }
+    
+    .activity-item {
+        padding: 15px;
+    }
+}
+
+@media (max-width: 576px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+        margin-top: 15px;
+    }
+    
+    .chart-container {
+        height: 160px;
+    }
+    
+    .card h2 {
+        font-size: 1.5rem;
+    }
+    
+    .card h3 {
+        font-size: 1rem;
+    }
+    
+    .search-bar {
+        width: 100%;
+        max-width: none;
+    }
+    
+    .header-tools {
+        flex-wrap: wrap;
+        justify-content: flex-end;
+    }
+    
+    .mobile-menu-toggle {
+        top: 10px;
+        left: 10px;
+    }
+}
+
+@media (max-width: 360px) {
+    .notification-badge {
+        right: -2px;
+        top: -2px;
+    }
+    
+    .user-avatar {
+        width: 28px;
+        height: 28px;
+    }
+    
+    .chart-container {
+        height: 140px;
+    }
+}
+
+/* Touch device optimizations */
+@media (hover: none) {
+    .card:hover {
+        transform: none;
+    }
+    
+    nav a:hover::before {
+        width: 0;
+    }
+    
+    .activity-item:hover {
+        transform: none;
+    }
+    
+    .card:active {
+        transform: scale(0.98);
+    }
+}
+
+/* Fix for notch devices */
+@supports(padding: max(0px)) {
+    .sidebar {
+        padding-left: max(20px, env(safe-area-inset-left));
+        padding-right: max(20px, env(safe-area-inset-right));
+    }
+    
+    main {
+        padding-left: max(20px, env(safe-area-inset-left));
+        padding-right: max(20px, env(safe-area-inset-right));
+    }
 }

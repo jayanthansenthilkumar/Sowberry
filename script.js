@@ -182,3 +182,92 @@ document.querySelector('.logout').addEventListener('click', (e) => {
     // Add your logout logic here
     console.log('Logging out...');
 });
+
+// Remove the entire notification functionality section
+document.addEventListener('DOMContentLoaded', () => {
+    // Only keep non-notification related code
+});
+
+// Mobile menu toggle
+const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
+const sidebar = document.querySelector('.sidebar');
+
+mobileMenuToggle.addEventListener('click', () => {
+    sidebar.classList.toggle('active');
+});
+
+// Close sidebar when clicking outside on mobile
+document.addEventListener('click', (e) => {
+    if (!sidebar.contains(e.target) && !mobileMenuToggle.contains(e.target)) {
+        sidebar.classList.remove('active');
+    }
+});
+
+// Update chart responsiveness
+function updateChartSize() {
+    Chart.instances.forEach(chart => {
+        chart.resize();
+    });
+}
+
+// Enhanced mobile touch support
+document.addEventListener('touchstart', () => {}, {passive: true});
+
+// Optimize chart responsiveness
+function updateChartResponsiveness() {
+    const isMobile = window.innerWidth <= 768;
+    Chart.instances.forEach(chart => {
+        // Adjust chart options for mobile
+        chart.options.scales.y.ticks.maxTicksLimit = isMobile ? 5 : 8;
+        chart.options.scales.x.ticks.maxRotation = isMobile ? 45 : 0;
+        chart.options.scales.x.ticks.minRotation = isMobile ? 45 : 0;
+        chart.options.elements.point.radius = isMobile ? 2 : 3;
+        chart.options.elements.line.borderWidth = isMobile ? 2 : 3;
+        chart.resize();
+        chart.update('none'); // Use 'none' mode for better performance
+    });
+}
+
+window.addEventListener('resize', debounce(updateChartResponsiveness, 250));
+window.addEventListener('orientationchange', updateChartResponsiveness);
+
+// Debounce helper
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+// Handle mobile menu swipe
+let touchStartX = 0;
+let touchEndX = 0;
+
+document.addEventListener('touchstart', e => {
+    touchStartX = e.changedTouches[0].screenX;
+}, {passive: true});
+
+document.addEventListener('touchend', e => {
+    touchEndX = e.changedTouches[0].screenX;
+    handleSwipe();
+}, {passive: true});
+
+function handleSwipe() {
+    const swipeDistance = touchEndX - touchStartX;
+    const threshold = 50;
+    
+    if (Math.abs(swipeDistance) > threshold) {
+        if (swipeDistance > 0 && touchStartX < 30) {
+            // Swipe right from left edge
+            sidebar.classList.add('active');
+        } else if (swipeDistance < 0 && sidebar.classList.contains('active')) {
+            // Swipe left when sidebar is open
+            sidebar.classList.remove('active');
+        }
+    }
+}
