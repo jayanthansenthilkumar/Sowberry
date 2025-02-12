@@ -188,6 +188,48 @@ document.addEventListener('DOMContentLoaded', () => {
     // Only keep non-notification related code
 });
 
+// Update notification dropdown functionality
+document.addEventListener('DOMContentLoaded', () => {
+    const notificationEl = document.getElementById('notifications');
+    const userProfile = document.getElementById('userProfile');
+
+    // Toggle notifications
+    notificationEl.addEventListener('click', function(e) {
+        e.stopPropagation();
+        
+        // Close profile dropdown if open
+        userProfile.classList.remove('active');
+        
+        // Toggle notifications
+        this.classList.toggle('active');
+    });
+
+    // Close dropdowns when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!notificationEl.contains(e.target)) {
+            notificationEl.classList.remove('active');
+        }
+        if (!userProfile.contains(e.target)) {
+            userProfile.classList.remove('active');
+        }
+    });
+
+    // Prevent dropdown from closing when clicking inside
+    const notificationsDropdown = notificationEl.querySelector('.notifications-dropdown');
+    notificationsDropdown.addEventListener('click', function(e) {
+        e.stopPropagation();
+    });
+
+    // Add functionality to "Mark all as read" button
+    const markAllReadBtn = document.querySelector('.mark-all-read');
+    markAllReadBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        document.querySelectorAll('.notification-item.unread').forEach(item => {
+            item.classList.remove('unread');
+        });
+    });
+});
+
 // Mobile menu toggle
 const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
 const sidebar = document.querySelector('.sidebar');

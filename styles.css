@@ -8,6 +8,9 @@
     --border-color: rgba(255, 255, 255, 0.2);
     --shadow: 0 8px 32px rgba(108, 92, 231, 0.1);
     --card-hover: #ffffff;
+    --hover-color: rgba(108, 92, 231, 0.1);
+    --accent-color: #6c5ce7;
+    --text-secondary: #64748b;
 }
 
 body.dark-theme {
@@ -20,6 +23,9 @@ body.dark-theme {
     --border-color: rgba(255, 255, 255, 0.1);
     --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
     --card-hover: rgba(41, 41, 61, 0.95);
+    --hover-color: rgba(108, 92, 231, 0.2);
+    --accent-color: #a78bfa;
+    --text-secondary: #94a3b8;
 }
 
 * {
@@ -335,19 +341,20 @@ header {
 
 .profile-dropdown {
     position: absolute;
-    top: calc(100% + 10px);
+    top: calc(100% + 5px);
     right: 0;
+    width: 200px;
     background: var(--card-bg);
     border-radius: 12px;
     box-shadow: var(--shadow);
-    width: 200px;
     opacity: 0;
     visibility: hidden;
-    transform: translateY(10px);
+    transform: translateY(-10px);
     transition: all 0.3s ease;
     border: 1px solid var(--border-color);
     backdrop-filter: blur(12px);
-    z-index: 100;
+    z-index: 1001; /* Ensure it's above notifications */
+    overflow: hidden; /* Add this to ensure rounded corners for hover states */
 }
 
 .user-profile.active .profile-dropdown {
@@ -364,10 +371,19 @@ header {
     color: var(--text);
     text-decoration: none;
     transition: all 0.3s ease;
+    font-size: 0.9rem;
 }
 
 .profile-dropdown a:hover {
-    background: var(--gradient);
+    background: var(--hover-color);
+}
+
+.profile-dropdown .logout {
+    color: var(--primary);
+}
+
+.profile-dropdown .logout:hover {
+    background: rgba(255, 107, 107, 0.1);
 }
 
 .dropdown-divider {
@@ -428,6 +444,131 @@ header {
     animation: pulse 2s ease-in-out infinite;
 }
 
+.notifications {
+    position: relative;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    z-index: 1000; /* Add this */
+}
+
+.notifications:hover {
+    background: var(--gradient);
+}
+
+.notifications i {
+    font-size: 20px;
+    color: var(--text);
+}
+
+.notification-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: var(--primary);
+    color: white;
+    font-size: 0.7rem;
+    padding: 2px 6px;
+    border-radius: 10px;
+    transform: translate(25%, -25%);
+}
+
+.notifications-dropdown {
+    position: absolute;
+    top: calc(100% + 5px); /* Adjust position */
+    right: -10px; /* Adjust position */
+    width: 320px;
+    background: var(--card-bg);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    padding: 1rem;
+    visibility: hidden; /* Change from display: none */
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    z-index: 1000;
+    border: 1px solid var(--border-color);
+    backdrop-filter: blur(12px);
+}
+
+.notifications.active .notifications-dropdown {
+    visibility: visible; /* Change from display: block */
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.notifications-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.notifications-header h4 {
+    color: var(--text);
+    margin: 0;
+}
+
+.mark-all-read {
+    color: var(--primary);
+    font-size: 0.8rem;
+    text-decoration: none;
+}
+
+.notification-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.notification-item {
+    display: flex;
+    align-items: flex-start;
+    padding: 0.8rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    color: var(--text);
+}
+
+.notification-item:hover {
+    background: var(--hover-color);
+}
+
+.notification-item.unread {
+    background: var(--hover-color);
+}
+
+.notification-item i {
+    margin-right: 12px;
+    margin-top: 2px;
+    color: var(--primary);
+}
+
+.notification-content p {
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+.notification-content span {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    display: block;
+    margin-top: 4px;
+}
+
+.view-all {
+    display: block;
+    text-align: center;
+    margin-top: 1rem;
+    padding: 0.5rem;
+    color: var(--primary);
+    text-decoration: none;
+    border-top: 1px solid var(--border-color);
+}
 
 @media (max-width: 1200px) {
     .dashboard-grid {
