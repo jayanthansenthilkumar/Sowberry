@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login & Register - Sowberry</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+</head>
+<body class="login-page">
+    <div class="auth-container">
+        <div class="forms-container">
+            <!-- Login Form -->
+            <div class="form-section login-section active">
+                <div class="login-header">
+                    <i class="ri-seedling-fill"></i>
+                    <h1>Sowberry</h1>
+                </div>
+                <div class="login-form">
+                    <h2>Welcome back!</h2>
+                    <p>Please enter your details to sign in</p>
+                    
+                    <form action="/login" method="POST" id="loginForm">
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <div class="password-input">
+                                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                                <i class="ri-eye-line toggle-password"></i>
+                            </div>
+                        </div>
+                        <div class="form-options">
+                            <label class="remember-me">
+                                <input type="checkbox" name="remember">
+                                Remember me
+                            </label>
+                            <a href="#" class="forgot-password">Forgot password?</a>
+                        </div>
+                        <button type="submit" class="auth-btn">Sign in</button>
+                    </form>
+
+                    <div class="social-login">
+                        <p>Or continue with</p>
+                        <div class="social-buttons">
+                            <button class="social-btn google">
+                                <i class="ri-google-fill"></i>
+                                Google
+                            </button>
+                            <button class="social-btn github">
+                                <i class="ri-github-fill"></i>
+                                GitHub
+                            </button>
+                        </div>
+                    </div>
+
+                    <p class="switch-form-link">
+                        Don't have an account? <a href="#" onclick="toggleForms('register')">Sign up</a>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Updated Registration Form -->
+            <div class="form-section register-section">
+                <div class="login-header">
+                    <i class="ri-seedling-fill"></i>
+                    <h1>Sowberry</h1>
+                </div>
+                <div class="login-form">
+                    <h2>Create Account</h2>
+                    <p>Please fill in your details to register</p>
+                    
+                    <form action="/register" method="POST" id="registerForm" class="compact-form">
+                        <div class="form-group">
+                            <label for="regEmail">Email</label>
+                            <div class="input-wrapper">
+                                <input type="email" id="regEmail" name="email" placeholder="Enter your email" required>
+                                <span class="validation-message"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="username">Username</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="username" name="username" placeholder="Choose a username" required disabled>
+                                <span class="validation-message"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="fullName">Full Name</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="fullName" name="fullName" placeholder="Enter your full name" required disabled>
+                                <span class="validation-message"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="phone">Phone Number</label>
+                            <div class="input-wrapper">
+                                <input type="tel" id="phone" name="phone" placeholder="Enter your phone number" pattern="[0-9]{10}" required disabled>
+                                <span class="validation-message"></span>
+                            </div>
+                        </div>
+
+                        <!-- Remove file upload section and go straight to terms -->
+                        <div class="form-options">
+                            <label class="terms-checkbox">
+                                <input type="checkbox" name="terms" required disabled>
+                                <span>I agree to the Terms & Conditions</span>
+                            </label>
+                        </div>
+
+                        <button type="submit" class="auth-btn" disabled>Create Account</button>
+                    </form>
+
+                    <p class="switch-form-link">
+                        Already have an account? <a href="#" onclick="toggleForms('login')">Sign in</a>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Add Forgot Password Form -->
+            <div class="form-section forgot-section">
+                <div class="login-header">
+                    <i class="ri-seedling-fill"></i>
+                    <h1>Sowberry</h1>
+                </div>
+                <div class="login-form">
+                    <h2>Reset Password</h2>
+                    <p>Enter your email to receive reset instructions</p>
+                    
+                    <form action="/forgot-password" method="POST" id="forgotForm" class="compact-form">
+                        <div class="form-group">
+                            <label for="resetEmail">Email</label>
+                            <div class="input-wrapper">
+                                <input type="email" id="resetEmail" name="email" placeholder="Enter your email" required>
+                                <span class="validation-message"></span>
+                            </div>
+                        </div>
+                        <button type="submit" class="auth-btn">Send Reset Link</button>
+                    </form>
+
+                    <p class="switch-form-link">
+                        Remember your password? <a href="#" onclick="toggleToLogin()">Sign in</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleForms(formType) {
+            const loginSection = document.querySelector('.login-section');
+            const registerSection = document.querySelector('.register-section');
+            const forgotSection = document.querySelector('.forgot-section');
+            
+            // Remove active class from all sections
+            [loginSection, registerSection, forgotSection].forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Add active class to requested section
+            switch(formType) {
+                case 'register':
+                    registerSection.classList.add('active');
+                    break;
+                case 'forgot':
+                    forgotSection.classList.add('active');
+                    break;
+                default:
+                    loginSection.classList.add('active');
+            }
+        }
+
+        function toggleToLogin() {
+            toggleForms('login');
+        }
+
+        // Password visibility toggle
+        document.querySelectorAll('.toggle-password').forEach(icon => {
+            icon.addEventListener('click', function() {
+                const input = this.previousElementSibling;
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    this.classList.replace('ri-eye-line', 'ri-eye-off-line');
+                } else {
+                    input.type = 'password';
+                    this.classList.replace('ri-eye-off-line', 'ri-eye-line');
+                }
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const registerForm = document.getElementById('registerForm');
+            const emailInput = document.getElementById('regEmail');
+            const usernameInput = document.getElementById('username');
+            const fullNameInput = document.getElementById('fullName');
+            const phoneInput = document.getElementById('phone');
+            const termsCheckbox = registerForm.querySelector('input[name="terms"]');
+            const submitButton = registerForm.querySelector('button[type="submit"]');
+
+            // List of valid top-level domains
+            const validTLDs = [
+                'com', 'org', 'net', 'edu', 'gov', 'mil',
+                'info', 'biz', 'name', 'mobi', 'pro',
+                'int', 'museum', 'travel', 'xyz', 'app',
+                'dev', 'io', 'co', 'me', 'tv', 'us', 'uk',
+                'ca', 'au', 'de', 'fr', 'jp', 'ru', 'in',
+                'edu.in', 'ac.in', 'gov.in', 'org.in', 'res.in',
+                'tech', 'online', 'site', 'web', 'cloud',
+                'ai', 'blog', 'design', 'studio', 'email'
+                // Add more TLDs as needed
+            ];
+
+            // Updated Email validation
+            emailInput.addEventListener('input', function() {
+                const email = this.value.trim().toLowerCase();
+                const isValidFormat = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+                
+                if (isValidFormat) {
+                    const domain = email.split('@')[1];
+                    const domainParts = domain.split('.');
+                    const tld = domainParts.slice(1).join('.');
+                    
+                    if (validTLDs.some(validTLD => tld === validTLD)) {
+                        usernameInput.disabled = false;
+                        showValidation(this, true, '✓');
+                    } else {
+                        usernameInput.disabled = true;
+                        showValidation(this, false, '×');
+                        const validationMsg = this.parentElement.querySelector('.validation-message');
+                        validationMsg.setAttribute('title', 'Invalid email domain');
+                    }
+                } else {
+                    disableFollowingInputs('username');
+                    showValidation(this, false, '×');
+                }
+                checkFormValidity();
+            });
+
+            // Username validation
+            usernameInput.addEventListener('input', function() {
+                if (this.value.length >= 3) {
+                    fullNameInput.disabled = false;
+                    showValidation(this, true);
+                } else {
+                    disableFollowingInputs('fullName');
+                    showValidation(this, false);
+                }
+                checkFormValidity();
+            });
+
+            // Full Name validation
+            fullNameInput.addEventListener('input', function() {
+                if (this.value.length >= 2) {
+                    phoneInput.disabled = false;
+                    showValidation(this, true);
+                } else {
+                    disableFollowingInputs('phone');
+                    showValidation(this, false);
+                }
+                checkFormValidity();
+            });
+
+            // Phone validation
+            phoneInput.addEventListener('input', function() {
+                const isValidPhone = /^[0-9]{10}$/.test(this.value);
+                if (isValidPhone) {
+                    termsCheckbox.disabled = false;
+                    showValidation(this, true);
+                } else {
+                    termsCheckbox.disabled = true;
+                    termsCheckbox.checked = false;
+                    showValidation(this, false);
+                }
+                checkFormValidity();
+            });
+
+            // Terms checkbox
+            termsCheckbox.addEventListener('change', checkFormValidity);
+
+            // Update showValidation function
+            function showValidation(element, isValid, icon) {
+                const validationMessage = element.parentElement.querySelector('.validation-message');
+                if (validationMessage) {
+                    validationMessage.textContent = icon;
+                    validationMessage.className = 'validation-message ' + (isValid ? 'valid' : 'invalid');
+                    validationMessage.style.animation = 'none';
+                    validationMessage.offsetHeight;
+                    validationMessage.style.animation = 'popIn 0.3s ease';
+                }
+            }
+
+            function disableFollowingInputs(startFrom) {
+                const inputs = ['username', 'fullName', 'phone'];
+                const startIndex = inputs.indexOf(startFrom);
+                
+                for (let i = startIndex; i < inputs.length; i++) {
+                    const input = document.getElementById(inputs[i]);
+                    input.disabled = true;
+                    input.value = '';
+                    showValidation(input, false);
+                }
+                termsCheckbox.disabled = true;
+                termsCheckbox.checked = false;
+                submitButton.disabled = true;
+            }
+
+            function checkFormValidity() {
+                const isComplete = !emailInput.value.includes(' ') &&
+                    usernameInput.value.length >= 3 &&
+                    fullNameInput.value.length >= 2 &&
+                    /^[0-9]{10}$/.test(phoneInput.value) &&
+                    termsCheckbox.checked;
+                
+                submitButton.disabled = !isComplete;
+            }
+        });
+
+        // Add CSS animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes popIn {
+                0% { transform: scale(0.8) translateY(-50%); opacity: 0; }
+                100% { transform: scale(1) translateY(-50%); opacity: 1; }
+            }
+            .validation-message {
+                transition: all 0.3s ease;
+            }
+            .validation-message.invalid {
+                cursor: help;
+            }
+            .validation-message.invalid:hover::after {
+                content: attr(title);
+                position: absolute;
+                right: -120px;
+                top: 50%;
+                transform: translateY(-50%);
+                background: var(--card-bg);
+                padding: 4px 8px;
+                border-radius: 4px;
+                font-size: 0.75rem;
+                white-space: nowrap;
+                box-shadow: var(--shadow);
+                border: 1px solid var(--border-color);
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Update forgot password link
+        document.querySelector('.forgot-password').addEventListener('click', function(e) {
+            e.preventDefault();
+            toggleForms('forgot');
+        });
+
+        // Add forgot password validation
+        document.getElementById('forgotForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('resetEmail').value;
+            const validationMsg = document.getElementById('resetEmail')
+                .parentElement.querySelector('.validation-message');
+            
+            if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                validationMsg.textContent = '✓';
+                validationMsg.className = 'validation-message valid';
+                // Here you would typically send the reset request to your server
+                alert('If the email exists in our system, you will receive reset instructions shortly.');
+                toggleToLogin();
+            } else {
+                validationMsg.textContent = '×';
+                validationMsg.className = 'validation-message invalid';
+            }
+        });
+    </script>
+
+    <!-- Add styles for smooth transitions -->
+    <style>
+        .form-section {
+            transform: translateX(100%);
+            transition: all 0.3s ease;
+        }
+
+        .form-section.active {
+            transform: translateX(0);
+        }
+
+        .forgot-section .auth-btn {
+            margin-top: 1rem;
+        }
+    </style>
+</body>
+</html>
