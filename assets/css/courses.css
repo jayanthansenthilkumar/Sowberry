@@ -1,18 +1,51 @@
+:root {
+    --primary-color: #4169e1;
+    --primary-color-rgb: 65, 105, 225;
+    --error-color: #ff4646;
+    --text-muted: #6c757d;
+    --dark-input: #2a2a2a;
+    --dark-border: #333;
+    --input-bg: #f8f9fa;
+    --border-color: #dee2e6;
+    --status-active: #22c55e;
+    --status-draft: #f97316;
+    --status-archived: #64748b;
+    --status-active-bg: rgba(34, 197, 94, 0.15);
+    --status-draft-bg: rgba(249, 115, 22, 0.15);
+    --status-archived-bg: rgba(100, 116, 139, 0.1);
+    --status-published: #3b82f6;
+    --status-published-bg: rgba(59, 130, 246, 0.15);
+    --badge-active: #22c55e;
+    --badge-draft: #f97316;
+    --badge-published: #3b82f6;
+    --badge-archived: #64748b;
+}
+
+/* Modal Animation Styles */
 .modal {
-    display: none;
+    display: flex !important;
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5);
     z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+    background: transparent;
+    backdrop-filter: blur(0);
 }
 
 .modal.active {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    opacity: 1;
+    visibility: visible;
+    pointer-events: all;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(8px);
 }
 
 .modal-content {
@@ -21,7 +54,87 @@
     padding: 2rem;
     width: 100%;
     max-width: 600px;
+    max-height: 85vh;
     position: relative;
+    transform: scale(0.95) translateY(-40px);
+    opacity: 0;
+    transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+    overflow-y: overlay;
+}
+
+.modal.active .modal-content {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+}
+
+.modal.closing {
+    opacity: 0;
+    backdrop-filter: blur(0);
+}
+
+.modal.closing .modal-content {
+    transform: scale(0.95) translateY(40px);
+    opacity: 0;
+}
+
+/* Hide scrollbar but keep functionality */
+.modal-content {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.modal-content::-webkit-scrollbar {
+    display: none;
+}
+
+/* Create padding for content to prevent cutoff */
+.modal-content {
+    padding: 2rem 2.5rem;
+}
+
+/* Enhance form group animations */
+.modal.active .form-group {
+    animation: slideUp 0.5s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+    opacity: 0;
+}
+
+.modal.active .form-group:nth-child(1) { animation-delay: 0.1s; }
+.modal.active .form-group:nth-child(2) { animation-delay: 0.2s; }
+.modal.active .form-group:nth-child(3) { animation-delay: 0.3s; }
+.modal.active .form-group:nth-child(4) { animation-delay: 0.4s; }
+.modal.active .form-group:nth-child(5) { animation-delay: 0.5s; }
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes modalFadeOut {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(20px);
+    }
 }
 
 .modal-header {
@@ -105,4 +218,252 @@
     padding: 1rem 2rem;
     border-radius: 4px;
     z-index: 1100;
+}
+
+/* File Input Styling */
+.form-group input[type="file"] {
+    display: none;
+}
+
+.form-group .file-input-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    background: var(--input-bg);
+    border: 2px dashed var(--border-color);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.form-group .file-input-label:hover {
+    border-color: var(--primary-color);
+    background: rgba(var(--primary-color-rgb), 0.05);
+}
+
+.form-group .file-input-label i {
+    font-size: 1.5rem;
+    color: var(--primary-color);
+}
+
+.file-input-label .file-name {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.file-preview {
+    margin-top: 1rem;
+    display: none;
+    position: relative;
+}
+
+.file-preview.active {
+    display: block;
+}
+
+.file-preview img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.file-preview .remove-file {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: var(--error-color);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.file-preview .remove-file:hover {
+    transform: scale(1.1);
+}
+
+/* Dark theme support */
+[data-theme="dark"] .form-group .file-input-label {
+    background: var(--dark-input);
+    border-color: var(--dark-border);
+}
+
+[data-theme="dark"] .form-group .file-input-label:hover {
+    background: rgba(var(--primary-color-rgb), 0.1);
+}
+
+/* Enhanced File Input Styles */
+.modal .form-group input[type="file"] {
+    display: none;
+}
+
+.modal .file-input-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    background: var(--input-bg);
+    border: 2px dashed var(--border-color);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 1rem;
+    width: 100%;
+}
+
+.modal .file-input-label:hover {
+    border-color: var(--primary-color);
+    background: rgba(var(--primary-color-rgb), 0.05);
+}
+
+.modal .file-input-label i {
+    font-size: 1.5rem;
+    color: var(--primary-color);
+}
+
+.modal .file-name {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    flex: 1;
+}
+
+.modal .file-preview {
+    margin-top: 1rem;
+    display: none;
+    position: relative;
+    background: var(--input-bg);
+    padding: 0.5rem;
+    border-radius: 4px;
+}
+
+.modal .file-preview.active {
+    display: block;
+}
+
+.modal .file-preview img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.modal .remove-file {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: var(--error-color);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+}
+
+.modal .remove-file:hover {
+    transform: scale(1.1);
+    background: #ff3333;
+}
+
+/* Dark theme adjustments */
+[data-theme="dark"] .modal .file-input-label {
+    background: var(--dark-input);
+    border-color: var(--dark-border);
+}
+
+[data-theme="dark"] .modal .file-preview {
+    background: var(--dark-input);
+}
+
+/* Fix other form controls in dark mode */
+[data-theme="dark"] .modal input,
+[data-theme="dark"] .modal textarea,
+[data-theme="dark"] .modal select {
+    background: var(--dark-input);
+    border-color: var(--dark-border);
+    color: #fff;
+}
+
+/* Course Badge Styles */
+.course-image {
+    position: relative;
+}
+
+.course-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+}
+
+.course-badge::before {
+    content: '';
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 8px;
+}
+
+/* Active badge */
+.course-badge.active {
+    background: rgba(34, 197, 94, 0.1);
+    color: var(--badge-active);
+}
+
+.course-badge.active::before {
+    background-color: var(--badge-active);
+}
+
+/* Draft badge */
+.course-badge.draft {
+    background: rgba(249, 115, 22, 0.1);
+    color: var(--badge-draft);
+}
+
+.course-badge.draft::before {
+    background-color: var(--badge-draft);
+}
+
+/* Published badge */
+.course-badge.published {
+    background: rgba(59, 130, 246, 0.1);
+    color: var(--badge-published);
+}
+
+.course-badge.published::before {
+    background-color: var(--badge-published);
+}
+
+/* Dark theme adjustments */
+[data-theme="dark"] .course-badge.active {
+    background: rgba(34, 197, 94, 0.2);
+}
+
+[data-theme="dark"] .course-badge.draft {
+    background: rgba(249, 115, 22, 0.2);
+}
+
+[data-theme="dark"] .course-badge.published {
+    background: rgba(59, 130, 246, 0.2);
 }

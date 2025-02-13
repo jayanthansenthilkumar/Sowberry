@@ -11,6 +11,11 @@
     <link rel="stylesheet" href="assets/css/courses.css">
 </head>
 <body>
+    <button class="hamburger-menu">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+    </button>
     <button class="mobile-menu-toggle">
         <i class="ri-menu-line"></i>
     </button>
@@ -123,7 +128,7 @@
                 </div>
                 <div class="course-image">
                     <img src="https://source.unsplash.com/800x600/?javascript" alt="JavaScript Course">
-                    <span class="course-badge">Active</span>
+                    <span class="course-badge active">Active</span> <!-- Update class and text -->
                 </div>
                 <div class="course-content">
                     <h3>Advanced JavaScript</h3>
@@ -157,7 +162,7 @@
                 </div>
                 <div class="course-image">
                     <img src="https://source.unsplash.com/800x600/?python" alt="Python Course">
-                    <span class="course-badge">Draft</span>
+                    <span class="course-badge draft">Draft</span> <!-- Update class and text -->
                 </div>
                 <div class="course-content">
                     <h3>Python for Beginners</h3>
@@ -191,7 +196,7 @@
                 </div>
                 <div class="course-image">
                     <img src="https://source.unsplash.com/800x600/?react" alt="React Course">
-                    <span class="course-badge">Active</span>
+                    <span class="course-badge active">Active</span> <!-- Update class and text -->
                 </div>
                 <div class="course-content">
                     <h3>React Development</h3>
@@ -266,7 +271,17 @@
                     </div>
                     <div class="form-group">
                         <label>Course Image</label>
-                        <input type="file" name="image" accept="image/*">
+                        <input type="file" name="image" accept="image/*" id="courseImage">
+                        <label for="courseImage" class="file-input-label">
+                            <i class="ri-upload-cloud-line"></i>
+                            <span class="file-name">Choose an image file (PNG, JPG)</span>
+                        </label>
+                        <div class="file-preview">
+                            <img src="" alt="Preview">
+                            <button type="button" class="remove-file">
+                                <i class="ri-close-line"></i>
+                            </button>
+                        </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group">
@@ -293,6 +308,7 @@
             </div>
         </div>
     </main>
+    <script src="assets/js/script.js"></script>
     <script src="assets/js/courses.js"></script>
 </body>
 </html>

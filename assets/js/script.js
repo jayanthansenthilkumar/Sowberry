@@ -1,17 +1,16 @@
 class CourseManager {
     constructor() {
-        this.init();
-        this.setupFileInput();
-    }
-
-    init() {
         this.addCourseBtn = document.querySelector('.add-course-btn');
         this.newCourseModal = document.getElementById('newCourseModal');
         this.newCourseForm = document.getElementById('newCourseForm');
         this.closeModalBtn = this.newCourseModal.querySelector('.close-modal');
         this.cancelBtn = this.newCourseModal.querySelector('.cancel-btn');
-        
+        this.init();
+    }
+
+    init() {
         this.bindEvents();
+        this.setupFileInput();
     }
 
     bindEvents() {
@@ -22,17 +21,14 @@ class CourseManager {
     }
 
     openModal() {
-        document.body.style.overflow = 'hidden';
+        this.newCourseModal.classList.add('active');
         requestAnimationFrame(() => {
-            this.newCourseModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
         });
     }
 
     closeModal() {
         this.newCourseModal.classList.add('closing');
-        document.body.style.overflow = '';
-        
-        // Only remove classes after animation completes
         this.newCourseModal.addEventListener('transitionend', (e) => {
             if (e.propertyName === 'opacity') {
                 this.newCourseModal.classList.remove('active', 'closing');
@@ -42,6 +38,7 @@ class CourseManager {
                     preview.classList.remove('active');
                     preview.querySelector('img').src = '';
                 }
+                document.body.style.overflow = '';
             }
         }, { once: true });
     }
@@ -50,22 +47,16 @@ class CourseManager {
         e.preventDefault();
         const formData = new FormData(this.newCourseForm);
         const courseData = Object.fromEntries(formData);
-        
         const courseCard = this.createCourseCard(courseData);
         document.querySelector('.courses-grid').insertAdjacentHTML('afterbegin', courseCard);
-        
         this.closeModal();
         this.showNotification('Course created successfully!');
     }
 
     createCourseCard(data) {
-        // Simplify status handling
         const status = data.status.toLowerCase();
         const statusDisplay = data.status.charAt(0).toUpperCase() + data.status.slice(1);
-        
-        // Determine badge class
         const badgeClass = status === 'published' ? 'active' : status;
-
         return `
             <div class="course-card">
                 <div class="admin-controls">
@@ -84,8 +75,8 @@ class CourseManager {
                     <h3>${data.title}</h3>
                     <p>${data.description}</p>
                     <div class="course-meta">
-                        <span><i class="ri-user-line"></i> 0 Students</span>
                         <span><i class="ri-time-line"></i> ${data.duration} Hours</span>
+                        <span><i class="ri-user-line"></i> 0 Students</span>
                     </div>
                 </div>
                 <div class="course-stats">
@@ -124,12 +115,16 @@ class CourseManager {
         removeButton.addEventListener('click', () => {
             fileInput.value = '';
             fileLabel.textContent = 'Choose an image file';
-            preview.classList.remove('active');
             previewImg.src = '';
+            preview.classList.remove('active');
         });
     }
 }
 
+// Initialize only CourseManager when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-    new CourseManager();
+    // Initialize CourseManager if on courses page
+    if (document.querySelector('.courses-grid')) {
+        new CourseManager();
+    }
 });
