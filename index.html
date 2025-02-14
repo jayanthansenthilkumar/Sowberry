@@ -3,151 +3,537 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sowberry</title>
+    <title>Login & Register - Sowberry</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
 </head>
-<body>
-    <button class="hamburger-menu">
-        <span class="bar"></span>
-        <span class="bar"></span>
-        <span class="bar"></span>
-    </button>
-    <button class="mobile-menu-toggle">
-        <i class="ri-menu-line"></i>
-    </button>
-    <div class="sidebar">
-        <div class="logo">
-            <i class="ri-seedling-fill"></i>
-            <span>Sowberry</span>
+<body class="login-page">
+    <div id="particles-js" class="particles-container"></div>
+    <div class="split-container">
+        <!-- Left Side - Branding -->
+        <div class="brand-side">
+            <div id="particles-left" class="particles"></div>
+            <div class="brand-content">
+                <i class="ri-seedling-fill brand-logo"></i>
+                <h1>Sowberry</h1>
+                <p class="tagline">Empowering Learning, Enriching Minds</p>
+                <div class="brand-background">
+                    <div class="shape shape-1"></div>
+                    <div class="shape shape-2"></div>
+                </div>
+            </div>
         </div>
-        <nav>
-            <a href="index.html" class="active"><i class="ri-home-4-line"></i><span>Overview</span></a>
-            <a href="courses.html"><i class="ri-book-open-line"></i><span>Courses</span></a>
-            <a href="#"><i class="ri-user-follow-line"></i><span>Students</span></a>
-            <a href="#"><i class="ri-award-line"></i><span>Assignments</span></a>
-            <a href="#"><i class="ri-chat-1-line"></i><span>Discussion</span></a>
-            <a href="#"><i class="ri-settings-3-line"></i><span>Settings</span></a>
-        </nav>
+
+        <!-- Right Side - Forms -->
+        <div class="forms-side">
+            <div id="particles-right" class="particles"></div>
+            <div class="auth-container">
+                <div class="forms-container">
+                    <!-- Login Form -->
+                    <div class="form-section login-section active">
+                        <div class="login-header">
+                            <i class="ri-seedling-fill"></i>
+                            <h1>Sowberry</h1>
+                        </div>
+                        <div class="login-form">
+                            <h2>Welcome back!</h2>
+                            <p>Please enter your details to sign in</p>
+                            
+                            <form action="/login" method="POST" id="loginForm">
+                                <div class="form-group">
+                                    <label for="email">Email</label>
+                                    <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="password">Password</label>
+                                    <div class="password-input">
+                                        <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                                        <i class="ri-eye-line toggle-password"></i>
+                                    </div>
+                                </div>
+                                <div class="form-options">
+                                    <label class="remember-me">
+                                        <input type="checkbox" name="remember">
+                                        Remember me
+                                    </label>
+                                    <a href="#" class="forgot-password">Forgot password?</a>
+                                </div>
+                                <button type="submit" class="auth-btn">Sign in</button>
+                            </form>
+
+                            <div class="social-login">
+                                <p>Or continue with</p>
+                                <div class="social-buttons">
+                                    <button class="social-btn google">
+                                        <i class="ri-google-fill"></i>
+                                        Google
+                                    </button>
+                                    <button class="social-btn github">
+                                        <i class="ri-github-fill"></i>
+                                        GitHub
+                                    </button>
+                                </div>
+                            </div>
+
+                            <p class="switch-form-link">
+                                Don't have an account? <a href="#" onclick="toggleForms('register')">Sign up</a>
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Updated Registration Form -->
+                    <div class="form-section register-section">
+                        <div class="login-header">
+                            <i class="ri-seedling-fill"></i>
+                            <h1>Sowberry</h1>
+                        </div>
+                        <div class="login-form">
+                            <h2>Create Account</h2>
+                            <p>Please fill in your details to register</p>
+                            
+                            <form action="/register" method="POST" id="registerForm" class="compact-form">
+                                <div class="form-group">
+                                    <label for="regEmail">Email</label>
+                                    <div class="input-wrapper">
+                                        <input type="email" id="regEmail" name="email" placeholder="Enter your email" required>
+                                        <span class="validation-message"></span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="username">Username</label>
+                                    <div class="input-wrapper">
+                                        <input type="text" id="username" name="username" placeholder="Choose a username" required disabled>
+                                        <span class="validation-message"></span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="fullName">Full Name</label>
+                                    <div class="input-wrapper">
+                                        <input type="text" id="fullName" name="fullName" placeholder="Enter your full name" required disabled>
+                                        <span class="validation-message"></span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="phone">Phone Number</label>
+                                    <div class="input-wrapper">
+                                        <input type="tel" id="phone" name="phone" placeholder="Enter your phone number" pattern="[0-9]{10}" required disabled>
+                                        <span class="validation-message"></span>
+                                    </div>
+                                </div>
+
+                                <!-- Remove file upload section and go straight to terms -->
+                                <div class="form-options">
+                                    <label class="terms-checkbox">
+                                        <input type="checkbox" name="terms" required disabled>
+                                        <span>I agree to the Terms & Conditions</span>
+                                    </label>
+                                </div>
+
+                                <button type="submit" class="auth-btn" disabled>Create Account</button>
+                            </form>
+
+                            <p class="switch-form-link">
+                                Already have an account? <a href="#" onclick="toggleForms('login')">Sign in</a>
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Add Forgot Password Form -->
+                    <div class="form-section forgot-section">
+                        <div class="login-header">
+                            <i class="ri-seedling-fill"></i>
+                            <h1>Sowberry</h1>
+                        </div>
+                        <div class="login-form">
+                            <h2>Reset Password</h2>
+                            <p>Enter your email to receive reset instructions</p>
+                            
+                            <form action="/forgot-password" method="POST" id="forgotForm" class="compact-form">
+                                <div class="form-group">
+                                    <label for="resetEmail">Email</label>
+                                    <div class="input-wrapper">
+                                        <input type="email" id="resetEmail" name="email" placeholder="Enter your email" required>
+                                        <span class="validation-message"></span>
+                                    </div>
+                                </div>
+                                <button type="submit" class="auth-btn">Send Reset Link</button>
+                            </form>
+
+                            <p class="switch-form-link">
+                                Remember your password? <a href="#" onclick="toggleToLogin()">Sign in</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <main>
-        <header>
-            <div class="search-bar">
-                <i class="ri-search-line"></i>
-                <input type="text" placeholder="Search...">
-            </div>
-            <div class="header-tools">
-                <div class="theme-toggle">
-                    <i class="ri-sun-line"></i>
-                </div>
-                <div class="notifications" id="notifications">
-                    <i class="ri-notification-3-line"></i>
-                    <span class="notification-badge">3</span>
-                    <div class="notifications-dropdown">
-                        <div class="notifications-header">
-                            <h4>Notifications</h4>
-                            <a href="#" class="mark-all-read">Mark all as read</a>
-                        </div>
-                        <div class="notification-list">
-                            <a href="#" class="notification-item unread">
-                                <i class="ri-message-2-line"></i>
-                                <div class="notification-content">
-                                    <p>New comment on your post</p>
-                                    <span>2 minutes ago</span>
-                                </div>
-                            </a>
-                            <a href="#" class="notification-item unread">
-                                <i class="ri-user-follow-line"></i>
-                                <div class="notification-content">
-                                    <p>New student enrolled in JavaScript course</p>
-                                    <span>1 hour ago</span>
-                                </div>
-                            </a>
-                            <a href="#" class="notification-item">
-                                <i class="ri-file-list-line"></i>
-                                <div class="notification-content">
-                                    <p>Assignment deadline reminder</p>
-                                    <span>3 hours ago</span>
-                                </div>
-                            </a>
-                        </div>
-                        <a href="#" class="view-all">View all notifications</a>
-                    </div>
-                </div>
-                <div class="user-profile" id="userProfile">
-                    <img src="https://ui-avatars.com/api/?name=John+Doe&size=30" alt="User" class="user-avatar">
-                    <div class="user-info">
-                        <span class="user-name">John Doe</span>
-                        <span class="user-status">
-                            <i class="ri-checkbox-blank-circle-fill"></i>
-                            Active
-                        </span>
-                    </div>
-                    <div class="profile-dropdown">
-                        <a href="#"><i class="ri-user-line"></i> My Profile</a>
-                        <a href="#"><i class="ri-lock-password-line"></i> Change Password</a>
-                        <div class="dropdown-divider"></div>
-                        <a href="#" class="logout"><i class="ri-logout-box-line"></i> Logout</a>
-                    </div>
-                </div>
-            </div>
-        </header>
-        <div class="dashboard-grid">
-            <div class="card animate">
-                <div class="card-header">
-                    <h3>Active Learners</h3>    
-                    <i class="ri-user-smile-line"></i>
-                </div>
-                <h2>2,847</h2>
-                <div class="chart-container">
-                    <canvas id="studentsChart"></canvas>
-                </div>
-            </div>
-            <div class="card animate">
-                <div class="card-header">
-                    <h3>Learning Progress</h3>
-                    <i class="ri-line-chart-line"></i>
-                </div>
-                <h2>78%</h2>
-                <div class="chart-container">
-                    <canvas id="completionChart"></canvas>
-                </div>
-            </div>
-            <div class="card animate">
-                <div class="card-header">
-                    <h3>Course Enrollments</h3>
-                    <i class="ri-book-mark-line"></i>
-                </div>
-                <h2>12,583</h2>
-                <div class="chart-container">
-                    <canvas id="enrollmentsChart"></canvas>
-                </div>
-            </div>
-        </div>
-        <div class="activity-section">
-            <div class="card animate">
-                <h3>Recent Activities</h3>
-                <div class="activity-list">
-                    <div class="activity-item">
-                        <i class="ri-video-line"></i>
-                        <div class="activity-info">
-                            <p>New course published: "Advanced JavaScript"</p>
-                            <span>2 hours ago</span>
-                        </div>
-                    </div>
-                    <div class="activity-item">
-                        <i class="ri-task-line"></i>
-                        <div class="activity-info">
-                            <p>Assignment submitted by 45 students</p>
-                            <span>5 hours ago</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
-    <script src="script.js"></script>
+
+    <script>
+        // Purple particles for left side
+        const leftConfig = {
+            particles: {
+                number: { value: 80, density: { enable: true, value_area: 800 } },
+                color: { value: "#ffffff" },
+                shape: { type: "circle" },
+                opacity: {
+                    value: 0.5,
+                    random: true,
+                    animation: { enable: true, speed: 1, opacity_min: 0.1 }
+                },
+                size: {
+                    value: 3,
+                    random: true,
+                    animation: { enable: true, speed: 40, size_min: 0.1 }
+                },
+                line_linked: {
+                    enable: true,
+                    distance: 150,
+                    color: "rgba(255, 255, 255, 0.2)",
+                    opacity: 0.2,
+                    width: 1
+                },
+                move: {
+                    enable: true,
+                    speed: 2,
+                    direction: "none",
+                    random: true,
+                    out_mode: "bounce"
+                }
+            },
+            interactivity: {
+                detect_on: "canvas",
+                events: {
+                    onhover: { enable: true, mode: "grab" },
+                    onclick: { enable: true, mode: "push" },
+                    resize: true
+                }
+            }
+        };
+
+        // Light particles for right side
+        const rightConfig = {
+            particles: {
+                number: { value: 50, density: { enable: true, value_area: 800 } },
+                color: { value: "#6c5ce7" },
+                shape: { type: "circle" },
+                opacity: {
+                    value: 0.3,
+                    random: true,
+                    animation: { enable: true, speed: 1, opacity_min: 0.1 }
+                },
+                size: {
+                    value: 2,
+                    random: true,
+                    animation: { enable: true, speed: 40, size_min: 0.1 }
+                },
+                line_linked: {
+                    enable: true,
+                    distance: 150,
+                    color: "rgba(108, 92, 231, 0.2)",
+                    opacity: 0.2,
+                    width: 1
+                },
+                move: {
+                    enable: true,
+                    speed: 1,
+                    direction: "none",
+                    random: true,
+                    out_mode: "out"
+                }
+            },
+            interactivity: {
+                detect_on: "canvas",
+                events: {
+                    onhover: { enable: true, mode: "grab" },
+                    onclick: { enable: true, mode: "push" },
+                    resize: true
+                }
+            }
+        };
+
+        // Initialize particles
+        particlesJS('particles-left', leftConfig());
+        particlesJS('particles-right', rightConfig());
+
+        // Updated toggleForms function
+        function toggleForms(formType) {
+            const sections = {
+                login: document.querySelector('.login-section'),
+                register: document.querySelector('.register-section'),
+                forgot: document.querySelector('.forgot-section')
+            };
+
+            // First, hide all sections
+            Object.values(sections).forEach(section => {
+                section.classList.remove('active');
+                section.style.opacity = '0';
+                section.style.transform = 'translateX(100px)';
+                section.style.position = 'absolute';
+            });
+
+            // Show the selected section
+            const activeSection = sections[formType];
+            if (activeSection) {
+                activeSection.classList.add('active');
+                activeSection.style.opacity = '1';
+                activeSection.style.transform = 'translateX(0)';
+                activeSection.style.position = 'relative';
+            }
+        }
+
+        // Updated toggleToLogin function
+        function toggleToLogin() {
+            toggleForms('login');
+        }
+
+        // Password visibility toggle
+        document.querySelectorAll('.toggle-password').forEach(icon => {
+            icon.addEventListener('click', function() {
+                const input = this.previousElementSibling;
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    this.classList.replace('ri-eye-line', 'ri-eye-off-line');
+                } else {
+                    input.type = 'password';
+                    this.classList.replace('ri-eye-off-line', 'ri-eye-line');
+                }
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const registerForm = document.getElementById('registerForm');
+            const emailInput = document.getElementById('regEmail');
+            const usernameInput = document.getElementById('username');
+            const fullNameInput = document.getElementById('fullName');
+            const phoneInput = document.getElementById('phone');
+            const termsCheckbox = registerForm.querySelector('input[name="terms"]');
+            const submitButton = registerForm.querySelector('button[type="submit"]');
+
+            // List of valid top-level domains
+            const validTLDs = [
+                'com', 'org', 'net', 'edu', 'gov', 'mil',
+                'info', 'biz', 'name', 'mobi', 'pro',
+                'int', 'museum', 'travel', 'xyz', 'app',
+                'dev', 'io', 'co', 'me', 'tv', 'us', 'uk',
+                'ca', 'au', 'de', 'fr', 'jp', 'ru', 'in',
+                'edu.in', 'ac.in', 'gov.in', 'org.in', 'res.in',
+                'tech', 'online', 'site', 'web', 'cloud',
+                'ai', 'blog', 'design', 'studio', 'email'
+                // Add more TLDs as needed
+            ];
+
+            // Updated Email validation
+            emailInput.addEventListener('input', function() {
+                const email = this.value.trim().toLowerCase();
+                const isValidFormat = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+                
+                if (isValidFormat) {
+                    const domain = email.split('@')[1];
+                    const domainParts = domain.split('.');
+                    const tld = domainParts.slice(1).join('.');
+                    
+                    if (validTLDs.some(validTLD => tld === validTLD)) {
+                        usernameInput.disabled = false;
+                        showValidation(this, true, '✓');
+                    } else {
+                        usernameInput.disabled = true;
+                        showValidation(this, false, '×');
+                        const validationMsg = this.parentElement.querySelector('.validation-message');
+                        validationMsg.setAttribute('title', 'Invalid email domain');
+                    }
+                } else {
+                    disableFollowingInputs('username');
+                    showValidation(this, false, '×');
+                }
+                checkFormValidity();
+            });
+
+            // Username validation
+            usernameInput.addEventListener('input', function() {
+                if (this.value.length >= 3) {
+                    fullNameInput.disabled = false;
+                    showValidation(this, true);
+                } else {
+                    disableFollowingInputs('fullName');
+                    showValidation(this, false);
+                }
+                checkFormValidity();
+            });
+
+            // Full Name validation
+            fullNameInput.addEventListener('input', function() {
+                if (this.value.length >= 2) {
+                    phoneInput.disabled = false;
+                    showValidation(this, true);
+                } else {
+                    disableFollowingInputs('phone');
+                    showValidation(this, false);
+                }
+                checkFormValidity();
+            });
+
+            // Phone validation
+            phoneInput.addEventListener('input', function() {
+                const isValidPhone = /^[0-9]{10}$/.test(this.value);
+                if (isValidPhone) {
+                    termsCheckbox.disabled = false;
+                    showValidation(this, true);
+                } else {
+                    termsCheckbox.disabled = true;
+                    termsCheckbox.checked = false;
+                    showValidation(this, false);
+                }
+                checkFormValidity();
+            });
+
+            // Terms checkbox
+            termsCheckbox.addEventListener('change', checkFormValidity);
+
+            // Update showValidation function
+            function showValidation(element, isValid, icon) {
+                const validationMessage = element.parentElement.querySelector('.validation-message');
+                if (validationMessage) {
+                    validationMessage.textContent = icon;
+                    validationMessage.className = 'validation-message ' + (isValid ? 'valid' : 'invalid');
+                    validationMessage.style.animation = 'none';
+                    validationMessage.offsetHeight;
+                    validationMessage.style.animation = 'popIn 0.3s ease';
+                }
+            }
+
+            function disableFollowingInputs(startFrom) {
+                const inputs = ['username', 'fullName', 'phone'];
+                const startIndex = inputs.indexOf(startFrom);
+                
+                for (let i = startIndex; i < inputs.length; i++) {
+                    const input = document.getElementById(inputs[i]);
+                    input.disabled = true;
+                    input.value = '';
+                    showValidation(input, false);
+                }
+                termsCheckbox.disabled = true;
+                termsCheckbox.checked = false;
+                submitButton.disabled = true;
+            }
+
+            function checkFormValidity() {
+                const isComplete = !emailInput.value.includes(' ') &&
+                    usernameInput.value.length >= 3 &&
+                    fullNameInput.value.length >= 2 &&
+                    /^[0-9]{10}$/.test(phoneInput.value) &&
+                    termsCheckbox.checked;
+                
+                submitButton.disabled = !isComplete;
+            }
+
+            // Forgot password link handler
+            document.querySelector('.forgot-password').addEventListener('click', function(e) {
+                e.preventDefault();
+                toggleForms('forgot');
+            });
+
+            // Forgot password form submission
+            document.getElementById('forgotForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const email = document.getElementById('resetEmail').value;
+                if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                    alert('If the email exists in our system, you will receive reset instructions shortly.');
+                    toggleToLogin();
+                } else {
+                    const validationMsg = document.getElementById('resetEmail')
+                        .parentElement.querySelector('.validation-message');
+                    validationMsg.textContent = '×';
+                    validationMsg.className = 'validation-message invalid';
+                }
+            });
+        });
+
+        // Add CSS animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes popIn {
+                0% { transform: scale(0.8) translateY(-50%); opacity: 0; }
+                100% { transform: scale(1) translateY(-50%); opacity: 1; }
+            }
+            .validation-message {
+                transition: all 0.3s ease;
+            }
+            .validation-message.invalid {
+                cursor: help;
+            }
+            .validation-message.invalid:hover::after {
+                content: attr(title);
+                position: absolute;
+                right: -120px;
+                top: 50%;
+                transform: translateY(-50%);
+                background: var(--card-bg);
+                padding: 4px 8px;
+                border-radius: 4px;
+                font-size: 0.75rem;
+                white-space: nowrap;
+                box-shadow: var(--shadow);
+                border: 1px solid var(--border-color);
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Update forgot password link
+        document.querySelector('.forgot-password').addEventListener('click', function(e) {
+            e.preventDefault();
+            toggleForms('forgot');
+        });
+
+        // Add forgot password validation
+        document.getElementById('forgotForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('resetEmail').value;
+            const validationMsg = document.getElementById('resetEmail')
+                .parentElement.querySelector('.validation-message');
+            
+            if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                validationMsg.textContent = '✓';
+                validationMsg.className = 'validation-message valid';
+                // Here you would typically send the reset request to your server
+                alert('If the email exists in our system, you will receive reset instructions shortly.');
+                toggleToLogin();
+            } else {
+                validationMsg.textContent = '×';
+                validationMsg.className = 'validation-message invalid';
+            }
+        });
+
+        
+    </script>
+
+    <!-- Add styles for smooth transitions -->
+    <style>
+        .form-section {
+            transform: translateX(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            position: absolute;
+            width: 100%;
+            visibility: hidden;
+        }
+
+        .form-section.active {
+            transform: translateX(0);
+            opacity: 1;
+            position: relative;
+            visibility: visible;
+        }
+
+        .forms-container {
+            position: relative;
+            min-height: 400px; /* Add minimum height */
+        }
+    </style>
 </body>
 </html>
