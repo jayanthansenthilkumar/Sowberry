@@ -13,13 +13,43 @@
 <body>
     <nav class="navbar">
         <div class="container nav-container">
-            <a href="#" class="logo">Prisol<span>Tech</span></a>
+            <a href="#" class="logo">
+                <div class="logo-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 4L12 12L4 4M4 20L12 12L20 20"/>
+                    </svg>
+                </div>
+                Prisol<span class="tech-span">Tech</span>
+            </a>
+            
             <div class="nav-links">
-                <a href="#home" class="active">Home</a>
-                <a href="#about">About</a>
-                <a href="#services">Services</a>
-                <a href="#contact">Contact</a>
+                <a href="#home" class="nav-item active">
+                    <i data-feather="home"></i>
+                    <span>Home</span>
+                </a>
+                <a href="#about" class="nav-item">
+                    <i data-feather="info"></i>
+                    <span>About</span>
+                </a>
+                <a href="#services" class="nav-item">
+                    <i data-feather="grid"></i>
+                    <span>Services</span>
+                </a>
+                <a href="#contact" class="nav-item">
+                    <i data-feather="mail"></i>
+                    <span>Contact</span>
+                </a>
+                <button class="theme-toggle">
+                    <i data-feather="moon"></i>
+                </button>
+                <a href="#" class="cta-button">Get Started</a>
             </div>
+            
+            <button class="mobile-menu" aria-label="Menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
         </div>
     </nav>
 
@@ -44,7 +74,7 @@
                         <p>Active Students</p>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-number">500+</div>
+                        <div class="stat-number">500+</</div>
                         <p>Expert Tutors</p>
                     </div>
                     <div class="stat-card">
