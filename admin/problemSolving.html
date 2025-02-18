@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Problem Solving - Sowberry</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/styles.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Include same header and sidebar as other admin pages -->
+    <!-- ...existing sidebar and header code... -->
+     <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo">
+            <i class="ri-seedling-fill"></i>
+            <span>Sowberry</span>
+        </div>
+        <nav>
+            <a href="admin.html"><i class="ri-home-4-line"></i><span>Overview</span></a>
+            <a href="courses.html"><i class="ri-book-open-line"></i><span>Courses</span></a>
+            <a href="students.html"><i class="ri-user-follow-line"></i><span>Students</span></a>
+            <a href="newAssignments.html"><i class="ri-award-line"></i><span>Assignments</span></a>
+            <a href="newEvents.html"><i class="ri-calendar-event-line"></i><span>Events</span></a>
+            <a href="aptitude.html"><i class="ri-mental-health-line"></i><span>Aptitude</span></a>
+            <a href="problemSolving.html" class="active"><i class="ri-code-box-line"></i><span>Problem Solving</span></a>
+            <a href="#"><i class="ri-chat-1-line"></i><span>Discussion</span></a>
+            <a href="#"><i class="ri-settings-3-line"></i><span>Settings</span></a>
+        </nav>
+    </div>
+    <main>
+        <!-- Header -->
+        <header>
+            <div class="search-bar">
+                <i class="ri-search-line"></i>
+                <input type="text" placeholder="Search assignments...">
+            </div>
+            <div class="header-tools">
+                <div class="theme-toggle">
+                    <i class="ri-sun-line"></i>
+                </div>
+                <div class="notifications" id="notifications">
+                    <i class="ri-notification-3-line"></i>
+                    <span class="notification-badge">3</span>
+                    <!-- Notifications dropdown content -->
+                    <div class="notifications-dropdown">
+                        <!-- Same notification content as admin.html -->
+                    </div>
+                </div>
+                <div class="user-profile" id="userProfile">
+                    <img src="https://ui-avatars.com/api/?name=Sowmiya&size=30" alt="User" class="user-avatar">
+                    <div class="user-info">
+                        <span class="user-name">Sowmiya</span>
+                        <span class="user-status">
+                            <i class="ri-checkbox-blank-circle-fill"></i>
+                            Active
+                        </span>
+                    </div>
+                    <div class="profile-dropdown">
+                        <a href="#"><i class="ri-user-line"></i> My Profile</a>
+                        <a href="#"><i class="ri-lock-password-line"></i> Change Password</a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="logout"><i class="ri-logout-box-line"></i> Logout</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <div class="welcome-section">
+            <div class="welcome-card">
+                <div class="welcome-content">
+                    <div class="welcome-text">
+                        <h1>Problem <span class="highlight">Solving</span></h1>
+                        <p>Manage coding challenges and solutions</p>
+                    </div>
+                    <div class="welcome-stats">
+                        <div class="stat-item floating">
+                            <div class="stat-icon"><i class="ri-code-line"></i></div>
+                            <div class="stat-info">
+                                <h4>Total Problems</h4>
+                                <p>180</p>
+                            </div>
+                        </div>
+                        <div class="stat-item floating delay-1">
+                            <div class="stat-icon"><i class="ri-trophy-line"></i></div>
+                            <div class="stat-info">
+                                <h4>Solutions</h4>
+                                <p>520</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Problem Categories -->
+        <div class="dashboard-grid">
+            <div class="card animate">
+                <div class="card-header">
+                    <h3>Data Structures</h3>
+                    <i class="ri-database-2-line"></i>
+                </div>
+                <div class="category-stats">
+                    <div class="stat-row">
+                        <span>Total Problems</span>
+                        <strong>65</strong>
+                    </div>
+                    <div class="stat-row">
+                        <span>Success Rate</span>
+                        <strong>68%</strong>
+                    </div>
+                </div>
+            </div>
+            <div class="card animate">
+                <div class="card-header">
+                    <h3>Algorithms</h3>
+                    <i class="ri-flowchart-line"></i>
+                </div>
+                <div class="category-stats">
+                    <div class="stat-row">
+                        <span>Total Problems</span>
+                        <strong>75</strong>
+                    </div>
+                    <div class="stat-row">
+                        <span>Success Rate</span>
+                        <strong>62%</strong>
+                    </div>
+                </div>
+            </div>
+            <div class="card animate">
+                <div class="card-header">
+                    <h3>System Design</h3>
+                    <i class="ri-git-branch-line"></i>
+                </div>
+                <div class="category-stats">
+                    <div class="stat-row">
+                        <span>Total Problems</span>
+                        <strong>40</strong>
+                    </div>
+                    <div class="stat-row">
+                        <span>Success Rate</span>
+                        <strong>55%</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="list-card">
+            <div class="list-header">
+                <div class="header-left">
+                    <h3>Coding Problems</h3>
+                    <div class="search-container">
+                        <i class="ri-search-line"></i>
+                        <input type="text" placeholder="Search problems...">
+                    </div>
+                </div>
+                <button class="action-button" id="addProblemBtn">
+                    <i class="ri-add-line"></i>
+                    Add Problem
+                </button>
+            </div>
+
+            <div class="filter-container">
+                <div class="filter-pills">
+                    <button class="filter-pill active">All</button>
+                    <button class="filter-pill">Arrays</button>
+                    <button class="filter-pill">Strings</button>
+                    <button class="filter-pill">DP</button>
+                    <button class="filter-pill">Graphs</button>
+                </div>
+                <select class="filter-select">
+                    <option value="all">All Difficulty</option>
+                    <option value="easy">Easy</option>
+                    <option value="medium">Medium</option>
+                    <option value="hard">Hard</option>
+                </select>
+            </div>
+
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Problem</th>
+                            <th>Category</th>
+                            <th>Difficulty</th>
+                            <th>Success Rate</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div class="problem-info">
+                                    <div class="problem-icon">
+                                        <i class="ri-code-line"></i>
+                                    </div>
+                                    <div>
+                                        <h4>Two Sum Problem</h4>
+                                        <p>Arrays & Hashing</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>Arrays</td>
+                            <td><span class="difficulty-badge easy">Easy</span></td>
+                            <td>
+                                <div class="progress-wrapper">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill success" style="width: 82%"></div>
+                                    </div>
+                                    <span class="progress-text">82%</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="action-btn"><i class="ri-edit-line"></i></button>
+                                    <button class="action-btn"><i class="ri-eye-line"></i></button>
+                                    <button class="action-btn danger"><i class="ri-delete-bin-line"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                        <!-- Add more problem rows here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- Add Problem Modal -->
+    <div class="modal" id="problemModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add New Problem</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <form id="problemForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="title">Problem Title</label>
+                        <input type="text" id="title" name="title" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="category">Category</label>
+                        <select id="category" name="category" required>
+                            <option value="">Select Category</option>
+                            <option value="arrays">Arrays</option>
+                            <option value="strings">Strings</option>
+                            <option value="dp">Dynamic Programming</option>
+                            <option value="graphs">Graphs</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="difficulty">Difficulty Level</label>
+                        <select id="difficulty" name="difficulty" required>
+                            <option value="easy">Easy</option>
+                            <option value="medium">Medium</option>
+                            <option value="hard">Hard</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Problem Description</label>
+                        <textarea id="description" name="description" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="testCases">Sample Test Cases</label>
+                        <textarea id="testCases" name="testCases" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="solution">Solution Template</label>
+                        <textarea id="solution" name="solution" class="code-editor" required></textarea>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn secondary" id="cancelBtn">Cancel</button>
+                    <button type="submit" class="btn primary">Add Problem</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="../assets/script.js"></script>
+</body>
+</html>
