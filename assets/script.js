@@ -791,3 +791,59 @@ function stringToColor(str) {
 function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
+
+// Modal Management System
+const modalSystem = {
+    init: function(modalId, openBtnId) {
+        const modal = document.getElementById(modalId);
+        const openBtn = document.getElementById(openBtnId);
+        const closeBtn = modal?.querySelector('.close-modal');
+        const cancelBtn = modal?.querySelector('#cancelBtn');
+        
+        if (!modal || !openBtn) return;
+
+        // Open modal
+        openBtn.addEventListener('click', () => {
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        });
+
+        // Close modal on X button
+        if (closeBtn) {
+            closeBtn.addEventListener('click', () => {
+                modal.style.display = 'none';
+                document.body.style.overflow = '';
+            });
+        }
+
+        // Close modal on Cancel button
+        if (cancelBtn) {
+            cancelBtn.addEventListener('click', () => {
+                modal.style.display = 'none';
+                document.body.style.overflow = '';
+            });
+        }
+
+        // Close modal on outside click
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+                document.body.style.overflow = '';
+            }
+        });
+
+        // Close modal on ESC key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modal.style.display === 'block') {
+                modal.style.display = 'none';
+                document.body.style.overflow = '';
+            }
+        });
+    }
+};
+
+// Initialize all modals when document is ready
+document.addEventListener('DOMContentLoaded', () => {
+    // Initialize problem solving modal if it exists
+    modalSystem.init('problemModal', 'addProblemBtn');
+});
