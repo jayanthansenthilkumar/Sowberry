@@ -45,7 +45,7 @@ body {
     transition: background 0.3s ease;
 }
 
-/* Updated Sidebar Styles */
+/* Corrected Sidebar Styles */
 .sidebar {
     width: 240px;
     height: 100vh;
@@ -56,14 +56,70 @@ body {
     left: 0;
     top: 0;
     z-index: 1000;
-    transition: transform 0.3s ease, width 0.3s ease;
+    transition: all 0.3s ease;
     border-right: 1px solid var(--border-color);
     backdrop-filter: blur(12px);
-    overflow-y: auto;
-    overflow-x: hidden;
+    overflow: hidden;
 }
 
-/* Mobile Menu Button */
+.sidebar .logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 24px;
+    margin-bottom: 30px;
+    padding: 0 10px;
+}
+
+.sidebar nav {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 10px 0;
+}
+
+.sidebar nav a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    text-decoration: none;
+    color: var(--text);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    position: relative;
+    overflow: hidden;
+}
+
+.sidebar nav a i {
+    font-size: 20px;
+    min-width: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sidebar nav a span {
+    white-space: nowrap;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+    font-size: 0.9rem;
+}
+
+.sidebar nav a:hover {
+    background: var(--hover-color);
+    transform: translateX(5px);
+}
+
+.sidebar nav a.active {
+    background: var(--gradient);
+    color: var(--primary);
+    font-weight: 600;
+    border: 1px solid var(--border-color);
+}
+
+/* Mobile Menu Toggle Button */
 .mobile-menu-toggle {
     display: none;
     position: fixed;
@@ -76,6 +132,31 @@ body {
     padding: 8px;
     cursor: pointer;
     transition: all 0.3s ease;
+}
+
+.mobile-menu-toggle i {
+    font-size: 24px;
+    color: var(--text);
+}
+
+/* Sidebar Overlay for Mobile */
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    backdrop-filter: blur(4px);
+    transition: opacity 0.3s ease;
+    opacity: 0;
+}
+
+.sidebar-overlay.active {
+    display: block;
+    opacity: 1;
 }
 
 .logo {
@@ -239,7 +320,10 @@ main {
 }
 
 .activity-section {
-    margin-top: 30px;
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px;
+    padding: 0 20px;
 }
 
 .activity-item {
@@ -468,8 +552,12 @@ header {
 }
 
 @keyframes float {
-    0%, 100% { transform: translateZ(var(--depth)); }
-    50% { transform: translateZ(calc(var(--depth) + 10px)); }
+    0%, 100% { 
+        transform: translateY(0); 
+    }
+    50% { 
+        transform: translateY(-20px); 
+    }
 }
 
 @keyframes rotate3d {
@@ -1038,29 +1126,38 @@ header {
 
 /* Modal Styles */
 .modal {
-    display: none;
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    inset: 0;
     background: rgba(0, 0, 0, 0.5);
-    z-index: 2000;
-}
-
-.modal.active {
     display: flex;
     align-items: center;
     justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 2000;
+    backdrop-filter: blur(5px);
+}
+
+.modal.active {
+    opacity: 1;
+    visibility: visible;
 }
 
 .modal-content {
-    background: var(--card-bg);
-    padding: 2rem;
-    border-radius: 12px;
-    width: 100%;
+    width: 90%;
     max-width: 500px;
+    background: var(--card-bg);
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    transform: translateY(20px);
+    transition: transform 0.3s ease;
     box-shadow: var(--shadow);
+    overflow: hidden;
+}
+
+.modal.active .modal-content {
+    transform: translateY(0);
 }
 
 .form-group {
@@ -2354,4 +2451,1515 @@ main {
 
 .sidebar-overlay.active {
     display: block;
+}
+
+/* Student List Card Styles */
+.list-card {
+    background: var(--card-bg);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border-color);
+    margin: 2rem 0;
+    padding: 0 !important;
+    overflow: hidden;
+}
+
+.list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+
+.header-left h3 {
+    font-size: 1.2rem;
+    color: var(--text);
+    white-space: nowrap;
+}
+
+.search-container {
+    position: relative;
+    min-width: 300px;
+}
+
+.search-container input {
+    width: 100%;
+    padding: 0.75rem 1rem 0.75rem 2.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--card-bg);
+    color: var(--text);
+}
+
+.search-container i {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-secondary);
+}
+
+.filter-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    background: var(--background);
+}
+
+.filter-pills {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.filter-pill {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    border: none;
+    background: var(--card-bg);
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.filter-pill.active {
+    background: var(--primary);
+    color: white;
+}
+
+.table-container {
+    overflow-x: auto;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.data-table th,
+.data-table td {
+    padding: 1rem 1.5rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.data-table th {
+    background: var(--background);
+    font-weight: 600;
+    color: var(--text);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+/* Modal Styles */
+.modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 1000;
+    backdrop-filter: blur(5px);
+}
+
+.modal.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-content {
+    width: 90%;
+    max-width: 500px;
+    background: var(--card-bg);
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    transform: translateY(20px);
+    transition: transform 0.3s ease;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+}
+
+.modal.active .modal-content {
+    transform: translateY(0);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.close-modal {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--text);
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.close-modal:hover {
+    background: var(--background);
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    padding: 1.5rem;
+}
+
+.form-actions {
+    padding: 1rem 1.5rem;
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    border-top: 1px solid var(--border-color);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .header-left {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .search-container {
+        min-width: 100%;
+    }
+
+    .filter-container {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .filter-pills {
+        width: 100%;
+        overflow-x: auto;
+        padding-bottom: 0.5rem;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* DataTable Custom Styles */
+.dataTables_wrapper {
+    padding: 0 !important;
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.table-container {
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.data-table {
+    width: 100% !important;
+    margin: 0 !important;
+    border-collapse: collapse;
+}
+
+.data-table th,
+.data-table td {
+    vertical-align: middle;
+    padding: 1rem 1.5rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.data-table th {
+    background: var(--background);
+    font-weight: 600;
+    color: var(--text);
+    white-space: nowrap;
+}
+
+/* Column-specific widths */
+.data-table th:nth-child(1),
+.data-table td:nth-child(1) {
+    width: 30%;
+    min-width: 250px;
+}
+
+.data-table th:nth-child(2),
+.data-table td:nth-child(2) {
+    width: 20%;
+    min-width: 180px;
+}
+
+.data-table th:nth-child(3),
+.data-table td:nth-child(3) {
+    width: 20%;
+    min-width: 150px;
+}
+
+.data-table th:nth-child(4),
+.data-table td:nth-child(4) {
+    width: 15%;
+    min-width: 120px;
+}
+
+.data-table th:nth-child(5),
+.data-table td:nth-child(5) {
+    width: 15%;
+    min-width: 120px;
+    text-align: center;
+}
+
+/* Action buttons alignment */
+.action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+/* Fix DataTables controls */
+.dataTables_length,
+.dataTables_filter {
+    margin-bottom: 1.5rem;
+}
+
+.dataTables_paginate {
+    margin-top: 1.5rem;
+    padding: 1rem 0;
+    border-top: 1px solid var(--border-color);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .dataTables_wrapper {
+        padding: 1rem;
+    }
+
+    .data-table th,
+    .data-table td {
+        padding: 0.75rem 1rem;
+    }
+
+    .data-table th {
+        white-space: normal;
+    }
+}
+
+/* DataTable Custom Styles */
+.dataTables_wrapper {
+    padding: 1.5rem;
+    font-family: 'Poppins', sans-serif;
+}
+
+.dataTables_filter {
+    margin-bottom: 1.5rem;
+}
+
+.dataTables_filter input {
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    background: var(--card-bg);
+    color: var(--text);
+    width: 250px;
+}
+
+.dataTables_paginate {
+    margin-top: 1.5rem;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+}
+
+.paginate_button {
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    cursor: pointer;
+    background: var(--card-bg);
+    color: var(--text);
+    transition: all 0.3s ease;
+}
+
+.paginate_button.current {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
+.paginate_button:hover:not(.current) {
+    background: var(--hover-color);
+}
+
+.paginate_button.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Custom styling for student info in table */
+.student-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.student-avatar {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--gradient);
+    color: white;
+    border-radius: 8px;
+    font-weight: 500;
+}
+
+.student-details h4 {
+    color: var(--text);
+    font-size: 0.9rem;
+    margin-bottom: 0.25rem;
+}
+
+.student-details p {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+}
+
+/* Progress bar in table */
+.progress-wrapper {
+    width: 150px;
+}
+
+.progress-bar {
+    height: 6px;
+    background: var(--hover-color);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: var(--gradient);
+    border-radius: 3px;
+    transition: width 0.3s ease;
+}
+
+/* Status badge in table */
+.status-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+/* Enhanced Student List Styles */
+.list-card {
+    padding: 0 !important;
+    margin-top: 2rem;
+    overflow: hidden;
+}
+
+.list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.filter-container {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--background);
+}
+
+.filter-select {
+    min-width: 200px;
+    padding: 0.75rem 2.5rem 0.75rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--card-bg);
+    color: var(--text);
+    font-size: 0.9rem;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='currentColor' viewBox='0 0 24 24'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.7rem center;
+    background-size: 1.2em;
+    transition: all 0.3s ease;
+}
+
+.filter-select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.1);
+}
+
+/* Table Styles */
+.table-container {
+    overflow-x: auto;
+    padding: 0 1.5rem;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.data-table th,
+.data-table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.data-table th {
+    font-weight: 600;
+    color: var(--text);
+    background: var(--background);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+/* Student Info Styles */
+.student-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.student-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+/* Progress Bar Styles */
+.progress-wrapper {
+    width: 150px;
+}
+
+.progress-bar {
+    height: 6px;
+    background: var(--hover-color);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 0.25rem;
+}
+
+.progress-fill {
+    height: 100%;
+    background: var(--gradient);
+    border-radius: 3px;
+    transition: width 0.3s ease;
+}
+
+/* Status Badge Styles */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.status-badge.success {
+    background: rgba(16, 185, 129, 0.1);
+    color: #10b981;
+}
+
+.status-badge.warning {
+    background: rgba(245, 158, 11, 0.1);
+    color: #f59e0b;
+}
+
+.status-badge.danger {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+}
+
+/* Pagination Styles */
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    gap: 0.5rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.page-btn {
+    min-width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--card-bg);
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.page-btn.active {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
+.page-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: var(--hover-color);
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .list-header {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .filter-container {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .filter-select {
+        width: 100%;
+    }
+
+    .table-container {
+        margin: 0 -1rem;
+    }
+
+    .progress-wrapper {
+        width: 120px;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+}
+
+/* Enhanced DataTable Styles */
+.dataTables_wrapper {
+    padding: 0 !important;
+}
+
+.dataTables_filter {
+    display: none; /* Hide default search as we have custom search */
+}
+
+.dataTables_length {
+    display: none; /* Hide default length selector */
+}
+
+.table-container {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+/* Table Header Styles */
+.data-table thead th {
+    background: var(--background);
+    padding: 1rem 1.5rem;
+    font-weight: 600;
+    color: var(--text);
+    border-bottom: 2px solid var(--border-color);
+    white-space: nowrap;
+}
+
+/* Table Body Styles */
+.data-table tbody td {
+    padding: 1rem 1.5rem;
+    vertical-align: middle;
+    border-bottom: 1px solid var(--border-color);
+    background: var(--card-bg);
+}
+
+/* Table Row Hover Effect */
+.data-table tbody tr:hover {
+    background: var(--hover-color);
+}
+
+/* Column-specific styles */
+.data-table td:first-child,
+.data-table th:first-child {
+    padding-left: 2rem;
+}
+
+.data-table td:last-child,
+.data-table th:last-child {
+    padding-right: 2rem;
+    text-align: center;
+}
+
+/* Custom Pagination Styles */
+.dataTables_paginate {
+    padding: 1.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.paginate_button {
+    min-width: 40px;
+    height: 40px;
+    padding: 0;
+    border: 1px solid var(--border-color);
+    background: var(--card-bg);
+    color: var(--text);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.paginate_button.current {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
+.paginate_button:hover:not(.disabled):not(.current) {
+    background: var(--hover-color);
+    border-color: var(--primary);
+    transform: translateY(-1px);
+}
+
+.paginate_button.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Custom scrollbar for table container */
+.table-container {
+    overflow-x: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary) var(--background);
+}
+
+.table-container::-webkit-scrollbar {
+    height: 8px;
+}
+
+.table-container::-webkit-scrollbar-track {
+    background: var(--background);
+    border-radius: 4px;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: 4px;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .data-table td,
+    .data-table th {
+        padding: 0.75rem 1rem;
+    }
+
+    .paginate_button {
+        min-width: 36px;
+        height: 36px;
+        font-size: 0.9rem;
+    }
+}
+
+/* Enhanced Table Container Styles */
+.list-card {
+    background: var(--card-bg);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border-color);
+    margin: 2rem 0;
+}
+
+.table-container {
+    position: relative;
+    margin: 0;
+    padding: 1.5rem;
+    background: var(--card-bg);
+}
+
+/* DataTable Wrapper Styles */
+.dataTables_wrapper {
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Table Styles */
+#studentsTable {
+    width: 100% !important;
+    margin: 0 !important;
+    background: var(--card-bg);
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+/* Table Header Styles */
+#studentsTable thead th {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: var(--background);
+    padding: 1.2rem;
+    font-weight: 600;
+    color: var(--text);
+    border-bottom: 2px solid var(--border-color);
+    white-space: nowrap;
+    transition: all 0.3s ease;
+}
+
+/* Table Body Styles */
+#studentsTable tbody td {
+    padding: 1.2rem;
+    vertical-align: middle;
+    background: var(--card-bg);
+    border-bottom: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+}
+
+/* Table Row Hover Effect */
+#studentsTable tbody tr:hover td {
+    background: var(--hover-color);
+}
+
+/* Column Widths */
+#studentsTable td:nth-child(1),
+#studentsTable th:nth-child(1) {
+    width: 35%;
+    min-width: 280px;
+}
+
+#studentsTable td:nth-child(2),
+#studentsTable th:nth-child(2) {
+    width: 25%;
+    min-width: 200px;
+}
+
+#studentsTable td:nth-child(3),
+#studentsTable th:nth-child(3) {
+    width: 15%;
+    min-width: 150px;
+}
+
+#studentsTable td:nth-child(4),
+#studentsTable th:nth-child(4) {
+    width: 15%;
+    min-width: 120px;
+}
+
+#studentsTable td:nth-child(5),
+#studentsTable th:nth-child(5) {
+    width: 10%;
+    min-width: 100px;
+    text-align: center;
+}
+
+/* Custom Scrollbar */
+.table-container {
+    overflow-x: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary) var(--background);
+}
+
+.table-container::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+.table-container::-webkit-scrollbar-track {
+    background: var(--background);
+    border-radius: 3px;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: 3px;
+}
+
+/* Pagination Styles */
+.dataTables_paginate {
+    padding: 1rem 1.5rem;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 0.5rem;
+    border-top: 1px solid var(--border-color);
+    background: var(--card-bg);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .table-container {
+        margin: 0 -1rem;
+        border-radius: 0;
+    }
+
+    #studentsTable thead th,
+    #studentsTable tbody td {
+        padding: 1rem;
+    }
+
+    .dataTables_paginate {
+        justify-content: center;
+        padding: 1rem;
+    }
+}
+
+/* Enhanced Student Modal Styles */
+#studentModal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 2000;
+    backdrop-filter: blur(5px);
+}
+
+#studentModal.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+#studentModal .modal-content {
+    width: 90%;
+    max-width: 500px;
+    background: var(--card-bg);
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    transform: translateY(20px);
+    transition: transform 0.3s ease;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+}
+
+#studentModal.active .modal-content {
+    transform: translateY(0);
+}
+
+#studentModal .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    background: var(--background);
+}
+
+#studentModal .modal-header h3 {
+    color: var(--text);
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+#studentModal .close-modal {
+    background: none;
+    border: none;
+    color: var(--text);
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+#studentModal .close-modal:hover {
+    background: var(--hover-color);
+}
+
+#studentModal .form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    padding: 1.5rem;
+}
+
+#studentModal .form-group {
+    margin-bottom: 1rem;
+}
+
+#studentModal .form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--text);
+    font-size: 0.9rem;
+}
+
+#studentModal .form-group input,
+#studentModal .form-group select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--card-bg);
+    color: var(--text);
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+#studentModal .form-group input:focus,
+#studentModal .form-group select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.1);
+}
+
+#studentModal .form-actions {
+    padding: 1rem 1.5rem;
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    border-top: 1px solid var(--border-color);
+    background: var(--background);
+}
+
+#studentModal .btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+}
+
+#studentModal .btn.secondary {
+    background: var(--card-bg);
+    color: var(--text);
+    border-color: var(--border-color);
+}
+
+#studentModal .btn.primary {
+    background: var(--primary);
+    color: white;
+}
+
+#studentModal .btn:hover {
+    transform: translateY(-1px);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    #studentModal .form-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    #studentModal .modal-content {
+        width: 95%;
+        margin: 1rem;
+    }
+    
+    #studentModal .form-actions {
+        flex-direction: column-reverse;
+        gap: 0.5rem;
+    }
+    
+    #studentModal .btn {
+        width: 100%;
+    }
+}
+
+/* Fixed Modal Styles */
+#studentModal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    z-index: 2000;
+    backdrop-filter: blur(5px);
+}
+
+#studentModal.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+#studentModal .modal-content {
+    width: 90%;
+    max-width: 500px;
+    background: var(--card-bg);
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    transform: translateY(20px);
+    transition: transform 0.3s ease;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+}
+
+#studentModal.active .modal-content {
+    transform: translateY(0);
+}
+
+/* Hide DataTable Info */
+.dataTables_info {
+    display: none;
+}
+
+/* Adjust DataTable Layout */
+.dataTables_wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.dataTables_paginate {
+    margin-top: 0 !important;
+    padding: 1rem 1.5rem !important;
+    border-top: 1px solid var(--border-color);
+}
+
+/* Ensure table takes full width */
+.table-container {
+    width: 100%;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Student List Specific Styles */
+.student-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.student-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.bg-purple { background: var(--primary); }
+.bg-blue { background: var(--secondary); }
+.bg-green { background: #10b981; }
+.bg-orange { background: #f59e0b; }
+
+.student-details h4 {
+    font-size: 0.9rem;
+    color: var(--text);
+    margin-bottom: 0.25rem;
+}
+
+.student-details p {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+.course-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text);
+}
+
+.course-info i {
+    font-size: 1.2rem;
+    color: var(--primary);
+}
+
+.progress-wrapper {
+    width: 150px;
+}
+
+.progress-bar {
+    height: 6px;
+    background: var(--hover-color);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 0.25rem;
+}
+
+.progress-fill {
+    height: 100%;
+    background: var(--primary);
+    border-radius: 3px;
+}
+
+.progress-fill.success { background: #10b981; }
+.progress-fill.warning { background: #f59e0b; }
+.progress-fill.danger { background: #ef4444; }
+
+.progress-text {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.status-badge i {
+    font-size: 0.5rem;
+}
+
+.status-badge.success {
+    background: rgba(16, 185, 129, 0.1);
+    color: #10b981;
+}
+
+.status-badge.warning {
+    background: rgba(245, 158, 11, 0.1);
+    color: #f59e0b;
+}
+
+.status-badge.danger {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+}
+
+/* Updated Filter and Pagination Styles */
+.filter-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    background: var(--background);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.filter-select {
+    min-width: 200px;
+    padding: 0.6rem 2.5rem 0.6rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--card-bg);
+    color: var(--text);
+    font-size: 0.9rem;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='currentColor' viewBox='0 0 24 24'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.7rem center;
+    background-size: 1.2em;
+    transition: all 0.3s ease;
+}
+
+.filter-select:hover {
+    border-color: var(--primary);
+}
+
+.filter-select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.1);
+}
+
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    background: var(--card-bg);
+    border-top: 1px solid var(--border-color);
+    gap: 0.5rem;
+}
+
+.page-btn {
+    min-width: 40px;
+    height: 40px;
+    padding: 0 0.5rem;
+    border: 1px solid var(--border-color);
+    background: var(--card-bg);
+    color: var(--text);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.page-btn i {
+    font-size: 1.2rem;
+}
+
+.page-btn:not(:disabled):hover {
+    background: var(--hover-color);
+    border-color: var(--primary);
+    transform: translateY(-1px);
+}
+
+.page-btn.active {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
+.page-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: var(--hover-color);
+}
+
+.page-numbers {
+    display: flex;
+    gap: 0.5rem;
+    margin: 0 0.5rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .filter-container {
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1rem;
+    }
+
+    .filter-select {
+        width: 100%;
+        min-width: unset;
+    }
+
+    .pagination {
+        justify-content: center;
+        padding: 1rem;
+    }
+
+    .page-btn {
+        min-width: 36px;
+        height: 36px;
+        font-size: 0.85rem;
+    }
+}
+
+/* Popular Courses Styles */
+.popular-courses {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    height: 100%;
+}
+
+.course-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background: var(--background);
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    border: 1px solid var (--border-color);
+}
+
+.course-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+    min-width: 0;
+}
+
+.course-icon {
+    width: 42px;
+    height: 42px;
+    min-width: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    border-radius: 10px;
+    color: white;
+}
+
+.course-icon i {
+    font-size: 18px;
+}
+
+.course-info > div {
+    flex: 1;
+    min-width: 0;
+}
+
+.course-info h4 {
+    color: var(--text);
+    font-size: 0.9rem;
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: 500;
+}
+
+.course-info p {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+}
+
+.course-stats {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-left: 12px;
+    flex-shrink: 0;
+}
+
+.rating, .trend {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-weight: 500;
+    min-width: 45px;
+}
+
+.rating {
+    color: #fbbf24;
+}
+
+.trend.up {
+    color: #10b981;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .activity-section {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Discussion-specific styles */
+.category-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.category-badge.course {
+    background: rgba(99, 102, 241, 0.1);
+    color: #6366f1;
+}
+
+.category-badge.qa {
+    background: rgba(16, 185, 129, 0.1);
+    color: #10b981;
+}
+
+.category-badge.general {
+    background: rgba(245, 158, 11, 0.1);
+    color: #f59e0b;
+}
+
+.topic-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.topic-icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--gradient);
+    border-radius: 10px;
+    color: white;
+}
+
+.author-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.author-info img {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+}
+
+.activity-indicator {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.9rem;
+}
+
+.activity-indicator.high {
+    color: #10b981;
+}
+
+.activity-indicator.medium {
+    color: #f59e0b;
+}
+
+.activity-indicator.low {
+    color: #ef4444;
+}
+
+.form-group.full-width {
+    grid-column: 1 / -1;
 }
