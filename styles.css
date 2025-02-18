@@ -2362,6 +2362,11 @@ main {
 
 /* Student List Card Styles */
 .list-card {
+    background: var(--card-bg);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border-color);
+    margin: 2rem 0;
     padding: 0 !important;
     overflow: hidden;
 }
@@ -2567,8 +2572,11 @@ main {
 
 /* DataTable Custom Styles */
 .dataTables_wrapper {
-    padding: 1.5rem;
+    padding: 0 !important;
     font-family: 'Poppins', sans-serif;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
 }
 
 .table-container {
