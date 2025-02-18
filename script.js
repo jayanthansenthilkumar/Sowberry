@@ -533,3 +533,48 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Remove unused page initializations
 // Remove: initializeAssignmentsPage, initializeDiscussionPage, etc.
+
+// Modal functionality
+document.addEventListener('DOMContentLoaded', () => {
+    const modal = document.getElementById('studentModal');
+    const addBtn = document.getElementById('addStudentBtn');
+    const closeBtn = document.querySelector('.close-modal');
+    const cancelBtn = document.getElementById('cancelBtn');
+    const form = document.getElementById('studentForm');
+
+    // Open modal
+    addBtn.addEventListener('click', () => {
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    });
+
+    // Close modal handlers
+    [closeBtn, cancelBtn].forEach(btn => {
+        btn.addEventListener('click', closeModal);
+    });
+
+    // Close on outside click
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+
+    // Close on escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+            closeModal();
+        }
+    });
+
+    function closeModal() {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+        form.reset();
+    }
+
+    // Form submission
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        // Add your form submission logic here
+        closeModal();
+    });
+});
