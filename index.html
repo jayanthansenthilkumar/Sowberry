@@ -9,20 +9,34 @@
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
 </head>
-<body class="login-page">
-    <div id="particles-js" class="particles-container"></div>
-    <div class="split-container">
-        <!-- Left Side - Branding -->
-        <div class="brand-side">
-            <div id="particles-left" class="particles"></div>
-            <div class="brand-content">
-                <i class="ri-seedling-fill brand-logo"></i>
-                <h1>Sowberry</h1>
-                <p class="tagline">Empowering Learning, Enriching Minds</p>
-                <div class="brand-background">
-                    <div class="shape shape-1"></div>
-                    <div class="shape shape-2"></div>
-                </div>
+<body>
+    <button class="hamburger-menu">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+    </button>
+    <button class="mobile-menu-toggle">
+        <i class="ri-menu-line"></i>
+    </button>
+    <div class="sidebar">
+        <div class="logo">
+            <i class="ri-seedling-fill"></i>
+            <span>Sowberry</span>
+        </div>
+        <nav>
+            <a href="index.html" class="active"><i class="ri-home-4-line"></i><span>Overview</span></a>
+            <a href="courses.html"><i class="ri-book-open-line"></i><span>Courses</span></a>
+            <a href="#"><i class="ri-user-follow-line"></i><span>Students</span></a>
+            <a href="#"><i class="ri-award-line"></i><span>Assignments</span></a>
+            <a href="#"><i class="ri-chat-1-line"></i><span>Discussion</span></a>
+            <a href="#"><i class="ri-settings-3-line"></i><span>Settings</span></a>
+        </nav>
+    </div>
+    <main>
+        <header>
+            <div class="search-bar">
+                <i class="ri-search-line"></i>
+                <input type="text" placeholder="Search...">
             </div>
         </div>
 
