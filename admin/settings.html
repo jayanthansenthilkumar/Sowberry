@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - Sowberry</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/styles.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo">
+            <i class="ri-seedling-fill"></i>
+            <span>Sowberry</span>
+        </div>
+        <nav>
+            <a href="admin.html"><i class="ri-home-4-line"></i><span>Overview</span></a>
+            <a href="courses.html"><i class="ri-book-open-line"></i><span>Courses</span></a>
+            <a href="students.html"><i class="ri-user-follow-line"></i><span>Students</span></a>
+            <a href="newAssignments.html"><i class="ri-award-line"></i><span>Assignments</span></a>
+            <a href="newEvents.html"><i class="ri-calendar-event-line"></i><span>Events</span></a>
+            <a href="aptitude.html"><i class="ri-mental-health-line"></i><span>Aptitude</span></a>
+            <a href="problemSolving.html"><i class="ri-code-box-line"></i><span>Problem Solving</span></a>
+            <a href="discussion.html"><i class="ri-chat-1-line"></i><span>Discussion</span></a>
+            <a href="settings.html" class="active"><i class="ri-settings-3-line"></i><span>Settings</span></a>
+        </nav>
+    </div>
+
+    <main>
+        <!-- Header -->
+        <header>
+            <div class="search-bar">
+                <i class="ri-search-line"></i>
+                <input type="text" placeholder="Search settings...">
+            </div>
+            <div class="header-tools">
+                <div class="theme-toggle">
+                    <i class="ri-sun-line"></i>
+                </div>
+                <div class="notifications" id="notifications">
+                    <i class="ri-notification-3-line"></i>
+                    <span class="notification-badge">3</span>
+                    <div class="notifications-dropdown">
+                        <!-- Notifications content -->
+                    </div>
+                </div>
+                <div class="user-profile" id="userProfile">
+                    <img src="https://ui-avatars.com/api/?name=Sowmiya&size=30" alt="User" class="user-avatar">
+                    <div class="user-info">
+                        <span class="user-name">Sowmiya</span>
+                        <span class="user-status">
+                            <i class="ri-checkbox-blank-circle-fill"></i>
+                            Active
+                        </span>
+                    </div>
+                    <div class="profile-dropdown">
+                        <a href="#"><i class="ri-user-line"></i> My Profile</a>
+                        <a href="#"><i class="ri-lock-password-line"></i> Change Password</a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="logout"><i class="ri-logout-box-line"></i> Logout</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Settings Container -->
+        <div class="settings-container">
+            <!-- Settings Navigation -->
+            <div class="settings-nav">
+                <a href="#general" class="active" data-tab="general">
+                    <i class="ri-settings-4-line"></i>
+                    <span>General Settings</span>
+                </a>
+                <a href="#profile" data-tab="profile">
+                    <i class="ri-user-settings-line"></i>
+                    <span>Profile Settings</span>
+                </a>
+                <a href="#notifications" data-tab="notifications">
+                    <i class="ri-notification-4-line"></i>
+                    <span>Notifications</span>
+                </a>
+                <a href="#security" data-tab="security">
+                    <i class="ri-shield-keyhole-line"></i>
+                    <span>Security</span>
+                </a>
+                <a href="#appearance" data-tab="appearance">
+                    <i class="ri-palette-line"></i>
+                    <span>Appearance</span>
+                </a>
+                <a href="#integrations" data-tab="integrations">
+                    <i class="ri-plug-2-line"></i>
+                    <span>Integrations</span>
+                </a>
+            </div>
+
+            <!-- Settings Content -->
+            <div class="settings-content">
+                <!-- General Settings -->
+                <div id="general" class="settings-section active">
+                    <div class="settings-header">
+                        <h2>General Settings</h2>
+                        <p>Manage your basic account settings and preferences</p>
+                    </div>
+                    <form>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Platform Name</label>
+                                <input type="text" value="Sowberry" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label>Time Zone</label>
+                                <select>
+                                    <option>UTC +05:30 (India)</option>
+                                    <option>UTC +00:00 (London)</option>
+                                    <option>UTC -05:00 (New York)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Language</label>
+                                <select>
+                                    <option>English (US)</option>
+                                    <option>Tamil</option>
+                                    <option>Hindi</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Date Format</label>
+                                <select>
+                                    <option>DD/MM/YYYY</option>
+                                    <option>MM/DD/YYYY</option>
+                                    <option>YYYY/MM/DD</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" class="btn secondary">Cancel</button>
+                            <button type="submit" class="btn primary">Save Changes</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Profile Settings -->
+                <div id="profile" class="settings-section">
+                    <div class="settings-header">
+                        <h2>Profile Settings</h2>
+                        <p>Update your personal information and profile settings</p>
+                    </div>
+                    <form>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Full Name</label>
+                                <input type="text" value="Sowmiya">
+                            </div>
+                            <div class="form-group">
+                                <label>Email Address</label>
+                                <input type="email" value="sowmiya@sowberry.com">
+                            </div>
+                            <div class="form-group">
+                                <label>Phone Number</label>
+                                <input type="tel" value="+91 9876543210">
+                            </div>
+                            <div class="form-group">
+                                <label>Role</label>
+                                <input type="text" value="Administrator" disabled>
+                            </div>
+                            <div class="form-group full-width">
+                                <label>Bio</label>
+                                <textarea rows="4">Platform administrator and course coordinator at Sowberry.</textarea>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" class="btn secondary">Cancel</button>
+                            <button type="submit" class="btn primary">Update Profile</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Notifications Settings -->
+                <div id="notifications" class="settings-section">
+                    <div class="settings-header">
+                        <h2>Notification Preferences</h2>
+                        <p>Configure how you want to receive notifications</p>
+                    </div>
+                    <form>
+                        <div class="form-grid">
+                            <div class="form-group full-width">
+                                <label>Email Notifications</label>
+                                <div class="checkbox-group">
+                                    <label><input type="checkbox" checked> Course updates</label>
+                                    <label><input type="checkbox" checked> Student enrollments</label>
+                                    <label><input type="checkbox" checked> Assignment submissions</label>
+                                    <label><input type="checkbox"> Marketing updates</label>
+                                </div>
+                            </div>
+                            <div class="form-group full-width">
+                                <label>Push Notifications</label>
+                                <div class="checkbox-group">
+                                    <label><input type="checkbox" checked> New messages</label>
+                                    <label><input type="checkbox" checked> Discussion replies</label>
+                                    <label><input type="checkbox" checked> System alerts</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" class="btn secondary">Reset to Default</button>
+                            <button type="submit" class="btn primary">Save Preferences</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Security Settings -->
+                <div id="security" class="settings-section">
+                    <div class="settings-header">
+                        <h2>Security Settings</h2>
+                        <p>Manage your account security and authentication settings</p>
+                    </div>
+                    <form>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Current Password</label>
+                                <input type="password">
+                            </div>
+                            <div class="form-group">
+                                <label>New Password</label>
+                                <input type="password">
+                            </div>
+                            <div class="form-group">
+                                <label>Confirm New Password</label>
+                                <input type="password">
+                            </div>
+                            <div class="form-group">
+                                <label>Two-Factor Authentication</label>
+                                <select>
+                                    <option>Disabled</option>
+                                    <option>SMS</option>
+                                    <option>Authenticator App</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" class="btn secondary">Cancel</button>
+                            <button type="submit" class="btn primary">Update Security</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Appearance Settings -->
+                <div id="appearance" class="settings-section">
+                    <div class="settings-header">
+                        <h2>Appearance Settings</h2>
+                        <p>Customize the look and feel of your dashboard</p>
+                    </div>
+                    <form>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Theme Mode</label>
+                                <select>
+                                    <option>Light</option>
+                                    <option>Dark</option>
+                                    <option>System Default</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Color Scheme</label>
+                                <select>
+                                    <option>Default Purple</option>
+                                    <option>Ocean Blue</option>
+                                    <option>Forest Green</option>
+                                    <option>Sunset Orange</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Font Size</label>
+                                <select>
+                                    <option>Small</option>
+                                    <option selected>Medium</option>
+                                    <option>Large</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Layout Density</label>
+                                <select>
+                                    <option>Comfortable</option>
+                                    <option selected>Default</option>
+                                    <option>Compact</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" class="btn secondary">Reset to Default</button>
+                            <button type="submit" class="btn primary">Save Appearance</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Integrations Settings -->
+                <div id="integrations" class="settings-section">
+                    <div class="settings-header">
+                        <h2>Integrations</h2>
+                        <p>Connect and manage third-party services</p>
+                    </div>
+                    <form>
+                        <div class="form-grid">
+                            <div class="form-group full-width">
+                                <label>Connected Services</label>
+                                <div class="integration-list">
+                                    <div class="integration-item">
+                                        <i class="ri-google-fill"></i>
+                                        <span>Google Workspace</span>
+                                        <button type="button" class="btn secondary">Disconnect</button>
+                                    </div>
+                                    <div class="integration-item">
+                                        <i class="ri-microsoft-fill"></i>
+                                        <span>Microsoft Teams</span>
+                                        <button type="button" class="btn primary">Connect</button>
+                                    </div>
+                                    <div class="integration-item">
+                                        <i class="ri-slack-fill"></i>
+                                        <span>Slack</span>
+                                        <button type="button" class="btn primary">Connect</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" class="btn secondary">Cancel</button>
+                            <button type="submit" class="btn primary">Save Changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="../assets/script.js"></script>
+    <script>
+        // Settings page specific JavaScript
+        document.addEventListener('DOMContentLoaded', () => {
+            // Tab switching functionality
+            const navLinks = document.querySelectorAll('.settings-nav a');
+            const sections = document.querySelectorAll('.settings-section');
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    
+                    // Remove active class from all links and sections
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    sections.forEach(s => s.classList.remove('active'));
+                    
+                    // Add active class to clicked link and corresponding section
+                    link.classList.add('active');
+                    const targetSection = document.getElementById(link.getAttribute('data-tab'));
+                    if (targetSection) {
+                        targetSection.classList.add('active');
+                    }
+                });
+            });
+
+            // Form submission handling
+            document.querySelectorAll('form').forEach(form => {
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    // Add your form submission logic here
+                    alert('Settings saved successfully!');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
