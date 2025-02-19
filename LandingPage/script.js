@@ -57,6 +57,47 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
     });
+
+    // Navbar functionality
+    const navbar = document.querySelector('.navbar');
+    const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+    const navContent = document.querySelector('.nav-content');
+    const navLinks = document.querySelectorAll('.nav-link');
+
+    // Scroll effect
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 50) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
+    });
+
+    // Mobile menu toggle
+    mobileMenuBtn.addEventListener('click', () => {
+        mobileMenuBtn.classList.toggle('active');
+        navContent.classList.toggle('active');
+    });
+
+    // Active link handling
+    navLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            navLinks.forEach(l => l.classList.remove('active'));
+            link.classList.add('active');
+            
+            // Close mobile menu when link is clicked
+            mobileMenuBtn.classList.remove('active');
+            navContent.classList.remove('active');
+        });
+    });
+
+    // Close mobile menu when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!navContent.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+            mobileMenuBtn.classList.remove('active');
+            navContent.classList.remove('active');
+        }
+    });
 });
 
 // Add scroll animation for elements
