@@ -98,6 +98,24 @@ document.addEventListener('DOMContentLoaded', () => {
             navContent.classList.remove('active');
         }
     });
+
+    // Add scroll reveal animations
+    const revealElements = document.querySelectorAll('.feature-card, .section-header, .hero-content');
+    const revealOptions = {
+        threshold: 0.2,
+        rootMargin: '0px'
+    };
+
+    const revealCallback = (entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('revealed');
+            }
+        });
+    };
+
+    const observer = new IntersectionObserver(revealCallback, revealOptions);
+    revealElements.forEach(element => observer.observe(element));
 });
 
 // Add scroll animation for elements
@@ -110,3 +128,38 @@ window.addEventListener('scroll', () => {
         }
     });
 });
+
+// Populate popular courses
+const popularCourses = [
+    {
+        title: 'Web Development Bootcamp',
+        instructor: 'John Doe',
+        rating: 4.9,
+        students: 15000,
+        price: 89.99,
+        image: 'https://via.placeholder.com/300x200'
+    },
+    // ...more courses
+];
+
+function createCourseCard(course) {
+    return `
+        <div class="course-card">
+            <div class="course-image">
+                <img src="${course.image}" alt="${course.title}">
+                <div class="course-overlay">
+                    <button class="btn-outline">Learn More</button>
+                </div>
+            </div>
+            <div class="course-content">
+                <h3>${course.title}</h3>
+                <p>By ${course.instructor}</p>
+                <div class="course-meta">
+                    <span>⭐ ${course.rating}</span>
+                    <span>👥 ${course.students.toLocaleString()}</span>
+                </div>
+                <div class="course-price">$${course.price}</div>
+            </div>
+        </div>
+    `;
+}
