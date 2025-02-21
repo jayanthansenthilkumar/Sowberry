@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sowberry</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="styles.css">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -128,6 +128,51 @@
             </div>
         </div>
 
+        <!-- Add Streak Section -->
+        <div class="streak-section">
+            <div class="streak-container">
+                <div class="streak-stats">
+                    <div class="current-streak">
+                        <h4>Current Streak</h4>
+                        <div class="streak-count">7 days</div>
+                    </div>
+                    <div class="longest-streak">
+                        <h4>Longest Streak</h4>
+                        <div class="streak-count">15 days</div>
+                    </div>
+                </div>
+                <div class="streak-calendar">
+                    <div class="calendar-grid">
+                        <div class="weekday-labels">
+                            <span>Mon</span>
+                            <span>Wed</span>
+                            <span>Fri</span>
+                            <span>Sun</span>
+                        </div>
+                        <div class="contribution-wrapper">
+                            <div class="months-labels">
+                                <!-- Will be populated by JS -->
+                            </div>
+                            <div class="contributions-grid">
+                                <!-- Will be populated by JS -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="calendar-legend">
+                        <span>Less</span>
+                        <div class="legend-dots">
+                            <div class="contribution-day level-0" title="No contributions"></div>
+                            <div class="contribution-day level-1" title="1-2 hours"></div>
+                            <div class="contribution-day level-2" title="2-3 hours"></div>
+                            <div class="contribution-day level-3" title="3-4 hours"></div>
+                            <div class="contribution-day level-4" title="4+ hours"></div>
+                        </div>
+                        <span>More</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="dashboard-grid">
             <div class="card animate">
                 <div class="card-header">
@@ -211,5 +256,113 @@
         </div>
     </main>
     <script src="script.js"></script>
+    <script>
+        // Generate contribution data for the year
+        function generateYearlyContributions() {
+            const weekdays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            const weeksWrapper = document.querySelector('.weeks-wrapper');
+            const monthsWrapper = document.querySelector('.months-wrapper');
+            
+            // Clear existing content
+            weeksWrapper.innerHTML = '';
+            monthsWrapper.innerHTML = '';
+
+            // Get current date
+            const now = new Date();
+            const currentYear = now.getFullYear();
+            
+            // Create month labels
+            let currentMonth = '';
+            let monthsHtml = '';
+            
+            // Create 52 columns for weeks
+            for (let week = 0; week < 52; week++) {
+                const weekColumn = document.createElement('div');
+                weekColumn.className = 'graph-column';
+                
+                // Create 7 days for each week
+                for (let day = 0; day < 7; day++) {
+                    const date = new Date(currentYear, 0, (week * 7) + day + 1);
+                    const month = months[date.getMonth()];
+                    
+                    // Add month label if it's a new month
+                    if (month !== currentMonth) {
+                        currentMonth = month;
+                        monthsHtml += `<span class="month-label" style="left: ${(week * 12)}px">${month}</span>`;
+                    }
+                    
+                    // Random level for demonstration (replace with actual data)
+                    const level = Math.floor(Math.random() * 5);
+                    
+                    const dayElement = document.createElement('div');
+                    dayElement.className = `contribution-day level-${level}`;
+                    dayElement.setAttribute('data-date', `${month} ${date.getDate()}, ${currentYear}`);
+                    dayElement.setAttribute('data-count', `${level} contribution${level !== 1 ? 's' : ''}`);
+                    
+                    weekColumn.appendChild(dayElement);
+                }
+                
+                weeksWrapper.appendChild(weekColumn);
+            }
+            
+            monthsWrapper.innerHTML = monthsHtml;
+        }
+
+        // Call the function when page loads
+        document.addEventListener('DOMContentLoaded', generateYearlyContributions);
+
+        function generateContributionGrid() {
+            const contributionsGrid = document.querySelector('.contributions-grid');
+            const monthsLabels = document.querySelector('.months-labels');
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            
+            contributionsGrid.innerHTML = '';
+            monthsLabels.innerHTML = '';
+            
+            const now = new Date();
+            const currentYear = now.getFullYear();
+            const startDate = new Date(currentYear, 0, 1);
+            const startDay = startDate.getDay();
+            const offset = startDay === 0 ? 6 : startDay - 1;
+            
+            let currentMonth = '';
+            let totalDays = 0;
+            const CELL_SIZE = 16;
+            
+            // Generate grid by weeks
+            for (let i = 0; i < 7; i++) {
+                for (let week = 0; week < 53; week++) {
+                    const date = new Date(currentYear, 0, (week * 7) + i + 1 - offset);
+                    
+                    if (date.getFullYear() === currentYear) {
+                        const month = months[date.getMonth()];
+                        
+                        // Add month label on first row
+                        if (i === 0 && month !== currentMonth) {
+                            currentMonth = month;
+                            const monthLabel = document.createElement('span');
+                            monthLabel.className = 'month-label';
+                            monthLabel.textContent = month;
+                            monthLabel.style.left = `${week * CELL_SIZE}px`;
+                            monthsLabels.appendChild(monthLabel);
+                        }
+                        
+                        const dayCell = document.createElement('div');
+                        dayCell.className = 'contribution-day';
+                        const level = Math.floor(Math.random() * 5);
+                        dayCell.classList.add(`level-${level}`);
+                        dayCell.setAttribute('data-date', `${month} ${date.getDate()}, ${currentYear}`);
+                        dayCell.setAttribute('data-count', `${level} contributions`);
+                        
+                        contributionsGrid.appendChild(dayCell);
+                        totalDays++;
+                    }
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', generateContributionGrid);
+    </script>
 </body>
 </html>
