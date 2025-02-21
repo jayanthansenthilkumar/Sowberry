@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Events Management - Sowberry</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/styles.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Standard Sidebar -->
+    <div class="sidebar">
+        <div class="logo">
+            <i class="ri-seedling-fill"></i>
+            <!-- <span>Sowberry</span> -->
+            <div class="logo-text">
+                <span class="brand-name">Sowberry</span>
+                <span class="brand-suffix">ACADEMY</span>
+            </div>
+        </div>
+        <nav>
+            <a href="mentorDashboard.html"><i class="ri-home-4-line"></i><span>Overview</span></a>
+            <a href="newCourses.html"><i class="ri-book-open-line"></i><span>Courses</span></a>
+            <a href="studentsProgress.html"><i class="ri-user-follow-line"></i><span>Students</span></a>
+            <a href="newAssignments.html"><i class="ri-award-line"></i><span>Assignments</span></a>
+            <a href="#" class="active"><i class="ri-calendar-event-line"></i><span>Events</span></a>
+            <a href="newAptitude.html"><i class="ri-mental-health-line"></i><span>Aptitude</span></a>
+            <a href="newproblemSolving.html"><i class="ri-code-box-line"></i><span>Problem Solving</span></a>
+            <a href="mentorDiscussion.html"><i class="ri-chat-1-line"></i><span>Discussion</span></a>
+        </nav>
+    </div>
+
+    <main>
+        <!-- Standard Header -->
+        <header>
+            <div class="search-bar">
+                <i class="ri-search-line"></i>
+                <input type="text" placeholder="Search events...">
+            </div>
+            <div class="header-tools">
+                <div class="theme-toggle">
+                    <i class="ri-sun-line"></i>
+                </div>
+                <div class="notifications" id="notifications">
+                    <i class="ri-notification-3-line"></i>
+                    <span class="notification-badge">3</span>
+                    <!-- ...existing notifications dropdown... -->
+                </div>
+                <div class="user-profile" id="userProfile">
+                    <img src="https://ui-avatars.com/api/?name=Sowmiya&size=30" alt="User" class="user-avatar">
+                    <div class="user-info">
+                        <span class="user-name">Sowmiya</span>
+                        <span class="user-status">
+                            <i class="ri-checkbox-blank-circle-fill"></i>
+                            Active
+                        </span>
+                    </div>
+                    <!-- ...existing profile dropdown... -->
+                </div>
+            </div>
+        </header>
+
+        <!-- Welcome Section -->
+        <div class="welcome-section">
+            <div class="welcome-card">
+                <div class="welcome-content">
+                    <div class="welcome-text">
+                        <h1>Events Management</h1>
+                        <p>Create and manage learning events</p>
+                    </div>
+                    <div class="welcome-stats">
+                        <div class="stat-item floating">
+                            <div class="stat-icon">
+                                <i class="ri-calendar-event-line"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h4>Active Events</h4>
+                                <p>8</p>
+                            </div>
+                        </div>
+                        <div class="stat-item floating delay-1">
+                            <div class="stat-icon">
+                                <i class="ri-group-line"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h4>Participants</h4>
+                                <p>245</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Events Actions -->
+        <div class="admin-controls">
+            <div class="course-filters">
+                <button class="filter-btn active">All Events</button>
+                <button class="filter-btn">Upcoming</button>
+                <button class="filter-btn">Ongoing</button>
+                <button class="filter-btn">Past</button>
+            </div>
+            <button class="add-course-btn" onclick="showEventModal()">
+                <i class="ri-add-line"></i>
+                New Event
+            </button>
+        </div>
+
+        <!-- Events Grid -->
+        <div class="events-grid">
+            <!-- Upcoming Event Card -->
+            <div class="event-card upcoming">
+                <div class="event-header">
+                    <span class="event-type workshop">Workshop</span>
+                    <span class="event-date">Dec 20, 2023</span>
+                </div>
+                <div class="event-content">
+                    <h3>Web Development Bootcamp</h3>
+                    <p>Intensive hands-on workshop covering full-stack development fundamentals.</p>
+                    <div class="event-meta">
+                        <span><i class="ri-time-line"></i> 10:00 AM - 4:00 PM</span>
+                        <span><i class="ri-map-pin-line"></i> Room 401</span>
+                    </div>
+                    <div class="event-stats">
+                        <div class="capacity">
+                            <i class="ri-user-line"></i>
+                            <span>32/50 enrolled</span>
+                            <div class="capacity-bar">
+                                <div class="progress" style="width: 64%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="event-actions">
+                        <button class="edit-btn"><i class="ri-edit-line"></i> Edit</button>
+                        <button class="delete-btn"><i class="ri-delete-bin-line"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ongoing Event Card -->
+            <div class="event-card ongoing">
+                <div class="event-header">
+                    <span class="event-type seminar">Seminar</span>
+                    <span class="event-status">Live Now</span>
+                </div>
+                <div class="event-content">
+                    <h3>AI in Education</h3>
+                    <p>Expert discussion on implementing AI tools in modern education.</p>
+                    <div class="event-meta">
+                        <span><i class="ri-live-line"></i> Currently Live</span>
+                        <span><i class="ri-group-line"></i> 124 attending</span>
+                    </div>
+                    <div class="event-actions">
+                        <button class="view-btn">View Stream</button>
+                        <button class="end-btn">End Event</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- New Event Modal -->
+        <div id="eventModal" class="modal">
+            <div class="modal-content">
+                <h2>Create New Event</h2>
+                <form id="eventForm">
+                    <div class="form-group">
+                        <label>Event Title</label>
+                        <input type="text" required placeholder="Enter event title">
+                    </div>
+                    <div class="form-group">
+                        <label>Event Type</label>
+                        <select required>
+                            <option value="workshop">Workshop</option>
+                            <option value="seminar">Seminar</option>
+                            <option value="webinar">Webinar</option>
+                        </select>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Date</label>
+                            <input type="date" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Time</label>
+                            <input type="time" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Location/Platform</label>
+                        <input type="text" required placeholder="Enter location or platform">
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea rows="3" required placeholder="Enter event description"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Maximum Participants</label>
+                        <input type="number" min="1" required>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="cancel-btn" onclick="hideEventModal()">Cancel</button>
+                        <button type="submit" class="submit-btn">Create Event</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <style>
+        .events-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .event-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .event-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .event-type {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+
+        .event-type.workshop {
+            background: rgba(108, 92, 231, 0.1);
+            color: var(--secondary);
+        }
+
+        .event-type.seminar {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+        }
+
+        .event-date {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .event-content {
+            padding: 1.5rem;
+        }
+
+        .event-meta {
+            display: flex;
+            justify-content: space-between;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .capacity-bar {
+            height: 4px;
+            background: var(--hover-color);
+            border-radius: 2px;
+            margin-top: 0.5rem;
+        }
+
+        .capacity-bar .progress {
+            height: 100%;
+            background: var(--primary);
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+
+        .event-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .edit-btn, .delete-btn, .view-btn, .end-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .edit-btn {
+            flex: 1;
+            background: var(--secondary);
+            color: white;
+        }
+
+        .delete-btn {
+            background: rgba(255, 107, 107, 0.1);
+            color: #ff6b6b;
+        }
+
+        .view-btn {
+            flex: 1;
+            background: var(--primary);
+            color: white;
+        }
+
+        .end-btn {
+            background: var(--hover-color);
+            color: var(--text);
+        }
+
+        /* Form styles */
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            background: var(--card-bg);
+            color: var(--text);
+            font-family: 'Poppins', sans-serif;
+        }
+    </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Theme toggle
+            const themeToggle = document.querySelector('.theme-toggle');
+            themeToggle.addEventListener('click', () => {
+                document.body.classList.toggle('dark-theme');
+                const icon = themeToggle.querySelector('i');
+                icon.classList.toggle('ri-moon-line');
+                icon.classList.toggle('ri-sun-line');
+            });
+
+            // Dropdowns
+            const notifications = document.getElementById('notifications');
+            const userProfile = document.getElementById('userProfile');
+            const dropdowns = [notifications, userProfile];
+
+            dropdowns.forEach(dropdown => {
+                dropdown.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    dropdowns.forEach(d => {
+                        if (d !== this) d.classList.remove('active');
+                    });
+                    this.classList.toggle('active');
+                });
+            });
+
+            // Close dropdowns when clicking outside
+            document.addEventListener('click', () => {
+                dropdowns.forEach(d => d.classList.remove('active'));
+            });
+
+            // Event modal handlers
+            const modal = document.getElementById('eventModal');
+            
+            window.showEventModal = function() {
+                modal.classList.add('active');
+            };
+
+            window.hideEventModal = function() {
+                modal.classList.remove('active');
+            };
+
+            // Close modal on outside click
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    hideEventModal();
+                }
+            });
+
+            // Form submission
+            document.getElementById('eventForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                // Add your form submission logic here
+                hideEventModal();
+            });
+        });
+    </script>
+</body>
+</html>
