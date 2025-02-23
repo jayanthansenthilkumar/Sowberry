@@ -1,21 +1,53 @@
 document.addEventListener('DOMContentLoaded', () => {
     // Initialize Ace Editor with specific settings
-    const editor = ace.edit("editor", {
-        theme: "ace/theme/monokai",
-        mode: "ace/mode/javascript",
-        fontSize: 14,
-        showPrintMargin: false,
-        showGutter: true,
-        highlightActiveLine: true,
-        wrap: true,
-        useSoftTabs: true,
-        tabSize: 2
+    const editor = ace.edit("editor");
+    
+    const initializeEditor = () => {
+        const isDark = document.body.classList.contains('dark-theme');
+        
+        // Base editor settings
+        editor.setOptions({
+            fontSize: 14,
+            showPrintMargin: false,
+            showGutter: true,
+            highlightActiveLine: true,
+            wrap: true,
+            useSoftTabs: true,
+            tabSize: 2,
+            mode: "ace/mode/javascript"
+        });
+
+        // Theme-specific settings
+        if (isDark) {
+            editor.setTheme("ace/theme/dracula");
+            editor.container.style.backgroundColor = '#1a1b2e';
+            editor.renderer.setStyle('dark-theme');
+            document.documentElement.style.setProperty('--editor-bg', '#1a1b2e');
+            document.documentElement.style.setProperty('--editor-text', '#f8f8f2');
+        } else {
+            editor.setTheme("ace/theme/sqlserver");
+            editor.container.style.backgroundColor = '#ffffff';
+            editor.renderer.setStyle('light-theme');
+            document.documentElement.style.setProperty('--editor-bg', '#ffffff');
+            document.documentElement.style.setProperty('--editor-text', '#333333');
+        }
+        
+        editor.renderer.updateFull();
+    };
+
+    // Initialize editor with current theme
+    initializeEditor();
+    
+    // Update theme when it changes
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            if (mutation.attributeName === 'class') {
+                initializeEditor();
+            }
+        });
     });
 
-    // Ensure editor resizes correctly
-    editor.container.style.height = '100%';
-    editor.container.style.width = '100%';
-    editor.resize();
+    observer.observe(document.body, { attributes: true });
 
     // Default code templates
     const codeTemplates = {
@@ -56,27 +88,6 @@ int main() {
         editor.session.setMode(`ace/mode/${language}`);
         editor.setValue(codeTemplates[language], -1);
     });
-
-    // Theme adaptation
-    const updateEditorTheme = () => {
-        const isDark = document.body.classList.contains('dark-theme');
-        editor.setTheme(isDark ? "ace/theme/dracula" : "ace/theme/sqlserver");
-        
-        // Update editor colors
-        const editorElement = document.getElementById('editor');
-        editorElement.style.backgroundColor = isDark ? '#1a1b2e' : '#ffffff';
-    };
-
-    // Listen for theme changes
-    const observer = new MutationObserver((mutations) => {
-        mutations.forEach((mutation) => {
-            if (mutation.attributeName === 'class') {
-                updateEditorTheme();
-            }
-        });
-    });
-
-    observer.observe(document.body, { attributes: true });
 
     // Run code handler
     const runCode = () => {
