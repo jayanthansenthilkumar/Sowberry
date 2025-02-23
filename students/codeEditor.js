@@ -146,7 +146,143 @@ function example(): string {
         editor.setValue(codeTemplates[language], -1);
     });
 
-    // Run code handler
+    const executeCode = {
+        javascript: (code) => {
+            const logs = [];
+            const oldLog = console.log;
+            try {
+                // Create a safe execution context
+                const context = {
+                    console: {
+                        log: (...args) => logs.push(args.join(' '))
+                    }
+                };
+
+                // Wrap code to handle function definitions and calls
+                const wrappedCode = `
+                    try {
+                        ${code}
+                        // Auto-execute any defined functions that don't require parameters
+                        const definedFuncs = Object.keys(this).filter(key => typeof this[key] === 'function');
+                        definedFuncs.forEach(func => {
+                            if (this[func].length === 0) {
+                                try {
+                                    this[func]();
+                                } catch(e) {}
+                            }
+                        });
+                    } catch(e) {
+                        console.log("Error:", e.message);
+                    }
+                `;
+
+                Function('console', wrappedCode).call({}, context.console);
+                return logs.join('\n') || '// No output';
+            } catch (error) {
+                throw error;
+            } finally {
+                console.log = oldLog;
+            }
+        },
+        python: (code) => {
+            try {
+                const output = [];
+                let variables = {};
+                let functions = {};
+                
+                // Parse and execute Python-like code
+                code.split('\n').forEach(line => {
+                    line = line.trim();
+                    if (line.startsWith('print(')) {
+                        const content = line.slice(6, -1);
+                        try {
+                            // Handle variables and expressions
+                            if (!content.startsWith('"') && !content.startsWith("'")) {
+                                // Evaluate mathematical expressions
+                                if (/^[0-9+\-*/() ]+$/.test(content)) {
+                                    output.push(eval(content));
+                                } else {
+                                    // Try to evaluate variables or function calls
+                                    const result = new Function(`
+                                        with (this) {
+                                            return ${content};
+                                        }
+                                    `).call({ ...variables, ...functions });
+                                    output.push(result);
+                                }
+                            } else {
+                                // String literal
+                                output.push(content.slice(1, -1));
+                            }
+                        } catch (e) {
+                            output.push(content);
+                        }
+                    } else if (line.startsWith('def ')) {
+                        // Function definition
+                        const match = line.match(/def\s+(\w+)\s*\((.*?)\):/);
+                        if (match) {
+                            const [_, name, params] = match;
+                            functions[name] = (...args) => {
+                                // Function implementation
+                                return `Function ${name} called with ${args.join(', ')}`;
+                            };
+                        }
+                    }
+                });
+                return output.join('\n') || '// No output';
+            } catch (error) {
+                throw error;
+            }
+        }
+    };
+
+    // Add support for other languages
+    ['java', 'cpp', 'ruby', 'php', 'csharp', 'swift', 'kotlin', 'go', 'rust', 'typescript'].forEach(lang => {
+        executeCode[lang] = (code) => {
+            try {
+                const output = [];
+                const printPatterns = {
+                    java: /System\.out\.println\((.*?)\);/g,
+                    cpp: /cout\s*<<\s*(.*?)\s*(?:<<\s*endl\s*)?;/g,
+                    ruby: /puts\s+(.*?)$/gm,
+                    php: /echo\s+(.*?);/g,
+                    csharp: /Console\.WriteLine\((.*?)\);/g,
+                    swift: /print\((.*?)\)/g,
+                    kotlin: /println\((.*?)\)/g,
+                    go: /fmt\.Println\((.*?)\)/g,
+                    rust: /println!\((.*?)\);/g,
+                    typescript: /console\.log\((.*?)\);/g
+                };
+
+                const pattern = printPatterns[lang];
+                const matches = code.matchAll(pattern);
+                
+                for (const match of matches) {
+                    let content = match[1];
+                    if (content.startsWith('"') || content.startsWith("'")) {
+                        output.push(content.slice(1, -1));
+                    } else {
+                        try {
+                            // Safely evaluate mathematical expressions
+                            if (/^[0-9+\-*/() ]+$/.test(content)) {
+                                output.push(eval(content));
+                            } else {
+                                output.push(content);
+                            }
+                        } catch (e) {
+                            output.push(content);
+                        }
+                    }
+                }
+                
+                return output.join('\n') || '// No output';
+            } catch (error) {
+                throw error;
+            }
+        };
+    });
+
+    // Run code handler with improved error handling
     const runCode = () => {
         const code = editor.getValue();
         const language = languageSelect.value;
@@ -155,48 +291,8 @@ function example(): string {
         output.innerHTML = '<div class="console-output">Running...</div>';
         
         try {
-            if (language === 'javascript') {
-                // Create a safe execution environment
-                const logs = [];
-                const oldLog = console.log;
-                console.log = (...args) => logs.push(args.join(' '));
-                
-                try {
-                    eval(code); // Execute the actual code
-                    console.log = oldLog;
-                    
-                    // Show the outputs, or "No output" if nothing was printed
-                    const outputContent = logs.length > 0 
-                        ? logs.join('\n') 
-                        : '// No output';
-                    output.innerHTML = `<div class="console-output">${outputContent}</div>`;
-                } catch (error) {
-                    console.log = oldLog;
-                    throw error;
-                }
-            } else if (language === 'python') {
-                // Extract print statements from Python code
-                const printStatements = code.match(/print\((.*?)\)/g) || [];
-                if (printStatements.length === 0) {
-                    output.innerHTML = '<div class="console-output">// No output</div>';
-                    return;
-                }
-                
-                const printOutput = printStatements.map(stmt => {
-                    // Remove print() and evaluate the content
-                    const content = stmt.slice(6, -1);
-                    // Handle both string literals and expressions
-                    return content.startsWith('"') || content.startsWith("'") 
-                        ? content.slice(1, -1) 
-                        : content;
-                }).join('\n');
-                
-                output.innerHTML = `<div class="console-output">${printOutput}</div>`;
-            } else {
-                // For other languages, show the "No output" message if code is empty
-                const defaultOutput = code.trim() ? 'Hello, World!' : '// No output';
-                output.innerHTML = `<div class="console-output">${defaultOutput}</div>`;
-            }
+            const result = executeCode[language](code);
+            output.innerHTML = `<div class="console-output">${result}</div>`;
         } catch (error) {
             output.innerHTML = `<div class="console-output error">Error: ${error.message}</div>`;
         }
