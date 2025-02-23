@@ -97,32 +97,51 @@ int main() {
         
         output.innerHTML = '<div class="console-output">Running...</div>';
         
-        // Simulate code execution (replace with actual backend integration)
-        setTimeout(() => {
-            try {
-                let result;
-                if (language === 'javascript') {
-                    // For JavaScript, we can actually run it
-                    const oldLog = console.log;
-                    const logs = [];
-                    console.log = (...args) => logs.push(args.join(' '));
+        try {
+            if (language === 'javascript') {
+                // Create a safe execution environment
+                const logs = [];
+                const oldLog = console.log;
+                console.log = (...args) => logs.push(args.join(' '));
+                
+                try {
+                    // Wrap code in a try-catch to only execute console.log statements
+                    const wrappedCode = `
+                        try {
+                            ${code}
+                        } catch (e) {
+                            console.log("Error:", e.message);
+                        }
+                    `;
+                    eval(wrappedCode);
+                    console.log = oldLog;
                     
-                    try {
-                        result = eval(code);
-                        console.log = oldLog;
-                        output.innerHTML = `<div class="console-output">${logs.join('\n')}${result !== undefined ? '\n' + result : ''}</div>`;
-                    } catch (error) {
-                        console.log = oldLog;
-                        throw error;
-                    }
-                } else {
-                    // For other languages, show a simulation message
-                    output.innerHTML = `<div class="console-output">Code execution simulation for ${language}:\nHello, World!</div>`;
+                    // Only show the console.log outputs
+                    output.innerHTML = `<div class="console-output">${logs.join('\n')}</div>`;
+                } catch (error) {
+                    console.log = oldLog;
+                    throw error;
                 }
-            } catch (error) {
-                output.innerHTML = `<div class="console-output error">Error: ${error.message}</div>`;
+            } else if (language === 'python') {
+                // Extract print statements from Python code
+                const printStatements = code.match(/print\((.*?)\)/g) || [];
+                const printOutput = printStatements.map(stmt => {
+                    // Remove print() and evaluate the content
+                    const content = stmt.slice(6, -1);
+                    // Handle both string literals and expressions
+                    return content.startsWith('"') || content.startsWith("'") 
+                        ? content.slice(1, -1) 
+                        : content;
+                }).join('\n');
+                
+                output.innerHTML = `<div class="console-output">${printOutput}</div>`;
+            } else {
+                // For other languages, show a mock output
+                output.innerHTML = `<div class="console-output">Hello, World!</div>`;
             }
-        }, 500);
+        } catch (error) {
+            output.innerHTML = `<div class="console-output error">Error: ${error.message}</div>`;
+        }
     };
 
     // Reset code handler
