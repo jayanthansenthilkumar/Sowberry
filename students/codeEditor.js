@@ -162,19 +162,14 @@ function example(): string {
                 console.log = (...args) => logs.push(args.join(' '));
                 
                 try {
-                    // Wrap code in a try-catch to only execute console.log statements
-                    const wrappedCode = `
-                        try {
-                            ${code}
-                        } catch (e) {
-                            console.log("Error:", e.message);
-                        }
-                    `;
-                    eval(wrappedCode);
+                    eval(code); // Execute the actual code
                     console.log = oldLog;
                     
-                    // Only show the console.log outputs
-                    output.innerHTML = `<div class="console-output">${logs.join('\n')}</div>`;
+                    // Show the outputs, or "No output" if nothing was printed
+                    const outputContent = logs.length > 0 
+                        ? logs.join('\n') 
+                        : '// No output';
+                    output.innerHTML = `<div class="console-output">${outputContent}</div>`;
                 } catch (error) {
                     console.log = oldLog;
                     throw error;
@@ -182,6 +177,11 @@ function example(): string {
             } else if (language === 'python') {
                 // Extract print statements from Python code
                 const printStatements = code.match(/print\((.*?)\)/g) || [];
+                if (printStatements.length === 0) {
+                    output.innerHTML = '<div class="console-output">// No output</div>';
+                    return;
+                }
+                
                 const printOutput = printStatements.map(stmt => {
                     // Remove print() and evaluate the content
                     const content = stmt.slice(6, -1);
@@ -193,8 +193,9 @@ function example(): string {
                 
                 output.innerHTML = `<div class="console-output">${printOutput}</div>`;
             } else {
-                // For other languages, show a mock output
-                output.innerHTML = `<div class="console-output">Hello, World!</div>`;
+                // For other languages, show the "No output" message if code is empty
+                const defaultOutput = code.trim() ? 'Hello, World!' : '// No output';
+                output.innerHTML = `<div class="console-output">${defaultOutput}</div>`;
             }
         } catch (error) {
             output.innerHTML = `<div class="console-output error">Error: ${error.message}</div>`;
