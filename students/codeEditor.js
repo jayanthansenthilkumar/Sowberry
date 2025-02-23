@@ -75,6 +75,63 @@ using namespace std;
 int main() {
     cout << "Hello, World!" << endl;
     return 0;
+}`,
+        ruby: `# Write your Ruby code here
+puts "Hello, World!"
+
+def example
+  "Welcome to Sowberry Code Editor"
+end`,
+        php: `<?php
+// Write your PHP code here
+echo "Hello, World!";
+
+function example() {
+    return "Welcome to Sowberry Code Editor";
+}`,
+        csharp: `// Write your C# code here
+using System;
+
+class Program {
+    static void Main() {
+        Console.WriteLine("Hello, World!");
+    }
+}`,
+        swift: `// Write your Swift code here
+print("Hello, World!")
+
+func example() -> String {
+    return "Welcome to Sowberry Code Editor"
+}`,
+        kotlin: `// Write your Kotlin code here
+fun main() {
+    println("Hello, World!")
+}
+
+fun example(): String {
+    return "Welcome to Sowberry Code Editor"
+}`,
+        go: `// Write your Go code here
+package main
+
+import "fmt"
+
+func main() {
+    fmt.Println("Hello, World!")
+}`,
+        rust: `// Write your Rust code here
+fn main() {
+    println!("Hello, World!");
+}
+
+fn example() -> String {
+    String::from("Welcome to Sowberry Code Editor")
+}`,
+        typescript: `// Write your TypeScript code here
+console.log("Hello, World!");
+
+function example(): string {
+    return "Welcome to Sowberry Code Editor";
 }`
     };
 
@@ -166,4 +223,8 @@ int main() {
         bindKey: {win: 'Ctrl-Enter', mac: 'Command-Enter'},
         exec: runCode
     });
+    
+    // Update stats in welcome card
+    document.querySelector('.welcome-stats .stat-info p').textContent = 
+        `${Object.keys(codeTemplates).length} Available`;
 });
