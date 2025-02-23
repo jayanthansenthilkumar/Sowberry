@@ -60,7 +60,11 @@ int main() {
     // Theme adaptation
     const updateEditorTheme = () => {
         const isDark = document.body.classList.contains('dark-theme');
-        editor.setTheme(isDark ? "ace/theme/twilight" : "ace/theme/chrome");
+        editor.setTheme(isDark ? "ace/theme/dracula" : "ace/theme/sqlserver");
+        
+        // Update editor colors
+        const editorElement = document.getElementById('editor');
+        editorElement.style.backgroundColor = isDark ? '#1a1b2e' : '#ffffff';
     };
 
     // Listen for theme changes

@@ -4513,12 +4513,13 @@ main {
     width: 100%;
     height: calc(100% - 60px) !important; /* Subtract header height */
     background: var(--background);
+    transition: background-color 0.3s ease;
 }
 
 .panel-header {
     height: 60px;
     padding: 0 20px;
-    background: linear-gradient(135deg, var(--primary)10, var(--secondary)10);
+    background: var(--card-bg);
     border-bottom: 1px solid var(--border-color);
     display: flex;
     justify-content: space-between;
@@ -4649,8 +4650,9 @@ main {
 }
 
 .ace_gutter {
-    background: var(--card-bg) !important;
+    background: var(--background) !important;
     color: var(--text-secondary) !important;
+    border-right: 1px solid var(--border-color);
 }
 
 /* AI Code Assistant */
