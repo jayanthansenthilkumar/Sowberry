@@ -841,19 +841,19 @@
 <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Updated left side particles config with pink colors
+    // Left side particles config (white particles)
     const leftConfig = {
         particles: {
             number: { value: 80 },
-            color: { value: '#ffffff' }, // Keep white particles
-            opacity: { value: 0.2 },
-            size: { value: 3 },
+            color: { value: '#ffffff' },
+            opacity: { value: 0.6 }, // Reduced opacity
+            size: { value: 2 }, // Reduced size
             line_linked: {
                 enable: true,
                 distance: 150,
-                color: '#ffffff', // Keep white lines
-                opacity: 0.1,
-                width: 1
+                color: '#ffffff',
+                opacity: 0.3, // Reduced line opacity
+                width: 1 // Reduced line width
             },
             move: {
                 enable: true,
@@ -868,49 +868,68 @@ document.addEventListener('DOMContentLoaded', function() {
         interactivity: {
             detect_on: "canvas",
             events: {
-                onhover: { enable: true, mode: "grab" },
+                onhover: { 
+                    enable: true, 
+                    mode: "grab",
+                    opacity: 0.5 // Reduced hover opacity
+                },
                 onclick: { enable: true, mode: "push" },
                 resize: true
+            },
+            modes: {
+                grab: {
+                    distance: 200,
+                    line_linked: { opacity: 0.5 } // Reduced grab opacity
+                }
             }
         },
         retina_detect: true
     };
 
-    // Right side particles (purple version)
+    // Right side particles config (blue particles)
     const rightConfig = {
-    particles: {
-        number: { value: 80 },
-        color: { value: '#2563eb' }, // Light black color
-        opacity: { value: 0.2 },
-        size: { value: 3 },
-        line_linked: {
-            enable: true,
-            distance: 150,
-            color: '#2563eb', // Light black color
-            opacity: 0.1,
-            width: 1
+        particles: {
+            number: { value: 80 },
+            color: { value: '#2563eb' },
+            opacity: { value: 0.4 }, // Reduced opacity
+            size: { value: 2 }, // Reduced size
+            line_linked: {
+                enable: true,
+                distance: 150,
+                color: '#2563eb',
+                opacity: 0.2, // Reduced line opacity
+                width: 1 // Reduced line width
+            },
+            move: {
+                enable: true,
+                speed: 2,
+                direction: "none",
+                random: true,
+                straight: false,
+                out_mode: "bounce",
+                bounce: false
+            }
         },
-        move: {
-            enable: true,
-            speed: 2,
-            direction: "none",
-            random: true,
-            straight: false,
-            out_mode: "bounce",
-            bounce: false
-        }
-    },
-    interactivity: {
-        detect_on: "canvas",
-        events: {
-            onhover: { enable: true, mode: "grab" },
-            onclick: { enable: true, mode: "push" },
-            resize: true
-        }
-    },
-    retina_detect: true
-};
-
+        interactivity: {
+            detect_on: "canvas",
+            events: {
+                onhover: { 
+                    enable: true, 
+                    mode: "grab",
+                    opacity: 0.5 // Reduced hover opacity
+                },
+                onclick: { enable: true, mode: "push" },
+                resize: true
+            },
+            modes: {
+                grab: {
+                    distance: 200,
+                    line_linked: { opacity: 0.4 } // Reduced grab opacity
+                }
+            }
+        },
+        retina_detect: true
+    };
 
     // Initialize particles with a slight delay
     setTimeout(() => {
