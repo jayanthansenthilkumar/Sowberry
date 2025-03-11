@@ -8,35 +8,72 @@
     <link rel="stylesheet" href="assets/styles.css">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <style>
+        :root {
+            --primary: #ff6b6b;
+            --secondary: #6c5ce7;
+            --background: #f5f6fa;
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --border-color: rgba(108, 92, 231, 0.1);
+            --shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
+        }
+
+        .brand-side {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            position: relative;
+            overflow: hidden;
+        }
+
+        #particles-left,
+        #particles-right {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .brand-content,
+        .forms-wrapper {
+            position: relative;
+            z-index: 2;
+        }
+
+        canvas {
+            display: block;
+            /* vertical-align: bottom; */
+        }
+
+        /* Update this color in your existing styles */
+        .brand-side::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary)); /* New gradient */
+            z-index: 1;
+        }
+    </style>
 </head>
 <body>
-    <button class="hamburger-menu">
-        <span class="bar"></span>
-        <span class="bar"></span>
-        <span class="bar"></span>
-    </button>
-    <button class="mobile-menu-toggle">
-        <i class="ri-menu-line"></i>
-    </button>
-    <div class="sidebar">
-        <div class="logo">
-            <i class="ri-seedling-fill"></i>
-            <span>Sowberry</span>
-        </div>
-        <nav>
-            <a href="index.html" class="active"><i class="ri-home-4-line"></i><span>Overview</span></a>
-            <a href="courses.html"><i class="ri-book-open-line"></i><span>Courses</span></a>
-            <a href="#"><i class="ri-user-follow-line"></i><span>Students</span></a>
-            <a href="#"><i class="ri-award-line"></i><span>Assignments</span></a>
-            <a href="#"><i class="ri-chat-1-line"></i><span>Discussion</span></a>
-            <a href="#"><i class="ri-settings-3-line"></i><span>Settings</span></a>
-        </nav>
-    </div>
-    <main>
-        <header>
-            <div class="search-bar">
-                <i class="ri-search-line"></i>
-                <input type="text" placeholder="Search...">
+    <div class="split-container">
+        <!-- Left Side - Brand -->
+        <div class="brand-side">
+            <div id="particles-left" class="particles"></div>
+            <div class="brand-content">
+                <div class="brand-logo">
+                    <i class="ri-seedling-fill"></i>
+                </div>
+                <h1>Sowberry</h1>
+                <p class="tagline">Grow your skills, bloom your future</p>
+            </div>
+            <!-- Background shapes -->
+            <div class="brand-background">
+                <div class="shape shape-1"></div>
+                <div class="shape shape-2"></div>
             </div>
         </div>
 
@@ -44,143 +81,145 @@
         <div class="forms-side">
             <div id="particles-right" class="particles"></div>
             <div class="auth-container">
-                <div class="forms-container">
-                    <!-- Login Form -->
-                    <div class="form-section login-section active">
-                        <div class="login-header">
-                            <i class="ri-seedling-fill"></i>
-                            <h1>Sowberry</h1>
-                        </div>
-                        <div class="login-form">
-                            <h2>Welcome back!</h2>
-                            <p>Please enter your details to sign in</p>
-                            
-                            <form action="/login" method="POST" id="loginForm">
-                                <div class="form-group">
-                                    <label for="email">Email</label>
-                                    <input type="email" id="email" name="email" placeholder="Enter your email" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="password">Password</label>
-                                    <div class="password-input">
-                                        <input type="password" id="password" name="password" placeholder="Enter your password" required>
-                                        <i class="ri-eye-line toggle-password"></i>
-                                    </div>
-                                </div>
-                                <div class="form-options">
-                                    <label class="remember-me">
-                                        <input type="checkbox" name="remember">
-                                        Remember me
-                                    </label>
-                                    <a href="#" class="forgot-password">Forgot password?</a>
-                                </div>
-                                <button type="submit" class="auth-btn">Sign in</button>
-                            </form>
-
-                            <div class="social-login">
-                                <p>Or continue with</p>
-                                <div class="social-buttons">
-                                    <button class="social-btn google">
-                                        <i class="ri-google-fill"></i>
-                                        Google
-                                    </button>
-                                    <button class="social-btn github">
-                                        <i class="ri-github-fill"></i>
-                                        GitHub
-                                    </button>
-                                </div>
+                <div class="forms-wrapper">
+                    <div class="forms-container">
+                        <!-- Login Form -->
+                        <div class="form-section login-section active">
+                            <div class="login-header">
+                                <i class="ri-seedling-fill"></i>
+                                <h1>Sowberry</h1>
                             </div>
+                            <div class="login-form">
+                                <h2>Welcome back!</h2>
+                                <p>Please enter your details to sign in</p>
+                                
+                                <form action="/login" method="POST" id="loginForm">
+                                    <div class="form-group">
+                                        <label for="email">Email</label>
+                                        <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="password">Password</label>
+                                        <div class="password-input">
+                                            <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                                            <i class="ri-eye-line toggle-password"></i>
+                                        </div>
+                                    </div>
+                                    <div class="form-options">
+                                        <label class="remember-me">
+                                            <input type="checkbox" name="remember">
+                                            Remember me
+                                        </label>
+                                        <a href="#" class="forgot-password">Forgot password?</a>
+                                    </div>
+                                    <button type="submit" class="auth-btn">Sign in</button>
+                                </form>
 
-                            <p class="switch-form-link">
-                                Don't have an account? <a href="#" onclick="toggleForms('register')">Sign up</a>
-                            </p>
+                                <div class="social-login">
+                                    <p>Or continue with</p>
+                                    <div class="social-buttons">
+                                        <button class="social-btn google">
+                                            <i class="ri-google-fill"></i>
+                                            Google
+                                        </button>
+                                        <button class="social-btn github">
+                                            <i class="ri-github-fill"></i>
+                                            GitHub
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <p class="switch-form-link">
+                                    Don't have an account? <a href="#" onclick="toggleForms('register')">Sign up</a>
+                                </p>
+                            </div>
                         </div>
-                    </div>
 
-                    <!-- Updated Registration Form -->
-                    <div class="form-section register-section">
-                        <div class="login-header">
-                            <i class="ri-seedling-fill"></i>
-                            <h1>Sowberry</h1>
+                        <!-- Updated Registration Form -->
+                        <div class="form-section register-section">
+                            <div class="login-header">
+                                <i class="ri-seedling-fill"></i>
+                                <h1>Sowberry</h1>
+                            </div>
+                            <div class="login-form">
+                                <h2>Create Account</h2>
+                                <p>Please fill in your details to register</p>
+                                
+                                <form action="/register" method="POST" id="registerForm" class="compact-form">
+                                    <div class="form-group">
+                                        <label for="regEmail">Email</label>
+                                        <div class="input-wrapper">
+                                            <input type="email" id="regEmail" name="email" placeholder="Enter your email" required>
+                                            <span class="validation-message"></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="username">Username</label>
+                                        <div class="input-wrapper">
+                                            <input type="text" id="username" name="username" placeholder="Choose a username" required disabled>
+                                            <span class="validation-message"></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="fullName">Full Name</label>
+                                        <div class="input-wrapper">
+                                            <input type="text" id="fullName" name="fullName" placeholder="Enter your full name" required disabled>
+                                            <span class="validation-message"></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="phone">Phone Number</label>
+                                        <div class="input-wrapper">
+                                            <input type="tel" id="phone" name="phone" placeholder="Enter your phone number" pattern="[0-9]{10}" required disabled>
+                                            <span class="validation-message"></span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Remove file upload section and go straight to terms -->
+                                    <div class="form-options">
+                                        <label class="terms-checkbox">
+                                            <input type="checkbox" name="terms" required disabled>
+                                            <span>I agree to the Terms & Conditions</span>
+                                        </label>
+                                    </div>
+
+                                    <button type="submit" class="auth-btn" disabled>Create Account</button>
+                                </form>
+
+                                <p class="switch-form-link">
+                                    Already have an account? <a href="#" onclick="toggleForms('login')">Sign in</a>
+                                </p>
+                            </div>
                         </div>
-                        <div class="login-form">
-                            <h2>Create Account</h2>
-                            <p>Please fill in your details to register</p>
-                            
-                            <form action="/register" method="POST" id="registerForm" class="compact-form">
-                                <div class="form-group">
-                                    <label for="regEmail">Email</label>
-                                    <div class="input-wrapper">
-                                        <input type="email" id="regEmail" name="email" placeholder="Enter your email" required>
-                                        <span class="validation-message"></span>
+
+                        <!-- Add Forgot Password Form -->
+                        <div class="form-section forgot-section">
+                            <div class="login-header">
+                                <i class="ri-seedling-fill"></i>
+                                <h1>Sowberry</h1>
+                            </div>
+                            <div class="login-form">
+                                <h2>Reset Password</h2>
+                                <p>Enter your email to receive reset instructions</p>
+                                
+                                <form action="/forgot-password" method="POST" id="forgotForm" class="compact-form">
+                                    <div class="form-group">
+                                        <label for="resetEmail">Email</label>
+                                        <div class="input-wrapper">
+                                            <input type="email" id="resetEmail" name="email" placeholder="Enter your email" required>
+                                            <span class="validation-message"></span>
+                                        </div>
                                     </div>
-                                </div>
+                                    <button type="submit" class="auth-btn">Send Reset Link</button>
+                                </form>
 
-                                <div class="form-group">
-                                    <label for="username">Username</label>
-                                    <div class="input-wrapper">
-                                        <input type="text" id="username" name="username" placeholder="Choose a username" required disabled>
-                                        <span class="validation-message"></span>
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="fullName">Full Name</label>
-                                    <div class="input-wrapper">
-                                        <input type="text" id="fullName" name="fullName" placeholder="Enter your full name" required disabled>
-                                        <span class="validation-message"></span>
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="phone">Phone Number</label>
-                                    <div class="input-wrapper">
-                                        <input type="tel" id="phone" name="phone" placeholder="Enter your phone number" pattern="[0-9]{10}" required disabled>
-                                        <span class="validation-message"></span>
-                                    </div>
-                                </div>
-
-                                <!-- Remove file upload section and go straight to terms -->
-                                <div class="form-options">
-                                    <label class="terms-checkbox">
-                                        <input type="checkbox" name="terms" required disabled>
-                                        <span>I agree to the Terms & Conditions</span>
-                                    </label>
-                                </div>
-
-                                <button type="submit" class="auth-btn" disabled>Create Account</button>
-                            </form>
-
-                            <p class="switch-form-link">
-                                Already have an account? <a href="#" onclick="toggleForms('login')">Sign in</a>
-                            </p>
-                        </div>
-                    </div>
-
-                    <!-- Add Forgot Password Form -->
-                    <div class="form-section forgot-section">
-                        <div class="login-header">
-                            <i class="ri-seedling-fill"></i>
-                            <h1>Sowberry</h1>
-                        </div>
-                        <div class="login-form">
-                            <h2>Reset Password</h2>
-                            <p>Enter your email to receive reset instructions</p>
-                            
-                            <form action="/forgot-password" method="POST" id="forgotForm" class="compact-form">
-                                <div class="form-group">
-                                    <label for="resetEmail">Email</label>
-                                    <div class="input-wrapper">
-                                        <input type="email" id="resetEmail" name="email" placeholder="Enter your email" required>
-                                        <span class="validation-message"></span>
-                                    </div>
-                                </div>
-                                <button type="submit" class="auth-btn">Send Reset Link</button>
-                            </form>
-
-                            <p class="switch-form-link">
-                                Remember your password? <a href="#" onclick="toggleToLogin()">Sign in</a>
-                            </p>
+                                <p class="switch-form-link">
+                                    Remember your password? <a href="#" onclick="toggleToLogin()">Sign in</a>
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -271,11 +310,11 @@
             }
         };
 
-        // Initialize particles
-        particlesJS('particles-left', leftConfig());
-        particlesJS('particles-right', rightConfig());
+        // Initialize particles with correct configuration objects
+        particlesJS('particles-left', leftConfig);  // Remove the () from leftConfig
+        particlesJS('particles-right', rightConfig); // Remove the () from rightConfig
 
-        // Updated toggleForms function
+        // Updated form toggle function
         function toggleForms(formType) {
             const sections = {
                 login: document.querySelector('.login-section'),
@@ -283,25 +322,36 @@
                 forgot: document.querySelector('.forgot-section')
             };
 
-            // First, hide all sections
-            Object.values(sections).forEach(section => {
-                section.classList.remove('active');
-                section.style.opacity = '0';
-                section.style.transform = 'translateX(100px)';
-                section.style.position = 'absolute';
-            });
-
-            // Show the selected section
-            const activeSection = sections[formType];
-            if (activeSection) {
-                activeSection.classList.add('active');
-                activeSection.style.opacity = '1';
-                activeSection.style.transform = 'translateX(0)';
-                activeSection.style.position = 'relative';
+            // Hide current active section
+            const currentActive = document.querySelector('.form-section.active');
+            if (currentActive) {
+                currentActive.style.transform = 'translateX(-100px)';
+                currentActive.style.opacity = '0';
+                currentActive.style.pointerEvents = 'none';
+                setTimeout(() => {
+                    currentActive.classList.remove('active');
+                    // Show new section
+                    const activeSection = sections[formType];
+                    if (activeSection) {
+                        activeSection.classList.add('active');
+                        activeSection.style.transform = 'translateX(0)';
+                        activeSection.style.opacity = '1';
+                        activeSection.style.pointerEvents = 'all';
+                    }
+                }, 300);
+            } else {
+                // If no active section, just show the new one
+                const activeSection = sections[formType];
+                if (activeSection) {
+                    activeSection.classList.add('active');
+                    activeSection.style.transform = 'translateX(0)';
+                    activeSection.style.opacity = '1';
+                    activeSection.style.pointerEvents = 'all';
+                }
             }
         }
 
-        // Updated toggleToLogin function
+        // Update the toggleToLogin function
         function toggleToLogin() {
             toggleForms('login');
         }
@@ -320,6 +370,7 @@
             });
         });
 
+        // Initialize event listeners
         document.addEventListener('DOMContentLoaded', function() {
             const registerForm = document.getElementById('registerForm');
             const emailInput = document.getElementById('regEmail');
@@ -466,6 +517,18 @@
                     validationMsg.className = 'validation-message invalid';
                 }
             });
+
+            // Set initial state
+            toggleForms('login');
+
+            // Add click handlers for form switching
+            document.querySelectorAll('[onclick*="toggleForms"]').forEach(element => {
+                element.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const formType = this.getAttribute('onclick').match(/'([^']+)'/)[1];
+                    toggleForms(formType);
+                });
+            });
         });
 
         // Add CSS animation
@@ -528,26 +591,356 @@
 
     <!-- Add styles for smooth transitions -->
     <style>
-        .form-section {
-            transform: translateX(100px);
-            opacity: 0;
-            transition: all 0.3s ease;
+        .split-container {
+            display: flex;
+            width: 100%;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        .brand-side {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            padding: 2rem;
+            color: white;
+            z-index: 0;
+        }
+
+        .brand-side::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary)); /* New gradient */
+            z-index: 1;
+        }
+
+        .particles {
+            position: absolute !important;
+            width: 100% !important;
+            height: 100% !important;
+            top: 0;
+            left: 0;
+            z-index: 2;
+        }
+
+        .brand-content {
+            position: relative;
+            z-index: 3;
+        }
+
+        #particles-left canvas,
+        #particles-right canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        .brand-content {
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .brand-logo {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .brand-content h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .tagline {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .forms-side {
+            flex: 1;
+            background: var(--background);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .forms-wrapper {
+            width: 100%;
+            max-width: 420px;
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(12px);
+        }
+
+        @media (max-width: 992px) {
+            .split-container {
+                flex-direction: column;
+            }
+            
+            .brand-side {
+                padding: 3rem 2rem;
+            }
+            
+            .brand-content h1 {
+                font-size: 2.5rem;
+            }
+            
+            .brand-logo {
+                font-size: 3rem;
+            }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .particles {
             position: absolute;
             width: 100%;
-            visibility: hidden;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1; /* Changed from 1 */
+            pointer-events: none;
+        }
+
+        .particles canvas {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        #particles-left {
+            background: transparent; /* Changed from gradient */
+        }
+
+        #particles-right {
+            background: transparent;
+        }
+
+        .brand-content,
+        .forms-wrapper {
+            position: relative;
+            z-index: 2;
+        }
+
+        .form-section {
+            display: none;
+            opacity: 0;
+            transform: translateX(20px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
         }
 
         .form-section.active {
-            transform: translateX(0);
+            display: block;
             opacity: 1;
+            transform: translateX(0);
+        }
+
+        .brand-content,
+        .forms-wrapper {
             position: relative;
-            visibility: visible;
+            z-index: 2;
         }
 
         .forms-container {
             position: relative;
-            min-height: 400px; /* Add minimum height */
+            min-height: 520px;
+            overflow: hidden;
+        }
+
+        .form-section {
+            position: absolute;
+            width: 100%;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateX(100px);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .form-section.active {
+            position: relative;
+            opacity: 1;
+            pointer-events: all;
+            transform: translateX(0);
         }
     </style>
 </body>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize particles
+        try {
+            particlesJS('particles-left', leftConfig);
+            particlesJS('particles-right', rightConfig);
+        } catch (error) {
+            console.error('Particles.js initialization error:', error);
+        }
+
+        // Updated form toggle function
+        function toggleForms(formType) {
+            const sections = {
+                login: document.querySelector('.login-section'),
+                register: document.querySelector('.register-section'),
+                forgot: document.querySelector('.forgot-section')
+            };
+
+            // Hide current active section
+            const currentActive = document.querySelector('.form-section.active');
+            if (currentActive) {
+                currentActive.style.transform = 'translateX(-100px)';
+                currentActive.style.opacity = '0';
+                currentActive.style.pointerEvents = 'none';
+                setTimeout(() => {
+                    currentActive.classList.remove('active');
+                    // Show new section
+                    const activeSection = sections[formType];
+                    if (activeSection) {
+                        activeSection.classList.add('active');
+                        activeSection.style.transform = 'translateX(0)';
+                        activeSection.style.opacity = '1';
+                        activeSection.style.pointerEvents = 'all';
+                    }
+                }, 300);
+            } else {
+                // If no active section, just show the new one
+                const activeSection = sections[formType];
+                if (activeSection) {
+                    activeSection.classList.add('active');
+                    activeSection.style.transform = 'translateX(0)';
+                    activeSection.style.opacity = '1';
+                    activeSection.style.pointerEvents = 'all';
+                }
+            }
+        }
+
+        // Make toggleForms globally available
+        window.toggleForms = toggleForms;
+        window.toggleToLogin = () => toggleForms('login');
+
+        // Set initial form state
+        toggleForms('login');
+    });
+
+    // Move all other existing script code here...
+</script>
+<script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Left side particles config (white particles)
+    const leftConfig = {
+        particles: {
+            number: { value: 80 },
+            color: { value: '#ffffff' },
+            opacity: { value: 0.6 }, // Reduced opacity
+            size: { value: 2 }, // Reduced size
+            line_linked: {
+                enable: true,
+                distance: 150,
+                color: '#ffffff',
+                opacity: 0.3, // Reduced line opacity
+                width: 1 // Reduced line width
+            },
+            move: {
+                enable: true,
+                speed: 2,
+                direction: "none",
+                random: true,
+                straight: false,
+                out_mode: "bounce",
+                bounce: false
+            }
+        },
+        interactivity: {
+            detect_on: "canvas",
+            events: {
+                onhover: { 
+                    enable: true, 
+                    mode: "grab",
+                    opacity: 0.5 // Reduced hover opacity
+                },
+                onclick: { enable: true, mode: "push" },
+                resize: true
+            },
+            modes: {
+                grab: {
+                    distance: 200,
+                    line_linked: { opacity: 0.5 } // Reduced grab opacity
+                }
+            }
+        },
+        retina_detect: true
+    };
+
+    // Right side particles config (blue particles)
+    const rightConfig = {
+        particles: {
+            number: { value: 80 },
+            color: { value: '#2563eb' },
+            opacity: { value: 0.4 }, // Reduced opacity
+            size: { value: 2 }, // Reduced size
+            line_linked: {
+                enable: true,
+                distance: 150,
+                color: '#2563eb',
+                opacity: 0.2, // Reduced line opacity
+                width: 1 // Reduced line width
+            },
+            move: {
+                enable: true,
+                speed: 2,
+                direction: "none",
+                random: true,
+                straight: false,
+                out_mode: "bounce",
+                bounce: false
+            }
+        },
+        interactivity: {
+            detect_on: "canvas",
+            events: {
+                onhover: { 
+                    enable: true, 
+                    mode: "grab",
+                    opacity: 0.5 // Reduced hover opacity
+                },
+                onclick: { enable: true, mode: "push" },
+                resize: true
+            },
+            modes: {
+                grab: {
+                    distance: 200,
+                    line_linked: { opacity: 0.4 } // Reduced grab opacity
+                }
+            }
+        },
+        retina_detect: true
+    };
+
+    // Initialize particles with a slight delay
+    setTimeout(() => {
+        try {
+            particlesJS('particles-left', leftConfig);
+            particlesJS('particles-right', rightConfig);
+            console.log('Particles initialized successfully');
+        } catch (error) {
+            console.error('Particles initialization error:', error);
+        }
+    }, 100);
+});
+</script>
 </html>

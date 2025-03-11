@@ -10,106 +10,26 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
-    <style>
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 9999;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.5);
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-        }
-
-        .modal.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .modal-content {
-            background-color: var(--card-bg);
-            margin: 5% auto;
-            padding: 20px;
-            border-radius: 8px;
-            width: 80%;
-            max-width: 700px;
-            position: relative;
-            transform: translateY(-20px);
-            transition: all 0.3s ease;
-        }
-
-        .modal.active .modal-content {
-            transform: translateY(0);
-        }
-
-        /* Ensure the modal is always on top */
-        #problemModal {
-            z-index: 10000;
-        }
-
-        .close-modal {
-            position: absolute;
-            right: 20px;
-            top: 20px;
-            font-size: 24px;
-            cursor: pointer;
-            background: none;
-            border: none;
-            color: var(--text-color);
-        }
-
-        .problem-details {
-            padding: 20px 0;
-        }
-
-        .detail-group {
-            margin-bottom: 20px;
-        }
-
-        .detail-group h4 {
-            color: var(--text-color);
-            margin-bottom: 8px;
-            font-size: 1rem;
-        }
-
-        .detail-group p, .detail-group pre {
-            color: var(--text-secondary);
-            line-height: 1.5;
-            margin: 0;
-            padding: 10px;
-            background: var(--card-bg);
-            border-radius: 4px;
-            border: 1px solid var(--border-color);
-        }
-
-        .detail-group pre {
-            font-family: monospace;
-            white-space: pre-wrap;
-            word-wrap: break-word;
-        }
-    </style>
 </head>
 <body>
     <div class="sidebar">
         <div class="logo">
             <i class="ri-seedling-fill"></i>
-            <span>Sowberry</span>
+            <!-- <span>Sowberry</span> -->
+            <div class="logo-text">
+                <span class="brand-name">Sowberry</span>
+                <span class="brand-suffix">ACADEMY</span>
+            </div>
         </div>
         <nav>
-            <a href="admin.html"><i class="ri-home-4-line"></i><span>Overview</span></a>
-            <a href="courses.html"><i class="ri-book-open-line"></i><span>Courses</span></a>
-            <a href="students.html"><i class="ri-user-follow-line"></i><span>Students</span></a>
+            <a href="mentorDashboard.html"><i class="ri-home-4-line"></i><span>Overview</span></a>
+            <a href="newCourses.html"><i class="ri-book-open-line"></i><span>Courses</span></a>
+            <a href="studentsProgress.html"><i class="ri-user-follow-line"></i><span>Students</span></a>
             <a href="newAssignments.html"><i class="ri-award-line"></i><span>Assignments</span></a>
             <a href="newEvents.html"><i class="ri-calendar-event-line"></i><span>Events</span></a>
-            <a href="aptitude.html"><i class="ri-mental-health-line"></i><span>Aptitude</span></a>
-            <a href="problemSolving.html" class="active"><i class="ri-code-box-line"></i><span>Problem Solving</span></a>
-            <a href="discussion.html"><i class="ri-chat-1-line"></i><span>Discussion</span></a>
-            <a href="#"><i class="ri-settings-3-line"></i><span>Settings</span></a>
+            <a href="newAptitude.html"><i class="ri-mental-health-line"></i><span>Aptitude</span></a>
+            <a href="#" class="active"><i class="ri-code-box-line"></i><span>Problem Solving</span></a>
+            <a href="mentorDiscussion.html"><i class="ri-chat-1-line"></i><span>Discussion</span></a>
         </nav>
     </div>
     <main>
