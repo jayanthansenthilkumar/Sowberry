@@ -842,7 +842,7 @@ body.dark-theme {
 9. ABOUT SECTION
 ============================ */
 .about-section {
-    padding: 60px 4% 100px;
+    padding: 20px 4% 100px; /* Reduced top padding from 60px to 30px */
     max-width: 1400px;
     margin: 0 auto;
     min-height: 60vh;
@@ -1115,7 +1115,7 @@ body.dark-theme {
 10. TEAM SECTION
 ============================ */
 .team-section {
-    padding: 80px 4% 100px;
+    padding: 20px 4% 100px;
     max-width: 1400px;
     margin: 0 auto;
     position: relative;
