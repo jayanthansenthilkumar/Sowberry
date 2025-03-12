@@ -344,4 +344,186 @@ document.addEventListener('DOMContentLoaded', function() {
     if (currentYearElement) {
         currentYearElement.textContent = new Date().getFullYear();
     }
+
+    // AI Assistant Toggle
+    const aiAssistantContainer = document.querySelector('.ai-assistant-container');
+    const aiToggleBtn = document.getElementById('aiToggleBtn');
+    const aiCloseBtn = document.getElementById('aiCloseBtn');
+    const aiMinimizeBtn = document.getElementById('aiMinimizeBtn');
+    const aiChatMessages = document.getElementById('aiChatMessages');
+    const aiMessageInput = document.getElementById('aiMessageInput');
+    const aiSendBtn = document.getElementById('aiSendBtn');
+
+    // Initialize AI assistant
+    if (aiToggleBtn && aiAssistantContainer) {
+        // Toggle chat window
+        aiToggleBtn.addEventListener('click', function() {
+            aiAssistantContainer.classList.toggle('active');
+            aiToggleBtn.classList.toggle('active');
+            
+            // Focus input when opening
+            if (aiAssistantContainer.classList.contains('active') && aiMessageInput) {
+                setTimeout(() => aiMessageInput.focus(), 300);
+            }
+        });
+
+        // Close chat window
+        if (aiCloseBtn) {
+            aiCloseBtn.addEventListener('click', function() {
+                aiAssistantContainer.classList.remove('active');
+                aiToggleBtn.classList.remove('active');
+            });
+        }
+
+        // Minimize chat window (same as close for now)
+        if (aiMinimizeBtn) {
+            aiMinimizeBtn.addEventListener('click', function() {
+                aiAssistantContainer.classList.remove('active');
+                aiToggleBtn.classList.remove('active');
+            });
+        }
+
+        // Send message functionality
+        if (aiSendBtn && aiMessageInput && aiChatMessages) {
+            // Function to send message
+            function sendMessage() {
+                const message = aiMessageInput.value.trim();
+                if (!message) return;
+                
+                // Add user message to chat
+                addMessage(message, 'outgoing');
+                aiMessageInput.value = '';
+                
+                // Show typing indicator
+                showTypingIndicator();
+                
+                // Process response after delay (simulating AI thinking)
+                setTimeout(() => {
+                    // Remove typing indicator
+                    removeTypingIndicator();
+                    
+                    // Generate and add AI response
+                    const response = generateResponse(message);
+                    addMessage(response, 'incoming');
+                    
+                    // Scroll to bottom
+                    scrollToBottom();
+                }, 1000 + Math.random() * 1000); // Random delay between 1-2s
+                
+                // Scroll to bottom immediately after sending
+                scrollToBottom();
+            }
+            
+            // Function to add message to chat
+            function addMessage(text, type) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `ai-message ai-${type}`;
+                
+                const avatar = document.createElement('div');
+                avatar.className = 'ai-avatar';
+                
+                const avatarIcon = document.createElement('i');
+                avatarIcon.className = type === 'incoming' ? 'ri-robot-line' : 'ri-user-line';
+                avatar.appendChild(avatarIcon);
+                
+                const content = document.createElement('div');
+                content.className = 'ai-message-content';
+                
+                const paragraph = document.createElement('p');
+                paragraph.textContent = text;
+                content.appendChild(paragraph);
+                
+                messageDiv.appendChild(avatar);
+                messageDiv.appendChild(content);
+                
+                aiChatMessages.appendChild(messageDiv);
+            }
+            
+            // Function to show typing indicator
+            function showTypingIndicator() {
+                const typingDiv = document.createElement('div');
+                typingDiv.className = 'ai-message ai-incoming ai-typing-indicator';
+                
+                const avatar = document.createElement('div');
+                avatar.className = 'ai-avatar';
+                
+                const avatarIcon = document.createElement('i');
+                avatarIcon.className = 'ri-robot-line';
+                avatar.appendChild(avatarIcon);
+                
+                const content = document.createElement('div');
+                content.className = 'ai-message-content ai-typing';
+                
+                for (let i = 0; i < 3; i++) {
+                    const dot = document.createElement('span');
+                    content.appendChild(dot);
+                }
+                
+                typingDiv.appendChild(avatar);
+                typingDiv.appendChild(content);
+                
+                aiChatMessages.appendChild(typingDiv);
+                scrollToBottom();
+            }
+            
+            // Function to remove typing indicator
+            function removeTypingIndicator() {
+                const typingIndicator = aiChatMessages.querySelector('.ai-typing-indicator');
+                if (typingIndicator) {
+                    typingIndicator.remove();
+                }
+            }
+            
+            // Function to scroll chat to bottom
+            function scrollToBottom() {
+                aiChatMessages.scrollTop = aiChatMessages.scrollHeight;
+            }
+            
+            // Function to generate AI response based on user input
+            function generateResponse(message) {
+                message = message.toLowerCase();
+                
+                // Simple response logic
+                if (message.includes('hello') || message.includes('hi ') || message.includes('hey')) {
+                    return "Hello! How can I help you today?";
+                }
+                else if (message.includes('course') || message.includes('class') || message.includes('program')) {
+                    return "We offer various courses including Web Development, Data Science, Digital Marketing, UI/UX Design, Mobile Development, and Cybersecurity. Which one are you interested in?";
+                }
+                else if (message.includes('price') || message.includes('cost') || message.includes('fee')) {
+                    return "Our course prices vary depending on the program and duration. Please visit the specific course page for detailed pricing information, or contact our admissions team for personalized information.";
+                }
+                else if (message.includes('enroll') || message.includes('join') || message.includes('register') || message.includes('sign up')) {
+                    return "To enroll in our courses, click the 'Enroll Now' button on the course page. You'll need to create an account, complete your profile, and proceed with the payment to secure your spot.";
+                }
+                else if (message.includes('contact') || message.includes('reach') || message.includes('support')) {
+                    return "You can contact us at berries@sowberry.com or call us at +91 8825756388. Our support team is available Monday to Friday from 9:00 AM to 6:00 PM.";
+                }
+                else if (message.includes('location') || message.includes('address') || message.includes('where')) {
+                    return "We are located at 123 Education Avenue, Chennai, Tamil Nadu 600001. You can find directions on our Contact page.";
+                }
+                else if (message.includes('thank')) {
+                    return "You're welcome! Is there anything else I can help you with?";
+                }
+                else if (message.includes('bye') || message.includes('goodbye')) {
+                    return "Thank you for chatting with me! Have a great day. Feel free to return if you have more questions.";
+                }
+                else {
+                    return "I'm here to help with information about Sowberry Academy's courses, enrollment process, and general inquiries. Could you please provide more details about what you're looking for?";
+                }
+            }
+            
+            // Event listeners
+            aiSendBtn.addEventListener('click', sendMessage);
+            
+            aiMessageInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+            
+            // Initial scroll to bottom
+            scrollToBottom();
+        }
+    }
 });

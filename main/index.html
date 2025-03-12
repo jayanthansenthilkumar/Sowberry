@@ -757,6 +757,46 @@
         </div>
     </footer>
     
+    <!-- AI Assistant Widget -->
+    <div class="ai-assistant-container">
+        <div class="ai-chat-window" id="aiChatWindow">
+            <div class="ai-chat-header">
+                <div class="ai-chat-title">
+                    <i class="ri-robot-line"></i>
+                    <span>Sowberry Assistant</span>
+                </div>
+                <div class="ai-chat-controls">
+                    <button class="ai-minimize-btn" id="aiMinimizeBtn">
+                        <i class="ri-subtract-line"></i>
+                    </button>
+                    <button class="ai-close-btn" id="aiCloseBtn">
+                        <i class="ri-close-line"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="ai-chat-messages" id="aiChatMessages">
+                <div class="ai-message ai-incoming">
+                    <div class="ai-avatar">
+                        <i class="ri-robot-line"></i>
+                    </div>
+                    <div class="ai-message-content">
+                        <p>Hi there! I'm your Sowberry Assistant. How can I help you today?</p>
+                    </div>
+                </div>
+            </div>
+            <div class="ai-chat-input">
+                <input type="text" id="aiMessageInput" placeholder="Type your message here..." aria-label="Message input">
+                <button id="aiSendBtn">
+                    <i class="ri-send-plane-fill"></i>
+                </button>
+            </div>
+        </div>
+        <button class="ai-toggle-btn" id="aiToggleBtn">
+            <i class="ri-robot-line"></i>
+            <i class="ri-close-line"></i>
+        </button>
+    </div>
+    
     <script src="main.js"></script>
 </body>
 </html>
