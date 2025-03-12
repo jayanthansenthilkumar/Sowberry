@@ -266,4 +266,76 @@ document.addEventListener('DOMContentLoaded', function() {
             badge.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
         });
     });
+
+    // Contact Form Validation and Submission
+    const contactForm = document.getElementById('contactForm');
+    const formStatus = document.getElementById('formStatus');
+    
+    if (contactForm) {
+        contactForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Basic form validation
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const subject = document.getElementById('subject').value;
+            const message = document.getElementById('message').value.trim();
+            
+            if (!name || !email || !subject || !message) {
+                showFormStatus('Please fill in all required fields.', 'error');
+                return;
+            }
+            
+            // Email validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showFormStatus('Please enter a valid email address.', 'error');
+                return;
+            }
+            
+            // Simulate form submission (replace with actual form submission)
+            const submitButton = contactForm.querySelector('button[type="submit"]');
+            const originalText = submitButton.innerHTML;
+            
+            submitButton.disabled = true;
+            submitButton.innerHTML = '<i class="ri-loader-4-line"></i> Sending...';
+            
+            setTimeout(() => {
+                showFormStatus('Message sent successfully! We\'ll get back to you soon.', 'success');
+                contactForm.reset();
+                
+                submitButton.disabled = false;
+                submitButton.innerHTML = originalText;
+                
+                // Hide success message after 5 seconds
+                setTimeout(() => {
+                    formStatus.classList.remove('success');
+                    formStatus.textContent = '';
+                    formStatus.style.opacity = 0;
+                }, 5000);
+            }, 1500);
+        });
+    }
+    
+    function showFormStatus(message, type) {
+        formStatus.textContent = message;
+        formStatus.className = 'form-status';
+        formStatus.classList.add(type);
+        formStatus.style.opacity = 1;
+        
+        // Scroll to form status if not visible
+        if (!isElementInViewport(formStatus)) {
+            formStatus.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+    }
+    
+    function isElementInViewport(el) {
+        const rect = el.getBoundingClientRect();
+        return (
+            rect.top >= 0 &&
+            rect.left >= 0 &&
+            rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+            rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+        );
+    }
 });
