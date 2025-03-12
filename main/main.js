@@ -1,20 +1,124 @@
 // Theme toggle functionality
 document.addEventListener('DOMContentLoaded', function() {
-    // Theme toggle
     const themeToggle = document.querySelector('.theme-toggle');
-    
-    themeToggle.addEventListener('click', () => {
-        document.body.classList.toggle('dark-theme');
-        const icon = themeToggle.querySelector('i');
-        
-        if (icon.classList.contains('ri-sun-line')) {
-            icon.classList.remove('ri-sun-line');
-            icon.classList.add('ri-moon-line');
-        } else {
-            icon.classList.remove('ri-moon-line');
-            icon.classList.add('ri-sun-line');
+    const body = document.body;
+
+    // Check for saved theme preference or use default
+    const currentTheme = localStorage.getItem('theme');
+    if (currentTheme) {
+        body.classList.add(currentTheme);
+        if (currentTheme === 'dark-theme') {
+            themeToggle.querySelector('i').classList.replace('ri-sun-line', 'ri-moon-line');
         }
+    }
+
+    // Theme toggle event listener
+    themeToggle.addEventListener('click', function() {
+        body.classList.toggle('dark-theme');
+        
+        let theme = 'light';
+        let iconClass = 'ri-sun-line';
+        let newIconClass = 'ri-moon-line';
+        
+        if (body.classList.contains('dark-theme')) {
+            theme = 'dark-theme';
+            iconClass = 'ri-moon-line';
+            newIconClass = 'ri-sun-line';
+        }
+        
+        localStorage.setItem('theme', theme);
+        themeToggle.querySelector('i').classList.replace(newIconClass, iconClass);
     });
+
+    // Video play functionality
+    const videoContainer = document.querySelector('.video-container');
+    const playButton = document.querySelector('.play-button');
+    
+    if (videoContainer && playButton) {
+        playButton.addEventListener('click', function() {
+            const thumbnail = videoContainer.querySelector('.video-thumbnail');
+            const iframe = document.createElement('iframe');
+            
+            // Replace with your actual YouTube/Vimeo video URL
+            iframe.src = "https://www.youtube.com/embed/your-video-id?autoplay=1";
+            iframe.width = "100%";
+            iframe.height = "100%";
+            iframe.frameBorder = "0";
+            iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+            iframe.allowFullscreen = true;
+            
+            // Hide thumbnail and play button, insert video
+            thumbnail.style.display = 'none';
+            playButton.style.display = 'none';
+            videoContainer.appendChild(iframe);
+        });
+    }
+
+    // Course Video Functionality
+    const coursePlayButtons = document.querySelectorAll('.course-play-button');
+    
+    // Create video modal if it doesn't exist
+    if (coursePlayButtons.length > 0) {
+        // Create modal only if it doesn't exist
+        if (!document.querySelector('.course-video-modal')) {
+            const videoModal = document.createElement('div');
+            videoModal.className = 'course-video-modal';
+            videoModal.innerHTML = `
+                <div class="course-video-container">
+                    <div class="close-video"><i class="ri-close-line"></i></div>
+                    <div id="course-video-player"></div>
+                </div>
+            `;
+            document.body.appendChild(videoModal);
+            
+            // Close modal functionality
+            const closeBtn = videoModal.querySelector('.close-video');
+            closeBtn.addEventListener('click', () => {
+                videoModal.classList.remove('active');
+                const videoPlayer = document.getElementById('course-video-player');
+                videoPlayer.innerHTML = '';
+            });
+        }
+        
+        // Setup video play buttons
+        coursePlayButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const videoId = this.getAttribute('data-video');
+                let videoUrl = '';
+                
+                // Map video IDs to actual URLs
+                // In real implementation, these would be your actual YouTube/Vimeo URLs
+                const videoMap = {
+                    'web-dev-intro': 'https://www.youtube.com/embed/qz0aGYrrlhU?autoplay=1',
+                    'data-science-intro': 'https://www.youtube.com/embed/ua-CiDNNj30?autoplay=1',
+                    'marketing-intro': 'https://www.youtube.com/embed/bixR-KIJKYM?autoplay=1',
+                    'ui-design-intro': 'https://www.youtube.com/embed/c9Wg6Cb_YlU?autoplay=1',
+                    'mobile-dev-intro': 'https://www.youtube.com/embed/0-S5a0eXPoc?autoplay=1',
+                    'cybersecurity-intro': 'https://www.youtube.com/embed/inWWhr5tnEA?autoplay=1'
+                };
+                
+                videoUrl = videoMap[videoId] || 'https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1';
+                
+                const iframe = document.createElement('iframe');
+                iframe.src = videoUrl;
+                iframe.width = "100%";
+                iframe.height = "100%";
+                iframe.frameBorder = "0";
+                iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+                iframe.allowFullscreen = true;
+                
+                const videoPlayer = document.getElementById('course-video-player');
+                videoPlayer.innerHTML = '';
+                videoPlayer.appendChild(iframe);
+                
+                // Show modal
+                const videoModal = document.querySelector('.course-video-modal');
+                videoModal.classList.add('active');
+            });
+        });
+    }
     
     // Enhanced Navigation with Smooth Scrolling
     const navLinks = document.querySelectorAll('.floating-sidebar nav a');
