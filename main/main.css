@@ -206,7 +206,7 @@ body {
         flex-direction: row;
         justify-content: space-around;
         overflow-x: auto;
-        padding-bottom: 5px;
+        padding-bottom: 8px; /* Increased to allow space for scrollbar */
     }
     
     .floating-sidebar nav a {
@@ -233,6 +233,1178 @@ body {
         top: 0;
         left: 0;
         border-radius: 0 0 4px 4px;
+    }
+}
+
+/* Hero Section - Updated for better alignment */
+.content {
+    margin-left: 120px; /* Increased from 100px */
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    width: calc(100% - 120px);
+}
+
+.hero {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 100vh;
+    width: 100%;
+    padding: 0 5%;
+    max-width: 1400px; /* Increased from 1200px */
+    margin: 0 auto;
+    gap: 5%;
+    position: relative;
+}
+
+.hero-content {
+    flex: 1;
+    max-width: 560px;
+}
+
+.hero-content h1 {
+    font-size: 3.7rem; /* Increased from 3.2rem */
+    font-weight: 700;
+    margin-bottom: 20px;
+    line-height: 1.1;
+    color: var(--text);
+    position: relative;
+    overflow: hidden; /* Prevent overflow */
+    text-overflow: ellipsis; /* Add ellipsis if needed */
+}
+
+.hero-content h1 span {
+    background: linear-gradient(to right, var(--secondary),var(--primary));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    position: relative;
+    display: inline-block;
+    /* Removed padding-bottom since we no longer need space for underline */
+}
+
+/* Remove the underline animation */
+.hero-content h1 span::after {
+    content: none;
+}
+
+/* Remove the now unnecessary animation */
+@keyframes underlineAnimation {
+    to {
+        transform: scaleX(1);
+    }
+}
+
+.hero-content p {
+    font-size: 1.3rem; /* Increased from 1.2rem */
+    margin-bottom: 40px; /* Increased from 30px */
+    color: var(--text);
+    line-height: 1.6;
+    opacity: 0.9;
+}
+
+.hero-buttons {
+    display: flex;
+    gap: 20px; /* Increased from 15px */
+    margin-top: 10px;
+}
+
+/* Enhanced Button Styling with New Hover Effects */
+.btn {
+    padding: 14px 28px;
+    border-radius: 30px;
+    font-size: 1rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+
+/* Updated primary button with single-color hover effect */
+.primary-btn {
+    background: var(--primary);
+    color: white;
+    border: none;
+    box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+    transition: all 0.4s ease;
+}
+
+.primary-btn:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--primary);
+    border-radius: 30px;
+    z-index: -1;
+    opacity: 0;
+    transform: scale(0.85);
+    transition: transform 0.4s ease, opacity 0.3s ease;
+}
+
+.primary-btn:hover {
+    transform: translateY(-3px);
+    color: white;
+    background: var(--primary);
+    box-shadow: 0 10px 25px rgba(255, 107, 107, 0.5);
+    letter-spacing: 0.3px;
+}
+
+.primary-btn:hover:before {
+    transform: scale(1.1);
+    opacity: 0.3;
+}
+
+/* New outline button hover effect */
+.outline-btn {
+    background: transparent;
+    color: var(--primary);
+    border: 2px solid var(--primary);
+    transition: all 0.4s ease;
+}
+
+.outline-btn:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 0;
+    background: var(--primary);
+    opacity: 0.15;
+    transition: height 0.4s ease;
+    z-index: -1;
+}
+
+.outline-btn:hover {
+    transform: translateY(-3px);
+    color: var(--primary);
+    border-color: var(--primary);
+    letter-spacing: 0.5px;
+    box-shadow: 0 5px 15px rgba(255, 107, 107, 0.2);
+}
+
+.outline-btn:hover:before {
+    height: 100%;
+}
+
+/* Ripple animation for primary button */
+@keyframes ripple {
+    0% {
+        opacity: 1;
+        transform: scale(0);
+    }
+    40% {
+        opacity: 0.7;
+        transform: scale(10);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(35);
+    }
+}
+
+/* Hero Image Area - Enhanced with more space */
+.hero-image {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    height: 500px; /* Fixed height for better positioning */
+}
+
+.image-container {
+    width: 360px; /* Increased from 300px */
+    height: 360px; /* Increased from 300px */
+    background: var(--gradient);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow);
+    position: relative;
+    border: 1px solid var(--border-color);
+    animation: float 6s ease-in-out infinite;
+    z-index: 2;
+}
+
+.image-container i {
+    font-size: 140px; /* Increased from 120px */
+    color: var(--primary);
+    animation: grow 3s ease-in-out infinite alternate;
+}
+
+/* Floating Badges */
+.floating-badge {
+    position: absolute;
+    background: var(--card-bg);
+    border-radius: 30px;
+    padding: 10px 16px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border-color);
+    z-index: 3;
+    backdrop-filter: blur(10px);
+}
+
+.floating-badge i {
+    font-size: 1.1rem;
+    color: var(--primary);
+}
+
+.badge-1 {
+    top: 20%;
+    left: 0;
+    animation: floatBadge 7s ease-in-out infinite;
+}
+
+.badge-2 {
+    bottom: 30%;
+    left: 15%;
+    animation: floatBadge 8s ease-in-out infinite 1s;
+}
+
+.badge-3 {
+    top: 25%;
+    right: 5%;
+    animation: floatBadge 7.5s ease-in-out infinite 0.5s;
+}
+
+.badge-4 {
+    bottom: 20%;
+    right: 15%;
+    animation: floatBadge 9s ease-in-out infinite 1.5s;
+}
+
+@keyframes floatBadge {
+    0%, 100% { transform: translate(0, 0); }
+    25% { transform: translate(-10px, 10px); }
+    50% { transform: translate(0, 15px); }
+    75% { transform: translate(10px, 5px); }
+}
+
+/* Update existing animations for smoother movement */
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-25px); }
+}
+
+@keyframes grow {
+    0% { transform: scale(0.92); }
+    100% { transform: scale(1.08); }
+}
+
+/* Mobile Responsive - Updated for better spacing */
+@media (max-width: 1200px) {
+    .hero-content h1 {
+        font-size: 3.5rem;
+    }
+    
+    .image-container {
+        width: 320px;
+        height: 320px;
+    }
+    
+    .image-container i {
+        font-size: 120px;
+    }
+}
+
+@media (max-width: 992px) {
+    .hero {
+        flex-direction: column;
+        padding: 100px 20px;
+        height: auto;
+        gap: 60px;
+    }
+    
+    .hero-content {
+        text-align: center;
+        margin-bottom: 0;
+        max-width: 720px;
+    }
+    
+    .hero-content h1 {
+        font-size: 3rem;
+        white-space: normal; /* Allow wrapping on medium screens */
+    }
+    
+    .hero-buttons {
+        justify-content: center;
+    }
+    
+    .hero-image {
+        height: 400px;
+    }
+    
+    /* Reposition badges on medium screens */
+    .badge-1 {
+        top: 10%;
+        left: 10%;
+    }
+    
+    .badge-2 {
+        bottom: 20%;
+        left: 5%;
+    }
+    
+    .badge-3 {
+        top: 10%;
+        right: 10%;
+    }
+    
+    .badge-4 {
+        bottom: 15%;
+        right: 5%;
+    }
+}
+
+@media (max-width: 768px) {
+    .content {
+        margin-left: 0;
+        padding: 20px 15px 100px;
+        width: 100%;
+    }
+    
+    .hero {
+        padding: 80px 15px;
+        gap: 40px;
+    }
+    
+    .hero-content h1 {
+        font-size: 2.5rem;
+    }
+    
+    .hero-content p {
+        font-size: 1.1rem;
+        margin-bottom: 30px;
+    }
+    
+    .hero-image {
+        height: 340px;
+    }
+    
+    .image-container {
+        width: 240px;
+        height: 240px;
+    }
+    
+    .image-container i {
+        font-size: 100px;
+    }
+    
+    /* Adjust badge size and position for mobile */
+    .floating-badge {
+        padding: 8px 12px;
+        font-size: 0.8rem;
+    }
+    
+    .floating-badge i {
+        font-size: 1rem;
+    }
+    
+    .badge-1 {
+        top: 5%;
+        left: 5%;
+    }
+    
+    .badge-2 {
+        bottom: 15%;
+        left: 0;
+    }
+    
+    .badge-3 {
+        top: 5%;
+        right: 0;
+    }
+    
+    .badge-4 {
+        bottom: 10%;
+        right: 5%;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-content h1 {
+        font-size: 2rem;
+    }
+    
+    .hero-buttons {
+        flex-direction: column;
+        gap: 12px;
+        width: 80%;
+        margin: 0 auto;
+    }
+    
+    .btn {
+        width: 100%;
+    }
+    
+    .image-container {
+        width: 200px;
+        height: 200px;
+    }
+    
+    .image-container i {
+        font-size: 80px;
+    }
+    
+    /* Hide some badges on very small screens */
+    .badge-2, .badge-4 {
+        display: none;
+    }
+}
+
+/* Social Icons - Repositioned within hero content */
+.social-icons {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 25px;
+    position: relative; /* Changed from absolute */
+    animation: none; /* Removed floating animation */
+}
+
+.social-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: var(--card-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text);
+    text-decoration: none;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow);
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.social-icon i {
+    font-size: 1.1rem;
+    color: var(--primary);
+    transition: all 0.3s ease;
+}
+
+.social-icon:hover {
+    transform: translateY(-5px);
+    background: var(--primary);
+}
+
+.social-icon:hover i {
+    color: white;
+}
+
+/* Contact Details Batch - Updated with lighter colors */
+.contact-batch {
+    position: absolute;
+    top: 30px;
+    right: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    z-index: 10;
+    animation: floatBadge 9s ease-in-out infinite; /* Changed to match floating badges */
+}
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255, 107, 107, 0.01); /* Reduced background opacity */
+    padding: 8px 15px;
+    border-radius: 30px;
+    box-shadow: var(--shadow);
+    border: 1.5px solid rgba(255, 107, 107, 0.5); /* Reduced border opacity */
+    backdrop-filter: blur(8px);
+    transition: all 0.3s ease;
+}
+
+.contact-item i {
+    font-size: 1.1rem;
+    color: var(--primary);
+    transition: all 0.3s ease;
+}
+
+.contact-item span {
+    font-size: 0.85rem;
+    color: var(--text);
+    font-weight: 500;
+    white-space: nowrap;
+    transition: all 0.3s ease;
+}
+
+.contact-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(255, 107, 107, 0.15); /* Reduced shadow opacity */
+    background: rgba(255, 107, 107, 0.08); /* Reduced hover background opacity */
+    border-color: var(--primary); /* Full color on hover */
+}
+
+/* Remove separate animation for contact-batch since it now uses floatBadge */
+@keyframes floatContact {
+    0% { transform: translate(0, 0); }
+    50% { transform: translate(10px, 5px); }
+    100% { transform: translate(0, 15px); }
+}
+
+/* Responsive styles for contact batch */
+@media (max-width: 992px) {
+    .contact-batch {
+        right: 20px; /* Changed from left: 30px to right: 20px */
+        top: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .contact-batch {
+        position: absolute;
+        top: 15px;
+        right: 15px; /* Changed from left: 15px to right: 15px */
+    }
+    
+    .contact-item {
+        padding: 6px 12px;
+    }
+    
+    .contact-item span {
+        font-size: 0.75rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .contact-batch {
+        position: relative;
+        top: 0;
+        left: 0;
+        width: 100%;
+        align-items: center;
+        padding: 10px 0;
+        animation: none; /* Remove animation on mobile */
+        order: -1;
+    }
+    
+    .contact-item {
+        width: 80%;
+        justify-content: center;
+        border-width: 1px; /* Thinner border on mobile */
+    }
+}
+
+/* Update responsive layout for mobile to accommodate both social icons and contact batch */
+@media (max-width: 480px) {
+    .hero {
+        flex-direction: column;
+        padding: 10px 15px 60px;
+    }
+    
+    .social-icons {
+        margin-bottom: 20px;
+    }
+}
+
+/* Remove the now unnecessary styles */
+@keyframes floatSocial {
+    0% { transform: translate(0, 0); }
+    100% { transform: translate(0, 10px); }
+}
+
+/* About Section Styling - Enhanced for better visual appeal */
+.about-section {
+    padding: 60px 4% 100px;
+    max-width: 1400px;
+    margin: 0 auto;
+    min-height: 60vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Add decorative elements */
+.about-section::before {
+    content: "";
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, var(--primary) 0%, transparent 70%);
+    opacity: 0.05;
+    border-radius: 50%;
+    top: -150px;
+    left: -150px;
+    z-index: -1;
+}
+
+.about-section::after {
+    content: "";
+    position: absolute;
+    width: 250px;
+    height: 250px;
+    background: radial-gradient(circle, var(--secondary) 0%, transparent 70%);
+    opacity: 0.05;
+    border-radius: 50%;
+    bottom: -100px;
+    right: -100px;
+    z-index: -1;
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.section-header h2 {
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 15px;
+    position: relative;
+    display: inline-block;
+}
+
+.section-header h2::after {
+    content: "";
+    position: absolute;
+    height: 4px;
+    width: 60px;
+    background: var(--primary);
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 2px;
+}
+
+.section-header h2 span {
+    background: linear-gradient(to right, var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.section-header p {
+    font-size: 1.15rem;
+    color: var(--text);
+    opacity: 0.85;
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+    margin-top: 25px;
+}
+
+.about-content {
+    display: flex;
+    width: 100%;
+    gap: 7%;
+    margin-top: 40px;
+    align-items: center;
+}
+
+.about-text-column, .about-image-column {
+    flex: 1;
+}
+
+.about-text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
+    padding: 20px 0;
+}
+
+.about-text h3 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: var(--text);
+    position: relative;
+    padding-left: 15px;
+}
+
+.about-text h3::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 4px;
+    background: var(--primary);
+    border-radius: 2px;
+}
+
+.about-description {
+    font-size: 1.2rem;
+    line-height: 1.8;
+    color: var(--text);
+    opacity: 0.9;
+    position: relative;
+    font-weight: 400;
+    margin-bottom: 30px;
+}
+
+.about-features {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.feature-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.feature-item i {
+    color: var(--primary);
+    font-size: 1.2rem;
+    background: rgba(255, 107, 107, 0.1);
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.feature-item span {
+    font-size: 1.05rem;
+    font-weight: 500;
+}
+
+.about-image {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    height: 450px;
+    width: 100%;
+}
+
+.about-image .image-container {
+    width: 340px;
+    height: 340px;
+    background: linear-gradient(135deg, rgba(108, 92, 231, 0.1), rgba(255, 107, 107, 0.1));
+}
+
+.about-image .image-container i {
+    font-size: 140px;
+    color: var(--secondary);
+}
+
+.badge-about-1 {
+    top: 15%;
+    right: 10%;
+    animation: floatBadge 8s ease-in-out infinite 0.5s;
+}
+
+.badge-about-2 {
+    bottom: 20%;
+    left: 5%;
+    animation: floatBadge 7s ease-in-out infinite 1s;
+}
+
+/* Media Queries for About Section - Updated for better alignment */
+@media (max-width: 1200px) {
+    .about-content {
+        gap: 5%;
+    }
+    
+    .about-description {
+        font-size: 1.15rem;
+    }
+    
+    .about-image .image-container {
+        width: 300px;
+        height: 300px;
+    }
+    
+    .about-image .image-container i {
+        font-size: 120px;
+    }
+}
+
+@media (max-width: 992px) {
+    .about-content {
+        flex-direction: column-reverse;
+        gap: 30px;
+    }
+    
+    .about-text-column, .about-image-column {
+        width: 100%;
+    }
+    
+    .about-text {
+        align-items: center;
+        text-align: center;
+    }
+    
+    .about-text h3 {
+        padding-left: 0;
+        padding-bottom: 10px;
+    }
+    
+    .about-text h3::before {
+        width: 60px;
+        height: 3px;
+        left: 50%;
+        top: auto;
+        bottom: 0;
+        transform: translateX(-50%);
+    }
+    
+    .about-description {
+        text-align: center;
+        max-width: 700px;
+        margin: 0 auto 30px;
+    }
+    
+    .about-features {
+        align-items: center;
+    }
+    
+    .about-image {
+        height: 350px;
+    }
+}
+
+@media (max-width: 768px) {
+    .about-section {
+        padding: 40px 15px 60px;
+        min-height: auto;
+    }
+    
+    .section-header {
+        margin-bottom: 30px;
+    }
+    
+    .section-header h2 {
+        font-size: 2.4rem;
+    }
+    
+    .about-description {
+        font-size: 1.05rem;
+        line-height: 1.7;
+    }
+    
+    .about-text h3 {
+        font-size: 1.5rem;
+    }
+    
+    .feature-item span {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .about-section {
+        padding: 30px 15px 50px;
+    }
+    
+    .about-image {
+        height: 280px;
+    }
+    
+    .about-image .image-container {
+        width: 240px;
+        height: 240px;
+    }
+    
+    .about-image .image-container i {
+        font-size: 100px;
+    }
+    
+    .section-header h2 {
+        font-size: 2rem;
+    }
+    
+    .section-header p {
+        font-size: 1rem;
+    }
+}
+
+/* Custom Scrollbar Styling */
+/* Hide scrollbars completely while maintaining scroll functionality */
+/* Hide scrollbars for Chrome, Safari and Opera */
+::-webkit-scrollbar {
+    display: none;
+}
+
+/* Hide scrollbars for IE, Edge and Firefox */
+* {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+/* Keep the padding for mobile nav to ensure content isn't cut off */
+@media (max-width: 768px) {
+    .floating-sidebar nav {
+        padding-bottom: 8px;
+    }
+}
+
+/* Team Section Styling - Updated for 5 cards per row */
+.team-section {
+    padding: 80px 4% 100px;
+    max-width: 1400px;
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Add decorative elements similar to about section */
+.team-section::before {
+    content: "";
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, var(--secondary) 0%, transparent 70%);
+    opacity: 0.05;
+    border-radius: 50%;
+    top: -150px;
+    right: -150px;
+    z-index: -1;
+}
+
+.team-section::after {
+    content: "";
+    position: absolute;
+    width: 250px;
+    height: 250px;
+    background: radial-gradient(circle, var(--primary) 0%, transparent 70%);
+    opacity: 0.05;
+    border-radius: 50%;
+    bottom: -100px;
+    left: -100px;
+    z-index: -1;
+}
+
+.team-container {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); /* Changed from auto-fill to exactly 5 columns */
+    gap: 20px; /* Reduced from 30px to accommodate 5 cards */
+    margin-top: 50px;
+    width: 100%;
+}
+
+.team-member {
+    background: var(--card-bg);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    backdrop-filter: blur(10px);
+}
+
+.team-member:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 35px rgba(108, 92, 231, 0.15);
+}
+
+.member-image {
+    height: 180px; /* Reduced from 220px to fit better in smaller cards */
+    background: linear-gradient(135deg, rgba(108, 92, 231, 0.1), rgba(255, 107, 107, 0.1));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.member-image i {
+    font-size: 80px; /* Reduced from 100px */
+    color: var(--secondary);
+    transition: all 0.3s ease;
+}
+
+.team-member:hover .member-image i {
+    transform: scale(1.1);
+    color: var(--primary);
+}
+
+.member-social {
+    position: absolute;
+    bottom: -40px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    transition: all 0.4s ease;
+    opacity: 0;
+    backdrop-filter: blur(0);
+    padding: 10px 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.3), transparent);
+    z-index: 10; /* Ensure higher z-index */
+    pointer-events: none; /* Make the container not interfere with hover */
+}
+
+.team-member:hover .member-social {
+    bottom: 0;
+    opacity: 1;
+    backdrop-filter: blur(3px);
+    pointer-events: all; /* Re-enable pointer events on hover */
+}
+
+.member-social a {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--card-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text);
+    text-decoration: none;
+    border: 1px solid var(--border-color);
+    transition: transform 0.3s ease, background 0.3s ease, opacity 0.3s ease;
+    box-shadow: var(--shadow);
+    transform: translateY(10px);
+    opacity: 0;
+    position: relative; /* Ensure proper stacking */
+    z-index: 11; /* Higher than the container */
+}
+
+.team-member:hover .member-social a {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+/* Add staggered animation delay for social icons */
+.team-member:hover .member-social a:nth-child(1) {
+    transition-delay: 0.1s;
+}
+
+.team-member:hover .member-social a:nth-child(2) {
+    transition-delay: 0.2s;
+}
+
+.team-member:hover .member-social a:nth-child(3) {
+    transition-delay: 0.3s;
+}
+
+.member-social a i {
+    font-size: 1rem;
+    color: var(--primary);
+    transition: all 0.3s ease;
+}
+
+.member-social a:hover {
+    transform: translateY(-5px) scale(1.1);
+    background: black;
+}
+
+.member-social a:hover i {
+    color: white;
+    font-size: 1rem;
+}
+
+.member-info {
+    padding: 20px 15px; /* Reduced padding from 25px 20px */
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.member-info h3 {
+    font-size: 1.2rem; /* Reduced from 1.4rem */
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--text);
+}
+
+.member-role {
+    color: var(--primary);
+    font-weight: 500;
+    margin-bottom: 15px;
+    font-size: 1rem;
+    position: relative;
+    display: inline-block;
+    align-self: center;
+}
+
+.member-role::after {
+    content: "";
+    position: absolute;
+    width: 40px;
+    height: 2px;
+    background: var(--primary);
+    bottom: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 2px;
+    opacity: 0.7;
+}
+
+.member-desc {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--text);
+    opacity: 0.9;
+    margin-top: 10px;
+}
+
+/* Responsive adjustments - updated for better scaling */
+@media (max-width: 1200px) {
+    .team-container {
+        grid-template-columns: repeat(4, 1fr); /* 4 cards per row on large screens */
+    }
+}
+
+@media (max-width: 992px) {
+    .team-container {
+        grid-template-columns: repeat(3, 1fr); /* 3 cards per row on medium screens */
+    }
+}
+
+@media (max-width: 768px) {
+    .team-section {
+        padding: 50px 15px 70px;
+    }
+    
+    .team-container {
+        grid-template-columns: repeat(2, 1fr); /* 2 cards per row on small screens */
+        margin-top: 30px;
+        gap: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .team-container {
+        grid-template-columns: 1fr; /* 1 card per row on very small screens */
+        max-width: 280px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    .member-image {
+        height: 180px;
+    }
+    
+    .member-image i {
+        font-size: 80px;
     }
 }
 
