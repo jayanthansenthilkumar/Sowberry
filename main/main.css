@@ -68,18 +68,55 @@ body.dark-theme {
 
 /* Theme Toggle Button */
 .theme-toggle {
-    cursor: pointer;
-    font-size: 16px;
-    padding: 6px;
-    background: var(--gradient);
+    position: fixed;
+    bottom: 30px;
+    left: 30px;
+    z-index: 1000;
+    width: 45px;
+    height: 45px;
     border-radius: 50%;
-    width: 30px;
-    height: 30px;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow);
+    cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid var(--border-color);
     transition: all 0.3s ease;
+}
+
+.theme-toggle:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(108, 92, 231, 0.3);
+}
+
+.theme-toggle i {
+    font-size: 22px;
+    color: var(--primary);
+    transition: all 0.3s ease;
+}
+
+/* Responsive adjustments for theme toggle button */
+@media (max-width: 768px) {
+    .theme-toggle {
+        bottom: 20px;
+        left: 20px;
+        width: 40px;
+        height: 40px;
+    }
+    
+    .theme-toggle i {
+        font-size: 18px;
+    }
+}
+
+@media (max-width: 480px) {
+    .theme-toggle {
+        bottom: 85px;
+        left: 20px;
+        width: 35px;
+        height: 35px;
+    }
 }
 
 /* ===========================
@@ -1358,7 +1395,7 @@ body.dark-theme {
 
 .member-social a i {
     font-size: 1rem;
-    color: var(--primary);
+    color: var (--primary);
     transition: all 0.3s ease;
 }
 
