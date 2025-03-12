@@ -490,9 +490,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 else if (message.includes('course') || message.includes('class') || message.includes('program')) {
                     return "We offer Web Dev, Data Science, Digital Marketing, UI/UX, Mobile Dev, and Cybersecurity.";
                 }
-                else if (message.includes('price') || message.includes('cost') || message.includes('fee')) {
-                    return "Contact admissions for current pricing details.";
-                }
                 else if (message.includes('enroll') || message.includes('join') || message.includes('register') || message.includes('sign up')) {
                     return "Click 'Enroll Now' on any course page to register.";
                 }
@@ -564,9 +561,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 else if (message.includes('internship')) {
                     return "Top students get internship opportunities.";
-                }
-                else if (message.includes('refund') || message.includes('money back')) {
-                    return "7-day money-back guarantee.";
                 }
                 else {
                     return "How can I help with our courses?";
