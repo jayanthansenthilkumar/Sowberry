@@ -483,33 +483,93 @@ document.addEventListener('DOMContentLoaded', function() {
             function generateResponse(message) {
                 message = message.toLowerCase();
                 
-                // Simple response logic
+                // Simple response logic with very concise answers
                 if (message.includes('hello') || message.includes('hi ') || message.includes('hey')) {
-                    return "Hello! How can I help you today?";
+                    return "Hello! How can I help you?";
                 }
                 else if (message.includes('course') || message.includes('class') || message.includes('program')) {
-                    return "We offer various courses including Web Development, Data Science, Digital Marketing, UI/UX Design, Mobile Development, and Cybersecurity. Which one are you interested in?";
+                    return "We offer Web Dev, Data Science, Digital Marketing, UI/UX, Mobile Dev, and Cybersecurity.";
                 }
                 else if (message.includes('price') || message.includes('cost') || message.includes('fee')) {
-                    return "Our course prices vary depending on the program and duration. Please visit the specific course page for detailed pricing information, or contact our admissions team for personalized information.";
+                    return "Contact admissions for current pricing details.";
                 }
                 else if (message.includes('enroll') || message.includes('join') || message.includes('register') || message.includes('sign up')) {
-                    return "To enroll in our courses, click the 'Enroll Now' button on the course page. You'll need to create an account, complete your profile, and proceed with the payment to secure your spot.";
+                    return "Click 'Enroll Now' on any course page to register.";
                 }
                 else if (message.includes('contact') || message.includes('reach') || message.includes('support')) {
-                    return "You can contact us at berries@sowberry.com or call us at +91 8825756388. Our support team is available Monday to Friday from 9:00 AM to 6:00 PM.";
+                    return "Email: berries@sowberry.com | Phone: +91 8825756388";
                 }
                 else if (message.includes('location') || message.includes('address') || message.includes('where')) {
-                    return "We are located at 123 Education Avenue, Chennai, Tamil Nadu 600001. You can find directions on our Contact page.";
+                    return "123 Education Avenue, Chennai, TN 600001";
                 }
                 else if (message.includes('thank')) {
-                    return "You're welcome! Is there anything else I can help you with?";
+                    return "You're welcome!";
                 }
                 else if (message.includes('bye') || message.includes('goodbye')) {
-                    return "Thank you for chatting with me! Have a great day. Feel free to return if you have more questions.";
+                    return "Thanks for chatting!";
+                }
+                else if (message.includes('web development') || message.includes('web dev') || message.includes('frontend') || message.includes('backend')) {
+                    return "8-week course: HTML, CSS, JS, React, Node.js";
+                }
+                else if (message.includes('data science') || message.includes('machine learning') || message.includes('ml') || message.includes('ai')) {
+                    return "12-week course: Python, statistics, ML basics";
+                }
+                else if (message.includes('digital marketing') || message.includes('marketing') || message.includes('seo')) {
+                    return "6-week course: SEO, social media, content marketing";
+                }
+                else if (message.includes('ui') || message.includes('ux') || message.includes('design')) {
+                    return "10-week course: UX research, wireframing, prototyping";
+                }
+                else if (message.includes('mobile') || message.includes('app development') || message.includes('android') || message.includes('ios')) {
+                    return "14-week course: React Native for iOS/Android";
+                }
+                else if (message.includes('cyber') || message.includes('security') || message.includes('hacking')) {
+                    return "12-week course: Network security and ethical hacking";
+                }
+                else if (message.includes('certificate') || message.includes('certification')) {
+                    return "All courses include industry-recognized certificates.";
+                }
+                else if (message.includes('job') || message.includes('career') || message.includes('placement')) {
+                    return "Career support with 200+ hiring partners.";
+                }
+                else if (message.includes('schedule') || message.includes('timing') || message.includes('time')) {
+                    return "Full-time and part-time options available.";
+                }
+                else if (message.includes('faculty') || message.includes('teacher') || message.includes('instructor') || message.includes('mentor')) {
+                    return "Industry professionals with 8+ years experience.";
+                }
+                else if (message.includes('prerequisite') || message.includes('eligibility')) {
+                    return "Basic computer skills for beginner courses.";
+                }
+                else if (message.includes('duration') || message.includes('how long') || message.includes('weeks')) {
+                    return "Courses run 6-14 weeks depending on program.";
+                }
+                else if (message.includes('online') || message.includes('remote') || message.includes('virtual')) {
+                    return "Both online and in-person formats available.";
+                }
+                else if (message.includes('material') || message.includes('resource') || message.includes('book')) {
+                    return "All materials included at no extra cost.";
+                }
+                else if (message.includes('scholarship') || message.includes('financial aid') || message.includes('discount')) {
+                    return "Scholarships and payment plans available.";
+                }
+                else if (message.includes('batch') || message.includes('intake') || message.includes('start date')) {
+                    return "New batches start 1st and 15th monthly.";
+                }
+                else if (message.includes('project') || message.includes('portfolio')) {
+                    return "All courses include portfolio-building projects.";
+                }
+                else if (message.includes('demo') || message.includes('trial') || message.includes('free class')) {
+                    return "Free demos every Saturday at 11AM.";
+                }
+                else if (message.includes('internship')) {
+                    return "Top students get internship opportunities.";
+                }
+                else if (message.includes('refund') || message.includes('money back')) {
+                    return "7-day money-back guarantee.";
                 }
                 else {
-                    return "I'm here to help with information about Sowberry Academy's courses, enrollment process, and general inquiries. Could you please provide more details about what you're looking for?";
+                    return "How can I help with our courses?";
                 }
             }
             
