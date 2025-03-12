@@ -580,4 +580,26 @@ document.addEventListener('DOMContentLoaded', function() {
             scrollToBottom();
         }
     }
+
+    // Go to Top Button Functionality
+    const goToTopBtn = document.getElementById('goToTopBtn');
+    
+    if (goToTopBtn) {
+        // Show/hide button based on scroll position
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 500) {
+                goToTopBtn.classList.add('active');
+            } else {
+                goToTopBtn.classList.remove('active');
+            }
+        });
+        
+        // Smooth scroll to top when button is clicked
+        goToTopBtn.addEventListener('click', function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    }
 });

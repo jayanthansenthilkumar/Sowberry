@@ -3705,3 +3705,69 @@ body.dark-theme {
         height: 350px;
     }
 }
+
+/* Go to Top Button */
+.go-to-top {
+    position: fixed;
+    bottom: 110px; /* Positioned above the AI assistant button */
+    right: 30px;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: var(--card-bg);
+    color: var(--primary);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 999;
+}
+
+.go-to-top.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.go-to-top i {
+    font-size: 20px;
+    transition: transform 0.3s ease;
+}
+
+.go-to-top:hover {
+    background: var(--primary);
+    color: white;
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(255, 107, 107, 0.3);
+}
+
+.go-to-top:hover i {
+    transform: translateY(-2px);
+}
+
+/* Responsive adjustments for Go to Top button */
+@media (max-width: 768px) {
+    .go-to-top {
+        bottom: 100px;
+        right: 20px;
+        width: 40px;
+        height: 40px;
+    }
+    
+    .go-to-top i {
+        font-size: 18px;
+    }
+}
+
+@media (max-width: 480px) {
+    .go-to-top {
+        bottom: 85px;
+        right: 20px;
+        width: 35px;
+        height: 35px;
+    }
+}
