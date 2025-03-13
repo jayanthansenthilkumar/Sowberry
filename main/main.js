@@ -12,6 +12,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    // Add Nebula Follower with Spray Effect
+    initNebulaFollower();
+
     // Theme toggle event listener
     themeToggle.addEventListener('click', function() {
         body.classList.toggle('dark-theme');
@@ -603,3 +606,255 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+// Add the Nebula Follower function at the end of the file
+function initNebulaFollower() {
+    // Create container for nebula particles
+    const nebulaContainer = document.createElement('div');
+    nebulaContainer.className = 'nebula-container';
+    document.body.appendChild(nebulaContainer);
+    
+    // Mouse position tracking
+    let mouseX = 0;
+    let mouseY = 0;
+    let prevMouseX = 0;
+    let prevMouseY = 0;
+    let targetX = 0;
+    let targetY = 0;
+    let isActive = false;
+    let isMoving = false;
+    let lastMovementTime = Date.now();
+    let movementTimeout = null;
+    let activeParticles = new Set();
+    
+    // Function to update movement state
+    function updateMovementState(moving) {
+        if (moving !== isMoving) {
+            isMoving = moving;
+            
+            // Update nebula visibility
+            if (mainNebula) {
+                mainNebula.style.opacity = isMoving ? '0.7' : '0';
+            }
+            
+            // Update container class for CSS targeting
+            if (isMoving) {
+                nebulaContainer.classList.add('moving');
+            } else {
+                nebulaContainer.classList.remove('moving');
+            }
+        }
+    }
+    
+    // Track mouse position
+    document.addEventListener('mousemove', (e) => {
+        // Record current position
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+        
+        // Calculate movement distance
+        const dx = mouseX - prevMouseX;
+        const dy = mouseY - prevMouseY;
+        const distance = Math.sqrt(dx*dx + dy*dy);
+        
+        // Detect meaningful movement (> 3px)
+        const significantMovement = distance > 3;
+        
+        if (significantMovement) {
+            // Update last movement time
+            lastMovementTime = Date.now();
+            
+            // Set active state
+            isActive = true;
+            updateMovementState(true);
+            
+            // Clear any existing timeout
+            clearTimeout(movementTimeout);
+            
+            // Create spray particles only for substantial movement
+            if (distance > 5) {
+                const speed = Math.min(20, distance);
+                // Calculate how many particles based on speed
+                const particleCount = Math.min(Math.floor(speed / 3), 5);
+                
+                // Create spray particles in an organized pattern
+                for (let i = 0; i < particleCount; i++) {
+                    createSprayParticle(mouseX, mouseY, dx, dy, i, particleCount, speed);
+                }
+            }
+            
+            // Set timeout to detect when movement stops
+            movementTimeout = setTimeout(() => {
+                updateMovementState(false);
+            }, 200); // Consider movement stopped after 200ms of no significant movement
+        }
+        
+        // Store current position for next comparison
+        prevMouseX = mouseX;
+        prevMouseY = mouseY;
+    });
+    
+    // Deactivate when mouse leaves window
+    document.addEventListener('mouseleave', () => {
+        isActive = false;
+        updateMovementState(false);
+        clearTimeout(movementTimeout);
+    });
+    
+    // Main nebula particle creation
+    function createNebulaParticle() {
+        // Only create particles during movement
+        if (!isActive || !isMoving) return;
+        
+        const particle = document.createElement('div');
+        particle.className = 'nebula-particle';
+        
+        // Add to active particles set for tracking
+        activeParticles.add(particle);
+        
+        // Randomize particle appearance
+        const size = 1 + Math.random() * 10;
+        const opacity = 0.3 + Math.random() * 0.4;
+        
+        // Choose from color palette for more consistent look
+        const colorOptions = [
+            {hue: 250, sat: 90, light: 70}, // Purple
+            {hue: 220, sat: 90, light: 70}, // Blue
+            {hue: 350, sat: 90, light: 70}  // Pink
+        ];
+        
+        const color = colorOptions[Math.floor(Math.random() * colorOptions.length)];
+        
+        particle.style.width = `${size}px`;
+        particle.style.height = `${size}px`;
+        particle.style.backgroundColor = `hsla(${color.hue}, ${color.sat}%, ${color.light}%, ${opacity})`;
+        
+        // Add glow effect proportional to size
+        particle.style.boxShadow = `0 0 ${size/3}px ${size/6}px hsla(${color.hue}, ${color.sat}%, ${color.light}%, 0.3)`;
+        
+        // Position at mouse with slight randomized offset (smaller spread)
+        const offsetX = (Math.random() - 0.5) * 15;
+        const offsetY = (Math.random() - 0.5) * 15;
+        particle.style.left = `${mouseX + offsetX}px`;
+        particle.style.top = `${mouseY + offsetY}px`;
+        
+        nebulaContainer.appendChild(particle);
+        
+        // Animate and remove
+        requestAnimationFrame(() => {
+            particle.style.transform = `translate(${offsetX * 3}px, ${offsetY * 3}px) scale(0)`;
+            particle.style.opacity = '0';
+        });
+        
+        // Remove from DOM after animation completes
+        setTimeout(() => {
+            if (nebulaContainer.contains(particle)) {
+                nebulaContainer.removeChild(particle);
+                activeParticles.delete(particle);
+            }
+        }, 600);
+    }
+    
+    // Spray particle creation (when mouse moves quickly)
+    function createSprayParticle(x, y, dx, dy, index, total, speed) {
+        const particle = document.createElement('div');
+        particle.className = 'spray-particle';
+        
+        // Add to active particles set for tracking
+        activeParticles.add(particle);
+        
+        // Size based on speed with randomness
+        const size = 1.5 + (speed / 20) + (Math.random() * 1.5);
+        const opacity = 0.6 + Math.random() * 0.4;
+        
+        // Select theme color based on index for pattern
+        const colors = [
+            getComputedStyle(document.body).getPropertyValue('--primary').trim(),
+            getComputedStyle(document.body).getPropertyValue('--secondary').trim()
+        ];
+        const color = colors[index % 2];
+        
+        // Set appearance
+        particle.style.width = `${size}px`;
+        particle.style.height = `${size}px`;
+        particle.style.backgroundColor = color;
+        particle.style.opacity = opacity;
+        
+        // Position particle at mouse
+        particle.style.left = `${x}px`;
+        particle.style.top = `${y}px`;
+        
+        nebulaContainer.appendChild(particle);
+        
+        // Calculate organized spray pattern
+        const baseAngle = Math.atan2(dy, dx);
+        
+        // Create fan-like distribution using the index
+        // This creates a nice spread pattern that follows mouse direction
+        const spreadFactor = 0.7; // Tighter spread pattern
+        const angleOffset = ((index / (total - 1)) - 0.5) * spreadFactor;
+        const angle = baseAngle + angleOffset;
+        
+        // Speed based on mouse movement speed
+        const particleSpeed = Math.min(15, speed * 0.7) * (0.8 + Math.random() * 0.3);
+        
+        // Direction components
+        const moveX = Math.cos(angle) * particleSpeed;
+        const moveY = Math.sin(angle) * particleSpeed;
+        
+        // Apply animation with slight delay for better visual
+        requestAnimationFrame(() => {
+            particle.style.transform = `translate(${moveX * 10}px, ${moveY * 10}px) scale(0)`;
+            particle.style.opacity = '0';
+        });
+        
+        // Remove from DOM after animation completes
+        const duration = 450 + (Math.random() * 50);
+        setTimeout(() => {
+            if (nebulaContainer.contains(particle)) {
+                nebulaContainer.removeChild(particle);
+                activeParticles.delete(particle);
+            }
+        }, duration);
+    }
+    
+    // Main nebula that follows cursor
+    const mainNebula = document.createElement('div');
+    mainNebula.className = 'main-nebula';
+    mainNebula.style.opacity = '0'; // Start hidden
+    nebulaContainer.appendChild(mainNebula);
+    
+    // Animation loop for smooth following
+    function updateNebulaPosition() {
+        // Smooth follow with easing
+        targetX += (mouseX - targetX) * 0.2;
+        targetY += (mouseY - targetY) * 0.2;
+        
+        // Update position
+        mainNebula.style.left = `${targetX}px`;
+        mainNebula.style.top = `${targetY}px`;
+        
+        // Create particles only during active movement
+        if (isActive && isMoving && Math.random() > 0.3) {
+            createNebulaParticle();
+        }
+        
+        // Check if we've been inactive for more than 2 seconds
+        const currentTime = Date.now();
+        if (currentTime - lastMovementTime > 2000 && activeParticles.size > 0) {
+            // Force clean up any lingering particles
+            activeParticles.forEach(particle => {
+                if (nebulaContainer.contains(particle)) {
+                    nebulaContainer.removeChild(particle);
+                }
+            });
+            activeParticles.clear();
+        }
+        
+        // Continue animation loop
+        requestAnimationFrame(updateNebulaPosition);
+    }
+    
+    // Start animation
+    updateNebulaPosition();
+}
