@@ -490,6 +490,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (message.includes('hello') || message.includes('hi ') || message.includes('hey')) {
                     return "Hello! How can I help you?";
                 }
+                else if (message.includes('sowberry')) {
+                    return "Sowmiya + Strawberry = Sowberry";
+                }
                 else if (message.includes('course') || message.includes('class') || message.includes('program')) {
                     return "We offer Web Dev, Data Science, Digital Marketing, UI/UX, Mobile Dev, and Cybersecurity.";
                 }
