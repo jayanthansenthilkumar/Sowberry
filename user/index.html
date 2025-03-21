@@ -9,6 +9,7 @@
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <style>
+        /* Variables */
         :root {
             --primary: #ff6b6b;
             --secondary: #6c5ce7;
@@ -18,47 +19,288 @@
             --shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
         }
 
+        /* Layout */
+        .split-container {
+            display: flex;
+            width: 100%;
+            min-height: 100vh;
+            position: relative;
+        }
+
         .brand-side {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            flex: 1;
             position: relative;
             overflow: hidden;
+            padding: 2rem;
+            color: white;
+            z-index: 0;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
         }
 
-        #particles-left,
-        #particles-right {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-        }
-
-        .brand-content,
-        .forms-wrapper {
+        .forms-side {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
             position: relative;
-            z-index: 2;
         }
 
-        canvas {
-            display: block;
-            /* vertical-align: bottom; */
-        }
-
-        /* Update this color in your existing styles */
-        .brand-side::before {
-            content: '';
+        /* Components */
+        .form-section {
             position: absolute;
-            top: 0;
-            left: 0;
             width: 100%;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateX(100px);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 
+                        0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .form-section.active {
+            position: relative;
+            opacity: 1;
+            pointer-events: all;
+            transform: translateX(0);
+        }
+
+        .form-group {
+            margin-bottom: 0.75rem;
+            position: relative;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.6rem 0.75rem;
+            border: 2px solid rgba(108, 92, 231, 0.1);
+            border-radius: 10px;
+            font-size: 0.9rem;
+            line-height: 1.2;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .form-group input:focus {
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 4px rgba(108, 92, 231, 0.1);
+            outline: none;
+        }
+
+        .form-group input::placeholder {
+            color: #6b7280;
+            font-size: 0.95rem;
+        }
+
+        .form-group input:focus::placeholder {
+            color: var(--secondary);
+            opacity: 0.7;
+        }
+
+        .social-login {
+            margin-top: 0.75rem;
+            padding-top: 0.75rem;
+            border-top: 1px solid rgba(108, 92, 231, 0.1);
+        }
+
+        .social-login p {
+            text-align: center;
+            color: #6b7280;
+            margin-bottom: 0.75rem;
+            font-size: 0.85rem;
+        }
+
+        .social-buttons {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .social-btn {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+            padding: 0.5rem;
+            border: 1px solid rgba(108, 92, 231, 0.1);
+            border-radius: 10px;
+            background: white;
+            color: #374151;
+            font-weight: 500;
+            font-size: 0.9rem;
+            font-family: 'Poppins', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .social-btn:hover {
+            border-color: var(--secondary);
+            background: rgba(108, 92, 231, 0.05);
+            transform: translateY(-1px);
+        }
+
+        .social-btn i {
+            font-size: 1.25rem;
+        }
+
+        .social-btn.google i {
+            color: #ea4335;
+        }
+
+        .social-btn.github i {
+            color: #333;
+        }
+
+        .switch-form-link {
+            text-align: center;
+            margin-top: 1rem;
+            color: #6b7280;
+        }
+
+        .switch-form-link a {
+            color: var(--secondary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .switch-form-link a:hover {
+            text-decoration: underline;
+        }
+
+        /* Animations */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.8) translateY(-50%); opacity: 0; }
+            100% { transform: scale(1) translateY(-50%); opacity: 1; }
+        }
+
+        /* Utilities */
+        .validation-message {
+            transition: all 0.3s ease;
+        }
+
+        .validation-message.invalid {
+            cursor: help;
+        }
+
+        .validation-message.invalid:hover::after {
+            content: attr(title);
+            position: absolute;
+            right: -120px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--card-bg);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            white-space: nowrap;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+        }
+
+        /* Add these new styles */
+        .forgot-step {
+            display: none;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .forgot-step.active {
+            display: block;
+            opacity: 1;
+        }
+
+        .otp-wrapper {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            margin: 1rem 0;
+        }
+
+        .otp-input {
+            width: 40px;
+            height: 40px;
+            padding: 0;
+            text-align: center;
+            font-size: 1.2rem;
+            border: 2px solid rgba(108, 92, 231, 0.1);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.9);
+            transition: all 0.3s ease;
+        }
+
+        .otp-input:focus {
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.1);
+            outline: none;
+        }
+
+        .phone-input-group {
+            display: flex;
+            gap: 0.5rem;
+            width: 100%;
+            height: 42px; /* Match other input heights */
+        }
+
+        .input-wrapper {
+            width: 100%;
+        }
+
+        .country-code {
+            width: 110px;
             height: 100%;
-            background: linear-gradient(135deg, var(--primary), var(--secondary)); /* New gradient */
-            z-index: 1;
+            flex: 0 0 110px;
+            padding: 0 0.75rem;
+            border: 2px solid rgba(108, 92, 231, 0.1);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            font-size: 0.9rem;
+            font-family: 'Poppins', sans-serif;
+            color: #374151;
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%236c5ce7' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 8px center;
+            background-size: 16px;
+            padding-right: 32px;
+        }
+
+        .phone-input-wrapper {
+            flex: 1;
+            height: 100%;
+        }
+
+        .phone-input-wrapper input {
+            height: 100%;
+            width: 100%;
+            margin: 0;
+        }
+
+        /* Ensure all form groups have consistent height */
+        .form-group {
+            min-height: 42px;
+            margin-bottom: 1rem;
+        }
+
+        .form-group input,
+        .form-group select {
+            height: 100%;
         }
     </style>
 </head>
+
 <body>
+    <!-- Main container -->
     <div class="split-container">
         <!-- Left Side - Brand -->
         <div class="brand-side">
@@ -81,145 +323,209 @@
         <div class="forms-side">
             <div id="particles-right" class="particles"></div>
             <div class="auth-container">
-                <div class="forms-wrapper">
-                    <div class="forms-container">
-                        <!-- Login Form -->
-                        <div class="form-section login-section active">
-                            <div class="login-header">
-                                <i class="ri-seedling-fill"></i>
-                                <h1>Sowberry</h1>
-                            </div>
-                            <div class="login-form">
-                                <h2>Welcome back!</h2>
-                                <p>Please enter your details to sign in</p>
-                                
-                                <form action="/login" method="POST" id="loginForm">
-                                    <div class="form-group">
-                                        <label for="email">Email</label>
-                                        <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                <div class="forms-container">
+                    <!-- Login Form -->
+                    <div class="form-section login-section active">
+                        <div class="login-header">
+                            <i class="ri-seedling-fill"></i>
+                            <h1>Sowberry</h1>
+                        </div>
+                        <div class="login-form">
+                            <h2>Welcome back!</h2>
+                            <p>Please enter your details to sign in</p>
+                            
+                            <form action="/login" method="POST" id="loginForm">
+                                <div class="form-group">
+                                    <input type="email" id="email" name="email" placeholder="Email address" required>
+                                </div>
+                                <div class="form-group">
+                                    <div class="password-input">
+                                        <input type="password" id="password" name="password" placeholder="Password" required>
+                                        <i class="ri-eye-line toggle-password"></i>
                                     </div>
-                                    <div class="form-group">
-                                        <label for="password">Password</label>
-                                        <div class="password-input">
-                                            <input type="password" id="password" name="password" placeholder="Enter your password" required>
-                                            <i class="ri-eye-line toggle-password"></i>
-                                        </div>
-                                    </div>
-                                    <div class="form-options">
-                                        <label class="remember-me">
-                                            <input type="checkbox" name="remember">
-                                            Remember me
-                                        </label>
-                                        <a href="#" class="forgot-password">Forgot password?</a>
-                                    </div>
-                                    <button type="submit" class="auth-btn">Sign in</button>
-                                </form>
+                                </div>
+                                <div class="form-options">
+                                    <label class="remember-me">
+                                        <input type="checkbox" name="remember">
+                                        Remember me
+                                    </label>
+                                    <a href="#" class="forgot-password">Forgot password?</a>
+                                </div>
+                                <button type="submit" class="auth-btn">Sign in</button>
+                            </form>
 
-                                <div class="social-login">
-                                    <p>Or continue with</p>
-                                    <div class="social-buttons">
-                                        <button class="social-btn google">
-                                            <i class="ri-google-fill"></i>
-                                            Google
-                                        </button>
-                                        <button class="social-btn github">
-                                            <i class="ri-github-fill"></i>
-                                            GitHub
-                                        </button>
+                            <div class="social-login">
+                                <p>Or continue with</p>
+                                <div class="social-buttons">
+                                    <button class="social-btn google">
+                                        <i class="ri-google-fill"></i>
+                                        Google
+                                    </button>
+                                    <button class="social-btn github">
+                                        <i class="ri-github-fill"></i>
+                                        GitHub
+                                    </button>
+                                </div>
+                            </div>
+
+                            <p class="switch-form-link">
+                                Don't have an account? <a href="#" onclick="toggleForms('register')">Sign up</a>
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Updated Registration Form -->
+                    <div class="form-section register-section">
+                        <div class="login-header">
+                            <i class="ri-seedling-fill"></i>
+                            <h1>Sowberry</h1>
+                        </div>
+                        <div class="login-form">
+                            <h2>Create Account</h2>
+                            <p>Please fill in your details to register</p>
+                            
+                            <form action="/register" method="POST" id="registerForm" class="compact-form">
+                                <div class="form-group">
+                                    <div class="input-wrapper">
+                                        <input type="email" id="regEmail" name="email" placeholder="Email address" required>
+                                        <span class="validation-message"></span>
                                     </div>
                                 </div>
 
-                                <p class="switch-form-link">
-                                    Don't have an account? <a href="#" onclick="toggleForms('register')">Sign up</a>
-                                </p>
-                            </div>
+                                <div class="form-group">
+                                    <div class="input-wrapper">
+                                        <input type="text" id="username" name="username" placeholder="Choose username" required disabled>
+                                        <span class="validation-message"></span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="input-wrapper">
+                                        <input type="text" id="fullName" name="fullName" placeholder="Full name" required disabled>
+                                        <span class="validation-message"></span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="input-wrapper">
+                                        <div class="phone-input-group">
+                                            <select class="country-code" id="countryCode" name="countryCode" required disabled>
+                                                <option value="+91" selected>+91 (IN)</option>
+                                                <option value="+1">+1 (US)</option>
+                                                <option value="+44">+44 (UK)</option>
+                                                <option value="+61">+61 (AU)</option>
+                                                <option value="+86">+86 (CN)</option>
+                                                <option value="+81">+81 (JP)</option>
+                                                <option value="+49">+49 (DE)</option>
+                                                <option value="+33">+33 (FR)</option>
+                                                <option value="+7">+7 (RU)</option>
+                                                <option value="+55">+55 (BR)</option>
+                                                <option value="+52">+52 (MX)</option>
+                                                <option value="+82">+82 (KR)</option>
+                                                <option value="+39">+39 (IT)</option>
+                                                <option value="+34">+34 (ES)</option>
+                                                <option value="+1">+1 (CA)</option>
+                                            </select>
+                                            <div class="phone-input-wrapper">
+                                                <input type="tel" id="phone" name="phone" 
+                                                    placeholder="Enter 10 digit number" 
+                                                    maxlength="12" 
+                                                    pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
+                                                    title="Please enter a valid 10-digit phone number"
+                                                    required 
+                                                    disabled>
+                                                <span class="validation-message"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Remove file upload section and go straight to terms -->
+                                <div class="form-options">
+                                    <label class="terms-checkbox">
+                                        <input type="checkbox" name="terms" required disabled>
+                                        <span>I agree to the Terms & Conditions</span>
+                                    </label>
+                                </div>
+
+                                <button type="submit" class="auth-btn" disabled>Create Account</button>
+                            </form>
+
+                            <p class="switch-form-link">
+                                Already have an account? <a href="#" onclick="toggleForms('login')">Sign in</a>
+                            </p>
                         </div>
+                    </div>
 
-                        <!-- Updated Registration Form -->
-                        <div class="form-section register-section">
-                            <div class="login-header">
-                                <i class="ri-seedling-fill"></i>
-                                <h1>Sowberry</h1>
-                            </div>
-                            <div class="login-form">
-                                <h2>Create Account</h2>
-                                <p>Please fill in your details to register</p>
-                                
-                                <form action="/register" method="POST" id="registerForm" class="compact-form">
-                                    <div class="form-group">
-                                        <label for="regEmail">Email</label>
-                                        <div class="input-wrapper">
-                                            <input type="email" id="regEmail" name="email" placeholder="Enter your email" required>
-                                            <span class="validation-message"></span>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="username">Username</label>
-                                        <div class="input-wrapper">
-                                            <input type="text" id="username" name="username" placeholder="Choose a username" required disabled>
-                                            <span class="validation-message"></span>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="fullName">Full Name</label>
-                                        <div class="input-wrapper">
-                                            <input type="text" id="fullName" name="fullName" placeholder="Enter your full name" required disabled>
-                                            <span class="validation-message"></span>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="phone">Phone Number</label>
-                                        <div class="input-wrapper">
-                                            <input type="tel" id="phone" name="phone" placeholder="Enter your phone number" pattern="[0-9]{10}" required disabled>
-                                            <span class="validation-message"></span>
-                                        </div>
-                                    </div>
-
-                                    <!-- Remove file upload section and go straight to terms -->
-                                    <div class="form-options">
-                                        <label class="terms-checkbox">
-                                            <input type="checkbox" name="terms" required disabled>
-                                            <span>I agree to the Terms & Conditions</span>
-                                        </label>
-                                    </div>
-
-                                    <button type="submit" class="auth-btn" disabled>Create Account</button>
-                                </form>
-
-                                <p class="switch-form-link">
-                                    Already have an account? <a href="#" onclick="toggleForms('login')">Sign in</a>
-                                </p>
-                            </div>
+                    <!-- Add Forgot Password Form -->
+                    <div class="form-section forgot-section">
+                        <div class="login-header">
+                            <i class="ri-seedling-fill"></i>
+                            <h1>Sowberry</h1>
                         </div>
-
-                        <!-- Add Forgot Password Form -->
-                        <div class="form-section forgot-section">
-                            <div class="login-header">
-                                <i class="ri-seedling-fill"></i>
-                                <h1>Sowberry</h1>
-                            </div>
-                            <div class="login-form">
+                        <div class="login-form">
+                            <!-- Step 1: Email/Phone -->
+                            <div class="forgot-step step-1 active">
                                 <h2>Reset Password</h2>
-                                <p>Enter your email to receive reset instructions</p>
+                                <p>Enter your email to receive OTP</p>
                                 
-                                <form action="/forgot-password" method="POST" id="forgotForm" class="compact-form">
+                                <form id="forgotForm" class="compact-form">
                                     <div class="form-group">
-                                        <label for="resetEmail">Email</label>
                                         <div class="input-wrapper">
-                                            <input type="email" id="resetEmail" name="email" placeholder="Enter your email" required>
+                                            <input type="email" id="resetEmail" name="email" placeholder="Enter your email address" required>
                                             <span class="validation-message"></span>
                                         </div>
                                     </div>
-                                    <button type="submit" class="auth-btn">Send Reset Link</button>
+                                    <button type="submit" class="auth-btn">Send OTP</button>
                                 </form>
-
-                                <p class="switch-form-link">
-                                    Remember your password? <a href="#" onclick="toggleToLogin()">Sign in</a>
-                                </p>
                             </div>
+
+                            <!-- Step 2: OTP Verification -->
+                            <div class="forgot-step step-2">
+                                <h2>Enter OTP</h2>
+                                <p>Please enter the OTP sent to your email</p>
+                                
+                                <form id="otpForm" class="compact-form">
+                                    <div class="form-group">
+                                        <div class="otp-wrapper">
+                                            <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric" required>
+                                            <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric" required>
+                                            <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric" required>
+                                            <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric" required>
+                                            <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric" required>
+                                            <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric" required>
+                                            <input type="hidden" id="otp" name="otp">
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="auth-btn">Verify OTP</button>
+                                </form>
+                            </div>
+
+                            <!-- Step 3: New Password -->
+                            <div class="forgot-step step-3">
+                                <h2>Set New Password</h2>
+                                <p>Enter your new password</p>
+                                
+                                <form id="resetPasswordForm" class="compact-form">
+                                    <div class="form-group">
+                                        <div class="password-input">
+                                            <input type="password" id="newPassword" name="password" placeholder="New password" required>
+                                            <i class="ri-eye-line toggle-password"></i>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="password-input">
+                                            <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm password" required>
+                                            <i class="ri-eye-line toggle-password"></i>
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="auth-btn">Reset Password</button>
+                                </form>
+                            </div>
+
+                            <p class="switch-form-link">
+                                Remember your password? <a href="#" onclick="toggleToLogin()">Sign in</a>
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -227,98 +533,54 @@
         </div>
     </div>
 
+    <!-- Core Scripts -->
     <script>
-        // Purple particles for left side
+        // Config
         const leftConfig = {
             particles: {
-                number: { value: 80, density: { enable: true, value_area: 800 } },
-                color: { value: "#ffffff" },
-                shape: { type: "circle" },
-                opacity: {
-                    value: 0.5,
-                    random: true,
-                    animation: { enable: true, speed: 1, opacity_min: 0.1 }
-                },
-                size: {
-                    value: 3,
-                    random: true,
-                    animation: { enable: true, speed: 40, size_min: 0.1 }
-                },
+                number: { value: 60 },
+                color: { value: '#ffffff' },
+                opacity: { value: 0.7 },
+                size: { value: 3 },
                 line_linked: {
                     enable: true,
                     distance: 150,
-                    color: "rgba(255, 255, 255, 0.2)",
-                    opacity: 0.2,
+                    color: '#ffffff',
+                    opacity: 0.1,
                     width: 1
                 },
                 move: {
                     enable: true,
-                    speed: 2,
-                    direction: "none",
-                    random: true,
-                    out_mode: "bounce"
-                }
-            },
-            interactivity: {
-                detect_on: "canvas",
-                events: {
-                    onhover: { enable: true, mode: "grab" },
-                    onclick: { enable: true, mode: "push" },
-                    resize: true
+                    speed: 2
                 }
             }
         };
 
-        // Light particles for right side
         const rightConfig = {
             particles: {
-                number: { value: 50, density: { enable: true, value_area: 800 } },
-                color: { value: "#6c5ce7" },
-                shape: { type: "circle" },
-                opacity: {
-                    value: 0.3,
-                    random: true,
-                    animation: { enable: true, speed: 1, opacity_min: 0.1 }
-                },
-                size: {
-                    value: 2,
-                    random: true,
-                    animation: { enable: true, speed: 40, size_min: 0.1 }
-                },
+                number: { value: 60 },
+                color: { value: '#6c5ce7' },
+                opacity: { value: 0.8 },
+                size: { value: 3 },
                 line_linked: {
                     enable: true,
                     distance: 150,
-                    color: "rgba(108, 92, 231, 0.2)",
-                    opacity: 0.2,
+                    color: '#6c5ce7',
+                    opacity: 0.1,
                     width: 1
                 },
                 move: {
                     enable: true,
-                    speed: 1,
-                    direction: "none",
-                    random: true,
-                    out_mode: "out"
-                }
-            },
-            interactivity: {
-                detect_on: "canvas",
-                events: {
-                    onhover: { enable: true, mode: "grab" },
-                    onclick: { enable: true, mode: "push" },
-                    resize: true
+                    speed: 2
                 }
             }
         };
 
-        // Initialize particles with correct configuration objects
-        particlesJS('particles-left', leftConfig);  // Remove the () from leftConfig
-        particlesJS('particles-right', rightConfig); // Remove the () from rightConfig
-
-        // Updated form toggle function
+        // Core Functions
         function toggleForms(formType) {
             const sections = {
                 login: document.querySelector('.login-section'),
-                register: document.querySelector('.register-section'),
+                register: document.querySelector('.register-section'), // Fixed 'gister' to 'register'
                 forgot: document.querySelector('.forgot-section')
             };
 
@@ -338,7 +600,7 @@
                         activeSection.style.opacity = '1';
                         activeSection.style.pointerEvents = 'all';
                     }
-                }, 300);
+                }, 200); // Reduced from 300ms to 150ms
             } else {
                 // If no active section, just show the new one
                 const activeSection = sections[formType];
@@ -351,27 +613,39 @@
             }
         }
 
-        // Update the toggleToLogin function
         function toggleToLogin() {
             toggleForms('login');
         }
 
-        // Password visibility toggle
-        document.querySelectorAll('.toggle-password').forEach(icon => {
-            icon.addEventListener('click', function() {
-                const input = this.previousElementSibling;
-                if (input.type === 'password') {
-                    input.type = 'text';
-                    this.classList.replace('ri-eye-line', 'ri-eye-off-line');
-                } else {
-                    input.type = 'password';
-                    this.classList.replace('ri-eye-off-line', 'ri-eye-line');
-                }
-            });
+        // Event Handlers
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize particles
+            initializeParticles();
+            
+            // Form validation
+            initializeFormValidation();
+            
+            // Event listeners
+            initializeEventListeners();
+            
+            // Set initial state
+            toggleForms('login');
         });
 
-        // Initialize event listeners
-        document.addEventListener('DOMContentLoaded', function() {
+        // Utility Functions
+        function initializeParticles() {
+            setTimeout(() => {
+                try {
+                    particlesJS('particles-left', leftConfig);
+                    particlesJS('particles-right', rightConfig);
+                    console.log('Particles initialized successfully');
+                } catch (error) {
+                    console.error('Particles initialization error:', error);
+                }
+            }, 100);
+        }
+
+        function initializeFormValidation() {
             const registerForm = document.getElementById('registerForm');
             const emailInput = document.getElementById('regEmail');
             const usernameInput = document.getElementById('username');
@@ -431,30 +705,61 @@
                 checkFormValidity();
             });
 
-            // Full Name validation
+            // Update Full Name validation in initializeFormValidation function
             fullNameInput.addEventListener('input', function() {
                 if (this.value.length >= 2) {
+                    // Enable both country code and phone input simultaneously
+                    document.getElementById('countryCode').disabled = false;
                     phoneInput.disabled = false;
-                    showValidation(this, true);
+                    showValidation(this, true, '✓');
                 } else {
-                    disableFollowingInputs('phone');
-                    showValidation(this, false);
+                    document.getElementById('countryCode').disabled = true;
+                    phoneInput.disabled = true;
+                    showValidation(this, false, '×');
                 }
                 checkFormValidity();
             });
 
-            // Phone validation
+            // Replace the phone validation code
             phoneInput.addEventListener('input', function() {
-                const isValidPhone = /^[0-9]{10}$/.test(this.value);
-                if (isValidPhone) {
+                // Remove any non-numeric characters
+                this.value = this.value.replace(/\D/g, '');
+                const phoneNumber = this.value;
+
+                if (phoneNumber.length === 10) {
+                    // Format phone number as user types (XXX-XXX-XXXX)
+                    const formatted = phoneNumber.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3');
+                    this.value = formatted;
+                    
                     termsCheckbox.disabled = false;
-                    showValidation(this, true);
+                    showValidation(this, true, '✓');
                 } else {
                     termsCheckbox.disabled = true;
                     termsCheckbox.checked = false;
-                    showValidation(this, false);
+                    showValidation(this, false, '×');
                 }
                 checkFormValidity();
+            });
+
+            // Update checkFormValidity function
+            function checkFormValidity() {
+                const phoneValue = phoneInput.value.replace(/\D/g, ''); // Remove non-digits
+                const isComplete = !emailInput.value.includes(' ') &&
+                    usernameInput.value.length >= 3 &&
+                    fullNameInput.value.length >= 2 &&
+                    phoneValue.length === 10 &&
+                    termsCheckbox.checked;
+                
+                submitButton.disabled = !isComplete;
+            }
+
+            // Fix country code change handler
+            document.getElementById('countryCode').addEventListener('change', function() {
+                const phoneInput = document.getElementById('phone');
+                const phoneValue = phoneInput.value.replace(/\D/g, '');
+                if (phoneValue.length === 10) {
+                    showValidation(phoneInput, true, '✓');
+                }
             });
 
             // Terms checkbox
@@ -475,7 +780,6 @@
             function disableFollowingInputs(startFrom) {
                 const inputs = ['username', 'fullName', 'phone'];
                 const startIndex = inputs.indexOf(startFrom);
-                
                 for (let i = startIndex; i < inputs.length; i++) {
                     const input = document.getElementById(inputs[i]);
                     input.disabled = true;
@@ -485,16 +789,6 @@
                 termsCheckbox.disabled = true;
                 termsCheckbox.checked = false;
                 submitButton.disabled = true;
-            }
-
-            function checkFormValidity() {
-                const isComplete = !emailInput.value.includes(' ') &&
-                    usernameInput.value.length >= 3 &&
-                    fullNameInput.value.length >= 2 &&
-                    /^[0-9]{10}$/.test(phoneInput.value) &&
-                    termsCheckbox.checked;
-                
-                submitButton.disabled = !isComplete;
             }
 
             // Forgot password link handler
@@ -529,418 +823,126 @@
                     toggleForms(formType);
                 });
             });
-        });
 
-        // Add CSS animation
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes popIn {
-                0% { transform: scale(0.8) translateY(-50%); opacity: 0; }
-                100% { transform: scale(1) translateY(-50%); opacity: 1; }
-            }
-            .validation-message {
-                transition: all 0.3s ease;
-            }
-            .validation-message.invalid {
-                cursor: help;
-            }
-            .validation-message.invalid:hover::after {
-                content: attr(title);
-                position: absolute;
-                right: -120px;
-                top: 50%;
-                transform: translateY(-50%);
-                background: var(--card-bg);
-                padding: 4px 8px;
-                border-radius: 4px;
-                font-size: 0.75rem;
-                white-space: nowrap;
-                box-shadow: var(--shadow);
-                border: 1px solid var(--border-color);
-            }
-        `;
-        document.head.appendChild(style);
-
-        // Update forgot password link
-        document.querySelector('.forgot-password').addEventListener('click', function(e) {
-            e.preventDefault();
-            toggleForms('forgot');
-        });
-
-        // Add forgot password validation
-        document.getElementById('forgotForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const email = document.getElementById('resetEmail').value;
-            const validationMsg = document.getElementById('resetEmail')
-                .parentElement.querySelector('.validation-message');
-            
-            if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-                validationMsg.textContent = '✓';
-                validationMsg.className = 'validation-message valid';
-                // Here you would typically send the reset request to your server
-                alert('If the email exists in our system, you will receive reset instructions shortly.');
-                toggleToLogin();
-            } else {
-                validationMsg.textContent = '×';
-                validationMsg.className = 'validation-message invalid';
-            }
-        });
-
-        
-    </script>
-
-    <!-- Add styles for smooth transitions -->
-    <style>
-        .split-container {
-            display: flex;
-            width: 100%;
-            min-height: 100vh;
-            position: relative;
+            // Add this to initialize country code change handler
+            document.getElementById('countryCode').addEventListener('change', function() {
+                const phoneInput = document.getElementById('phone');
+                const phoneValue = phoneInput.value.replace(/\D/g, '');
+                if (phoneValue.length === 10) {
+                    showValidation(phoneInput, true, '✓');
+                }
+            });
         }
 
-        .brand-side {
-            flex: 1;
-            position: relative;
-            overflow: hidden;
-            padding: 2rem;
-            color: white;
-            z-index: 0;
-        }
-
-        .brand-side::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, var(--primary), var(--secondary)); /* New gradient */
-            z-index: 1;
-        }
-
-        .particles {
-            position: absolute !important;
-            width: 100% !important;
-            height: 100% !important;
-            top: 0;
-            left: 0;
-            z-index: 2;
-        }
-
-        .brand-content {
-            position: relative;
-            z-index: 3;
-        }
-
-        #particles-left canvas,
-        #particles-right canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100% !important;
-            height: 100% !important;
-        }
-
-        .brand-content {
-            text-align: center;
-            position: relative;
-            z-index: 2;
-        }
-
-        .brand-logo {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-            animation: float 3s ease-in-out infinite;
-        }
-
-        .brand-content h1 {
-            font-size: 3.5rem;
-            margin-bottom: 1rem;
-            font-weight: 600;
-        }
-
-        .tagline {
-            font-size: 1.2rem;
-            opacity: 0.9;
-        }
-
-        .forms-side {
-            flex: 1;
-            background: var(--background);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 2rem;
-            position: relative;
-        }
-
-        .forms-wrapper {
-            width: 100%;
-            max-width: 420px;
-            background: var(--card-bg);
-            border-radius: 12px;
-            padding: 2rem;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border-color);
-            backdrop-filter: blur(12px);
-        }
-
-        @media (max-width: 992px) {
-            .split-container {
-                flex-direction: column;
-            }
-            
-            .brand-side {
-                padding: 3rem 2rem;
-            }
-            
-            .brand-content h1 {
-                font-size: 2.5rem;
-            }
-            
-            .brand-logo {
-                font-size: 3rem;
-            }
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
-        }
-
-        .particles {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            z-index: 1; /* Changed from 1 */
-            pointer-events: none;
-        }
-
-        .particles canvas {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-        }
-
-        #particles-left {
-            background: transparent; /* Changed from gradient */
-        }
-
-        #particles-right {
-            background: transparent;
-        }
-
-        .brand-content,
-        .forms-wrapper {
-            position: relative;
-            z-index: 2;
-        }
-
-        .form-section {
-            display: none;
-            opacity: 0;
-            transform: translateX(20px);
-            transition: opacity 0.3s ease, transform 0.3s ease;
-        }
-
-        .form-section.active {
-            display: block;
-            opacity: 1;
-            transform: translateX(0);
-        }
-
-        .brand-content,
-        .forms-wrapper {
-            position: relative;
-            z-index: 2;
-        }
-
-        .forms-container {
-            position: relative;
-            min-height: 520px;
-            overflow: hidden;
-        }
-
-        .form-section {
-            position: absolute;
-            width: 100%;
-            opacity: 0;
-            pointer-events: none;
-            transform: translateX(100px);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .form-section.active {
-            position: relative;
-            opacity: 1;
-            pointer-events: all;
-            transform: translateX(0);
-        }
-    </style>
-</body>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Initialize particles
-        try {
-            particlesJS('particles-left', leftConfig);
-            particlesJS('particles-right', rightConfig);
-        } catch (error) {
-            console.error('Particles.js initialization error:', error);
-        }
-
-        // Updated form toggle function
-        function toggleForms(formType) {
-            const sections = {
-                login: document.querySelector('.login-section'),
-                register: document.querySelector('.register-section'),
-                forgot: document.querySelector('.forgot-section')
-            };
-
-            // Hide current active section
-            const currentActive = document.querySelector('.form-section.active');
-            if (currentActive) {
-                currentActive.style.transform = 'translateX(-100px)';
-                currentActive.style.opacity = '0';
-                currentActive.style.pointerEvents = 'none';
-                setTimeout(() => {
-                    currentActive.classList.remove('active');
-                    // Show new section
-                    const activeSection = sections[formType];
-                    if (activeSection) {
-                        activeSection.classList.add('active');
-                        activeSection.style.transform = 'translateX(0)';
-                        activeSection.style.opacity = '1';
-                        activeSection.style.pointerEvents = 'all';
+        function initializeEventListeners() {
+            // Password visibility toggle
+            document.querySelectorAll('.toggle-password').forEach(icon => {
+                icon.addEventListener('click', function() {
+                    const input = this.previousElementSibling;
+                    if (input.type === 'password') {
+                        input.type = 'text';
+                        this.classList.replace('ri-eye-line', 'ri-eye-off-line');
+                    } else {
+                        input.type = 'password';
+                        this.classList.replace('ri-eye-off-line', 'ri-eye-line');
                     }
-                }, 300);
-            } else {
-                // If no active section, just show the new one
-                const activeSection = sections[formType];
-                if (activeSection) {
-                    activeSection.classList.add('active');
-                    activeSection.style.transform = 'translateX(0)';
-                    activeSection.style.opacity = '1';
-                    activeSection.style.pointerEvents = 'all';
+                });
+            });
+
+            // Add this event listener for forgot password link
+            document.querySelector('.forgot-password').addEventListener('click', function(e) {
+                e.preventDefault();
+                toggleForms('forgot');
+            });
+
+            // Add this to initializeEventListeners function
+            function initializeOTPInputs() {
+                const otpInputs = document.querySelectorAll('.otp-input');
+                const otpHidden = document.getElementById('otp');
+
+                otpInputs.forEach((input, index) => {
+                    // Auto-focus next input
+                    input.addEventListener('input', (e) => {
+                        const value = e.target.value;
+                        
+                        // Only allow numbers
+                        if (!/^\d*$/.test(value)) {
+                            e.target.value = '';
+                            return;
+                        }
+
+                        if (value && index < otpInputs.length - 1) {
+                            otpInputs[index + 1].focus();
+                        }
+
+                        // Combine all values
+                        const otp = Array.from(otpInputs).map(input => input.value).join('');
+                        otpHidden.value = otp;
+                    });
+
+                    // Handle backspace
+                    input.addEventListener('keydown', (e) => {
+                        if (e.key === 'Backspace' && !e.target.value && index > 0) {
+                            otpInputs[index - 1].focus();
+                        }
+                    });
+                });
+            }
+
+            // Call this in your DOMContentLoaded
+            initializeOTPInputs();
+        }
+
+        // Initialize forgot password flow
+        function initializeForgotPasswordFlow() {
+            const forgotForm = document.getElementById('forgotForm');
+            const otpForm = document.getElementById('otpForm');
+            const resetPasswordForm = document.getElementById('resetPasswordForm');
+
+            // Step 1: Send OTP
+            forgotForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const email = document.getElementById('resetEmail').value;
+                if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                    // TODO: Send OTP via backend
+                    alert('OTP sent to your email!'); // Temporary alert
+                    switchForgotStep(2);
                 }
+            });
+
+            // Step 2: Verify OTP
+            otpForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const otp = document.getElementById('otp').value;
+                if (/^\d{6}$/.test(otp)) {
+                    // TODO: Verify OTP via backend
+                    alert('OTP verified!'); // Temporary alert
+                    switchForgotStep(3);
+                }
+            });
+
+            // Step 3: Reset Password
+            resetPasswordForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const newPass = document.getElementById('newPassword').value;
+                const confirmPass = document.getElementById('confirmPassword').value;
+                if (newPass === confirmPass && newPass.length >= 6) {
+                    // TODO: Reset password via backend
+                    alert('Password reset successful!'); // Temporary alert
+                    toggleToLogin();
+                } else {
+                    alert('Passwords do not match or too short!');
+                }
+            });
+
+            function switchForgotStep(step) {
+                document.querySelectorAll('.forgot-step').forEach(el => el.classList.remove('active'));
+                document.querySelector(`.step-${step}`).classList.add('active');
             }
         }
 
-        // Make toggleForms globally available
-        window.toggleForms = toggleForms;
-        window.toggleToLogin = () => toggleForms('login');
-
-        // Set initial form state
-        toggleForms('login');
-    });
-
-    // Move all other existing script code here...
-</script>
-<script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Left side particles config (white particles)
-    const leftConfig = {
-        particles: {
-            number: { value: 80 },
-            color: { value: '#ffffff' },
-            opacity: { value: 0.6 }, // Reduced opacity
-            size: { value: 2 }, // Reduced size
-            line_linked: {
-                enable: true,
-                distance: 150,
-                color: '#ffffff',
-                opacity: 0.3, // Reduced line opacity
-                width: 1 // Reduced line width
-            },
-            move: {
-                enable: true,
-                speed: 2,
-                direction: "none",
-                random: true,
-                straight: false,
-                out_mode: "bounce",
-                bounce: false
-            }
-        },
-        interactivity: {
-            detect_on: "canvas",
-            events: {
-                onhover: { 
-                    enable: true, 
-                    mode: "grab",
-                    opacity: 0.5 // Reduced hover opacity
-                },
-                onclick: { enable: true, mode: "push" },
-                resize: true
-            },
-            modes: {
-                grab: {
-                    distance: 200,
-                    line_linked: { opacity: 0.5 } // Reduced grab opacity
-                }
-            }
-        },
-        retina_detect: true
-    };
-
-    // Right side particles config (blue particles)
-    const rightConfig = {
-        particles: {
-            number: { value: 80 },
-            color: { value: '#2563eb' },
-            opacity: { value: 0.4 }, // Reduced opacity
-            size: { value: 2 }, // Reduced size
-            line_linked: {
-                enable: true,
-                distance: 150,
-                color: '#2563eb',
-                opacity: 0.2, // Reduced line opacity
-                width: 1 // Reduced line width
-            },
-            move: {
-                enable: true,
-                speed: 2,
-                direction: "none",
-                random: true,
-                straight: false,
-                out_mode: "bounce",
-                bounce: false
-            }
-        },
-        interactivity: {
-            detect_on: "canvas",
-            events: {
-                onhover: { 
-                    enable: true, 
-                    mode: "grab",
-                    opacity: 0.5 // Reduced hover opacity
-                },
-                onclick: { enable: true, mode: "push" },
-                resize: true
-            },
-            modes: {
-                grab: {
-                    distance: 200,
-                    line_linked: { opacity: 0.4 } // Reduced grab opacity
-                }
-            }
-        },
-        retina_detect: true
-    };
-
-    // Initialize particles with a slight delay
-    setTimeout(() => {
-        try {
-            particlesJS('particles-left', leftConfig);
-            particlesJS('particles-right', rightConfig);
-            console.log('Particles initialized successfully');
-        } catch (error) {
-            console.error('Particles initialization error:', error);
-        }
-    }, 100);
-});
-</script>
+        // Add this call to DOMContentLoaded
+        initializeForgotPasswordFlow();
+    </script>
+</body>
 </html>
