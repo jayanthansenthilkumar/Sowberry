@@ -5,14 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sowberry Academy</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="admin.css">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <!-- Add this div for mobile overlay -->
     <div class="sidebar-overlay"></div>
-    
     <button class="hamburger-menu">
         <span class="bar"></span>
         <span class="bar"></span>
@@ -215,7 +214,7 @@
             </div>
         </div>
     </main>
-    <script src="../assets/script.js"></script>
+    <script src="../assets/script/main.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Sample data for charts
@@ -255,7 +254,6 @@
                     }
                 }
             };
-
             // Create charts
             function createChart(canvasId, data, color) {
                 return new Chart(document.getElementById(canvasId), {
@@ -273,7 +271,6 @@
                     options: chartOptions
                 });
             }
-
             // Initialize charts
             createChart('studentsChart', monthlyData.students, '#6366f1');
             createChart('completionChart', monthlyData.completion, '#8b5cf6');

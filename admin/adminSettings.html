@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Settings - Sowberry Academy</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="admin.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+</head>
+<body>
+    <div class="sidebar-overlay"></div>
+    <!-- Sidebar Structure -->
+    <button class="hamburger-menu">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+    </button>
+    <div class="sidebar">
+        <div class="logo">
+            <i class="ri-seedling-fill"></i>
+            <div class="logo-text">
+                <span class="brand-name">Sowberry</span>
+                <span class="brand-suffix">ACADEMY</span>
+            </div>
+        </div>
+        <nav>
+            <a href="admin.html"><i class="ri-dashboard-line"></i><span>Dashboard</span></a>
+            <a href="manageStudents.html"><i class="ri-user-line"></i><span>Students</span></a>
+            <a href="manageMentors.html"><i class="ri-team-line"></i><span>Mentors</span></a>
+            <a href="coursesOverview.html"><i class="ri-book-open-line"></i><span>Courses</span></a>
+            <a href="performanceAnalytics.html"><i class="ri-line-chart-line"></i><span>Analytics</span></a>
+            <a href="systemReports.html"><i class="ri-file-chart-line"></i><span>Reports</span></a>
+            <a href="adminSettings.html" class="active"><i class="ri-settings-line"></i><span>Settings</span></a>
+        </nav>
+    </div>
+
+    <main>
+        <header>
+            <div class="search-bar">
+                <i class="ri-search-line"></i>
+                <input type="text" placeholder="Search settings...">
+            </div>
+            <div class="header-tools">
+                <div class="theme-toggle">
+                    <i class="ri-sun-line"></i>
+                </div>
+                <div class="notifications">
+                    <i class="ri-notification-3-line"></i>
+                    <span class="notification-badge">3</span>
+                </div>
+                <div class="user-profile">
+                    <img src="https://ui-avatars.com/api/?name=Sowmiya&size=30" alt="User" class="user-avatar">
+                    <div class="user-info">
+                        <span class="user-name">Sowmiya</span>
+                        <span class="user-status">
+                            <i class="ri-checkbox-blank-circle-fill"></i>
+                            Active
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="welcome-section">
+            <div class="welcome-card">
+                <div class="welcome-content">
+                    <div class="welcome-text">
+                        <h1>Admin Settings</h1>
+                        <p>Manage your system preferences and configurations</p>
+                    </div>
+                    <div class="welcome-stats">
+                        <div class="stat-item floating">
+                            <div class="stat-icon"><i class="ri-shield-check-line"></i></div>
+                            <div class="stat-info">
+                                <h4>System Status</h4>
+                                <p>Healthy</p>
+                            </div>
+                        </div>
+                        <div class="stat-item floating delay-1">
+                            <div class="stat-icon"><i class="ri-refresh-line"></i></div>
+                            <div class="stat-info">
+                                <h4>Last Update</h4>
+                                <p>2h ago</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-wrapper">
+            <div class="settings-grid">
+                <!-- General Settings -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>General Settings</h3>
+                        <button class="action-button small" onclick="saveSettings('general')">Save Changes</button>
+                    </div>
+                    <div class="settings-form">
+                        <div class="form-group">
+                            <label>Platform Name</label>
+                            <input type="text" value="Sowberry Academy" placeholder="Enter platform name">
+                        </div>
+                        <div class="form-group">
+                            <label>Contact Email</label>
+                            <input type="email" value="admin@sowberry.com" placeholder="Enter contact email">
+                        </div>
+                        <div class="form-group">
+                            <label>Platform Timezone</label>
+                            <select>
+                                <option value="UTC">UTC</option>
+                                <option value="IST" selected>IST</option>
+                                <option value="EST">EST</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Appearance Settings -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Appearance</h3>
+                        <button class="action-button small" onclick="saveSettings('appearance')">Apply</button>
+                    </div>
+                    <div class="settings-form">
+                        <div class="theme-selector">
+                            <label>Color Theme</label>
+                            <div class="theme-options">
+                                <button class="theme-btn active" data-theme="light">
+                                    <i class="ri-sun-line"></i>
+                                    <span>Light</span>
+                                </button>
+                                <button class="theme-btn" data-theme="dark">
+                                    <i class="ri-moon-line"></i>
+                                    <span>Dark</span>
+                                </button>
+                                <button class="theme-btn" data-theme="system">
+                                    <i class="ri-computer-line"></i>
+                                    <span>System</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="font-selector">
+                            <label>Font Size</label>
+                            <div class="font-size-slider">
+                                <input type="range" min="12" max="20" value="16">
+                                <span class="font-size-value">16px</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Security Settings -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Security</h3>
+                        <button class="action-button small" onclick="saveSettings('security')">Update</button>
+                    </div>
+                    <div class="settings-form">
+                        <div class="toggle-group">
+                            <label>Two-Factor Authentication</label>
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                        <div class="toggle-group">
+                            <label>Session Timeout (minutes)</label>
+                            <input type="number" value="30" min="5" max="120">
+                        </div>
+                        <div class="toggle-group">
+                            <label>Password Expiry (days)</label>
+                            <input type="number" value="90" min="30" max="180">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Notification Settings -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Notifications</h3>
+                        <button class="action-button small" onclick="saveSettings('notifications')">Save</button>
+                    </div>
+                    <div class="settings-form">
+                        <div class="toggle-group">
+                            <label>Email Notifications</label>
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                        <div class="toggle-group">
+                            <label>Browser Notifications</label>
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                        <div class="toggle-group">
+                            <label>System Alerts</label>
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../assets/script/main.js"></script>
+    <script>
+        // Save settings function
+        function saveSettings(section) {
+            // Show success message
+            const toast = document.createElement('div');
+            toast.className = 'toast success';
+            toast.innerHTML = `
+                <i class="ri-check-line"></i>
+                <span>${section.charAt(0).toUpperCase() + section.slice(1)} settings saved successfully!</span>
+            `;
+            document.body.appendChild(toast);
+            
+            // Remove toast after 3 seconds
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+
+        // Theme switching
+        document.querySelectorAll('.theme-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                const theme = btn.dataset.theme;
+                if (theme === 'dark') {
+                    document.body.classList.add('dark-theme');
+                } else {
+                    document.body.classList.remove('dark-theme');
+                }
+            });
+        });
+
+        // Font size slider
+        const fontSlider = document.querySelector('.font-size-slider input');
+        const fontSizeValue = document.querySelector('.font-size-value');
+        
+        fontSlider.addEventListener('input', (e) => {
+            const size = e.target.value;
+            fontSizeValue.textContent = `${size}px`;
+            document.documentElement.style.fontSize = `${size}px`;
+        });
+    </script>
+</body>
+</html>
