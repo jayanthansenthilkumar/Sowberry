@@ -55,6 +55,9 @@ body {
     color: var(--text);
     display: flex;
     transition: background 0.3s ease;
+    min-height: 100vh;
+    width: 100%;
+    overflow-x: hidden; /* Prevent horizontal scroll */
 }
 
 /* Corrected Sidebar Styles */
@@ -268,6 +271,8 @@ main {
     transition: margin-left 0.3s ease;
     position: relative;
     width: calc(100% - 240px);
+    overflow-x: hidden; /* Prevent horizontal scroll */
+    box-sizing: border-box; /* Include padding in width calculation */
 }
 
 .dashboard-grid {
@@ -276,6 +281,8 @@ main {
     gap: 30px;
     margin-top: 20px;
     padding: 10px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .card {
@@ -569,11 +576,25 @@ header {
     main {
         margin-left: 0;
         width: 100%;
+        padding: 15px;
     }
     
     .footer {
         margin-left: 0;
         width: 100%;
+    }
+
+    .welcome-section {
+        padding: 0 15px;
+    }
+
+    .content-wrapper {
+        padding: 15px;
+    }
+
+    .card {
+        width: 100%;
+        box-sizing: border-box;
     }
 }
 
@@ -1372,6 +1393,10 @@ header {
 .content-wrapper {
     padding: 2rem;
     animation: fadeIn 0.3s ease;
+    width: 100%;
+    padding: 20px;
+    box-sizing: border-box; /* Include padding in width calculation */
+    overflow-x: hidden; /* Prevent horizontal scroll */
 }
 
 .page-header {
@@ -2044,6 +2069,8 @@ input:disabled {
 .welcome-section {
     padding: 0 20px;
     margin-bottom: 30px;
+    width: 100%;
+    box-sizing: border-box; /* Include padding in width calculation */
 }
 
 .welcome-card {
