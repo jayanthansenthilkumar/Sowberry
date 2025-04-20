@@ -279,6 +279,7 @@
             flex: 1;
             height: 100%;
         }
+        
 
         .phone-input-wrapper input {
             height: 100%;
@@ -892,7 +893,6 @@
             // Call this in your DOMContentLoaded
             initializeOTPInputs();
         }
-
         // Initialize forgot password flow
         function initializeForgotPasswordFlow() {
             const forgotForm = document.getElementById('forgotForm');
@@ -920,7 +920,6 @@
                     switchForgotStep(3);
                 }
             });
-
             // Step 3: Reset Password
             resetPasswordForm.addEventListener('submit', function(e) {
                 e.preventDefault();
@@ -940,7 +939,6 @@
                 document.querySelector(`.step-${step}`).classList.add('active');
             }
         }
-
         // Add this call to DOMContentLoaded
         initializeForgotPasswordFlow();
     </script>
