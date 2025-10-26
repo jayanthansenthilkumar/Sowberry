@@ -20,7 +20,7 @@ CREATE TABLE users (
     user_id INT AUTO_INCREMENT PRIMARY KEY,
     email VARCHAR(255) UNIQUE NOT NULL,
     username VARCHAR(100) UNIQUE NOT NULL,
-    password_hash VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
     full_name VARCHAR(255) NOT NULL,
     phone VARCHAR(20),
     country_code VARCHAR(10) DEFAULT '+91',
@@ -803,8 +803,8 @@ INSERT INTO categories (category_name, description, icon) VALUES
 ('Cybersecurity', 'Protect systems and secure digital assets', 'ri-shield-check-line');
 
 -- Insert sample admin user
-INSERT INTO users (email, username, password_hash, full_name, phone, user_type, status, email_verified) VALUES
-('admin@sowberry.com', 'admin', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'System Admin', '+918825756388', 'admin', 'active', TRUE);
+INSERT INTO users (email, username, password, full_name, phone, user_type, status, email_verified, profile_image) VALUES
+('admin@sowberry.com', 'admin', 'admin123', 'System Admin', '+918825756388', 'admin', 'active', TRUE, './assets/images/team/admin.jpg');
 
 INSERT INTO admins (user_id, admin_code, role) VALUES
 (1, 'ADM001', 'super_admin');
