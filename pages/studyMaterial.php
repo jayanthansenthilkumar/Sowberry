@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study Material - Sowberry</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/students.css">
+</head>
+<body>
+    <button class="mobile-menu-toggle">
+        <i class="ri-menu-line"></i>
+    </button>
+    
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo">
+            <i class="ri-seedling-fill"></i>
+            <div class="logo-text">
+                <span class="brand-name">Sowberry</span>
+                <span class="brand-suffix">LEARNING</span>
+            </div>
+        </div>
+        <nav>
+            <a href="studentsDashboard.php"><i class="ri-dashboard-line"></i><span>Dashboard</span></a>
+            <a href="myCourses.php"><i class="ri-book-open-line"></i><span>My Courses</span></a>
+            <a href="myProgress.php"><i class="ri-line-chart-line"></i><span>My Progress</span></a>
+            <a href="myAssignments.php"><i class="ri-task-line"></i><span>Assignments</span></a>
+            <a href="studyMaterial.php" class="active"><i class="ri-folder-5-line"></i><span>Study Material</span></a>
+            <a href="myGrades.php"><i class="ri-medal-line"></i><span>Grades</span></a>
+            <a href="aptitudeTests.php"><i class="ri-brain-line"></i><span>Aptitude</span></a>
+            <a href="codingPractice.php"><i class="ri-code-box-line"></i><span>Practice</span></a>
+            <a href="codeEditor.php"><i class="ri-terminal-box-line"></i><span>Code Editor</span></a>
+            <a href="learningGames.php"><i class="ri-gamepad-line"></i><span>Learning Games</span></a>
+            <a href="studentDiscussion.php"><i class="ri-discuss-line"></i><span>Discussion</span></a>
+        </nav>
+    </div>
+
+    <main>
+        <!-- Header -->
+        <header>
+            <div class="search-bar">
+                <i class="ri-search-line"></i>
+                <input type="text" placeholder="Search...">
+            </div>
+            <div class="header-tools">
+                <div class="theme-toggle">
+                    <i class="ri-sun-line"></i>
+                </div>
+                <div class="notifications" id="notifications">
+                    <i class="ri-notification-3-line"></i>
+                    <span class="notification-badge">3</span>
+                    <div class="notifications-dropdown">
+                        <div class="notifications-header">
+                            <h4>Notifications</h4>
+                            <a href="#" class="mark-all-read">Mark all as read</a>
+                        </div>
+                        <div class="notification-list">
+                            <a href="#" class="notification-item unread">
+                                <i class="ri-message-2-line"></i>
+                                <div class="notification-content">
+                                    <p>Quiz result: Advanced JavaScript</p>
+                                    <span>2 minutes ago</span>
+                                </div>
+                            </a>
+                            <a href="#" class="notification-item unread">
+                                <i class="ri-trophy-line"></i>
+                                <div class="notification-content">
+                                    <p>New achievement unlocked!</p>
+                                    <span>1 hour ago</span>
+                                </div>
+                            </a>
+                            <a href="#" class="notification-item">
+                                <i class="ri-file-list-line"></i>
+                                <div class="notification-content">
+                                    <p>Weekly progress report available</p>
+                                    <span>3 hours ago</span>
+                                </div>
+                            </a>
+                        </div>
+                        <a href="#" class="view-all">View all notifications</a>
+                    </div>
+                </div>
+                <div class="user-profile" id="userProfile">
+                    <img src="https://ui-avatars.com/api/?name=Sowmiya&size=32" alt="User" class="user-avatar">
+                    <div class="user-info">
+                        <span class="user-name">Sowmiya</span>
+                        <span class="user-status">
+                            <i class="ri-checkbox-blank-circle-fill"></i>
+                            Active
+                        </span>
+                    </div>
+                    <div class="profile-dropdown">
+                        <a href="#"><i class="ri-user-line"></i> My Profile</a>
+                        <a href="#"><i class="ri-settings-4-line"></i> Settings</a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="logout"><i class="ri-logout-box-line"></i> Logout</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Welcome Section -->
+        <div class="welcome-section">
+            <div class="welcome-card">
+                <div class="welcome-content">
+                    <div class="welcome-text">
+                        <h1>Study <span class="highlight">Materials</span></h1>
+                        <p>Access all your course resources and learning materials in one place.</p>
+                    </div>
+                    <div class="welcome-stats">
+                        <div class="stat-item floating">
+                            <div class="stat-icon">
+                                <i class="ri-file-list-3-line"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h4>Total Resources</h4>
+                                <p>124</p>
+                            </div>
+                        </div>
+                        <div class="stat-item floating delay-1">
+                            <div class="stat-icon">
+                                <i class="ri-download-cloud-line"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h4>Downloads</h4>
+                                <p>45</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Section -->
+        <div class="filter-pills">
+            <button class="filter-pill active" data-filter="all">All</button>
+            <button class="filter-pill" data-filter="pdf">PDFs</button>
+            <button class="filter-pill" data-filter="video">Videos</button>
+            <button class="filter-pill" data-filter="code">Code Examples</button>
+            <button class="filter-pill" data-filter="presentation">Presentations</button>
+        </div>
+
+        <!-- Materials Grid -->
+        <div class="content-grid materials-grid">
+            <!-- PDF Material Card -->
+            <div class="content-card" data-type="pdf">
+                <div class="material-header">
+                    <div class="material-icon pdf">
+                        <i class="ri-file-pdf-line"></i>
+                    </div>
+                    <div class="material-actions">
+                        <button class="action-btn"><i class="ri-download-line"></i></button>
+                        <button class="action-btn"><i class="ri-bookmark-line"></i></button>
+                    </div>
+                </div>
+                <div class="material-content">
+                    <h3>JavaScript Fundamentals</h3>
+                    <p class="material-info">
+                        <span><i class="ri-file-list-line"></i> 45 pages</span>
+                        <span><i class="ri-time-line"></i> Updated 2 days ago</span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Video Material Card -->
+            <div class="content-card" data-type="video">
+                <div class="material-header">
+                    <div class="material-icon video">
+                        <i class="ri-video-line"></i>
+                    </div>
+                    <div class="material-actions">
+                        <button class="action-btn"><i class="ri-play-line"></i></button>
+                        <button class="action-btn"><i class="ri-bookmark-line"></i></button>
+                    </div>
+                </div>
+                <div class="material-content">
+                    <h3>React Hooks Tutorial</h3>
+                    <p class="material-info">
+                        <span><i class="ri-time-line"></i> 45 minutes</span>
+                        <span><i class="ri-eye-line"></i> 1.2k views</span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Code Example Card -->
+            <div class="content-card" data-type="code">
+                <div class="material-header">
+                    <div class="material-icon code">
+                        <i class="ri-code-line"></i>
+                    </div>
+                    <div class="material-actions">
+                        <button class="action-btn"><i class="ri-download-line"></i></button>
+                        <button class="action-btn"><i class="ri-bookmark-line"></i></button>
+                    </div>
+                </div>
+                <div class="material-content">
+                    <h3>API Integration Examples</h3>
+                    <p class="material-info">
+                        <span><i class="ri-file-code-line"></i> REST API</span>
+                        <span><i class="ri-time-line"></i> Updated 1 week ago</span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Presentation Card -->
+            <div class="content-card" data-type="presentation">
+                <div class="material-header">
+                    <div class="material-icon presentation">
+                        <i class="ri-slideshow-line"></i>
+                    </div>
+                    <div class="material-actions">
+                        <button class="action-btn"><i class="ri-download-line"></i></button>
+                        <button class="action-btn"><i class="ri-bookmark-line"></i></button>
+                    </div>
+                </div>
+                <div class="material-content">
+                    <h3>Database Design Patterns</h3>
+                    <p class="material-info">
+                        <span><i class="ri-presentation-line"></i> 32 slides</span>
+                        <span><i class="ri-time-line"></i> Updated 3 days ago</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Downloads Section -->
+        <div class="activity-section materials-activity">
+            <div class="card animate">
+                <h3>Recent Downloads</h3>
+                <div class="activity-list">
+                    <div class="activity-item">
+                        <i class="ri-file-pdf-line"></i>
+                        <div class="activity-info">
+                            <p>React Components Guide.pdf</p>
+                            <span>Downloaded 2 hours ago</span>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <i class="ri-video-line"></i>
+                        <div class="activity-info">
+                            <p>Advanced CSS Tutorial.mp4</p>
+                            <span>Downloaded yesterday</span>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <i class="ri-file-code-line"></i>
+                        <div class="activity-info">
+                            <p>Node.js Code Examples.zip</p>
+                            <span>Downloaded 3 days ago</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bookmarked Materials -->
+            <div class="card animate">
+                <h3>Bookmarked Materials</h3>
+                <div class="bookmarks-list">
+                    <div class="bookmark-item">
+                        <div class="bookmark-info">
+                            <h4>TypeScript Handbook</h4>
+                            <p>Essential TypeScript concepts and examples</p>
+                        </div>
+                        <button class="action-btn"><i class="ri-bookmark-fill"></i></button>
+                    </div>
+                    <div class="bookmark-item">
+                        <div class="bookmark-info">
+                            <h4>Git Best Practices</h4>
+                            <p>Version control workflow guide</p>
+                        </div>
+                        <button class="action-btn"><i class="ri-bookmark-fill"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../assets/script/students.js"></script>
+</body>
+</html>
+
+
+

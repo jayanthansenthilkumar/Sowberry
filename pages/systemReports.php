@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Reports - Sowberry Academy</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/admin.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+</head>
+<body>
+    <div class="sidebar-overlay"></div>
+    <!-- Sidebar Structure -->
+    <button class="hamburger-menu">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+    </button>
+    <div class="sidebar">
+        <div class="logo">
+            <i class="ri-seedling-fill"></i>
+            <div class="logo-text">
+                <span class="brand-name">Sowberry</span>
+                <span class="brand-suffix">ACADEMY</span>
+            </div>
+        </div>
+        <nav>
+            <a href="admin.php"><i class="ri-dashboard-line"></i><span>Dashboard</span></a>
+            <a href="manageStudents.php"><i class="ri-user-line"></i><span>Students</span></a>
+            <a href="manageMentors.php"><i class="ri-team-line"></i><span>Mentors</span></a>
+            <a href="coursesOverview.php"><i class="ri-book-open-line"></i><span>Courses</span></a>
+            <a href="performanceAnalytics.php"><i class="ri-line-chart-line"></i><span>Analytics</span></a>
+            <a href="systemReports.php" class="active"><i class="ri-file-chart-line"></i><span>Reports</span></a>
+            <a href="adminSettings.php"><i class="ri-settings-line"></i><span>Settings</span></a>
+        </nav>
+    </div>
+
+    <main>
+        <header>
+            <div class="search-bar">
+                <i class="ri-search-line"></i>
+                <input type="text" placeholder="Search reports...">
+            </div>
+            <div class="header-tools">
+                <div class="theme-toggle">
+                    <i class="ri-sun-line"></i>
+                </div>
+                <div class="notifications">
+                    <i class="ri-notification-3-line"></i>
+                    <span class="notification-badge">3</span>
+                </div>
+                <div class="user-profile">
+                    <img src="https://ui-avatars.com/api/?name=Sowmiya&size=30" alt="User" class="user-avatar">
+                    <div class="user-info">
+                        <span class="user-name">Sowmiya</span>
+                        <span class="user-status">
+                            <i class="ri-checkbox-blank-circle-fill"></i>
+                            Active
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="welcome-section">
+            <div class="welcome-card">
+                <div class="welcome-content">
+                    <div class="welcome-text">
+                        <h1>System Reports</h1>
+                        <p>Access and generate detailed system reports and analytics</p>
+                    </div>
+                    <div class="welcome-stats">
+                        <div class="stat-item floating">
+                            <div class="stat-icon"><i class="ri-file-chart-line"></i></div>
+                            <div class="stat-info">
+                                <h4>Total Reports</h4>
+                                <p>156</p>
+                            </div>
+                        </div>
+                        <div class="stat-item floating delay-1">
+                            <div class="stat-icon"><i class="ri-download-cloud-line"></i></div>
+                            <div class="stat-info">
+                                <h4>Downloads</h4>
+                                <p>1,892</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-wrapper">
+            <div class="filter-container">
+                <button class="filter-btn active">All Reports</button>
+                <button class="filter-btn">Financial</button>
+                <button class="filter-btn">Academic</button>
+                <button class="filter-btn">Performance</button>
+                <button class="action-button" onclick="generateReport()">
+                    <i class="ri-add-line"></i> Generate Report
+                </button>
+            </div>
+
+            <div class="dashboard-grid">
+                <!-- Report Cards -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Financial Overview</h3>
+                        <div class="card-actions">
+                            <button class="icon-btn" title="Download"><i class="ri-download-line"></i></button>
+                            <button class="icon-btn" title="Share"><i class="ri-share-line"></i></button>
+                        </div>
+                    </div>
+                    <div class="report-content">
+                        <div class="report-summary">
+                            <div class="summary-item">
+                                <span class="label">Revenue</span>
+                                <span class="value">$124,500</span>
+                                <span class="trend positive">+12.5%</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="label">Expenses</span>
+                                <span class="value">$45,200</span>
+                                <span class="trend negative">-3.2%</span>
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="financialChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Student Progress</h3>
+                        <div class="card-actions">
+                            <button class="icon-btn" title="Download"><i class="ri-download-line"></i></button>
+                            <button class="icon-btn" title="Share"><i class="ri-share-line"></i></button>
+                        </div>
+                    </div>
+                    <div class="report-content">
+                        <div class="progress-stats">
+                            <div class="stat-circle">
+                                <svg viewBox="0 0 36 36">
+                                    <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#eee" stroke-width="3"/>
+                                    <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="var(--primary)" stroke-width="3" stroke-dasharray="75, 100"/>
+                                </svg>
+                                <span>75%</span>
+                            </div>
+                            <div class="stat-details">
+                                <h4>Course Completion Rate</h4>
+                                <p>Average across all courses</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Recent Reports</h3>
+                        <button class="action-button small">View All</button>
+                    </div>
+                    <div class="report-list">
+                        <div class="report-item">
+                            <i class="ri-file-text-line"></i>
+                            <div class="report-info">
+                                <h4>Q2 Financial Report</h4>
+                                <span>Generated on Jul 1, 2023</span>
+                            </div>
+                            <button class="icon-btn"><i class="ri-download-line"></i></button>
+                        </div>
+                        <div class="report-item">
+                            <i class="ri-file-chart-line"></i>
+                            <div class="report-info">
+                                <h4>Student Performance Analysis</h4>
+                                <span>Generated on Jun 28, 2023</span>
+                            </div>
+                            <button class="icon-btn"><i class="ri-download-line"></i></button>
+                        </div>
+                        <div class="report-item">
+                            <i class="ri-file-user-line"></i>
+                            <div class="report-info">
+                                <h4>Mentor Evaluation Report</h4>
+                                <span>Generated on Jun 25, 2023</span>
+                            </div>
+                            <button class="icon-btn"><i class="ri-download-line"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Generate Report Modal -->
+    <div class="modal" id="generateReportModal">
+        <div class="modal-content">
+            <h2>Generate New Report</h2>
+            <form id="reportForm">
+                <div class="form-group">
+                    <label>Report Type</label>
+                    <select required>
+                        <option value="">Select report type</option>
+                        <option value="financial">Financial Report</option>
+                        <option value="academic">Academic Progress Report</option>
+                        <option value="performance">Performance Analysis</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Date Range</label>
+                    <div class="date-range">
+                        <input type="date" required>
+                        <span>to</span>
+                        <input type="date" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Format</label>
+                    <select required>
+                        <option value="pdf">PDF</option>
+                        <option value="excel">Excel</option>
+                        <option value="csv">CSV</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="secondary-btn" onclick="closeModal()">Cancel</button>
+                    <button type="submit" class="primary-btn">Generate</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script src="../assets/script/main.js"></script>
+    <script>
+        function generateReport() {
+            document.getElementById('generateReportModal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('generateReportModal').classList.remove('active');
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                closeModal();
+            }
+        }
+
+        // Handle form submission
+        document.getElementById('reportForm').onsubmit = function(e) {
+            e.preventDefault();
+            // Add your report generation logic here
+            closeModal();
+        }
+    </script>
+</body>
+</html>
+
+
+
