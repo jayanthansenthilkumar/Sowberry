@@ -7,7 +7,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../assets/css/mentor.css">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="../assets/script/api-config.js"></script>
     <style>
         /* Variables */
         :root {
@@ -335,7 +339,7 @@
                             <h2>Welcome back!</h2>
                             <p>Please enter your details to sign in</p>
                             
-                            <form action="/login" method="POST" id="loginForm">
+                            <form id="loginForm">
                                 <div class="form-group">
                                     <input type="email" id="email" name="email" placeholder="Email address" required>
                                 </div>
@@ -385,7 +389,7 @@
                             <h2>Create Account</h2>
                             <p>Please fill in your details to register</p>
                             
-                            <form action="/register" method="POST" id="registerForm" class="compact-form">
+                            <form id="registerForm" class="compact-form">
                                 <div class="form-group">
                                     <div class="input-wrapper">
                                         <input type="email" id="regEmail" name="email" placeholder="Email address" required>
@@ -895,52 +899,16 @@
         }
         // Initialize forgot password flow
         function initializeForgotPasswordFlow() {
-            const forgotForm = document.getElementById('forgotForm');
-            const otpForm = document.getElementById('otpForm');
-            const resetPasswordForm = document.getElementById('resetPasswordForm');
-
-            // Step 1: Send OTP
-            forgotForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                const email = document.getElementById('resetEmail').value;
-                if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-                    // TODO: Send OTP via backend
-                    alert('OTP sent to your email!'); // Temporary alert
-                    switchForgotStep(2);
-                }
-            });
-
-            // Step 2: Verify OTP
-            otpForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                const otp = document.getElementById('otp').value;
-                if (/^\d{6}$/.test(otp)) {
-                    // TODO: Verify OTP via backend
-                    alert('OTP verified!'); // Temporary alert
-                    switchForgotStep(3);
-                }
-            });
-            // Step 3: Reset Password
-            resetPasswordForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                const newPass = document.getElementById('newPassword').value;
-                const confirmPass = document.getElementById('confirmPassword').value;
-                if (newPass === confirmPass && newPass.length >= 6) {
-                    // TODO: Reset password via backend
-                    alert('Password reset successful!'); // Temporary alert
-                    toggleToLogin();
-                } else {
-                    alert('Passwords do not match or too short!');
-                }
-            });
-
             function switchForgotStep(step) {
                 document.querySelectorAll('.forgot-step').forEach(el => el.classList.remove('active'));
                 document.querySelector(`.step-${step}`).classList.add('active');
             }
+            
+            window.switchForgotStep = switchForgotStep;
         }
         // Add this call to DOMContentLoaded
         initializeForgotPasswordFlow();
     </script>
+    <script src="../assets/script/auth.js"></script>
 </body>
 </html>
