@@ -10,6 +10,8 @@
     <!-- DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css">
+    <!-- SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <style>
         .student-management {
             padding: 24px;
@@ -656,61 +658,21 @@
                     </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <td>STU001</td>
-                    <td>Sowmiya S</td>
-                    <td>sowmiya@example.com</td>
-                    <td>Web Development</td>
-                    <td><span class="student-status status-active">Active</span></td>
-                    <td>
-                        <div class="action-buttons">
-                            <button class="action-btn edit-btn" title="Edit"><i class="ri-edit-line"></i></button>
-                            <button class="action-btn delete-btn" title="Delete"><i class="ri-delete-bin-line"></i></button>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>STU002</td>
-                    <td>Prithika K</td>
-                    <td>prithika@example.com</td>
-                    <td>UI/UX Design</td>
-                    <td><span class="student-status status-active">Active</span></td>
-                    <td>
-                        <div class="action-buttons">
-                            <button class="action-btn edit-btn" title="Edit"><i class="ri-edit-line"></i></button>
-                            <button class="action-btn delete-btn" title="Delete"><i class="ri-delete-bin-line"></i></button>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>STU003</td>
-                    <td>Priyadharshini B</td>
-                    <td>priyadharshini@example.com</td>
-                    <td>Mobile Development</td>
-                    <td><span class="student-status status-active">Active</span></td>
-                    <td>
-                        <div class="action-buttons">
-                            <button class="action-btn edit-btn" title="Edit"><i class="ri-edit-line"></i></button>
-                            <button class="action-btn delete-btn" title="Delete"><i class="ri-delete-bin-line"></i></button>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
+                <!-- Students will be loaded dynamically via API -->
+                </tbody>
             </table>
         </div>
     </main>
 
+    <!-- Add Student/Edit Student Modal -->
     <div class="modal" id="addStudentModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title">Add New Student</h3>
+                <h3 class="modal-title" id="modalTitle">Add New Student</h3>
                 <button class="close-modal">×</button>
             </div>
             <form class="modal-form" id="addStudentForm">
-                <div class="form-group">
-                    <label for="studentId">Student ID</label>
-                    <input type="text" id="studentId" name="studentId" required>
-                </div>
+                <input type="hidden" id="studentEditId" name="studentEditId">
                 <div class="form-group">
                     <label for="studentName">Full Name</label>
                     <input type="text" id="studentName" name="studentName" required>
@@ -720,24 +682,31 @@
                     <input type="email" id="studentEmail" name="studentEmail" required>
                 </div>
                 <div class="form-group">
-                    <label for="studentCourse">Course</label>
-                    <select id="studentCourse" name="studentCourse" required>
-                        <option value="">Select Course</option>
-                        <option value="Web Development">Web Development</option>
-                        <option value="UI/UX Design">UI/UX Design</option>
-                        <option value="Mobile Development">Mobile Development</option>
-                        <option value="Data Science">Data Science</option>
-                    </select>
+                    <label for="studentPhone">Phone</label>
+                    <input type="tel" id="studentPhone" name="studentPhone" required>
+                </div>
+                <div class="form-group">
+                    <label for="studentUsername">Username</label>
+                    <input type="text" id="studentUsername" name="studentUsername" required>
+                </div>
+                <div class="form-group">
+                    <label for="studentPassword">Password</label>
+                    <input type="password" id="studentPassword" name="studentPassword">
+                    <small id="passwordHelp" style="color: #6b7280; font-size: 0.85rem;">Leave blank to keep existing password</small>
                 </div>
                 <div class="form-group">
                     <label for="studentStatus">Status</label>
                     <select id="studentStatus" name="studentStatus" required>
-                        <option value="Active">Active</option>
-                        <option value="Inactive">Inactive</option>
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                        <option value="suspended">Suspended</option>
                     </select>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn-cancel">Cancel</button>
+                    <button type="submit" class="btn-submit">Save Student</button>
+                </div>
+            </form>
                     <button type="submit" class="btn-submit">Add Student</button>
                 </div>
             </form>
@@ -749,27 +718,16 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.2.2/js/dataTables.buttons.min.js"></script>
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- API Handler -->
+    <script src="./assets/script/api.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Initialize DataTable
-            $('#studentsTable').DataTable({
-                scrollY: '60vh',
-                scrollCollapse: true,
-                paging: true,
-                responsive: true,
-                pageLength: 10,
-                order: [[1, 'asc']],
-                dom: '<"top"lf>rt<"bottom"ip><"clear">',
-                language: {
-                    search: "",
-                    searchPlaceholder: "Search students...",
-                    info: "_START_ - _END_ of _TOTAL_ students",
-                    paginate: {
-                        previous: "<i class='ri-arrow-left-s-line'></i>",
-                        next: "<i class='ri-arrow-right-s-line'></i>"
-                    }
-                }
-            });
+        let studentsTable;
+        
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Load students from API
+            await loadStudents();
 
             // Modal Elements
             const modal = document.getElementById('addStudentModal');
@@ -778,113 +736,191 @@
             const cancelBtn = document.querySelector('.btn-cancel');
             const form = document.getElementById('addStudentForm');
             
-            // Show Modal with smooth transition
-            function showModal() {
-                document.body.style.overflow = 'hidden';
-                modal.style.display = 'flex';
-                requestAnimationFrame(() => {
-                    modal.classList.add('active');
-                    modal.querySelector('.modal-content').style.opacity = '1';
-                    modal.querySelector('.modal-content').style.transform = 'scale(1)';
-                });
-            }
-
-            // Hide Modal with smooth transition
-            function hideModal() {
-                modal.querySelector('.modal-content').style.opacity = '0';
-                modal.querySelector('.modal-content').style.transform = 'scale(0.8)';
-                modal.classList.remove('active');
-                setTimeout(() => {
-                    modal.style.display = 'none';
-                    document.body.style.overflow = '';
+            // Show Modal
+            function showModal(isEdit = false, student = null) {
+                const modalTitle = document.getElementById('modalTitle');
+                const passwordField = document.getElementById('studentPassword');
+                const passwordHelp = document.getElementById('passwordHelp');
+                
+                if (isEdit && student) {
+                    modalTitle.textContent = 'Edit Student';
+                    document.getElementById('studentEditId').value = student.id;
+                    document.getElementById('studentName').value = student.full_name;
+                    document.getElementById('studentEmail').value = student.email;
+                    document.getElementById('studentPhone').value = student.phone;
+                    document.getElementById('studentUsername').value = student.username;
+                    document.getElementById('studentStatus').value = student.status;
+                    passwordField.required = false;
+                    passwordHelp.style.display = 'block';
+                } else {
+                    modalTitle.textContent = 'Add New Student';
                     form.reset();
-                }, 300);
-            }
-
-            // Event Listeners
-            addBtn.addEventListener('click', showModal);
-            closeBtn.addEventListener('click', hideModal);
-            cancelBtn.addEventListener('click', hideModal);
-
-            // Close on outside click
-            modal.addEventListener('click', function(e) {
-                if (e.target === modal) {
-                    hideModal();
+                    document.getElementById('studentEditId').value = '';
+                    passwordField.required = true;
+                    passwordHelp.style.display = 'none';
                 }
-            });
-
-            // Prevent modal close when clicking modal content
-            modal.querySelector('.modal-content').addEventListener('click', function(e) {
-                e.stopPropagation();
-            });
-
-            // Handle form submission
-            form.addEventListener('submit', function(e) {
-                e.preventDefault();
-                hideModal();
-            });
-
-            // Handle ESC key
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape' && modal.style.display === 'flex') {
-                    hideModal();
-                }
-            });
-        });
-    </script>
-
-    <!-- Replace the modal toggle script with this -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // ... existing DataTable initialization ...
-
-            const modal = document.getElementById('addStudentModal');
-            const addBtn = document.querySelector('.add-student-btn');
-            const closeBtn = document.querySelector('.close-modal');
-            const cancelBtn = document.querySelector('.btn-cancel');
-            const form = document.getElementById('addStudentForm');
-            const scrollPosition = { x: 0, y: 0 };
-
-            function showModal() {
-                // Store current scroll position
-                scrollPosition.x = window.scrollX;
-                scrollPosition.y = window.scrollY;
                 
-                // Show modal
-                document.body.classList.add('modal-open');
                 modal.classList.add('active');
-                
-                // Fix body position
-                document.body.style.top = `-${scrollPosition.y}px`;
             }
 
+            // Hide Modal
             function hideModal() {
                 modal.classList.remove('active');
-                document.body.classList.remove('modal-open');
-                
-                // Restore scroll position
-                document.body.style.top = '';
-                window.scrollTo(scrollPosition.x, scrollPosition.y);
-                
-                // Reset form after animation
                 setTimeout(() => form.reset(), 300);
             }
 
             // Event Listeners
-            addBtn.addEventListener('click', showModal);
+            addBtn.addEventListener('click', () => showModal(false));
             closeBtn.addEventListener('click', hideModal);
             cancelBtn.addEventListener('click', hideModal);
             modal.addEventListener('click', e => e.target === modal && hideModal());
-            form.addEventListener('submit', e => {
+
+            // Handle form submission
+            form.addEventListener('submit', async function(e) {
                 e.preventDefault();
-                hideModal();
+                
+                const studentId = document.getElementById('studentEditId').value;
+                const formData = {
+                    full_name: document.getElementById('studentName').value,
+                    email: document.getElementById('studentEmail').value,
+                    phone: document.getElementById('studentPhone').value,
+                    username: document.getElementById('studentUsername').value,
+                    status: document.getElementById('studentStatus').value
+                };
+
+                const password = document.getElementById('studentPassword').value;
+                if (password) {
+                    formData.password = password;
+                }
+
+                try {
+                    if (studentId) {
+                        // Update existing student
+                        await API.Student.update(studentId, formData);
+                    } else {
+                        // Create new student
+                        formData.password = password; // Required for new students
+                        await API.Student.create(formData);
+                    }
+                    hideModal();
+                    await loadStudents();
+                } catch (error) {
+                    console.error('Student operation failed:', error);
+                }
             });
-            document.addEventListener('keydown', e => {
+
+            // Handle ESC key
+            document.addEventListener('keydown', function(e) {
                 if (e.key === 'Escape' && modal.classList.contains('active')) {
                     hideModal();
                 }
             });
+
+            // Event delegation for edit and delete buttons
+            document.getElementById('studentsTable').addEventListener('click', async function(e) {
+                const editBtn = e.target.closest('.edit-btn');
+                const deleteBtn = e.target.closest('.delete-btn');
+                
+                if (editBtn) {
+                    const studentId = editBtn.dataset.id;
+                    try {
+                        const student = await API.Student.getOne(studentId);
+                        showModal(true, student);
+                    } catch (error) {
+                        console.error('Failed to load student:', error);
+                    }
+                }
+                
+                if (deleteBtn) {
+                    const studentId = deleteBtn.dataset.id;
+                    const studentName = deleteBtn.dataset.name;
+                    
+                    const result = await Swal.fire({
+                        title: 'Delete Student?',
+                        text: `Are you sure you want to delete ${studentName}? This action cannot be undone.`,
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#ef4444',
+                        cancelButtonColor: '#6b7280',
+                        confirmButtonText: 'Yes, delete',
+                        cancelButtonText: 'Cancel'
+                    });
+                    
+                    if (result.isConfirmed) {
+                        try {
+                            await API.Student.delete(studentId);
+                            await loadStudents();
+                        } catch (error) {
+                            console.error('Failed to delete student:', error);
+                        }
+                    }
+                }
+            });
         });
+
+        // Load students function
+        async function loadStudents() {
+            try {
+                const students = await API.Student.getAll();
+                
+                // Destroy existing DataTable if it exists
+                if (studentsTable) {
+                    studentsTable.destroy();
+                }
+                
+                // Clear table body
+                const tbody = document.querySelector('#studentsTable tbody');
+                tbody.innerHTML = '';
+                
+                // Populate table
+                students.forEach(student => {
+                    const statusClass = student.status === 'active' ? 'status-active' : 'status-inactive';
+                    const row = `
+                        <tr>
+                            <td>${student.id}</td>
+                            <td>${student.full_name || 'N/A'}</td>
+                            <td>${student.email}</td>
+                            <td>${student.enrolled_courses || 0} courses</td>
+                            <td><span class="student-status ${statusClass}">${student.status}</span></td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="action-btn edit-btn" data-id="${student.id}" title="Edit">
+                                        <i class="ri-edit-line"></i>
+                                    </button>
+                                    <button class="action-btn delete-btn" data-id="${student.id}" data-name="${student.full_name || student.username}" title="Delete">
+                                        <i class="ri-delete-bin-line"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                    tbody.insertAdjacentHTML('beforeend', row);
+                });
+                
+                // Initialize DataTable
+                studentsTable = $('#studentsTable').DataTable({
+                    scrollY: '60vh',
+                    scrollCollapse: true,
+                    paging: true,
+                    responsive: true,
+                    pageLength: 10,
+                    order: [[1, 'asc']],
+                    dom: '<"top"lf>rt<"bottom"ip><"clear">',
+                    language: {
+                        search: "",
+                        searchPlaceholder: "Search students...",
+                        info: "_START_ - _END_ of _TOTAL_ students",
+                        paginate: {
+                            previous: "<i class='ri-arrow-left-s-line'></i>",
+                            next: "<i class='ri-arrow-right-s-line'></i>"
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('Failed to load students:', error);
+                API.showError('Failed to load students data');
+            }
+        }
     </script>
 </body>
 </html>

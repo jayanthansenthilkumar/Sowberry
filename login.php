@@ -8,6 +8,11 @@
     <link rel="stylesheet" href="./assets/css/mentor.css">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <!-- jQuery and SweetAlert2 -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- API Handler -->
+    <script src="./assets/script/api.js"></script>
     <style>
         /* Variables */
         :root {
@@ -798,18 +803,121 @@
                 toggleForms('forgot');
             });
 
+            // Login form submission
+            document.getElementById('loginForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+                const remember = document.querySelector('input[name="remember"]').checked;
+
+                try {
+                    const response = await API.Auth.login(email, password, remember);
+                    
+                    // Redirect based on role
+                    if (response.user.role === 'admin') {
+                        window.location.href = 'admin.php';
+                    } else if (response.user.role === 'mentor') {
+                        window.location.href = 'mentorDashboard.php';
+                    } else if (response.user.role === 'student') {
+                        window.location.href = 'studentsDashboard.php';
+                    } else {
+                        window.location.href = 'index.php';
+                    }
+                } catch (error) {
+                    // Error already handled by API with SweetAlert2
+                    console.error('Login failed:', error);
+                }
+            });
+
+            // Register form submission
+            document.getElementById('registerForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const formData = {
+                    email: document.getElementById('regEmail').value,
+                    username: document.getElementById('username').value,
+                    fullName: document.getElementById('fullName').value,
+                    phone: document.getElementById('countryCode').value + document.getElementById('phone').value.replace(/\D/g, ''),
+                    role: 'student' // Default role for registration
+                };
+
+                try {
+                    await API.Auth.register(formData);
+                    // Success handled by API, switch to login
+                    toggleForms('login');
+                } catch (error) {
+                    console.error('Registration failed:', error);
+                }
+            });
+
             // Forgot password form submission
-            document.getElementById('forgotForm').addEventListener('submit', function(e) {
+            document.getElementById('forgotForm').addEventListener('submit', async function(e) {
                 e.preventDefault();
                 const email = document.getElementById('resetEmail').value;
+                
                 if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-                    alert('If the email exists in our system, you will receive reset instructions shortly.');
-                    toggleToLogin();
+                    try {
+                        await API.Auth.forgotPassword(email);
+                        // Success - show OTP step
+                        switchForgotStep(2);
+                    } catch (error) {
+                        console.error('Forgot password failed:', error);
+                    }
                 } else {
                     const validationMsg = document.getElementById('resetEmail')
                         .parentElement.querySelector('.validation-message');
                     validationMsg.textContent = '×';
                     validationMsg.className = 'validation-message invalid';
+                }
+            });
+
+            // OTP verification
+            document.getElementById('otpForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const otp = document.getElementById('otp').value;
+                const email = document.getElementById('resetEmail').value;
+                
+                if (/^\d{6}$/.test(otp)) {
+                    try {
+                        // Store email and OTP for password reset
+                        sessionStorage.setItem('resetEmail', email);
+                        sessionStorage.setItem('resetOTP', otp);
+                        switchForgotStep(3);
+                    } catch (error) {
+                        console.error('OTP verification failed:', error);
+                    }
+                } else {
+                    API.showError('Please enter a valid 6-digit OTP');
+                }
+            });
+
+            // Reset password form submission
+            document.getElementById('resetPasswordForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const newPass = document.getElementById('newPassword').value;
+                const confirmPass = document.getElementById('confirmPassword').value;
+                const email = sessionStorage.getItem('resetEmail');
+                const otp = sessionStorage.getItem('resetOTP');
+
+                if (newPass !== confirmPass) {
+                    API.showError('Passwords do not match!');
+                    return;
+                }
+
+                if (newPass.length < 6) {
+                    API.showError('Password must be at least 6 characters long!');
+                    return;
+                }
+
+                try {
+                    await API.Auth.resetPassword(email, otp, newPass);
+                    // Clear session storage
+                    sessionStorage.removeItem('resetEmail');
+                    sessionStorage.removeItem('resetOTP');
+                    // Switch to login
+                    toggleToLogin();
+                } catch (error) {
+                    console.error('Password reset failed:', error);
                 }
             });
 
@@ -895,49 +1003,12 @@
         }
         // Initialize forgot password flow
         function initializeForgotPasswordFlow() {
-            const forgotForm = document.getElementById('forgotForm');
-            const otpForm = document.getElementById('otpForm');
-            const resetPasswordForm = document.getElementById('resetPasswordForm');
-
-            // Step 1: Send OTP
-            forgotForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                const email = document.getElementById('resetEmail').value;
-                if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-                    // TODO: Send OTP via backend
-                    alert('OTP sent to your email!'); // Temporary alert
-                    switchForgotStep(2);
-                }
-            });
-
-            // Step 2: Verify OTP
-            otpForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                const otp = document.getElementById('otp').value;
-                if (/^\d{6}$/.test(otp)) {
-                    // TODO: Verify OTP via backend
-                    alert('OTP verified!'); // Temporary alert
-                    switchForgotStep(3);
-                }
-            });
-            // Step 3: Reset Password
-            resetPasswordForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                const newPass = document.getElementById('newPassword').value;
-                const confirmPass = document.getElementById('confirmPassword').value;
-                if (newPass === confirmPass && newPass.length >= 6) {
-                    // TODO: Reset password via backend
-                    alert('Password reset successful!'); // Temporary alert
-                    toggleToLogin();
-                } else {
-                    alert('Passwords do not match or too short!');
-                }
-            });
-
-            function switchForgotStep(step) {
+            // Moved forgot password logic to initializeFormValidation
+            // This function handles step switching
+            window.switchForgotStep = function(step) {
                 document.querySelectorAll('.forgot-step').forEach(el => el.classList.remove('active'));
                 document.querySelector(`.step-${step}`).classList.add('active');
-            }
+            };
         }
         // Add this call to DOMContentLoaded
         initializeForgotPasswordFlow();

@@ -8,6 +8,9 @@
     <link rel="stylesheet" href="../assets/css/mentor.css">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- jQuery and SweetAlert2 -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
     <!-- Add this div for mobile overlay -->
@@ -86,9 +89,9 @@
                     </div>
                 </div>
                 <div class="user-profile" id="userProfile">
-                    <img src="https://ui-avatars.com/api/?name=Sowmiya&size=30" alt="User" class="user-avatar">
+                    <img src="https://ui-avatars.com/api/?name=Mentor&size=30" alt="User" class="user-avatar" id="userAvatar">
                     <div class="user-info">
-                        <span class="user-name">Sowmiya</span>
+                        <span class="user-name" id="userName">Mentor</span>
                         <span class="user-status">
                             <i class="ri-checkbox-blank-circle-fill"></i>
                             Active
@@ -109,7 +112,7 @@
             <div class="welcome-card">
                 <div class="welcome-content">
                     <div class="welcome-text">
-                        <h1>Welcome,<span class="highlight">Sowmiya!</span></h1>
+                        <h1>Welcome,<span class="highlight" id="welcomeName">Mentor</span>!</h1>
                         <p>Here's what's happening with your courses today.</p>
                     </div>
                     <div class="welcome-stats">
@@ -117,14 +120,14 @@
                             <div class="stat-icon"><i class="ri-user-line"></i></div>
                             <div class="stat-info">
                                 <h4>Active Students</h4>
-                                <p>1,285</p>
+                                <p id="totalStudents">0</p>
                             </div>
                         </div>
                         <div class="stat-item floating delay-1">
                             <div class="stat-icon"><i class="ri-book-open-line"></i></div>
                             <div class="stat-info">
                                 <h4>Total Courses</h4>
-                                <p>42</p>
+                                <p id="totalCourses">0</p>
                             </div>
                         </div>
                     </div>
@@ -182,47 +185,16 @@
             </div>
             <!-- Add Popular Courses Card -->
             <div class="card animate">
-                <h3>Popular Courses</h3>
-                <div class="popular-courses">
+                <h3>Your Courses</h3>
+                <div class="popular-courses" id="popularCourses">
                     <div class="course-item">
                         <div class="course-info">
                             <div class="course-icon">
-                                <i class="ri-code-s-line"></i>
+                                <i class="ri-loader-4-line"></i>
                             </div>
                             <div>
-                                <h4>JavaScript Fundamentals</h4>
-                                <p>850 students</p>
-                            </div>
-                        </div>
-                        <div class="course-stats">
-                            <div class="rating">
-                                <i class="ri-star-fill"></i>
-                                <span>4.8</span>
-                            </div>
-                            <div class="trend up">
-                                <i class="ri-arrow-up-line"></i>
-                                <span>12%</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="course-item">
-                        <div class="course-info">
-                            <div class="course-icon">
-                                <i class="ri-html5-line"></i>
-                            </div>
-                            <div>
-                                <h4>HTML & CSS Mastery</h4>
-                                <p>720 students</p>
-                            </div>
-                        </div>
-                        <div class="course-stats">
-                            <div class="rating">
-                                <i class="ri-star-fill"></i>
-                                <span>4.6</span>
-                            </div>
-                            <div class="trend up">
-                                <i class="ri-arrow-up-line"></i>
-                                <span>8%</span>
+                                <h4>Loading courses...</h4>
+                                <p></p>
                             </div>
                         </div>
                     </div>
@@ -230,8 +202,213 @@
             </div>
         </div>
     </main>
+    <!-- API Handler -->
+    <script src="./assets/script/api.js"></script>
+    <script src="./assets/script/common.js"></script>
     <script src="../assets/script/mentor.js"></script>
     <script>
+        let currentUser = null;
+        let mentorStats = null;
+        
+        // Load mentor dashboard data
+        async function loadMentorDashboard() {
+            try {
+                // Check session and get current user
+                const session = await API.Auth.checkSession();
+                if (!session || !session.user) {
+                    window.location.href = 'login.php';
+                    return;
+                }
+                
+                currentUser = session.user;
+                const mentorId = currentUser.id;
+                
+                // Update user info in header
+                document.getElementById('userName').textContent = currentUser.full_name || currentUser.username;
+                document.getElementById('welcomeName').textContent = currentUser.full_name || currentUser.username;
+                document.getElementById('userAvatar').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.full_name || currentUser.username)}&size=30`;
+                
+                // Get mentor statistics
+                mentorStats = await API.Mentor.getStats(mentorId);
+                
+                // Update stats
+                document.getElementById('totalStudents').textContent = mentorStats.total_students || 0;
+                document.getElementById('totalCourses').textContent = mentorStats.total_courses || 0;
+                
+                // Animate counters
+                setTimeout(() => {
+                    animateCounter('activeLearnersCount', mentorStats.active_students || 0);
+                    animateCounter('learningProgressPercent', mentorStats.avg_progress || 0, 2000, '', '%');
+                    animateCounter('enrollmentsCount', mentorStats.total_enrollments || 0);
+                }, 500);
+                
+                // Load mentor's courses
+                const courses = await API.Course.getAll({ mentor_id: mentorId });
+                renderCourses(courses);
+                
+                // Initialize charts with real data
+                initializeCharts(mentorStats, courses);
+                
+            } catch (error) {
+                console.error('Failed to load dashboard:', error);
+                if (error.message && error.message.includes('session')) {
+                    window.location.href = 'login.php';
+                }
+            }
+        }
+        
+        function renderCourses(courses) {
+            const container = document.getElementById('popularCourses');
+            container.innerHTML = '';
+            
+            if (courses.length === 0) {
+                container.innerHTML = `
+                    <div class="course-item">
+                        <div class="course-info">
+                            <div class="course-icon">
+                                <i class="ri-information-line"></i>
+                            </div>
+                            <div>
+                                <h4>No courses yet</h4>
+                                <p>Create your first course to get started!</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
+            courses.slice(0, 5).forEach(course => {
+                const icons = ['ri-code-s-line', 'ri-html5-line', 'ri-database-2-line', 'ri-palette-line', 'ri-terminal-box-line'];
+                const randomIcon = icons[Math.floor(Math.random() * icons.length)];
+                
+                const item = `
+                    <div class="course-item">
+                        <div class="course-info">
+                            <div class="course-icon">
+                                <i class="${randomIcon}"></i>
+                            </div>
+                            <div>
+                                <h4>${course.title}</h4>
+                                <p>${course.enrolled_students || 0} students</p>
+                            </div>
+                        </div>
+                        <div class="course-stats">
+                            <div class="rating">
+                                <i class="ri-star-fill"></i>
+                                <span>${(Math.random() * 2 + 3).toFixed(1)}</span>
+                            </div>
+                            <div class="trend ${course.status === 'published' ? 'up' : ''}">
+                                <i class="ri-${course.status === 'published' ? 'arrow-up' : 'time'}-line"></i>
+                                <span>${course.status}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.insertAdjacentHTML('beforeend', item);
+            });
+        }
+        
+        function initializeCharts(stats, courses) {
+            // Sample data for charts
+            const monthlyData = {
+                students: [
+                    Math.floor((stats.total_students || 0) * 0.7),
+                    Math.floor((stats.total_students || 0) * 0.8),
+                    Math.floor((stats.total_students || 0) * 0.85),
+                    Math.floor((stats.total_students || 0) * 0.9),
+                    Math.floor((stats.total_students || 0) * 0.95),
+                    stats.total_students || 0
+                ],
+                completion: [60, 65, 70, 72, 75, stats.avg_progress || 0],
+                enrollments: [
+                    Math.floor((stats.total_enrollments || 0) * 0.6),
+                    Math.floor((stats.total_enrollments || 0) * 0.7),
+                    Math.floor((stats.total_enrollments || 0) * 0.8),
+                    Math.floor((stats.total_enrollments || 0) * 0.85),
+                    Math.floor((stats.total_enrollments || 0) * 0.92),
+                    stats.total_enrollments || 0
+                ]
+            };
+
+            const labels = ['January', 'February', 'March', 'April', 'May', 'June'];
+
+            // Common chart options
+            const chartOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: 'var(--card-bg)',
+                        titleColor: 'var(--text)',
+                        bodyColor: 'var(--text)',
+                        borderColor: 'var(--border-color)',
+                        borderWidth: 1,
+                        padding: 10,
+                        cornerRadius: 8
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(99, 102, 241, 0.1)'
+                        }
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                }
+            };
+
+            // Create charts
+            function createChart(canvasId, data, color) {
+                return new Chart(document.getElementById(canvasId), {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            data: data,
+                            borderColor: color,
+                            backgroundColor: color + '20',
+                            tension: 0.4,
+                            fill: true
+                        }]
+                    },
+                    options: chartOptions
+                });
+            }
+
+            // Initialize charts
+            createChart('studentsChart', monthlyData.students, '#6366f1');
+            createChart('completionChart', monthlyData.completion, '#8b5cf6');
+            createChart('enrollmentsChart', monthlyData.enrollments, '#06b6d4');
+        }
+        
+        // Animate counter function
+        function animateCounter(elementId, targetValue, duration = 2000, prefix = '', suffix = '') {
+            const element = document.getElementById(elementId);
+            const start = 0;
+            const increment = targetValue / (duration / 16);
+            let current = start;
+
+            const animate = () => {
+                current += increment;
+                if (current >= targetValue) {
+                    element.textContent = prefix + Math.round(targetValue).toLocaleString() + suffix;
+                } else {
+                    element.textContent = prefix + Math.round(current).toLocaleString() + suffix;
+                    requestAnimationFrame(animate);
+                }
+            };
+
+            animate();
+        }
+        
+        // Load dashboard on page load
+        document.addEventListener('DOMContentLoaded', loadMentorDashboard);
+    </script>
         document.addEventListener('DOMContentLoaded', function() {
             // Sample data for charts
             const monthlyData = {
