@@ -270,7 +270,7 @@ function initAdminComponents(activePage, userName = 'Admin') {
     // Render Header
     const headerContainer = document.getElementById('header-container');
     if (headerContainer) {
-        headerContainer.innerHTML = getHeader(userName, 'admin', '../auth/index.html');
+        headerContainer.innerHTML = getHeader(userName, 'admin', 'auth.html');
     }
 }
 
@@ -289,7 +289,7 @@ function initStudentComponents(activePage, userName = 'Student') {
     // Render Header
     const headerContainer = document.getElementById('header-container');
     if (headerContainer) {
-        headerContainer.innerHTML = getHeader(userName, 'student', '../auth/index.html');
+        headerContainer.innerHTML = getHeader(userName, 'student', 'auth.html');
     }
 }
 
@@ -308,7 +308,7 @@ function initMentorComponents(activePage, userName = 'Mentor') {
     // Render Header
     const headerContainer = document.getElementById('header-container');
     if (headerContainer) {
-        headerContainer.innerHTML = getHeader(userName, 'mentor', '../auth/index.html');
+        headerContainer.innerHTML = getHeader(userName, 'mentor', 'auth.html');
     }
 }
 

@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sowberry Academy</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../assets/css/styles.css">
+    <link rel="stylesheet" href="assets/css/styles.css">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="../assets/script/components.js"></script>
+    <script src="assets/script/components.js"></script>
 </head>
-<body data-page-type="admin" data-active-page="dashboard" data-user-name="Sowmiya">
+<body data-page-type="mentor" data-active-page="dashboard" data-user-name="Sowmiya">
     <!-- Sidebar Component -->
     <div id="sidebar-container"></div>
     
@@ -23,22 +23,22 @@
             <div class="welcome-card">
                 <div class="welcome-content">
                     <div class="welcome-text">
-                        <h1>Welcome, <span class="highlight">Sowmiya!</span></h1>
-                        <p>Monitor and manage your platform activities from the admin dashboard</p>
+                        <h1>Welcome,<span class="highlight">Sowmiya!</span></h1>
+                        <p>Here's what's happening with your courses today.</p>
                     </div>
                     <div class="welcome-stats">
                         <div class="stat-item floating">
-                            <div class="stat-icon"><i class="ri-team-line"></i></div>
+                            <div class="stat-icon"><i class="ri-user-line"></i></div>
                             <div class="stat-info">
-                                <h4>Total Mentors</h4>
-                                <p>45</p>
+                                <h4>Active Students</h4>
+                                <p>1,285</p>
                             </div>
                         </div>
                         <div class="stat-item floating delay-1">
-                            <div class="stat-icon"><i class="ri-user-line"></i></div>
+                            <div class="stat-icon"><i class="ri-book-open-line"></i></div>
                             <div class="stat-info">
-                                <h4>Total Students</h4>
-                                <p>1,285</p>
+                                <h4>Total Courses</h4>
+                                <p>42</p>
                             </div>
                         </div>
                     </div>
@@ -48,7 +48,7 @@
         <div class="dashboard-grid">
             <div class="card animate">
                 <div class="card-header">
-                    <h3>Student Enrollment Trends</h3><i class="ri-line-chart-line"></i>
+                    <h3>Active Learners</h3><i class="ri-user-smile-line"></i>
                 </div>
                 <h2 id="activeLearnersCount">0</h2>
                 <div class="chart-container">
@@ -57,20 +57,20 @@
             </div>
             <div class="card animate">
                 <div class="card-header">
-                    <h3>Mentor Performance</h3><i class="ri-team-line"></i>
+                    <h3>Learning Progress</h3><i class="ri-line-chart-line"></i>
                 </div>
-                <h2 id="mentorRating">4.8</h2>
+                <h2 id="learningProgressPercent">0%</h2>
                 <div class="chart-container">
-                    <canvas id="mentorChart"></canvas>
+                    <canvas id="completionChart"></canvas>
                 </div>
             </div>
             <div class="card animate">
                 <div class="card-header">
-                    <h3>Course Completion Rate</h3><i class="ri-medal-line"></i>
+                    <h3>Course Enrollments</h3><i class="ri-book-mark-line"></i>
                 </div>
-                <h2 id="completionRate">78%</h2>
+                <h2 id="enrollmentsCount">0</h2>
                 <div class="chart-container">
-                    <canvas id="completionChart"></canvas>
+                    <canvas id="enrollmentsChart"></canvas>
                 </div>
             </div>
         </div>
@@ -79,58 +79,72 @@
                 <h3>Recent Activities</h3>
                 <div class="activity-list">
                     <div class="activity-item">
-                        <i class="ri-user-add-line"></i>
+                        <i class="ri-video-line"></i>
                         <div class="activity-info">
-                            <p>New Mentor Application: John Smith</p>
-                            <span>30 minutes ago</span>
-                        </div>
-                    </div>
-                    <div class="activity-item">
-                        <i class="ri-flag-line"></i>
-                        <div class="activity-info">
-                            <p>Student Report: Technical Issue</p>
-                            <span>1 hour ago</span>
-                        </div>
-                    </div>
-                    <div class="activity-item">
-                        <i class="ri-user-star-line"></i>
-                        <div class="activity-info">
-                            <p>Mentor Rating Update: Sarah Johnson</p>
+                            <p>New course published: "Advanced JavaScript"</p>
                             <span>2 hours ago</span>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <i class="ri-task-line"></i>
+                        <div class="activity-info">
+                            <p>Assignment submitted by 45 students</p>
+                            <span>5 hours ago</span>
                         </div>
                     </div>
                 </div>
             </div>
             <!-- Add Popular Courses Card -->
             <div class="card animate">
-                <h3>System Alerts</h3>
-                <div class="activity-list">
-                    <div class="activity-item alert-high">
-                        <i class="ri-error-warning-line"></i>
-                        <div class="activity-info">
-                            <p>3 Pending Mentor Applications</p>
-                            <span>Requires Review</span>
+                <h3>Popular Courses</h3>
+                <div class="popular-courses">
+                    <div class="course-item">
+                        <div class="course-info">
+                            <div class="course-icon">
+                                <i class="ri-code-s-line"></i>
+                            </div>
+                            <div>
+                                <h4>JavaScript Fundamentals</h4>
+                                <p>850 students</p>
+                            </div>
+                        </div>
+                        <div class="course-stats">
+                            <div class="rating">
+                                <i class="ri-star-fill"></i>
+                                <span>4.8</span>
+                            </div>
+                            <div class="trend up">
+                                <i class="ri-arrow-up-line"></i>
+                                <span>12%</span>
+                            </div>
                         </div>
                     </div>
-                    <div class="activity-item alert-medium">
-                        <i class="ri-shield-check-line"></i>
-                        <div class="activity-info">
-                            <p>5 New Student Verifications</p>
-                            <span>Awaiting Approval</span>
+                    <div class="course-item">
+                        <div class="course-info">
+                            <div class="course-icon">
+                                <i class="ri-html5-line"></i>
+                            </div>
+                            <div>
+                                <h4>HTML & CSS Mastery</h4>
+                                <p>720 students</p>
+                            </div>
                         </div>
-                    </div>
-                    <div class="activity-item">
-                        <i class="ri-question-line"></i>
-                        <div class="activity-info">
-                            <p>2 Support Tickets Pending</p>
-                            <span>From Students</span>
+                        <div class="course-stats">
+                            <div class="rating">
+                                <i class="ri-star-fill"></i>
+                                <span>4.6</span>
+                            </div>
+                            <div class="trend up">
+                                <i class="ri-arrow-up-line"></i>
+                                <span>8%</span>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </main>
-    <script src="../assets/script/app.js"></script>
+    <script src="assets/script/app.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Sample data for charts
@@ -170,6 +184,7 @@
                     }
                 }
             };
+
             // Create charts
             function createChart(canvasId, data, color) {
                 return new Chart(document.getElementById(canvasId), {
@@ -187,6 +202,7 @@
                     options: chartOptions
                 });
             }
+
             // Initialize charts
             createChart('studentsChart', monthlyData.students, '#6366f1');
             createChart('completionChart', monthlyData.completion, '#8b5cf6');
