@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Courses - Sowberry</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../assets/css/students.css">
+    <link rel="stylesheet" href="../assets/css/styles.css">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
 </head>
 <body>
@@ -18,11 +18,14 @@
         <nav>
             <a href="studentsDashboard.html"><i class="ri-dashboard-line"></i><span>Dashboard</span></a>
             <a href="myCourses.html" class="active"><i class="ri-book-open-line"></i><span>My Courses</span></a>
-            <a href="assignments.html"><i class="ri-calendar-todo-line"></i><span>Assignments</span></a>
-            <a href="#"><i class="ri-group-line"></i><span>Study Groups</span></a>
-            <a href="#"><i class="ri-calendar-event-line"></i><span>Events</span></a>
-            <a href="#"><i class="ri-message-3-line"></i><span>Messages</span></a>
-            <a href="#"><i class="ri-settings-3-line"></i><span>Settings</span></a>
+            <a href="myAssignments.html"><i class="ri-calendar-todo-line"></i><span>Assignments</span></a>
+            <a href="myProgress.html"><i class="ri-line-chart-line"></i><span>Progress</span></a>
+            <a href="myGrades.html"><i class="ri-medal-line"></i><span>Grades</span></a>
+            <a href="codingPractice.html"><i class="ri-code-box-line"></i><span>Practice</span></a>
+            <a href="aptitudeTests.html"><i class="ri-brain-line"></i><span>Aptitude</span></a>
+            <a href="learningGames.html"><i class="ri-gamepad-line"></i><span>Games</span></a>
+            <a href="studyMaterial.html"><i class="ri-book-2-line"></i><span>Study</span></a>
+            <a href="studentDiscussion.html"><i class="ri-discuss-line"></i><span>Discussion</span></a>
         </nav>
     </div>
 
@@ -39,10 +42,39 @@
                 <div class="notifications" id="notifications">
                     <i class="ri-notification-3-line"></i>
                     <span class="notification-badge">3</span>
-                    <!-- ...existing notifications dropdown... -->
+                    <div class="notifications-dropdown">
+                        <div class="notifications-header">
+                            <h4>Notifications</h4>
+                            <a href="#" class="mark-all-read">Mark all as read</a>
+                        </div>
+                        <div class="notification-list">
+                            <a href="#" class="notification-item unread">
+                                <i class="ri-book-open-line"></i>
+                                <div class="notification-content">
+                                    <p>New course material available</p>
+                                    <span>10 minutes ago</span>
+                                </div>
+                            </a>
+                            <a href="#" class="notification-item unread">
+                                <i class="ri-medal-line"></i>
+                                <div class="notification-content">
+                                    <p>You earned a new badge!</p>
+                                    <span>2 hours ago</span>
+                                </div>
+                            </a>
+                            <a href="#" class="notification-item">
+                                <i class="ri-file-list-line"></i>
+                                <div class="notification-content">
+                                    <p>Assignment due tomorrow</p>
+                                    <span>5 hours ago</span>
+                                </div>
+                            </a>
+                        </div>
+                        <a href="#" class="view-all">View all notifications</a>
+                    </div>
                 </div>
                 <div class="user-profile" id="userProfile">
-                    <img src="https://ui-avatars.com/api/?name=Sowmiya&size=30" alt="User" class="user-avatar">
+                    <img src="https://ui-avatars.com/api/?name=Sowmiya&size=36&background=6c5ce7&color=fff" alt="User" class="user-avatar">
                     <div class="user-info">
                         <span class="user-name">Sowmiya</span>
                         <span class="user-status">
@@ -50,7 +82,13 @@
                             Active
                         </span>
                     </div>
-                    <!-- ...existing profile dropdown... -->
+                    <div class="profile-dropdown">
+                        <a href="#"><i class="ri-user-line"></i> My Profile</a>
+                        <a href="#"><i class="ri-settings-4-line"></i> Settings</a>
+                        <a href="#"><i class="ri-lock-password-line"></i> Change Password</a>
+                        <div class="dropdown-divider"></div>
+                        <a href="../auth/index.html" class="logout"><i class="ri-logout-box-line"></i> Logout</a>
+                    </div>
                 </div>
             </div>
         </header>
@@ -237,5 +275,6 @@
             animation: fadeIn 0.5s ease-out;
         }
     </style>
+    <script src="../assets/script/app.js"></script>
 </body>
 </html>

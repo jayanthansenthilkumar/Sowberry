@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discussion Forum - Sowberry</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar-overlay"></div>
+    <button class="mobile-menu-toggle">
+        <i class="ri-menu-line"></i>
+    </button>
+    <div class="sidebar">
+        <div class="logo">
+            <i class="ri-seedling-fill"></i>
+            <div class="logo-text">
+                <span class="brand-name">Sowberry</span>
+                <span class="brand-suffix">LEARNING</span>
+            </div>
+        </div>
+        <nav>
+            <a href="studentsDashboard.html"><i class="ri-dashboard-line"></i><span>Dashboard</span></a>
+            <a href="myCourses.html"><i class="ri-book-open-line"></i><span>My Courses</span></a>
+            <a href="myProgress.html"><i class="ri-line-chart-line"></i><span>My Progress</span></a>
+            <a href="myAssignments.html"><i class="ri-task-line"></i><span>Assignments</span></a>
+            <a href="studyMaterial.html"><i class="ri-folder-5-line"></i><span>Study Material</span></a>
+            <a href="myGrades.html"><i class="ri-medal-line"></i><span>Grades</span></a>
+            <a href="aptitudeTests.html"><i class="ri-brain-line"></i><span>Aptitude</span></a>
+            <a href="codingPractice.html"><i class="ri-code-box-line"></i><span>Practice</span></a>
+            <a href="codeEditor.html"><i class="ri-terminal-box-line"></i><span>Code Editor</span></a>
+            <a href="learningGames.html"><i class="ri-gamepad-line"></i><span>Learning Games</span></a>
+            <a href="studentDiscussion.html" class="active"><i class="ri-discuss-line"></i><span>Discussion</span></a>
+        </nav>
+    </div>
+
+    <main>
+        <!-- Header -->
+        <header>
+            <div class="search-bar">
+                <i class="ri-search-line"></i>
+                <input type="text" placeholder="Search discussions...">
+            </div>
+            <div class="header-tools">
+                <div class="theme-toggle">
+                    <i class="ri-sun-line"></i>
+                </div>
+                <div class="notifications" id="notifications">
+                    <i class="ri-notification-3-line"></i>
+                    <span class="notification-badge">5</span>
+                    <div class="notifications-dropdown">
+                        <div class="notifications-header">
+                            <h4>Notifications</h4>
+                            <a href="#" class="mark-all-read">Mark all as read</a>
+                        </div>
+                        <div class="notification-list">
+                            <a href="#" class="notification-item unread">
+                                <i class="ri-reply-line"></i>
+                                <div class="notification-content">
+                                    <p>John replied to your question</p>
+                                    <span>5 minutes ago</span>
+                                </div>
+                            </a>
+                            <a href="#" class="notification-item unread">
+                                <i class="ri-heart-line"></i>
+                                <div class="notification-content">
+                                    <p>Your answer was marked as helpful</p>
+                                    <span>1 hour ago</span>
+                                </div>
+                            </a>
+                            <a href="#" class="notification-item">
+                                <i class="ri-discuss-line"></i>
+                                <div class="notification-content">
+                                    <p>New discussion in JavaScript course</p>
+                                    <span>3 hours ago</span>
+                                </div>
+                            </a>
+                        </div>
+                        <a href="#" class="view-all">View all notifications</a>
+                    </div>
+                </div>
+                <div class="user-profile" id="userProfile">
+                    <img src="https://ui-avatars.com/api/?name=Sowmiya&size=36&background=6c5ce7&color=fff" alt="User" class="user-avatar">
+                    <div class="user-info">
+                        <span class="user-name">Sowmiya</span>
+                        <span class="user-status">
+                            <i class="ri-checkbox-blank-circle-fill"></i>
+                            Active
+                        </span>
+                    </div>
+                    <div class="profile-dropdown">
+                        <a href="#"><i class="ri-user-line"></i> My Profile</a>
+                        <a href="#"><i class="ri-settings-4-line"></i> Settings</a>
+                        <a href="#"><i class="ri-lock-password-line"></i> Change Password</a>
+                        <div class="dropdown-divider"></div>
+                        <a href="../auth/index.html" class="logout"><i class="ri-logout-box-line"></i> Logout</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Welcome Section -->
+        <div class="welcome-section">
+            <div class="welcome-card">
+                <div class="welcome-content">
+                    <div class="welcome-text">
+                        <h1>Discussion <span class="highlight">Forum</span></h1>
+                        <p>Connect, learn, and share knowledge with fellow students</p>
+                    </div>
+                    <div class="welcome-stats">
+                        <div class="stat-item floating">
+                            <div class="stat-icon"><i class="ri-chat-3-line"></i></div>
+                            <div class="stat-info">
+                                <h4>Active Threads</h4>
+                                <p>156</p>
+                            </div>
+                        </div>
+                        <div class="stat-item floating delay-1">
+                            <div class="stat-icon"><i class="ri-question-answer-line"></i></div>
+                            <div class="stat-info">
+                                <h4>My Posts</h4>
+                                <p>12</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Discussion Actions -->
+        <div class="discussion-actions">
+            <div class="filter-tabs">
+                <button class="filter-tab active">All Discussions</button>
+                <button class="filter-tab">My Posts</button>
+                <button class="filter-tab">Unanswered</button>
+                <button class="filter-tab">Popular</button>
+            </div>
+            <button class="btn btn-primary" id="newDiscussionBtn">
+                <i class="ri-add-line"></i>
+                New Discussion
+            </button>
+        </div>
+
+        <!-- Category Filter -->
+        <div class="category-filter">
+            <button class="category-pill active">All</button>
+            <button class="category-pill">JavaScript</button>
+            <button class="category-pill">Python</button>
+            <button class="category-pill">React</button>
+            <button class="category-pill">HTML/CSS</button>
+            <button class="category-pill">Database</button>
+            <button class="category-pill">General</button>
+        </div>
+
+        <!-- Discussions List -->
+        <div class="discussions-container">
+            <!-- Discussion Thread 1 -->
+            <div class="discussion-card">
+                <div class="discussion-votes">
+                    <button class="vote-btn upvote"><i class="ri-arrow-up-s-line"></i></button>
+                    <span class="vote-count">24</span>
+                    <button class="vote-btn downvote"><i class="ri-arrow-down-s-line"></i></button>
+                </div>
+                <div class="discussion-content">
+                    <div class="discussion-header">
+                        <span class="category-tag javascript">JavaScript</span>
+                        <span class="discussion-time">2 hours ago</span>
+                    </div>
+                    <h3 class="discussion-title">
+                        <a href="#">How to implement async/await properly in JavaScript?</a>
+                    </h3>
+                    <p class="discussion-preview">
+                        I'm having trouble understanding when to use async/await vs regular promises. Can someone explain the best practices?
+                    </p>
+                    <div class="discussion-meta">
+                        <div class="discussion-author">
+                            <img src="https://ui-avatars.com/api/?name=Rahul+K&size=24&background=ff6b6b&color=fff" alt="Author">
+                            <span>Rahul K</span>
+                        </div>
+                        <div class="discussion-stats">
+                            <span><i class="ri-eye-line"></i> 156 views</span>
+                            <span><i class="ri-chat-1-line"></i> 8 replies</span>
+                            <span class="solved"><i class="ri-check-double-line"></i> Solved</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Discussion Thread 2 -->
+            <div class="discussion-card">
+                <div class="discussion-votes">
+                    <button class="vote-btn upvote active"><i class="ri-arrow-up-s-line"></i></button>
+                    <span class="vote-count">18</span>
+                    <button class="vote-btn downvote"><i class="ri-arrow-down-s-line"></i></button>
+                </div>
+                <div class="discussion-content">
+                    <div class="discussion-header">
+                        <span class="category-tag react">React</span>
+                        <span class="discussion-time">5 hours ago</span>
+                    </div>
+                    <h3 class="discussion-title">
+                        <a href="#">Best practices for state management in React 18</a>
+                    </h3>
+                    <p class="discussion-preview">
+                        With the new React 18 features, what's the recommended approach for state management? Should I still use Redux?
+                    </p>
+                    <div class="discussion-meta">
+                        <div class="discussion-author">
+                            <img src="https://ui-avatars.com/api/?name=Priya+S&size=24&background=6c5ce7&color=fff" alt="Author">
+                            <span>Priya S</span>
+                        </div>
+                        <div class="discussion-stats">
+                            <span><i class="ri-eye-line"></i> 89 views</span>
+                            <span><i class="ri-chat-1-line"></i> 12 replies</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Discussion Thread 3 -->
+            <div class="discussion-card">
+                <div class="discussion-votes">
+                    <button class="vote-btn upvote"><i class="ri-arrow-up-s-line"></i></button>
+                    <span class="vote-count">7</span>
+                    <button class="vote-btn downvote"><i class="ri-arrow-down-s-line"></i></button>
+                </div>
+                <div class="discussion-content">
+                    <div class="discussion-header">
+                        <span class="category-tag python">Python</span>
+                        <span class="discussion-time">1 day ago</span>
+                    </div>
+                    <h3 class="discussion-title">
+                        <a href="#">Need help with Django REST Framework authentication</a>
+                    </h3>
+                    <p class="discussion-preview">
+                        I'm building an API with Django REST Framework and need to implement JWT authentication. What's the best library to use?
+                    </p>
+                    <div class="discussion-meta">
+                        <div class="discussion-author">
+                            <img src="https://ui-avatars.com/api/?name=Arjun+M&size=24&background=10b981&color=fff" alt="Author">
+                            <span>Arjun M</span>
+                        </div>
+                        <div class="discussion-stats">
+                            <span><i class="ri-eye-line"></i> 45 views</span>
+                            <span><i class="ri-chat-1-line"></i> 3 replies</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Discussion Thread 4 -->
+            <div class="discussion-card">
+                <div class="discussion-votes">
+                    <button class="vote-btn upvote"><i class="ri-arrow-up-s-line"></i></button>
+                    <span class="vote-count">32</span>
+                    <button class="vote-btn downvote"><i class="ri-arrow-down-s-line"></i></button>
+                </div>
+                <div class="discussion-content">
+                    <div class="discussion-header">
+                        <span class="category-tag database">Database</span>
+                        <span class="discussion-time">2 days ago</span>
+                    </div>
+                    <h3 class="discussion-title">
+                        <a href="#">SQL vs NoSQL: When to use which?</a>
+                    </h3>
+                    <p class="discussion-preview">
+                        I'm starting a new project and confused about database choice. Can someone explain the use cases for SQL vs NoSQL databases?
+                    </p>
+                    <div class="discussion-meta">
+                        <div class="discussion-author">
+                            <img src="https://ui-avatars.com/api/?name=Sowmiya&size=24&background=6c5ce7&color=fff" alt="Author">
+                            <span>Sowmiya</span>
+                        </div>
+                        <div class="discussion-stats">
+                            <span><i class="ri-eye-line"></i> 234 views</span>
+                            <span><i class="ri-chat-1-line"></i> 15 replies</span>
+                            <span class="solved"><i class="ri-check-double-line"></i> Solved</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Discussion Thread 5 -->
+            <div class="discussion-card unanswered">
+                <div class="discussion-votes">
+                    <button class="vote-btn upvote"><i class="ri-arrow-up-s-line"></i></button>
+                    <span class="vote-count">2</span>
+                    <button class="vote-btn downvote"><i class="ri-arrow-down-s-line"></i></button>
+                </div>
+                <div class="discussion-content">
+                    <div class="discussion-header">
+                        <span class="category-tag general">General</span>
+                        <span class="discussion-time">3 hours ago</span>
+                    </div>
+                    <h3 class="discussion-title">
+                        <a href="#">Tips for preparing for technical interviews?</a>
+                    </h3>
+                    <p class="discussion-preview">
+                        I have a technical interview coming up next week. Any tips on how to prepare effectively? What topics should I focus on?
+                    </p>
+                    <div class="discussion-meta">
+                        <div class="discussion-author">
+                            <img src="https://ui-avatars.com/api/?name=Karthik+R&size=24&background=f59e0b&color=fff" alt="Author">
+                            <span>Karthik R</span>
+                        </div>
+                        <div class="discussion-stats">
+                            <span><i class="ri-eye-line"></i> 28 views</span>
+                            <span class="unanswered-badge"><i class="ri-question-line"></i> Unanswered</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination">
+            <button class="page-btn" disabled><i class="ri-arrow-left-s-line"></i></button>
+            <button class="page-btn active">1</button>
+            <button class="page-btn">2</button>
+            <button class="page-btn">3</button>
+            <span class="page-dots">...</span>
+            <button class="page-btn">12</button>
+            <button class="page-btn"><i class="ri-arrow-right-s-line"></i></button>
+        </div>
+    </main>
+
+    <!-- New Discussion Modal -->
+    <div class="modal-overlay" id="newDiscussionModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Start a New Discussion</h3>
+                <button class="modal-close"><i class="ri-close-line"></i></button>
+            </div>
+            <form class="discussion-form">
+                <div class="form-group">
+                    <label>Category</label>
+                    <select required>
+                        <option value="">Select a category</option>
+                        <option value="javascript">JavaScript</option>
+                        <option value="python">Python</option>
+                        <option value="react">React</option>
+                        <option value="html-css">HTML/CSS</option>
+                        <option value="database">Database</option>
+                        <option value="general">General</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Title</label>
+                    <input type="text" placeholder="What's your question about?" required>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea rows="5" placeholder="Describe your question or topic in detail..." required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Tags (optional)</label>
+                    <input type="text" placeholder="Add tags separated by commas">
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Post Discussion</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="../assets/script/app.js"></script>
+    <script>
+        // Discussion page specific functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Filter tabs
+            const filterTabs = document.querySelectorAll('.filter-tab');
+            filterTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    filterTabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                });
+            });
+
+            // Category pills
+            const categoryPills = document.querySelectorAll('.category-pill');
+            categoryPills.forEach(pill => {
+                pill.addEventListener('click', () => {
+                    categoryPills.forEach(p => p.classList.remove('active'));
+                    pill.classList.add('active');
+                });
+            });
+
+            // Vote buttons
+            const voteButtons = document.querySelectorAll('.vote-btn');
+            voteButtons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const voteContainer = this.parentElement;
+                    const countSpan = voteContainer.querySelector('.vote-count');
+                    let count = parseInt(countSpan.textContent);
+
+                    if (this.classList.contains('upvote')) {
+                        if (this.classList.contains('active')) {
+                            this.classList.remove('active');
+                            count--;
+                        } else {
+                            this.classList.add('active');
+                            count++;
+                            voteContainer.querySelector('.downvote').classList.remove('active');
+                        }
+                    } else {
+                        if (this.classList.contains('active')) {
+                            this.classList.remove('active');
+                            count++;
+                        } else {
+                            this.classList.add('active');
+                            count--;
+                            voteContainer.querySelector('.upvote').classList.remove('active');
+                        }
+                    }
+                    countSpan.textContent = count;
+                });
+            });
+
+            // Modal functionality
+            const modal = document.getElementById('newDiscussionModal');
+            const newBtn = document.getElementById('newDiscussionBtn');
+            const cancelBtn = document.getElementById('cancelBtn');
+            const closeBtn = modal.querySelector('.modal-close');
+
+            newBtn.addEventListener('click', () => modal.classList.add('active'));
+            cancelBtn.addEventListener('click', () => modal.classList.remove('active'));
+            closeBtn.addEventListener('click', () => modal.classList.remove('active'));
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) modal.classList.remove('active');
+            });
+        });
+    </script>
+
+    <style>
+        /* Discussion Page Specific Styles */
+        .discussion-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .filter-tabs {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .filter-tab {
+            padding: 10px 20px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text);
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .filter-tab:hover {
+            background: var(--hover-color);
+        }
+
+        .filter-tab.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .category-filter {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .category-pill {
+            padding: 8px 16px;
+            background: var(--card-hover);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            color: var(--text);
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .category-pill:hover {
+            background: var(--hover-color);
+        }
+
+        .category-pill.active {
+            background: var(--gradient);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .discussions-container {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .discussion-card {
+            display: flex;
+            gap: 20px;
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .discussion-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .discussion-card.unanswered {
+            border-left: 3px solid var(--warning);
+        }
+
+        .discussion-votes {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            min-width: 50px;
+        }
+
+        .vote-btn {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--card-hover);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text-secondary);
+        }
+
+        .vote-btn:hover {
+            background: var(--hover-color);
+            color: var(--primary);
+        }
+
+        .vote-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .vote-btn i {
+            font-size: 20px;
+        }
+
+        .vote-count {
+            font-weight: 600;
+            font-size: 1rem;
+            color: var(--text);
+        }
+
+        .discussion-content {
+            flex: 1;
+        }
+
+        .discussion-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .category-tag {
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .category-tag.javascript { background: #f7df1e20; color: #f7df1e; }
+        .category-tag.python { background: #3776ab20; color: #3776ab; }
+        .category-tag.react { background: #61dafb20; color: #0ea5e9; }
+        .category-tag.database { background: #10b98120; color: #10b981; }
+        .category-tag.general { background: #6c5ce720; color: #6c5ce7; }
+
+        .discussion-time {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .discussion-title {
+            margin-bottom: 8px;
+        }
+
+        .discussion-title a {
+            color: var(--text);
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: color 0.3s ease;
+        }
+
+        .discussion-title a:hover {
+            color: var(--primary);
+        }
+
+        .discussion-preview {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+
+        .discussion-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .discussion-author {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .discussion-author img {
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+        }
+
+        .discussion-author span {
+            font-size: 0.85rem;
+            color: var(--text);
+            font-weight: 500;
+        }
+
+        .discussion-stats {
+            display: flex;
+            gap: 16px;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .discussion-stats span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .discussion-stats .solved {
+            color: var(--success);
+            font-weight: 500;
+        }
+
+        .discussion-stats .unanswered-badge {
+            color: var(--warning);
+            font-weight: 500;
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .page-btn {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .page-btn:hover:not(:disabled) {
+            background: var(--hover-color);
+        }
+
+        .page-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .page-dots {
+            display: flex;
+            align-items: center;
+            color: var(--text-secondary);
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 24px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: translateY(-20px);
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h3 {
+            font-size: 1.2rem;
+            color: var(--text);
+        }
+
+        .modal-close {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--card-hover);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            color: var(--text);
+            transition: all 0.3s ease;
+        }
+
+        .modal-close:hover {
+            background: var(--danger);
+            color: white;
+        }
+
+        .discussion-form .form-group {
+            margin-bottom: 16px;
+        }
+
+        .discussion-form label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text);
+        }
+
+        .discussion-form input,
+        .discussion-form select,
+        .discussion-form textarea {
+            width: 100%;
+            padding: 12px;
+            background: var(--card-hover);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text);
+            font-family: inherit;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .discussion-form input:focus,
+        .discussion-form select:focus,
+        .discussion-form textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.1);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 24px;
+        }
+
+        @media (max-width: 768px) {
+            .discussion-card {
+                flex-direction: column;
+            }
+
+            .discussion-votes {
+                flex-direction: row;
+                justify-content: flex-start;
+            }
+
+            .discussion-meta {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</body>
+</html>
