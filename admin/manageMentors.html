@@ -7,79 +7,15 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../assets/css/styles.css">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <script src="../assets/script/components.js"></script>
 </head>
-<body>
-    <div class="sidebar-overlay"></div>
-    <button class="hamburger-menu">
-        <span class="bar"></span>
-        <span class="bar"></span>
-        <span class="bar"></span>
-    </button>
-    <div class="sidebar">
-        <div class="logo">
-            <i class="ri-seedling-fill"></i>
-            <div class="logo-text">
-                <span class="brand-name">Sowberry</span>
-                <span class="brand-suffix">ACADEMY</span>
-            </div>
-        </div>
-        <nav>
-            <a href="admin.html"><i class="ri-dashboard-line"></i><span>Dashboard</span></a>
-            <a href="manageStudents.html"><i class="ri-user-line"></i><span>Students</span></a>
-            <a href="manageMentors.html" class="active"><i class="ri-team-line"></i><span>Mentors</span></a>
-            <a href="coursesOverview.html"><i class="ri-book-open-line"></i><span>Courses</span></a>
-            <a href="performanceAnalytics.html"><i class="ri-line-chart-line"></i><span>Analytics</span></a>
-            <a href="systemReports.html"><i class="ri-file-chart-line"></i><span>Reports</span></a>
-            <a href="adminSettings.html"><i class="ri-settings-line"></i><span>Settings</span></a>
-        </nav>
-    </div>
+<body data-page-type="admin" data-active-page="mentors" data-user-name="Sowmiya">
+    <!-- Sidebar Component -->
+    <div id="sidebar-container"></div>
+    
     <main>
-        <header>
-            <div class="search-bar">
-                <i class="ri-search-line"></i>
-                <input type="text" placeholder="Search mentors...">
-            </div>
-            <div class="header-tools">
-                <div class="theme-toggle">
-                    <i class="ri-sun-line"></i>
-                </div>
-                <div class="notifications" id="notifications">
-                    <i class="ri-notification-3-line"></i>
-                    <span class="notification-badge">3</span>
-                    <div class="notifications-dropdown">
-                        <div class="notifications-header">
-                            <h4>Notifications</h4>
-                            <a href="#" class="mark-all-read">Mark all as read</a>
-                        </div>
-                        <div class="notification-item unread">
-                            <i class="ri-user-add-line"></i>
-                            <div class="notification-content">
-                                <p>New mentor application</p>
-                                <span>5 minutes ago</span>
-                            </div>
-                        </div>
-                        <div class="notifications-footer">
-                            <a href="#">View All Notifications</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="user-profile" id="userProfile">
-                    <img src="https://ui-avatars.com/api/?name=Sowmiya&size=30" alt="User" class="user-avatar">
-                    <div class="user-info">
-                        <span class="user-name">Sowmiya</span>
-                        <span class="user-status">
-                            <i class="ri-checkbox-blank-circle-fill"></i>
-                            Active
-                        </span>
-                    </div>
-                    <div class="profile-dropdown">
-                        <a href="adminSettings.html"><i class="ri-settings-3-line"></i> Settings</a>
-                        <a href="#"><i class="ri-lock-password-line"></i> Change Password</a>
-                        <a href="../auth/index.html" class="logout-link"><i class="ri-logout-box-r-line"></i> Logout</a>
-                    </div>
-                </div>
-            </div>
-        </header>
+        <!-- Header Component -->
+        <div id="header-container"></div>
 
         <div class="welcome-section">
             <div class="welcome-card">

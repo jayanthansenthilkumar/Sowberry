@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login & Register - Sowberry</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="../assets/css/styles.css">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
@@ -58,8 +60,8 @@
             backdrop-filter: blur(10px);
             border-radius: 16px;
             padding: 2rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 
-                        0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+                0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
 
         .form-section.active {
@@ -173,13 +175,27 @@
 
         /* Animations */
         @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
         }
 
         @keyframes popIn {
-            0% { transform: scale(0.8) translateY(-50%); opacity: 0; }
-            100% { transform: scale(1) translateY(-50%); opacity: 1; }
+            0% {
+                transform: scale(0.8) translateY(-50%);
+                opacity: 0;
+            }
+
+            100% {
+                transform: scale(1) translateY(-50%);
+                opacity: 1;
+            }
         }
 
         /* Utilities */
@@ -247,7 +263,8 @@
             display: flex;
             gap: 0.5rem;
             width: 100%;
-            height: 42px; /* Match other input heights */
+            height: 42px;
+            /* Match other input heights */
         }
 
         .input-wrapper {
@@ -279,7 +296,7 @@
             flex: 1;
             height: 100%;
         }
-        
+
 
         .phone-input-wrapper input {
             height: 100%;
@@ -334,14 +351,15 @@
                         <div class="login-form">
                             <h2>Welcome back!</h2>
                             <p>Please enter your details to sign in</p>
-                            
+
                             <form action="/login" method="POST" id="loginForm">
                                 <div class="form-group">
                                     <input type="email" id="email" name="email" placeholder="Email address" required>
                                 </div>
                                 <div class="form-group">
                                     <div class="password-input">
-                                        <input type="password" id="password" name="password" placeholder="Password" required>
+                                        <input type="password" id="password" name="password" placeholder="Password"
+                                            required>
                                         <i class="ri-eye-line toggle-password"></i>
                                     </div>
                                 </div>
@@ -384,25 +402,28 @@
                         <div class="login-form">
                             <h2>Create Account</h2>
                             <p>Please fill in your details to register</p>
-                            
+
                             <form action="/register" method="POST" id="registerForm" class="compact-form">
                                 <div class="form-group">
                                     <div class="input-wrapper">
-                                        <input type="email" id="regEmail" name="email" placeholder="Email address" required>
+                                        <input type="email" id="regEmail" name="email" placeholder="Email address"
+                                            required>
                                         <span class="validation-message"></span>
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <div class="input-wrapper">
-                                        <input type="text" id="username" name="username" placeholder="Choose username" required disabled>
+                                        <input type="text" id="username" name="username" placeholder="Choose username"
+                                            required disabled>
                                         <span class="validation-message"></span>
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <div class="input-wrapper">
-                                        <input type="text" id="fullName" name="fullName" placeholder="Full name" required disabled>
+                                        <input type="text" id="fullName" name="fullName" placeholder="Full name"
+                                            required disabled>
                                         <span class="validation-message"></span>
                                     </div>
                                 </div>
@@ -410,7 +431,8 @@
                                 <div class="form-group">
                                     <div class="input-wrapper">
                                         <div class="phone-input-group">
-                                            <select class="country-code" id="countryCode" name="countryCode" required disabled>
+                                            <select class="country-code" id="countryCode" name="countryCode" required
+                                                disabled>
                                                 <option value="+91" selected>+91 (IN)</option>
                                                 <option value="+1">+1 (US)</option>
                                                 <option value="+44">+44 (UK)</option>
@@ -428,12 +450,10 @@
                                                 <option value="+1">+1 (CA)</option>
                                             </select>
                                             <div class="phone-input-wrapper">
-                                                <input type="tel" id="phone" name="phone" 
-                                                    placeholder="Enter 10 digit number" 
-                                                    maxlength="12" 
+                                                <input type="tel" id="phone" name="phone"
+                                                    placeholder="Enter 10 digit number" maxlength="12"
                                                     pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
-                                                    title="Please enter a valid 10-digit phone number"
-                                                    required 
+                                                    title="Please enter a valid 10-digit phone number" required
                                                     disabled>
                                                 <span class="validation-message"></span>
                                             </div>
@@ -469,11 +489,12 @@
                             <div class="forgot-step step-1 active">
                                 <h2>Reset Password</h2>
                                 <p>Enter your email to receive OTP</p>
-                                
+
                                 <form id="forgotForm" class="compact-form">
                                     <div class="form-group">
                                         <div class="input-wrapper">
-                                            <input type="email" id="resetEmail" name="email" placeholder="Enter your email address" required>
+                                            <input type="email" id="resetEmail" name="email"
+                                                placeholder="Enter your email address" required>
                                             <span class="validation-message"></span>
                                         </div>
                                     </div>
@@ -485,16 +506,22 @@
                             <div class="forgot-step step-2">
                                 <h2>Enter OTP</h2>
                                 <p>Please enter the OTP sent to your email</p>
-                                
+
                                 <form id="otpForm" class="compact-form">
                                     <div class="form-group">
                                         <div class="otp-wrapper">
-                                            <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric" required>
-                                            <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric" required>
-                                            <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric" required>
-                                            <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric" required>
-                                            <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric" required>
-                                            <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric" required>
+                                            <input type="text" class="otp-input" maxlength="1" pattern="[0-9]"
+                                                inputmode="numeric" required>
+                                            <input type="text" class="otp-input" maxlength="1" pattern="[0-9]"
+                                                inputmode="numeric" required>
+                                            <input type="text" class="otp-input" maxlength="1" pattern="[0-9]"
+                                                inputmode="numeric" required>
+                                            <input type="text" class="otp-input" maxlength="1" pattern="[0-9]"
+                                                inputmode="numeric" required>
+                                            <input type="text" class="otp-input" maxlength="1" pattern="[0-9]"
+                                                inputmode="numeric" required>
+                                            <input type="text" class="otp-input" maxlength="1" pattern="[0-9]"
+                                                inputmode="numeric" required>
                                             <input type="hidden" id="otp" name="otp">
                                         </div>
                                     </div>
@@ -506,17 +533,19 @@
                             <div class="forgot-step step-3">
                                 <h2>Set New Password</h2>
                                 <p>Enter your new password</p>
-                                
+
                                 <form id="resetPasswordForm" class="compact-form">
                                     <div class="form-group">
                                         <div class="password-input">
-                                            <input type="password" id="newPassword" name="password" placeholder="New password" required>
+                                            <input type="password" id="newPassword" name="password"
+                                                placeholder="New password" required>
                                             <i class="ri-eye-line toggle-password"></i>
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <div class="password-input">
-                                            <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm password" required>
+                                            <input type="password" id="confirmPassword" name="confirmPassword"
+                                                placeholder="Confirm password" required>
                                             <i class="ri-eye-line toggle-password"></i>
                                         </div>
                                     </div>
@@ -619,16 +648,16 @@
         }
 
         // Event Handlers
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             // Initialize particles
             initializeParticles();
-            
+
             // Form validation
             initializeFormValidation();
-            
+
             // Event listeners
             initializeEventListeners();
-            
+
             // Set initial state
             toggleForms('login');
         });
@@ -669,15 +698,15 @@
             ];
 
             // Updated Email validation
-            emailInput.addEventListener('input', function() {
+            emailInput.addEventListener('input', function () {
                 const email = this.value.trim().toLowerCase();
                 const isValidFormat = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-                
+
                 if (isValidFormat) {
                     const domain = email.split('@')[1];
                     const domainParts = domain.split('.');
                     const tld = domainParts.slice(1).join('.');
-                    
+
                     if (validTLDs.some(validTLD => tld === validTLD)) {
                         usernameInput.disabled = false;
                         showValidation(this, true, '✓');
@@ -695,7 +724,7 @@
             });
 
             // Username validation
-            usernameInput.addEventListener('input', function() {
+            usernameInput.addEventListener('input', function () {
                 if (this.value.length >= 3) {
                     fullNameInput.disabled = false;
                     showValidation(this, true);
@@ -707,7 +736,7 @@
             });
 
             // Update Full Name validation in initializeFormValidation function
-            fullNameInput.addEventListener('input', function() {
+            fullNameInput.addEventListener('input', function () {
                 if (this.value.length >= 2) {
                     // Enable both country code and phone input simultaneously
                     document.getElementById('countryCode').disabled = false;
@@ -722,7 +751,7 @@
             });
 
             // Replace the phone validation code
-            phoneInput.addEventListener('input', function() {
+            phoneInput.addEventListener('input', function () {
                 // Remove any non-numeric characters
                 this.value = this.value.replace(/\D/g, '');
                 const phoneNumber = this.value;
@@ -731,7 +760,7 @@
                     // Format phone number as user types (XXX-XXX-XXXX)
                     const formatted = phoneNumber.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3');
                     this.value = formatted;
-                    
+
                     termsCheckbox.disabled = false;
                     showValidation(this, true, '✓');
                 } else {
@@ -750,12 +779,12 @@
                     fullNameInput.value.length >= 2 &&
                     phoneValue.length === 10 &&
                     termsCheckbox.checked;
-                
+
                 submitButton.disabled = !isComplete;
             }
 
             // Fix country code change handler
-            document.getElementById('countryCode').addEventListener('change', function() {
+            document.getElementById('countryCode').addEventListener('change', function () {
                 const phoneInput = document.getElementById('phone');
                 const phoneValue = phoneInput.value.replace(/\D/g, '');
                 if (phoneValue.length === 10) {
@@ -793,13 +822,13 @@
             }
 
             // Forgot password link handler
-            document.querySelector('.forgot-password').addEventListener('click', function(e) {
+            document.querySelector('.forgot-password').addEventListener('click', function (e) {
                 e.preventDefault();
                 toggleForms('forgot');
             });
 
             // Forgot password form submission
-            document.getElementById('forgotForm').addEventListener('submit', function(e) {
+            document.getElementById('forgotForm').addEventListener('submit', function (e) {
                 e.preventDefault();
                 const email = document.getElementById('resetEmail').value;
                 if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
@@ -818,7 +847,7 @@
 
             // Add click handlers for form switching
             document.querySelectorAll('[onclick*="toggleForms"]').forEach(element => {
-                element.addEventListener('click', function(e) {
+                element.addEventListener('click', function (e) {
                     e.preventDefault();
                     const formType = this.getAttribute('onclick').match(/'([^']+)'/)[1];
                     toggleForms(formType);
@@ -826,7 +855,7 @@
             });
 
             // Add this to initialize country code change handler
-            document.getElementById('countryCode').addEventListener('change', function() {
+            document.getElementById('countryCode').addEventListener('change', function () {
                 const phoneInput = document.getElementById('phone');
                 const phoneValue = phoneInput.value.replace(/\D/g, '');
                 if (phoneValue.length === 10) {
@@ -838,7 +867,7 @@
         function initializeEventListeners() {
             // Password visibility toggle
             document.querySelectorAll('.toggle-password').forEach(icon => {
-                icon.addEventListener('click', function() {
+                icon.addEventListener('click', function () {
                     const input = this.previousElementSibling;
                     if (input.type === 'password') {
                         input.type = 'text';
@@ -851,7 +880,7 @@
             });
 
             // Add this event listener for forgot password link
-            document.querySelector('.forgot-password').addEventListener('click', function(e) {
+            document.querySelector('.forgot-password').addEventListener('click', function (e) {
                 e.preventDefault();
                 toggleForms('forgot');
             });
@@ -865,7 +894,7 @@
                     // Auto-focus next input
                     input.addEventListener('input', (e) => {
                         const value = e.target.value;
-                        
+
                         // Only allow numbers
                         if (!/^\d*$/.test(value)) {
                             e.target.value = '';
@@ -900,7 +929,7 @@
             const resetPasswordForm = document.getElementById('resetPasswordForm');
 
             // Step 1: Send OTP
-            forgotForm.addEventListener('submit', function(e) {
+            forgotForm.addEventListener('submit', function (e) {
                 e.preventDefault();
                 const email = document.getElementById('resetEmail').value;
                 if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
@@ -911,7 +940,7 @@
             });
 
             // Step 2: Verify OTP
-            otpForm.addEventListener('submit', function(e) {
+            otpForm.addEventListener('submit', function (e) {
                 e.preventDefault();
                 const otp = document.getElementById('otp').value;
                 if (/^\d{6}$/.test(otp)) {
@@ -921,7 +950,7 @@
                 }
             });
             // Step 3: Reset Password
-            resetPasswordForm.addEventListener('submit', function(e) {
+            resetPasswordForm.addEventListener('submit', function (e) {
                 e.preventDefault();
                 const newPass = document.getElementById('newPassword').value;
                 const confirmPass = document.getElementById('confirmPassword').value;
@@ -943,4 +972,5 @@
         initializeForgotPasswordFlow();
     </script>
 </body>
+
 </html>

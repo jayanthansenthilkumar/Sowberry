@@ -7,97 +7,15 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
     <link rel="stylesheet" href="../assets/css/styles.css">
+    <script src="../assets/script/components.js"></script>
 </head>
-<body>
-    <button class="mobile-menu-toggle">
-        <i class="ri-menu-line"></i>
-    </button>
-
-    <div class="sidebar">
-        <div class="logo">
-            <i class="ri-seedling-fill"></i>
-            <div class="logo-text">
-                <span class="brand-name">Sowberry</span>
-                <span class="brand-suffix">ACADEMY</span>
-            </div>
-        </div>
-        <nav>
-            <a href="studentsDashboard.html"><i class="ri-dashboard-line"></i><span>Dashboard</span></a>
-            <a href="myCourses.html"><i class="ri-book-open-line"></i><span>My Courses</span></a>
-            <a href="myProgress.html"><i class="ri-line-chart-line"></i><span>My Progress</span></a>
-            <a href="myAssignments.html"><i class="ri-task-line"></i><span>Assignments</span></a>
-            <a href="studyMaterial.html"><i class="ri-folder-5-line"></i><span>Study Material</span></a>
-            <a href="myGrades.html"><i class="ri-medal-line"></i><span>Grades</span></a>
-            <a href="aptitudeTests.html"><i class="ri-brain-line"></i><span>Aptitude</span></a>
-            <a href="codingPractice.html" class="active"><i class="ri-code-box-line"></i><span>Practice</span></a>
-            <a href="codeEditor.html"><i class="ri-terminal-box-line"></i><span>Code Editor</span></a>
-            <a href="learningGames.html"><i class="ri-gamepad-line"></i><span>Learning Games</span></a>
-            <a href="studentDiscussion.html"><i class="ri-discuss-line"></i><span>Discussion</span></a>
-        </nav>
-    </div>
+<body data-page-type="student" data-active-page="practice" data-user-name="Sowmiya">
+    <!-- Sidebar Component -->
+    <div id="sidebar-container"></div>
 
     <main>
-        <header>
-            <div class="search-bar">
-                <i class="ri-search-line"></i>
-                <input type="text" placeholder="Search problems, contests...">
-            </div>
-            <div class="header-tools">
-                <div class="theme-toggle">
-                    <i class="ri-sun-line"></i>
-                </div>
-                <div class="notifications" id="notifications">
-                    <i class="ri-notification-3-line"></i>
-                    <span class="notification-badge">3</span>
-                    <div class="notifications-dropdown">
-                        <div class="notifications-header">
-                            <h4>Notifications</h4>
-                            <a href="#" class="mark-all-read">Mark all as read</a>
-                        </div>
-                        <div class="notification-list">
-                            <a href="#" class="notification-item unread">
-                                <i class="ri-code-box-line"></i>
-                                <div class="notification-content">
-                                    <p>New coding challenge available</p>
-                                    <span>5 minutes ago</span>
-                                </div>
-                            </a>
-                            <a href="#" class="notification-item unread">
-                                <i class="ri-trophy-line"></i>
-                                <div class="notification-content">
-                                    <p>You ranked 15th in today's contest</p>
-                                    <span>2 hours ago</span>
-                                </div>
-                            </a>
-                            <a href="#" class="notification-item">
-                                <i class="ri-check-double-line"></i>
-                                <div class="notification-content">
-                                    <p>Your solution was accepted</p>
-                                    <span>1 day ago</span>
-                                </div>
-                            </a>
-                        </div>
-                        <a href="#" class="view-all">View all notifications</a>
-                    </div>
-                </div>
-                <div class="user-profile" id="userProfile">
-                    <img src="https://ui-avatars.com/api/?name=Sowmiya&size=36&background=6c5ce7&color=fff" alt="User" class="user-avatar">
-                    <div class="user-info">
-                        <span class="user-name">Sowmiya</span>
-                        <span class="user-status">
-                            <i class="ri-checkbox-blank-circle-fill"></i>
-                            Active
-                        </span>
-                    </div>
-                    <div class="profile-dropdown">
-                        <a href="#"><i class="ri-user-line"></i> My Profile</a>
-                        <a href="#"><i class="ri-settings-4-line"></i> Settings</a>
-                        <a href="#"><i class="ri-lock-password-line"></i> Change Password</a>
-                        <div class="dropdown-divider"></div>
-                        <a href="../auth/index.html" class="logout"><i class="ri-logout-box-line"></i> Logout</a>
-                    </div>
-                </div>
-            </div>
+        <!-- Header Component -->
+        <div id="header-container"></div>
         </header>
 
         <!-- Updated Practice Navigation -->
