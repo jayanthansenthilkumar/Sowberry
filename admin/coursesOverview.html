@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Courses Overview - Sowberry Academy</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="admin.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+</head>
+<body>
+    <div class="sidebar-overlay"></div>
+    <!-- Sidebar Structure -->
+    <button class="hamburger-menu">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+    </button>
+    <div class="sidebar">
+        <div class="logo">
+            <i class="ri-seedling-fill"></i>
+            <div class="logo-text">
+                <span class="brand-name">Sowberry</span>
+                <span class="brand-suffix">ACADEMY</span>
+            </div>
+        </div>
+        <nav>
+            <a href="admin.html"><i class="ri-dashboard-line"></i><span>Dashboard</span></a>
+            <a href="manageStudents.html"><i class="ri-user-line"></i><span>Students</span></a>
+            <a href="manageMentors.html"><i class="ri-team-line"></i><span>Mentors</span></a>
+            <a href="coursesOverview.html" class="active"><i class="ri-book-open-line"></i><span>Courses</span></a>
+            <a href="performanceAnalytics.html"><i class="ri-line-chart-line"></i><span>Analytics</span></a>
+            <a href="systemReports.html"><i class="ri-file-chart-line"></i><span>Reports</span></a>
+            <a href="adminSettings.html"><i class="ri-settings-line"></i><span>Settings</span></a>
+        </nav>
+    </div>
+
+    <main>
+        <header>
+            <div class="search-bar">
+                <i class="ri-search-line"></i>
+                <input type="text" placeholder="Search courses...">
+            </div>
+            <div class="header-tools">
+                <div class="theme-toggle">
+                    <i class="ri-sun-line"></i>
+                </div>
+                <div class="notifications">
+                    <i class="ri-notification-3-line"></i>
+                    <span class="notification-badge">3</span>
+                </div>
+                <div class="user-profile">
+                    <img src="https://ui-avatars.com/api/?name=Sowmiya&size=30" alt="User" class="user-avatar">
+                    <div class="user-info">
+                        <span class="user-name">Sowmiya</span>
+                        <span class="user-status">
+                            <i class="ri-checkbox-blank-circle-fill"></i>
+                            Active
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="welcome-section">
+            <div class="welcome-card">
+                <div class="welcome-content">
+                    <div class="welcome-text">
+                        <h1>Course Management</h1>
+                        <p>Manage and monitor all courses on the platform</p>
+                    </div>
+                    <div class="welcome-stats">
+                        <div class="stat-item floating">
+                            <div class="stat-icon"><i class="ri-book-open-line"></i></div>
+                            <div class="stat-info">
+                                <h4>Active Courses</h4>
+                                <p>24</p>
+                            </div>
+                        </div>
+                        <div class="stat-item floating delay-1">
+                            <div class="stat-icon"><i class="ri-user-follow-line"></i></div>
+                            <div class="stat-info">
+                                <h4>Total Enrollments</h4>
+                                <p>1,248</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-wrapper">
+            <div class="filter-container">
+                <button class="filter-btn active">All Courses</button>
+                <button class="filter-btn">Published</button>
+                <button class="filter-btn">Draft</button>
+                <button class="filter-btn">Archived</button>
+                <button class="action-button" onclick="openAddCourseModal()">
+                    <i class="ri-add-line"></i> Add New Course
+                </button>
+            </div>
+
+            <div class="courses-grid">
+                <!-- Course Card 1 -->
+                <div class="course-card">
+                    <div class="course-image">
+                        <img src="https://via.placeholder.com/300x160" alt="Web Development">
+                        <span class="course-badge">Popular</span>
+                    </div>
+                    <div class="course-content">
+                        <h3>Web Development Masterclass</h3>
+                        <p>Complete guide to modern web development</p>
+                        <div class="course-meta">
+                            <span><i class="ri-user-line"></i> 245 Students</span>
+                            <span><i class="ri-time-line"></i> 12 Weeks</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: 75%"></div>
+                        </div>
+                        <div class="course-actions">
+                            <button class="icon-btn"><i class="ri-edit-line"></i></button>
+                            <button class="icon-btn"><i class="ri-eye-line"></i></button>
+                            <button class="icon-btn danger"><i class="ri-delete-bin-line"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Course Card 2 -->
+                <div class="course-card">
+                    <div class="course-image">
+                        <img src="https://via.placeholder.com/300x160" alt="Mobile App Development">
+                        <span class="course-badge">New</span>
+                    </div>
+                    <div class="course-content">
+                        <h3>Mobile App Development</h3>
+                        <p>Learn to build iOS and Android apps</p>
+                        <div class="course-meta">
+                            <span><i class="ri-user-line"></i> 178 Students</span>
+                            <span><i class="ri-time-line"></i> 10 Weeks</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: 45%"></div>
+                        </div>
+                        <div class="course-actions">
+                            <button class="icon-btn"><i class="ri-edit-line"></i></button>
+                            <button class="icon-btn"><i class="ri-eye-line"></i></button>
+                            <button class="icon-btn danger"><i class="ri-delete-bin-line"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Course Card 3 -->
+                <div class="course-card">
+                    <div class="course-image">
+                        <img src="https://via.placeholder.com/300x160" alt="Data Science">
+                        <span class="course-badge">Hot</span>
+                    </div>
+                    <div class="course-content">
+                        <h3>Data Science Fundamentals</h3>
+                        <p>Master data analysis and machine learning</p>
+                        <div class="course-meta">
+                            <span><i class="ri-user-line"></i> 312 Students</span>
+                            <span><i class="ri-time-line"></i> 16 Weeks</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: 90%"></div>
+                        </div>
+                        <div class="course-actions">
+                            <button class="icon-btn"><i class="ri-edit-line"></i></button>
+                            <button class="icon-btn"><i class="ri-eye-line"></i></button>
+                            <button class="icon-btn danger"><i class="ri-delete-bin-line"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Course Card 4 -->
+                <div class="course-card">
+                    <div class="course-image">
+                        <img src="https://via.placeholder.com/300x160" alt="UI/UX Design">
+                        <span class="course-badge">Featured</span>
+                    </div>
+                    <div class="course-content">
+                        <h3>UI/UX Design Workshop</h3>
+                        <p>Create stunning user interfaces and experiences</p>
+                        <div class="course-meta">
+                            <span><i class="ri-user-line"></i> 195 Students</span>
+                            <span><i class="ri-time-line"></i> 8 Weeks</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: 60%"></div>
+                        </div>
+                        <div class="course-actions">
+                            <button class="icon-btn"><i class="ri-edit-line"></i></button>
+                            <button class="icon-btn"><i class="ri-eye-line"></i></button>
+                            <button class="icon-btn danger"><i class="ri-delete-bin-line"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Add Course Modal -->
+    <div class="modal" id="addCourseModal">
+        <div class="modal-content">
+            <h2>Add New Course</h2>
+            <form id="addCourseForm">
+                <div class="form-group">
+                    <label>Course Title</label>
+                    <input type="text" required placeholder="Enter course title">
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea required placeholder="Enter course description"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Duration (Weeks)</label>
+                    <input type="number" required min="1" placeholder="Course duration">
+                </div>
+                <div class="form-group">
+                    <label>Category</label>
+                    <select required>
+                        <option value="">Select category</option>
+                        <option value="web">Web Development</option>
+                        <option value="mobile">Mobile Development</option>
+                        <option value="data">Data Science</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="secondary-btn" onclick="closeAddCourseModal()">Cancel</button>
+                    <button type="submit" class="primary-btn">Create Course</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="../assets/script/main.js"></script>
+    <script>
+        // Modal handling functions
+        function openAddCourseModal() {
+            document.getElementById('addCourseModal').classList.add('active');
+        }
+
+        function closeAddCourseModal() {
+            document.getElementById('addCourseModal').classList.remove('active');
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                closeAddCourseModal();
+            }
+        }
+
+        // Handle form submission
+        document.getElementById('addCourseForm').onsubmit = function(e) {
+            e.preventDefault();
+            // Add your course creation logic here
+            closeAddCourseModal();
+        }
+    </script>
+</body>
+</html>
