@@ -30,7 +30,7 @@ import MyProgress from './pages/student/MyProgress'
 
 function App() {
   return (
-    <Router basename="/Sowberry">
+    <Router basename="/">
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/auth" element={<AuthPage />} />
