@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sowberry Academy</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script type="module" crossorigin src="/assets/index-VZCHUD7W.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-CzzfXDMs.css">
+  </head>
+  <body>
+    <div id="root"></div>
+    <script>
+      // Handle redirect from 404.html for SPA routing on GitHub Pages
+      (function() {
+        var redirect = sessionStorage.redirect;
+        delete sessionStorage.redirect;
+        if (redirect && redirect !== location.href) {
+          history.replaceState(null, null, redirect);
+        }
+        // Handle query parameter redirect
+        var params = new URLSearchParams(window.location.search);
+        var path = params.get('p');
+        if (path) {
+          window.history.replaceState(null, null, '/' + decodeURIComponent(path));
+        }
+      })();
+    </script>
+  </body>
+</html>
