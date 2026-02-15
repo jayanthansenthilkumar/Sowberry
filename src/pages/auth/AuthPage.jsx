@@ -20,7 +20,7 @@ const AuthPage = () => {
   const [activeForm, setActiveForm] = useState('login');
   const [forgotStep, setForgotStep] = useState(1);
   const [loginData, setLoginData] = useState({
-    email: '',
+    username: '',
     password: '',
     remember: false
   });
@@ -367,7 +367,7 @@ const AuthPage = () => {
     if (isSubmitting) return;
     setIsSubmitting(true);
     try {
-      const res = await authApi.login({ email: loginData.email, password: loginData.password });
+      const res = await authApi.login({ username: loginData.username, password: loginData.password });
       if (res.success) {
         login(res.token, res.user);
         await Swal.fire({ icon: 'success', title: 'Welcome back!', text: `Logged in as ${res.user.fullName}`, timer: 1500, showConfirmButton: false, background: '#fff', color: '#1f2937' });
@@ -553,8 +553,8 @@ const AuthPage = () => {
 
                 <form onSubmit={handleLoginSubmit} className="space-y-4">
                   <input
-                    type="email" name="email" placeholder="Email address"
-                    value={loginData.email} onChange={handleLoginChange} required
+                    type="text" name="username" placeholder="Username"
+                    value={loginData.username} onChange={handleLoginChange} required
                     className="w-full px-4 py-3 rounded-xl bg-cream dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 focus:border-primary outline-none text-sm text-gray-700 dark-theme:text-gray-200 transition-colors"
                   />
                   <div className="relative">
