@@ -68,29 +68,42 @@ async function setup() {
     ) ENGINE=InnoDB
   `);
 
-  // 3. courses
+  // 3. courses (enhanced with Azhagii-style fields)
   await connection.query(`
     CREATE TABLE IF NOT EXISTS courses (
       id INT AUTO_INCREMENT PRIMARY KEY,
       title VARCHAR(255) NOT NULL,
+      courseCode VARCHAR(50) DEFAULT NULL,
       description TEXT,
       image VARCHAR(500) DEFAULT NULL,
+      thumbnail VARCHAR(500) DEFAULT NULL,
+      syllabus VARCHAR(500) DEFAULT NULL,
       duration VARCHAR(50) DEFAULT NULL,
       mentorId INT NOT NULL,
       category VARCHAR(100) DEFAULT NULL,
+      courseType ENUM('theory', 'practical', 'lab') DEFAULT 'theory',
       difficulty ENUM('beginner', 'intermediate', 'advanced') DEFAULT 'beginner',
+      semester VARCHAR(20) DEFAULT NULL,
+      regulation VARCHAR(50) DEFAULT NULL,
+      academicYear VARCHAR(20) DEFAULT NULL,
       maxStudents INT DEFAULT 100,
       isPublished TINYINT(1) DEFAULT 0,
+      status ENUM('draft', 'pending', 'active', 'rejected', 'inactive') DEFAULT 'draft',
+      approvedBy INT DEFAULT NULL,
+      approvedAt DATETIME DEFAULT NULL,
+      rejectionReason TEXT DEFAULT NULL,
       rating DECIMAL(2,1) DEFAULT 0.0,
       createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
       FOREIGN KEY (mentorId) REFERENCES users(id) ON DELETE CASCADE,
+      FOREIGN KEY (approvedBy) REFERENCES users(id) ON DELETE SET NULL,
       INDEX idx_mentor (mentorId),
-      INDEX idx_published (isPublished)
+      INDEX idx_published (isPublished),
+      INDEX idx_status (status)
     ) ENGINE=InnoDB
   `);
 
-  // 4. courseEnrollments
+  // 4. courseEnrollments (enhanced with topic tracking)
   await connection.query(`
     CREATE TABLE IF NOT EXISTS courseEnrollments (
       id INT AUTO_INCREMENT PRIMARY KEY,
@@ -99,11 +112,64 @@ async function setup() {
       enrolledAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       completionPercentage DECIMAL(5,2) DEFAULT 0.00,
       status ENUM('active', 'completed', 'dropped') DEFAULT 'active',
+      completedTopics JSON DEFAULT ('[]'),
       completedAt DATETIME DEFAULT NULL,
       FOREIGN KEY (courseId) REFERENCES courses(id) ON DELETE CASCADE,
       FOREIGN KEY (studentId) REFERENCES users(id) ON DELETE CASCADE,
       UNIQUE KEY unique_enrollment (courseId, studentId),
       INDEX idx_student (studentId)
+    ) ENGINE=InnoDB
+  `);
+
+  // 4b. courseSubjects (Units within a course - from Azhagii)
+  await connection.query(`
+    CREATE TABLE IF NOT EXISTS courseSubjects (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      courseId INT NOT NULL,
+      title VARCHAR(255) NOT NULL,
+      code VARCHAR(50) DEFAULT NULL,
+      description TEXT,
+      sortOrder INT DEFAULT 0,
+      createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (courseId) REFERENCES courses(id) ON DELETE CASCADE,
+      INDEX idx_course (courseId)
+    ) ENGINE=InnoDB
+  `);
+
+  // 4c. courseTopics (Topics within subjects - from Azhagii)
+  await connection.query(`
+    CREATE TABLE IF NOT EXISTS courseTopics (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      subjectId INT NOT NULL,
+      title VARCHAR(255) NOT NULL,
+      description TEXT,
+      sortOrder INT DEFAULT 0,
+      createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (subjectId) REFERENCES courseSubjects(id) ON DELETE CASCADE,
+      INDEX idx_subject (subjectId)
+    ) ENGINE=InnoDB
+  `);
+
+  // 4d. courseContent (Video/PDF/Text content per course - from Azhagii)
+  await connection.query(`
+    CREATE TABLE IF NOT EXISTS courseContent (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      courseId INT NOT NULL,
+      subjectId INT DEFAULT NULL,
+      title VARCHAR(255) NOT NULL,
+      description TEXT,
+      contentType ENUM('video', 'pdf', 'text') DEFAULT 'text',
+      contentData TEXT COMMENT 'URL for video, file path for PDF, text content for text',
+      sortOrder INT DEFAULT 0,
+      status ENUM('active', 'inactive') DEFAULT 'active',
+      uploadedBy INT NOT NULL,
+      createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+      FOREIGN KEY (courseId) REFERENCES courses(id) ON DELETE CASCADE,
+      FOREIGN KEY (subjectId) REFERENCES courseSubjects(id) ON DELETE SET NULL,
+      FOREIGN KEY (uploadedBy) REFERENCES users(id) ON DELETE CASCADE,
+      INDEX idx_course (courseId),
+      INDEX idx_subject (subjectId)
     ) ENGINE=InnoDB
   `);
 
@@ -432,7 +498,29 @@ async function setup() {
     ) ENGINE=InnoDB
   `);
 
-  console.log('✅ All 23 tables created successfully');
+  console.log('✅ All 26 tables created successfully');
+
+  // ──────────────── ALTER for existing databases ────────────────
+  // These run safely even if columns already exist
+  const alterQueries = [
+    "ALTER TABLE courses ADD COLUMN IF NOT EXISTS courseCode VARCHAR(50) DEFAULT NULL AFTER title",
+    "ALTER TABLE courses ADD COLUMN IF NOT EXISTS thumbnail VARCHAR(500) DEFAULT NULL AFTER image",
+    "ALTER TABLE courses ADD COLUMN IF NOT EXISTS syllabus VARCHAR(500) DEFAULT NULL AFTER thumbnail",
+    "ALTER TABLE courses ADD COLUMN IF NOT EXISTS courseType ENUM('theory', 'practical', 'lab') DEFAULT 'theory' AFTER category",
+    "ALTER TABLE courses ADD COLUMN IF NOT EXISTS semester VARCHAR(20) DEFAULT NULL AFTER difficulty",
+    "ALTER TABLE courses ADD COLUMN IF NOT EXISTS regulation VARCHAR(50) DEFAULT NULL AFTER semester",
+    "ALTER TABLE courses ADD COLUMN IF NOT EXISTS academicYear VARCHAR(20) DEFAULT NULL AFTER regulation",
+    "ALTER TABLE courses ADD COLUMN IF NOT EXISTS status ENUM('draft', 'pending', 'active', 'rejected', 'inactive') DEFAULT 'draft' AFTER isPublished",
+    "ALTER TABLE courses ADD COLUMN IF NOT EXISTS approvedBy INT DEFAULT NULL AFTER status",
+    "ALTER TABLE courses ADD COLUMN IF NOT EXISTS approvedAt DATETIME DEFAULT NULL AFTER approvedBy",
+    "ALTER TABLE courses ADD COLUMN IF NOT EXISTS rejectionReason TEXT DEFAULT NULL AFTER approvedAt",
+    "ALTER TABLE courseEnrollments ADD COLUMN IF NOT EXISTS completedTopics JSON DEFAULT ('[]') AFTER status",
+  ];
+
+  for (const q of alterQueries) {
+    try { await connection.query(q); } catch (e) { /* column may already exist */ }
+  }
+  console.log('✅ Schema migrations applied');
 
   // ──────────────────── SEED DATA ────────────────────
 
@@ -487,18 +575,18 @@ async function setup() {
 
   if (mentorRows.length > 0) {
     const seedCourses = [
-      ['Web Development Bootcamp', 'Master HTML, CSS, JavaScript and modern frameworks to build responsive websites.', '8 weeks', mentorRows[0].id, 'Web Development', 'beginner', 1, 4.8],
-      ['Data Science Fundamentals', 'Learn statistics, Python, data analysis, machine learning and visualization tools.', '12 weeks', mentorRows[0].id, 'Data Science', 'intermediate', 1, 4.0],
-      ['Digital Marketing Masterclass', 'Comprehensive training in SEO, social media, email, content marketing and analytics.', '6 weeks', mentorRows[1 % mentorRows.length].id, 'Marketing', 'beginner', 1, 4.9],
-      ['UI/UX Design Essentials', 'Master user interface design principles and create stunning, user-friendly digital experiences.', '10 weeks', mentorRows[1 % mentorRows.length].id, 'Design', 'intermediate', 1, 4.6],
-      ['Mobile App Development', 'Build native iOS and Android applications using React Native and modern mobile frameworks.', '14 weeks', mentorRows[2 % mentorRows.length].id, 'Mobile Development', 'advanced', 1, 4.3],
-      ['Cybersecurity Fundamentals', 'Learn to identify vulnerabilities, implement security measures, and protect digital assets.', '12 weeks', mentorRows[2 % mentorRows.length].id, 'Cybersecurity', 'intermediate', 1, 5.0],
+      ['Web Development Bootcamp', 'CS101', 'Master HTML, CSS, JavaScript and modern frameworks to build responsive websites.', '8 weeks', mentorRows[0].id, 'Web Development', 'theory', 'beginner', '1', 1, 'active', 4.8],
+      ['Data Science Fundamentals', 'DS201', 'Learn statistics, Python, data analysis, machine learning and visualization tools.', '12 weeks', mentorRows[0].id, 'Data Science', 'theory', 'intermediate', '3', 1, 'active', 4.0],
+      ['Digital Marketing Masterclass', 'MK101', 'Comprehensive training in SEO, social media, email, content marketing and analytics.', '6 weeks', mentorRows[1 % mentorRows.length].id, 'Marketing', 'theory', 'beginner', '1', 1, 'active', 4.9],
+      ['UI/UX Design Essentials', 'DG301', 'Master user interface design principles and create stunning, user-friendly digital experiences.', '10 weeks', mentorRows[1 % mentorRows.length].id, 'Design', 'practical', 'intermediate', '4', 1, 'active', 4.6],
+      ['Mobile App Development', 'CS401', 'Build native iOS and Android applications using React Native and modern mobile frameworks.', '14 weeks', mentorRows[2 % mentorRows.length].id, 'Mobile Development', 'lab', 'advanced', '6', 1, 'active', 4.3],
+      ['Cybersecurity Fundamentals', 'CY201', 'Learn to identify vulnerabilities, implement security measures, and protect digital assets.', '12 weeks', mentorRows[2 % mentorRows.length].id, 'Cybersecurity', 'theory', 'intermediate', '3', 1, 'active', 5.0],
     ];
 
     for (const c of seedCourses) {
       await connection.query(`
-        INSERT IGNORE INTO courses (title, description, duration, mentorId, category, difficulty, isPublished, rating)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT IGNORE INTO courses (title, courseCode, description, duration, mentorId, category, courseType, difficulty, semester, isPublished, status, rating)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `, c);
     }
 
@@ -604,6 +692,52 @@ async function setup() {
       INSERT IGNORE INTO studyMaterials (courseId, mentorId, title, description, fileType, category)
       VALUES (?, ?, 'HTML & CSS Basics Guide', 'Comprehensive reference guide for HTML tags and CSS properties', 'pdf', 'Reference')
     `, [courseRows[0].id, mentorRows[0].id]);
+
+    // Seed Course Subjects & Content (Azhagii-style)
+    if (courseRows.length >= 2) {
+      // Add subjects for first course (Web Development Bootcamp)
+      await connection.query(`
+        INSERT IGNORE INTO courseSubjects (courseId, title, code, description, sortOrder)
+        VALUES (?, 'HTML Fundamentals', 'U1', 'Learn the building blocks of web pages', 1)
+      `, [courseRows[0].id]);
+      await connection.query(`
+        INSERT IGNORE INTO courseSubjects (courseId, title, code, description, sortOrder)
+        VALUES (?, 'CSS Styling', 'U2', 'Master CSS for beautiful layouts and designs', 2)
+      `, [courseRows[0].id]);
+      await connection.query(`
+        INSERT IGNORE INTO courseSubjects (courseId, title, code, description, sortOrder)
+        VALUES (?, 'JavaScript Basics', 'U3', 'Introduction to programming with JavaScript', 3)
+      `, [courseRows[0].id]);
+
+      const [subjectRows] = await connection.query('SELECT id FROM courseSubjects WHERE courseId = ? ORDER BY sortOrder', [courseRows[0].id]);
+
+      if (subjectRows.length >= 3) {
+        // Topics for HTML unit
+        await connection.query(`INSERT IGNORE INTO courseTopics (subjectId, title, description, sortOrder) VALUES (?, 'Introduction to HTML', 'What is HTML and how the web works', 1)`, [subjectRows[0].id]);
+        await connection.query(`INSERT IGNORE INTO courseTopics (subjectId, title, description, sortOrder) VALUES (?, 'HTML Tags & Elements', 'Common HTML tags and their usage', 2)`, [subjectRows[0].id]);
+        await connection.query(`INSERT IGNORE INTO courseTopics (subjectId, title, description, sortOrder) VALUES (?, 'Forms & Tables', 'Creating forms and tables in HTML', 3)`, [subjectRows[0].id]);
+
+        // Topics for CSS unit 
+        await connection.query(`INSERT IGNORE INTO courseTopics (subjectId, title, description, sortOrder) VALUES (?, 'CSS Selectors & Properties', 'How to target and style HTML elements', 1)`, [subjectRows[1].id]);
+        await connection.query(`INSERT IGNORE INTO courseTopics (subjectId, title, description, sortOrder) VALUES (?, 'Flexbox & Grid', 'Modern CSS layout techniques', 2)`, [subjectRows[1].id]);
+
+        // Content for HTML unit
+        await connection.query(`
+          INSERT IGNORE INTO courseContent (courseId, subjectId, title, description, contentType, contentData, sortOrder, status, uploadedBy)
+          VALUES (?, ?, 'Introduction to HTML', 'Watch this introductory video about HTML basics', 'video', 'https://www.youtube.com/watch?v=qz0aGYrrlhU', 1, 'active', ?)
+        `, [courseRows[0].id, subjectRows[0].id, mentorRows[0].id]);
+        await connection.query(`
+          INSERT IGNORE INTO courseContent (courseId, subjectId, title, description, contentType, contentData, sortOrder, status, uploadedBy)
+          VALUES (?, ?, 'HTML Elements Reference', 'Complete reference of all HTML5 elements and their attributes', 'text', 'HTML (HyperText Markup Language) is the standard markup language for creating web pages. Every HTML page has a structure that includes DOCTYPE, html, head, and body tags. Common elements include headings (h1-h6), paragraphs (p), links (a), images (img), and divs.', 2, 'active', ?)
+        `, [courseRows[0].id, subjectRows[0].id, mentorRows[0].id]);
+
+        // Content for CSS unit
+        await connection.query(`
+          INSERT IGNORE INTO courseContent (courseId, subjectId, title, description, contentType, contentData, sortOrder, status, uploadedBy)
+          VALUES (?, ?, 'CSS Crash Course', 'Complete CSS tutorial from basics to advanced', 'video', 'https://www.youtube.com/watch?v=yfoY53QXEnI', 1, 'active', ?)
+        `, [courseRows[0].id, subjectRows[1].id, mentorRows[0].id]);
+      }
+    }
   }
 
   // Seed System Settings
@@ -628,7 +762,7 @@ async function setup() {
   console.log('🌱 Sowberry database setup complete!');
   console.log('─────────────────────────────────────');
   console.log('Database: sowberry');
-  console.log('Tables: 23');
+  console.log('Tables: 26');
   console.log('');
   console.log('Login Credentials:');
   console.log('  Admin:   admin@sowberry.com    / Admin@123');

@@ -79,9 +79,11 @@ router.get('/dashboard', async (req, res) => {
 router.get('/courses', async (req, res) => {
   try {
     const [courses] = await pool.query(`
-      SELECT c.*, ce.completionPercentage, ce.status as enrollmentStatus, ce.enrolledAt,
+      SELECT c.*, ce.completionPercentage, ce.status as enrollmentStatus, ce.enrolledAt, ce.id as enrollmentId,
+        ce.completedTopics,
         u.fullName as mentorName,
-        (SELECT COUNT(*) FROM courseEnrollments WHERE courseId = c.id) as totalStudents
+        (SELECT COUNT(*) FROM courseEnrollments WHERE courseId = c.id) as totalStudents,
+        (SELECT COUNT(*) FROM courseContent WHERE courseId = c.id AND status = 'active') as contentCount
       FROM courseEnrollments ce
       JOIN courses c ON ce.courseId = c.id
       JOIN users u ON c.mentorId = u.id
@@ -104,16 +106,18 @@ router.get('/courses/browse', async (req, res) => {
     let query = `
       SELECT c.*, u.fullName as mentorName,
         (SELECT COUNT(*) FROM courseEnrollments WHERE courseId = c.id) as totalStudents,
-        (SELECT COUNT(*) FROM courseEnrollments WHERE courseId = c.id AND studentId = ?) as isEnrolled
+        (SELECT COUNT(*) FROM courseEnrollments WHERE courseId = c.id AND studentId = ?) as isEnrolled,
+        (SELECT COUNT(*) FROM courseContent WHERE courseId = c.id AND status = 'active') as contentCount,
+        (SELECT COUNT(*) FROM courseSubjects WHERE courseId = c.id) as subjectCount
       FROM courses c
       JOIN users u ON c.mentorId = u.id
-      WHERE c.isPublished = 1
+      WHERE c.isPublished = 1 AND c.status = 'active'
     `;
     const params = [req.user.id];
 
     if (category) { query += ' AND c.category = ?'; params.push(category); }
     if (difficulty) { query += ' AND c.difficulty = ?'; params.push(difficulty); }
-    if (search) { query += ' AND (c.title LIKE ? OR c.description LIKE ?)'; params.push(`%${search}%`, `%${search}%`); }
+    if (search) { query += ' AND (c.title LIKE ? OR c.description LIKE ? OR c.courseCode LIKE ?)'; params.push(`%${search}%`, `%${search}%`, `%${search}%`); }
 
     query += ' ORDER BY c.createdAt DESC';
     const [courses] = await pool.query(query, params);
@@ -131,7 +135,6 @@ router.post('/courses/:id/enroll', async (req, res) => {
     const courseId = req.params.id;
     const studentId = req.user.id;
 
-    // Check if already enrolled
     const [existing] = await pool.query(
       'SELECT id FROM courseEnrollments WHERE courseId = ? AND studentId = ?',
       [courseId, studentId]
@@ -141,8 +144,7 @@ router.post('/courses/:id/enroll', async (req, res) => {
       return res.status(409).json({ success: false, message: 'Already enrolled in this course.' });
     }
 
-    // Check max students
-    const [course] = await pool.query('SELECT maxStudents FROM courses WHERE id = ? AND isPublished = 1', [courseId]);
+    const [course] = await pool.query('SELECT maxStudents FROM courses WHERE id = ? AND isPublished = 1 AND status = ?', [courseId, 'active']);
     if (course.length === 0) {
       return res.status(404).json({ success: false, message: 'Course not found.' });
     }
@@ -153,7 +155,7 @@ router.post('/courses/:id/enroll', async (req, res) => {
     }
 
     await pool.query(
-      'INSERT INTO courseEnrollments (courseId, studentId) VALUES (?, ?)',
+      "INSERT INTO courseEnrollments (courseId, studentId, completedTopics) VALUES (?, ?, '[]')",
       [courseId, studentId]
     );
 
@@ -164,10 +166,116 @@ router.post('/courses/:id/enroll', async (req, res) => {
   }
 });
 
-// Get course materials
+// Unenroll from a course
+router.post('/courses/:id/unenroll', async (req, res) => {
+  try {
+    const [result] = await pool.query(
+      'DELETE FROM courseEnrollments WHERE courseId = ? AND studentId = ?',
+      [req.params.id, req.user.id]
+    );
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ success: false, message: 'Not enrolled in this course.' });
+    }
+    res.json({ success: true, message: 'Unenrolled successfully.' });
+  } catch (error) {
+    console.error('Unenroll error:', error);
+    res.status(500).json({ success: false, message: 'Server error.' });
+  }
+});
+
+// Course Viewer - Get course detail with content for enrolled student
+router.get('/courses/:id/view', async (req, res) => {
+  try {
+    const [enrollment] = await pool.query(
+      'SELECT * FROM courseEnrollments WHERE courseId = ? AND studentId = ?',
+      [req.params.id, req.user.id]
+    );
+
+    if (enrollment.length === 0) {
+      return res.status(403).json({ success: false, message: 'Not enrolled in this course.' });
+    }
+
+    const [courses] = await pool.query(`
+      SELECT c.*, u.fullName as mentorName
+      FROM courses c JOIN users u ON c.mentorId = u.id WHERE c.id = ?
+    `, [req.params.id]);
+
+    if (courses.length === 0) return res.status(404).json({ success: false, message: 'Course not found.' });
+
+    const course = courses[0];
+    course.enrollment = enrollment[0];
+
+    // Parse completedTopics
+    let completedTopics = [];
+    try { completedTopics = JSON.parse(enrollment[0].completedTopics || '[]'); } catch { completedTopics = []; }
+    course.enrollment.completedTopics = completedTopics;
+
+    // Get subjects with topics
+    const [subjects] = await pool.query(
+      'SELECT * FROM courseSubjects WHERE courseId = ? ORDER BY sortOrder ASC, createdAt ASC',
+      [req.params.id]
+    );
+    for (const sub of subjects) {
+      const [topics] = await pool.query('SELECT * FROM courseTopics WHERE subjectId = ? ORDER BY sortOrder ASC', [sub.id]);
+      sub.topics = topics;
+    }
+    course.subjects = subjects;
+
+    // Get content
+    const [content] = await pool.query(`
+      SELECT cc.*, cs.title as subjectTitle
+      FROM courseContent cc
+      LEFT JOIN courseSubjects cs ON cc.subjectId = cs.id
+      WHERE cc.courseId = ? AND cc.status = 'active'
+      ORDER BY cc.sortOrder ASC, cc.createdAt ASC
+    `, [req.params.id]);
+    course.content = content;
+
+    res.json({ success: true, data: { course } });
+  } catch (error) {
+    console.error('Course viewer error:', error);
+    res.status(500).json({ success: false, message: 'Server error.' });
+  }
+});
+
+// Update progress - mark topics completed
+router.put('/courses/:id/progress', async (req, res) => {
+  try {
+    const { completedTopics, progress } = req.body;
+
+    const updates = [];
+    const params = [];
+
+    if (completedTopics !== undefined) {
+      updates.push('completedTopics = ?');
+      params.push(JSON.stringify(completedTopics));
+    }
+    if (progress !== undefined) {
+      updates.push('completionPercentage = ?');
+      params.push(progress);
+      if (progress >= 100) {
+        updates.push("status = 'completed'", 'completedAt = NOW()');
+      }
+    }
+
+    if (updates.length === 0) return res.status(400).json({ success: false, message: 'No updates provided.' });
+
+    params.push(req.params.id, req.user.id);
+    await pool.query(
+      `UPDATE courseEnrollments SET ${updates.join(', ')} WHERE courseId = ? AND studentId = ?`,
+      params
+    );
+
+    res.json({ success: true, message: 'Progress updated.' });
+  } catch (error) {
+    console.error('Update progress error:', error);
+    res.status(500).json({ success: false, message: 'Server error.' });
+  }
+});
+
+// Get course materials (legacy)
 router.get('/courses/:id/materials', async (req, res) => {
   try {
-    // Verify student is enrolled
     const [enrollment] = await pool.query(
       'SELECT id FROM courseEnrollments WHERE courseId = ? AND studentId = ?',
       [req.params.id, req.user.id]

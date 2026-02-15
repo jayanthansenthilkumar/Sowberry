@@ -28,6 +28,7 @@ import CodeEditor from './pages/student/CodeEditor'
 import MyAssignments from './pages/student/MyAssignments'
 import MyGrades from './pages/student/MyGrades'
 import MyProgress from './pages/student/MyProgress'
+import CourseViewer from './pages/student/CourseViewer'
 
 // Error Boundary to catch runtime errors and show a visible message
 class ErrorBoundary extends React.Component {
@@ -107,6 +108,7 @@ function App() {
           <Route path="/student/my-assignments" element={<ProtectedRoute allowedRoles={['student']}><MyAssignments /></ProtectedRoute>} />
           <Route path="/student/my-grades" element={<ProtectedRoute allowedRoles={['student']}><MyGrades /></ProtectedRoute>} />
           <Route path="/student/my-progress" element={<ProtectedRoute allowedRoles={['student']}><MyProgress /></ProtectedRoute>} />
+          <Route path="/student/course-viewer/:id" element={<ProtectedRoute allowedRoles={['student']}><CourseViewer /></ProtectedRoute>} />
         </Routes>
       </AuthProvider>
     </Router>

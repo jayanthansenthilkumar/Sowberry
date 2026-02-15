@@ -332,17 +332,122 @@ router.delete('/mentors/:id', async (req, res) => {
 router.get('/courses', async (req, res) => {
   try {
     const [courses] = await pool.query(`
-      SELECT c.*, u.fullName as mentorName,
+      SELECT c.*, u.fullName as mentorName, ap.fullName as approverName,
         (SELECT COUNT(*) FROM courseEnrollments WHERE courseId = c.id) as enrollmentCount,
-        (SELECT COALESCE(AVG(completionPercentage), 0) FROM courseEnrollments WHERE courseId = c.id) as avgCompletion
+        (SELECT COALESCE(AVG(completionPercentage), 0) FROM courseEnrollments WHERE courseId = c.id) as avgCompletion,
+        (SELECT COUNT(*) FROM courseSubjects WHERE courseId = c.id) as subjectCount,
+        (SELECT COUNT(*) FROM courseContent WHERE courseId = c.id AND status = 'active') as contentCount
       FROM courses c
       JOIN users u ON c.mentorId = u.id
+      LEFT JOIN users ap ON c.approvedBy = ap.id
       ORDER BY c.createdAt DESC
     `);
 
     res.json({ success: true, data: { courses } });
   } catch (error) {
     console.error('Get courses error:', error);
+    res.status(500).json({ success: false, message: 'Server error.' });
+  }
+});
+
+// Get course detail (admin view)
+router.get('/courses/:id', async (req, res) => {
+  try {
+    const [courses] = await pool.query(`
+      SELECT c.*, u.fullName as mentorName, ap.fullName as approverName,
+        (SELECT COUNT(*) FROM courseEnrollments WHERE courseId = c.id) as enrollmentCount,
+        (SELECT COUNT(*) FROM courseContent WHERE courseId = c.id AND status = 'active') as contentCount
+      FROM courses c
+      JOIN users u ON c.mentorId = u.id
+      LEFT JOIN users ap ON c.approvedBy = ap.id
+      WHERE c.id = ?
+    `, [req.params.id]);
+
+    if (courses.length === 0) return res.status(404).json({ success: false, message: 'Course not found.' });
+
+    const course = courses[0];
+    const [subjects] = await pool.query(`
+      SELECT cs.*, (SELECT COUNT(*) FROM courseTopics WHERE subjectId = cs.id) as topicCount
+      FROM courseSubjects cs WHERE cs.courseId = ? ORDER BY cs.sortOrder ASC
+    `, [req.params.id]);
+    course.subjects = subjects;
+
+    res.json({ success: true, data: { course } });
+  } catch (error) {
+    console.error('Get course detail error:', error);
+    res.status(500).json({ success: false, message: 'Server error.' });
+  }
+});
+
+// Approve a course
+router.put('/courses/:id/approve', async (req, res) => {
+  try {
+    const [result] = await pool.query(
+      "UPDATE courses SET status = 'active', isPublished = 1, approvedBy = ?, approvedAt = NOW(), rejectionReason = NULL WHERE id = ? AND status = 'pending'",
+      [req.user.id, req.params.id]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(400).json({ success: false, message: 'Course not found or not in pending status.' });
+    }
+
+    res.json({ success: true, message: 'Course approved and published.' });
+  } catch (error) {
+    console.error('Approve course error:', error);
+    res.status(500).json({ success: false, message: 'Server error.' });
+  }
+});
+
+// Reject a course
+router.put('/courses/:id/reject', async (req, res) => {
+  try {
+    const { reason } = req.body;
+
+    const [result] = await pool.query(
+      "UPDATE courses SET status = 'rejected', isPublished = 0, approvedBy = ?, approvedAt = NOW(), rejectionReason = ? WHERE id = ? AND status = 'pending'",
+      [req.user.id, reason || 'No reason provided', req.params.id]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(400).json({ success: false, message: 'Course not found or not in pending status.' });
+    }
+
+    res.json({ success: true, message: 'Course rejected.' });
+  } catch (error) {
+    console.error('Reject course error:', error);
+    res.status(500).json({ success: false, message: 'Server error.' });
+  }
+});
+
+// Delete a course (admin)
+router.delete('/courses/:id', async (req, res) => {
+  try {
+    await pool.query('DELETE FROM courses WHERE id = ?', [req.params.id]);
+    res.json({ success: true, message: 'Course deleted.' });
+  } catch (error) {
+    console.error('Delete course error:', error);
+    res.status(500).json({ success: false, message: 'Server error.' });
+  }
+});
+
+// Update course status (admin can directly change status)
+router.put('/courses/:id/status', async (req, res) => {
+  try {
+    const { status } = req.body;
+    const validStatuses = ['draft', 'pending', 'active', 'rejected', 'inactive'];
+    if (!validStatuses.includes(status)) {
+      return res.status(400).json({ success: false, message: 'Invalid status.' });
+    }
+
+    const isPublished = status === 'active' ? 1 : 0;
+    await pool.query(
+      'UPDATE courses SET status = ?, isPublished = ? WHERE id = ?',
+      [status, isPublished, req.params.id]
+    );
+
+    res.json({ success: true, message: `Course status updated to ${status}.` });
+  } catch (error) {
+    console.error('Update course status error:', error);
     res.status(500).json({ success: false, message: 'Server error.' });
   }
 });
