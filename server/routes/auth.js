@@ -1,14 +1,63 @@
 import { Router } from 'express';
 import bcrypt from 'bcryptjs';
+import multer from 'multer';
+import path from 'path';
+import fs from 'fs';
+import { fileURLToPath } from 'url';
 import pool from '../config/db.js';
 import { generateToken, authenticate } from '../middleware/auth.js';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const router = Router();
+
+// ──────────────── MULTER CONFIG ────────────────
+const uploadsDir = path.join(__dirname, '..', 'uploads', 'profiles');
+if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, uploadsDir),
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    cb(null, `profile_${Date.now()}${ext}`);
+  }
+});
+const upload = multer({
+  storage,
+  limits: { fileSize: 5 * 1024 * 1024 },
+  fileFilter: (req, file, cb) => {
+    const allowed = /jpeg|jpg|png|gif|webp/;
+    if (allowed.test(file.mimetype) && allowed.test(path.extname(file.originalname).toLowerCase().replace('.', ''))) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only image files (jpg, png, gif, webp) are allowed'));
+    }
+  }
+});
+
+// ──────────────── UPLOAD PROFILE IMAGE ────────────────
+router.post('/upload-profile', upload.single('profileImage'), (req, res) => {
+  try {
+    if (!req.file) return res.status(400).json({ success: false, message: 'No file uploaded.' });
+    const imageUrl = `/uploads/profiles/${req.file.filename}`;
+    res.json({ success: true, data: { imageUrl } });
+  } catch (error) {
+    console.error('Upload error:', error);
+    res.status(500).json({ success: false, message: 'Upload failed.' });
+  }
+});
 
 // ──────────────── REGISTER ────────────────
 router.post('/register', async (req, res) => {
   try {
-    const { email, username, fullName, password, phone, countryCode } = req.body;
+    const {
+      email, username, fullName, password, phone, countryCode,
+      college, department, year, rollNumber,
+      gender, dateOfBirth, address, bio,
+      github, linkedin, hackerrank, leetcode,
+      profileImage
+    } = req.body;
 
     if (!email || !username || !fullName || !password) {
       return res.status(400).json({ success: false, message: 'All fields are required.' });
@@ -29,9 +78,18 @@ router.post('/register', async (req, res) => {
 
     // Insert user (default role: student)
     const [result] = await pool.query(
-      `INSERT INTO users (email, username, fullName, password, phone, countryCode, role, isVerified, isActive)
-       VALUES (?, ?, ?, ?, ?, ?, 'student', 0, 1)`,
-      [email.toLowerCase(), username.toLowerCase(), fullName, hashedPassword, phone || null, countryCode || '+91']
+      `INSERT INTO users (email, username, fullName, password, phone, countryCode, role, isVerified, isActive,
+        college, department, year, rollNumber, gender, dateOfBirth, address, bio,
+        github, linkedin, hackerrank, leetcode, profileImage)
+       VALUES (?, ?, ?, ?, ?, ?, 'student', 0, 1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        email.toLowerCase(), username.toLowerCase(), fullName, hashedPassword,
+        phone || null, countryCode || '+91',
+        college || null, department || null, year || null, rollNumber || null,
+        gender || null, dateOfBirth || null, address || null, bio || null,
+        github || null, linkedin || null, hackerrank || null, leetcode || null,
+        profileImage || null
+      ]
     );
 
     // Generate OTP for email verification

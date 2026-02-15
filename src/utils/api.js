@@ -76,6 +76,18 @@ export const authApi = {
   refreshToken: () => apiCall('/auth/refresh-token', { method: 'POST' }),
   updateProfile: (body) => apiCall('/auth/profile', { method: 'PUT', body: JSON.stringify(body) }),
   changePassword: (body) => apiCall('/auth/change-password', { method: 'PUT', body: JSON.stringify(body) }),
+  uploadProfileImage: async (file) => {
+    const formData = new FormData();
+    formData.append('profileImage', file);
+    try {
+      const res = await fetch(`${API_BASE}/auth/upload-profile`, { method: 'POST', body: formData });
+      const json = await res.json();
+      if (json.success && json.data) return { success: true, ...json.data };
+      return json;
+    } catch (error) {
+      return { success: false, message: 'Upload failed.' };
+    }
+  },
 };
 
 // ──────────────── ADMIN API ────────────────

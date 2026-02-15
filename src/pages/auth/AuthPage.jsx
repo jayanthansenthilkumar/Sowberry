@@ -24,27 +24,26 @@ const AuthPage = () => {
     remember: false
   });
   const [registerData, setRegisterData] = useState({
-    email: '',
-    username: '',
-    fullName: '',
-    countryCode: '+91',
-    phone: '',
-    terms: false
+    // Step 1: Personal
+    fullName: '', college: '', department: '', year: '', rollNumber: '', email: '', phone: '', countryCode: '+91',
+    // Step 2: Additional
+    gender: '', dateOfBirth: '', address: '', bio: '', github: '', linkedin: '', hackerrank: '', leetcode: '',
+    // Step 3: Profile
+    profileImage: null, profilePreview: null,
+    // Step 4: Account
+    username: '', password: '', confirmPassword: ''
   });
+  const [registerStep, setRegisterStep] = useState(1);
   const [forgotData, setForgotData] = useState({
     email: '',
     otp: ['', '', '', '', '', ''],
     newPassword: '',
     confirmPassword: ''
   });
-  const [registerValidation, setRegisterValidation] = useState({
-    email: false,
-    username: false,
-    fullName: false,
-    phone: false
-  });
   const [passwordVisibility, setPasswordVisibility] = useState({
     login: false,
+    register: false,
+    registerConfirm: false,
     newPassword: false,
     confirmPassword: false
   });
@@ -133,97 +132,143 @@ const AuthPage = () => {
     }));
   };
 
-  const handleRegisterEmailChange = (e) => {
-    const email = e.target.value.trim().toLowerCase();
-    const isValidFormat = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    
-    if (isValidFormat) {
-      const domain = email.split('@')[1];
-      const domainParts = domain.split('.');
-      const tld = domainParts.slice(1).join('.');
-      
-      const isValid = validTLDs.some(validTLD => tld === validTLD);
-      setRegisterValidation(prev => ({ ...prev, email: isValid }));
-      
-      if (!isValid) {
-        setRegisterValidation(prev => ({ 
-          ...prev, 
-          username: false, 
-          fullName: false, 
-          phone: false 
-        }));
-        setRegisterData(prev => ({ 
-          ...prev, 
-          email, 
-          username: '', 
-          fullName: '', 
-          phone: '' 
-        }));
-      } else {
-        setRegisterData(prev => ({ ...prev, email }));
-      }
-    } else {
-      setRegisterValidation(prev => ({ 
-        ...prev, 
-        email: false, 
-        username: false, 
-        fullName: false, 
-        phone: false 
-      }));
-      setRegisterData(prev => ({ 
-        ...prev, 
-        email, 
-        username: '', 
-        fullName: '', 
-        phone: '' 
-      }));
-    }
-  };
-
-  const handleRegisterUsernameChange = (e) => {
-    const username = e.target.value;
-    const isValid = username.length >= 3;
-    setRegisterValidation(prev => ({ ...prev, username: isValid }));
-    setRegisterData(prev => ({ ...prev, username }));
-    
-    if (!isValid) {
-      setRegisterValidation(prev => ({ ...prev, fullName: false, phone: false }));
-      setRegisterData(prev => ({ ...prev, fullName: '', phone: '' }));
-    }
-  };
-
-  const handleRegisterFullNameChange = (e) => {
-    const fullName = e.target.value;
-    const isValid = fullName.length >= 2;
-    setRegisterValidation(prev => ({ ...prev, fullName: isValid }));
-    setRegisterData(prev => ({ ...prev, fullName }));
-    
-    if (!isValid) {
-      setRegisterValidation(prev => ({ ...prev, phone: false }));
-      setRegisterData(prev => ({ ...prev, phone: '' }));
-    }
-  };
-
-  const handleRegisterPhoneChange = (e) => {
-    let phoneNumber = e.target.value.replace(/\D/g, '');
-    
-    if (phoneNumber.length === 10) {
-      const formatted = phoneNumber.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3');
-      setRegisterValidation(prev => ({ ...prev, phone: true }));
-      setRegisterData(prev => ({ ...prev, phone: formatted }));
-    } else if (phoneNumber.length < 10) {
-      setRegisterValidation(prev => ({ ...prev, phone: false }));
-      setRegisterData(prev => ({ ...prev, phone: phoneNumber }));
-    }
-  };
-
   const handleRegisterChange = (e) => {
     const { name, value, type, checked } = e.target;
+
+    if (name === 'department') {
+      // CYBER only allows I year
+      const newYear = value === 'CYBER' ? 'I year' : registerData.year;
+      // Recalculate roll prefix
+      const yCode = yearCodes[newYear] || '';
+      let dCode = deptCodes[value] || '';
+      if (value === 'AIML' && newYear === 'IV year') dCode = 'BAL';
+      const prefix = (yCode && dCode) ? yCode + dCode : '';
+      setRegisterData(prev => ({ ...prev, department: value, year: newYear, rollNumber: prefix }));
+      return;
+    }
+
+    if (name === 'year') {
+      // Recalc roll prefix when year changes
+      const yCode = yearCodes[value] || '';
+      let dCode = deptCodes[registerData.department] || '';
+      if (registerData.department === 'AIML' && value === 'IV year') dCode = 'BAL';
+      const prefix = (yCode && dCode) ? yCode + dCode : '';
+      setRegisterData(prev => ({ ...prev, year: value, rollNumber: prefix }));
+      return;
+    }
+
+    if (name === 'rollNumber') {
+      // Enforce prefix lock — user cannot delete the auto-generated prefix
+      const currentPrefix = generateRollPrefix();
+      if (currentPrefix && !value.startsWith(currentPrefix)) return;
+      if (value.length > 12) return;
+      setRegisterData(prev => ({ ...prev, rollNumber: value }));
+      return;
+    }
+
     setRegisterData(prev => ({
       ...prev,
       [name]: type === 'checkbox' ? checked : value
     }));
   };
+
+  const handleProfileImageChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) {
+      Swal.fire({ icon: 'warning', title: 'File Too Large', text: 'Max file size is 5MB', background: '#1f2937', color: '#fff' });
+      return;
+    }
+    const reader = new FileReader();
+    reader.onloadend = () => setRegisterData(prev => ({ ...prev, profileImage: file, profilePreview: reader.result }));
+    reader.readAsDataURL(file);
+  };
+
+  const removeProfileImage = () => {
+    setRegisterData(prev => ({ ...prev, profileImage: null, profilePreview: null }));
+  };
+
+  // College/Department/Year lists
+  const colleges = [
+    'Anna University', 'IIT Madras', 'VIT University', 'SRM University', 'PSG College of Technology',
+    'NIT Trichy', 'Madras Institute of Technology', 'SSN College of Engineering',
+    'Amrita Vishwa Vidyapeetham', 'SASTRA University', 'Karunya University',
+    'Mepco Schlenk Engineering College', 'Thiagarajar College of Engineering',
+    'Kongu Engineering College', 'Coimbatore Institute of Technology',
+    'Velammal Engineering College', 'Saveetha Engineering College',
+    'Rajalakshmi Engineering College', 'St. Joseph\'s College of Engineering'
+  ];
+  const departments = [
+    { value: 'AIDS', label: 'Artificial Intelligence and Data Science' },
+    { value: 'AIML', label: 'Artificial Intelligence and Machine Learning' },
+    { value: 'CYBER', label: 'Computer Science and Engineering (Cyber Security)' },
+    { value: 'CSE', label: 'Computer Science Engineering' },
+    { value: 'CSBS', label: 'Computer Science And Business Systems' },
+    { value: 'ECE', label: 'Electronics & Communication Engineering' },
+    { value: 'EEE', label: 'Electrical & Electronics Engineering' },
+    { value: 'MECH', label: 'Mechanical Engineering' },
+    { value: 'CIVIL', label: 'Civil Engineering' },
+    { value: 'IT', label: 'Information Technology' },
+    { value: 'VLSI', label: 'Electronics Engineering (VLSI Design)' }
+  ];
+  const years = ['I year', 'II year', 'III year', 'IV year'];
+
+  // Department codes for roll number
+  const deptCodes = {
+    'AIDS': 'BAD', 'AIML': 'BAM', 'CSE': 'BCS', 'CSBS': 'BCB',
+    'CYBER': 'BSC', 'ECE': 'BEC', 'EEE': 'BEE', 'MECH': 'BME',
+    'CIVIL': 'BCE', 'IT': 'BIT', 'VLSI': 'BEV', 'MBA': 'MBA', 'MCA': 'MCA'
+  };
+
+  // Year codes for roll number
+  const yearCodes = {
+    'I year': '927625', 'II year': '927624', 'III year': '927623', 'IV year': '927622'
+  };
+
+  // Get filtered years based on department (CYBER = I year only)
+  const getFilteredYears = () => {
+    if (registerData.department === 'CYBER') return ['I year'];
+    return years;
+  };
+
+  // Generate roll number prefix from dept + year codes
+  const generateRollPrefix = () => {
+    if (!registerData.department || !registerData.year) return '';
+    const yCode = yearCodes[registerData.year];
+    if (!yCode) return '';
+    let dCode = deptCodes[registerData.department] || '';
+    // Special case: AIML IV year uses BAL instead of BAM
+    if (registerData.department === 'AIML' && registerData.year === 'IV year') dCode = 'BAL';
+    return dCode ? yCode + dCode : '';
+  };
+
+  // Roll number validity (must be 12 chars)
+  const isRollNumberValid = registerData.rollNumber.length === 12;
+  const rollPrefix = generateRollPrefix();
+
+  // Password strength
+  const pwChecks = {
+    length: registerData.password?.length >= 6,
+    upper: /[A-Z]/.test(registerData.password || ''),
+    lower: /[a-z]/.test(registerData.password || ''),
+    number: /[0-9]/.test(registerData.password || ''),
+    special: /[^A-Za-z0-9]/.test(registerData.password || ''),
+    match: registerData.password && registerData.password === registerData.confirmPassword
+  };
+
+  const canProceedStep = (step) => {
+    if (step === 1) {
+      const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(registerData.email);
+      const phoneValid = /^\d{10,15}$/.test(registerData.phone.replace(/\D/g, ''));
+      return registerData.fullName.trim() && registerData.college && registerData.department && registerData.year && registerData.rollNumber.length === 12 && emailValid && phoneValid;
+    }
+    if (step === 2) return true; // all optional
+    if (step === 3) return true; // photo optional
+    return false;
+  };
+
+  const nextStep = () => { if (canProceedStep(registerStep)) setRegisterStep(prev => Math.min(prev + 1, 4)); };
+  const prevStep = () => setRegisterStep(prev => Math.max(prev - 1, 1));
 
   const handleOTPChange = (index, value) => {
     if (!/^\d*$/.test(value)) return;
@@ -281,25 +326,55 @@ const AuthPage = () => {
   const handleRegisterSubmit = async (e) => {
     e.preventDefault();
     if (isSubmitting) return;
+    // Validate step 4 fields
+    if (!registerData.username || registerData.username.length < 4) {
+      Swal.fire({ icon: 'warning', title: 'Invalid Username', text: 'Username must be at least 4 characters', background: '#1f2937', color: '#fff' }); return;
+    }
+    if (!pwChecks.length || !pwChecks.upper || !pwChecks.lower || !pwChecks.number || !pwChecks.special) {
+      Swal.fire({ icon: 'warning', title: 'Weak Password', text: 'Password must meet all requirements', background: '#1f2937', color: '#fff' }); return;
+    }
+    if (!pwChecks.match) {
+      Swal.fire({ icon: 'warning', title: 'Mismatch', text: 'Passwords do not match', background: '#1f2937', color: '#fff' }); return;
+    }
     setIsSubmitting(true);
     try {
+      // Upload profile image first if exists
+      let profileImageUrl = null;
+      if (registerData.profileImage) {
+        const uploadRes = await authApi.uploadProfileImage(registerData.profileImage);
+        if (uploadRes.success) profileImageUrl = uploadRes.imageUrl;
+      }
       const phone = registerData.countryCode + registerData.phone.replace(/\D/g, '');
       const res = await authApi.register({
         email: registerData.email,
         username: registerData.username,
         fullName: registerData.fullName,
+        password: registerData.password,
         phone,
-        password: registerData.username + '@123',
-        role: 'student'
+        countryCode: registerData.countryCode,
+        college: registerData.college,
+        department: registerData.department,
+        year: registerData.year,
+        rollNumber: registerData.rollNumber,
+        gender: registerData.gender,
+        dateOfBirth: registerData.dateOfBirth,
+        address: registerData.address,
+        bio: registerData.bio,
+        github: registerData.github,
+        linkedin: registerData.linkedin,
+        hackerrank: registerData.hackerrank,
+        leetcode: registerData.leetcode,
+        profileImage: profileImageUrl
       });
       if (res.success) {
-        await Swal.fire({ icon: 'success', title: 'Account Created!', html: `Your temporary password is: <strong>${registerData.username}@123</strong><br/>Please change it after login.`, background: '#fff', color: '#1f2937' });
+        await Swal.fire({ icon: 'success', title: 'Account Created!', text: 'You can now sign in with your credentials.', background: '#1f2937', color: '#fff' });
+        setRegisterStep(1);
         toggleForm('login');
       } else {
-        Swal.fire({ icon: 'error', title: 'Registration Failed', text: res.message || 'Could not create account', background: '#fff', color: '#1f2937' });
+        Swal.fire({ icon: 'error', title: 'Registration Failed', text: res.message || 'Could not create account', background: '#1f2937', color: '#fff' });
       }
     } catch {
-      Swal.fire({ icon: 'error', title: 'Error', text: 'Something went wrong. Please try again.', background: '#fff', color: '#1f2937' });
+      Swal.fire({ icon: 'error', title: 'Error', text: 'Something went wrong. Please try again.', background: '#1f2937', color: '#fff' });
     } finally {
       setIsSubmitting(false);
     }
@@ -375,15 +450,6 @@ const AuthPage = () => {
     }
   };
 
-  const isRegisterFormValid = () => {
-    const phoneValue = registerData.phone.replace(/\D/g, '');
-    return registerValidation.email &&
-           registerValidation.username &&
-           registerValidation.fullName &&
-           phoneValue.length === 10 &&
-           registerData.terms;
-  };
-
   return (
     <div className="flex min-h-screen">
       {/* Brand Side */}
@@ -409,7 +475,7 @@ const AuthPage = () => {
       <div className="flex-1 flex items-center justify-center bg-cream dark-theme:bg-gray-950 relative overflow-hidden">
         <div id="particles-right" className="absolute inset-0 z-0"></div>
 
-        <div className="relative z-10 w-full max-w-md px-6 py-8">
+        <div className="relative z-10 w-full max-w-lg px-6 py-8">
           {/* Mobile Logo */}
           <div className="lg:hidden flex items-center justify-center gap-3 mb-8">
             <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
@@ -481,99 +547,314 @@ const AuthPage = () => {
           {/* Registration Form */}
           {activeForm === 'register' && (
             <div className="animate-fade-in-up">
-              <div className="bg-white dark-theme:bg-gray-900 rounded-2xl p-8 border border-sand dark-theme:border-gray-800">
-                <h2 className="text-2xl font-bold text-gray-800 dark-theme:text-white mb-1">Create Account</h2>
-                <p className="text-gray-500 dark-theme:text-gray-400 text-sm mb-6">Please fill in your details to register</p>
+              <div className="bg-[#1a1a1a] rounded-2xl border border-[#2a2a2a] w-full overflow-hidden">
+                {/* Header */}
+                <div className="px-6 pt-6 pb-4 border-b border-[#2a2a2a]">
+                  <h2 className="text-xl font-semibold text-[#e8e8e8] tracking-tight">Create your account</h2>
+                  <p className="text-[#888] text-sm mt-1">Fill in each section to complete registration</p>
+                </div>
 
-                <form onSubmit={handleRegisterSubmit} className="space-y-3">
-                  {/* Email */}
-                  <div className="relative">
-                    <input type="email" placeholder="Email address" value={registerData.email}
-                      onChange={handleRegisterEmailChange} required
-                      className="w-full px-4 py-3 rounded-xl bg-cream dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 focus:border-primary outline-none text-sm text-gray-700 dark-theme:text-gray-200 transition-colors pr-10" />
-                    {registerData.email && (
-                      <span className={`absolute right-3 top-1/2 -translate-y-1/2 text-sm font-bold ${registerValidation.email ? 'text-green-500' : 'text-red-400'}`}>
-                        {registerValidation.email ? 'âœ“' : 'Ã—'}
-                      </span>
-                    )}
+                {/* Step Indicator */}
+                <div className="px-6 pt-4 pb-2">
+                  <div className="flex items-center justify-between mb-4">
+                    {[{n:1,l:'Personal',icon:'ri-user-line'},{n:2,l:'Details',icon:'ri-file-list-line'},{n:3,l:'Photo',icon:'ri-camera-line'},{n:4,l:'Security',icon:'ri-lock-line'}].map((s, i) => (
+                      <React.Fragment key={s.n}>
+                        <button type="button"
+                          onClick={() => { if (s.n < registerStep || (s.n > 1 && canProceedStep(s.n - 1)) || s.n === 1) setRegisterStep(s.n); }}
+                          className={`flex flex-col items-center gap-1 group cursor-pointer`}>
+                          <div className={`w-9 h-9 rounded-full flex items-center justify-center text-sm transition-all duration-300
+                            ${registerStep === s.n ? 'bg-[#d4a574] text-[#1a1a1a] shadow-lg shadow-[#d4a574]/20' : registerStep > s.n ? 'bg-[#d4a574]/20 text-[#d4a574]' : 'bg-[#2a2a2a] text-[#555]'}`}>
+                            {registerStep > s.n ? <i className="ri-check-line text-sm"></i> : <i className={`${s.icon} text-sm`}></i>}
+                          </div>
+                          <span className={`text-[10px] font-medium tracking-wide uppercase
+                            ${registerStep === s.n ? 'text-[#d4a574]' : registerStep > s.n ? 'text-[#888]' : 'text-[#555]'}`}>{s.l}</span>
+                        </button>
+                        {i < 3 && <div className={`flex-1 h-[1px] mx-2 mt-[-12px] transition-colors duration-300 ${registerStep > s.n ? 'bg-[#d4a574]/40' : 'bg-[#2a2a2a]'}`}></div>}
+                      </React.Fragment>
+                    ))}
                   </div>
+                </div>
 
-                  {/* Username */}
-                  <div className="relative">
-                    <input type="text" placeholder="Choose username" value={registerData.username}
-                      onChange={handleRegisterUsernameChange} disabled={!registerValidation.email} required
-                      className="w-full px-4 py-3 rounded-xl bg-cream dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 focus:border-primary outline-none text-sm text-gray-700 dark-theme:text-gray-200 transition-colors pr-10 disabled:opacity-50 disabled:cursor-not-allowed" />
-                    {registerData.username && (
-                      <span className={`absolute right-3 top-1/2 -translate-y-1/2 text-sm font-bold ${registerValidation.username ? 'text-green-500' : 'text-red-400'}`}>
-                        {registerValidation.username ? 'âœ“' : 'Ã—'}
-                      </span>
-                    )}
-                  </div>
+                <div className="px-6 pb-6">
+                  {/* Step 1: Personal */}
+                  {registerStep === 1 && (
+                    <div className="space-y-4 animate-fade-in-up">
+                      <div>
+                        <label className="text-xs font-medium text-[#aaa] mb-1.5 block tracking-wide">Full Name <span className="text-[#d4a574]">*</span></label>
+                        <input type="text" name="fullName" placeholder="Enter your full name" value={registerData.fullName} onChange={handleRegisterChange}
+                          className="w-full px-4 py-2.5 rounded-xl bg-[#222] border border-[#333] focus:border-[#d4a574] focus:ring-1 focus:ring-[#d4a574]/20 outline-none text-sm text-[#e8e8e8] placeholder-[#555] transition-all" />
+                      </div>
+                      <div>
+                        <label className="text-xs font-medium text-[#aaa] mb-1.5 block tracking-wide">College <span className="text-[#d4a574]">*</span></label>
+                        <select name="college" value={registerData.college} onChange={handleRegisterChange}
+                          className="w-full px-4 py-2.5 rounded-xl bg-[#222] border border-[#333] focus:border-[#d4a574] outline-none text-sm text-[#e8e8e8] transition-all appearance-none cursor-pointer">
+                          <option value="" className="text-[#555]">Select your college</option>
+                          {colleges.map(c => <option key={c} value={c}>{c}</option>)}
+                        </select>
+                      </div>
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="text-xs font-medium text-[#aaa] mb-1.5 block tracking-wide">Department <span className="text-[#d4a574]">*</span></label>
+                          <select name="department" value={registerData.department} onChange={handleRegisterChange}
+                            className="w-full px-4 py-2.5 rounded-xl bg-[#222] border border-[#333] focus:border-[#d4a574] outline-none text-sm text-[#e8e8e8] transition-all appearance-none cursor-pointer">
+                            <option value="">Select</option>
+                            {departments.map(d => <option key={d.value} value={d.value}>{d.label}</option>)}
+                          </select>
+                        </div>
+                        <div>
+                          <label className="text-xs font-medium text-[#aaa] mb-1.5 block tracking-wide">Year <span className="text-[#d4a574]">*</span></label>
+                          <select name="year" value={registerData.year} onChange={handleRegisterChange}
+                            className="w-full px-4 py-2.5 rounded-xl bg-[#222] border border-[#333] focus:border-[#d4a574] outline-none text-sm text-[#e8e8e8] transition-all appearance-none cursor-pointer">
+                            <option value="">Select</option>
+                            {getFilteredYears().map(y => <option key={y} value={y}>{y}</option>)}
+                          </select>
+                        </div>
+                      </div>
+                      <div>
+                        <label className="text-xs font-medium text-[#aaa] mb-1.5 block tracking-wide">Roll Number <span className="text-[#d4a574]">*</span></label>
+                        <div className="relative">
+                          <input type="text" name="rollNumber"
+                            placeholder={rollPrefix ? rollPrefix + '...' : 'Select dept & year first'}
+                            value={registerData.rollNumber} onChange={handleRegisterChange} maxLength="12"
+                            className={`w-full px-4 py-2.5 rounded-xl bg-[#222] border outline-none text-sm text-[#e8e8e8] placeholder-[#555] transition-all pr-16
+                              ${registerData.rollNumber && (isRollNumberValid ? 'border-emerald-500/50 focus:border-emerald-500' : 'border-amber-500/50 focus:border-amber-500') || 'border-[#333] focus:border-[#d4a574]'}`} />
+                          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-mono text-[#555]">
+                            {registerData.rollNumber.length}/12
+                          </span>
+                        </div>
+                        {rollPrefix && <p className="text-[10px] text-[#666] mt-1 font-mono">Prefix: {rollPrefix} (auto-filled)</p>}
+                      </div>
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="text-xs font-medium text-[#aaa] mb-1.5 block tracking-wide">Email <span className="text-[#d4a574]">*</span></label>
+                          <input type="email" name="email" placeholder="you@example.com" value={registerData.email} onChange={handleRegisterChange}
+                            className="w-full px-4 py-2.5 rounded-xl bg-[#222] border border-[#333] focus:border-[#d4a574] outline-none text-sm text-[#e8e8e8] placeholder-[#555] transition-all" />
+                        </div>
+                        <div>
+                          <label className="text-xs font-medium text-[#aaa] mb-1.5 block tracking-wide">Phone <span className="text-[#d4a574]">*</span></label>
+                          <input type="tel" name="phone" placeholder="9876543210" value={registerData.phone} onChange={handleRegisterChange} maxLength="15"
+                            className="w-full px-4 py-2.5 rounded-xl bg-[#222] border border-[#333] focus:border-[#d4a574] outline-none text-sm text-[#e8e8e8] placeholder-[#555] transition-all" />
+                        </div>
+                      </div>
 
-                  {/* Full Name */}
-                  <div className="relative">
-                    <input type="text" placeholder="Full name" value={registerData.fullName}
-                      onChange={handleRegisterFullNameChange} disabled={!registerValidation.username} required
-                      className="w-full px-4 py-3 rounded-xl bg-cream dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 focus:border-primary outline-none text-sm text-gray-700 dark-theme:text-gray-200 transition-colors pr-10 disabled:opacity-50 disabled:cursor-not-allowed" />
-                    {registerData.fullName && (
-                      <span className={`absolute right-3 top-1/2 -translate-y-1/2 text-sm font-bold ${registerValidation.fullName ? 'text-green-500' : 'text-red-400'}`}>
-                        {registerValidation.fullName ? 'âœ“' : 'Ã—'}
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Phone */}
-                  <div className="flex gap-2">
-                    <select name="countryCode" value={registerData.countryCode} onChange={handleRegisterChange}
-                      disabled={!registerValidation.fullName}
-                      className="w-28 px-3 py-3 rounded-xl bg-cream dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 focus:border-primary outline-none text-sm text-gray-700 dark-theme:text-gray-200 disabled:opacity-50 disabled:cursor-not-allowed">
-                      <option value="+91">+91 (IN)</option>
-                      <option value="+1">+1 (US)</option>
-                      <option value="+44">+44 (UK)</option>
-                      <option value="+61">+61 (AU)</option>
-                      <option value="+86">+86 (CN)</option>
-                      <option value="+81">+81 (JP)</option>
-                      <option value="+49">+49 (DE)</option>
-                      <option value="+33">+33 (FR)</option>
-                      <option value="+7">+7 (RU)</option>
-                      <option value="+55">+55 (BR)</option>
-                      <option value="+52">+52 (MX)</option>
-                      <option value="+82">+82 (KR)</option>
-                      <option value="+39">+39 (IT)</option>
-                      <option value="+34">+34 (ES)</option>
-                      <option value="+1">+1 (CA)</option>
-                    </select>
-                    <div className="relative flex-1">
-                      <input type="tel" placeholder="Enter 10 digit number" value={registerData.phone}
-                        onChange={handleRegisterPhoneChange} maxLength="12"
-                        disabled={!registerValidation.fullName} required
-                        className="w-full px-4 py-3 rounded-xl bg-cream dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 focus:border-primary outline-none text-sm text-gray-700 dark-theme:text-gray-200 transition-colors pr-10 disabled:opacity-50 disabled:cursor-not-allowed" />
-                      {registerData.phone && (
-                        <span className={`absolute right-3 top-1/2 -translate-y-1/2 text-sm font-bold ${registerValidation.phone ? 'text-green-500' : 'text-red-400'}`}>
-                          {registerValidation.phone ? 'âœ“' : 'Ã—'}
-                        </span>
+                      {/* Validation hints */}
+                      {(registerData.fullName || registerData.email || registerData.phone || registerData.rollNumber) && (
+                        <div className="bg-[#222] rounded-xl p-3 space-y-1.5">
+                          {[
+                            { ok: !!registerData.fullName.trim(), label: 'Full name entered' },
+                            { ok: !!registerData.college, label: 'College selected' },
+                            { ok: !!registerData.department, label: 'Department selected' },
+                            { ok: !!registerData.year, label: 'Year selected' },
+                            { ok: registerData.rollNumber.length === 12, label: 'Roll number (12 digits)' },
+                            { ok: /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(registerData.email), label: 'Valid email' },
+                            { ok: /^\d{10,15}$/.test(registerData.phone.replace(/\D/g, '')), label: 'Valid phone' },
+                          ].map((v, i) => (
+                            <div key={i} className="flex items-center gap-2">
+                              <i className={`text-xs ${v.ok ? 'ri-checkbox-circle-fill text-emerald-500' : 'ri-checkbox-blank-circle-line text-[#444]'}`}></i>
+                              <span className={`text-[11px] ${v.ok ? 'text-[#aaa]' : 'text-[#555]'}`}>{v.label}</span>
+                            </div>
+                          ))}
+                        </div>
                       )}
+
+                      <button type="button" onClick={nextStep} disabled={!canProceedStep(1)}
+                        className="w-full py-3 rounded-xl bg-[#d4a574] text-[#1a1a1a] font-semibold hover:bg-[#c4956a] transition-all disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm shadow-lg shadow-[#d4a574]/10">
+                        Continue <i className="ri-arrow-right-line text-base"></i>
+                      </button>
                     </div>
-                  </div>
+                  )}
 
-                  {/* Terms */}
-                  <label className="flex items-center gap-2 text-sm text-gray-600 dark-theme:text-gray-400 cursor-pointer">
-                    <input type="checkbox" name="terms" checked={registerData.terms} onChange={handleRegisterChange}
-                      disabled={!registerValidation.phone}
-                      className="rounded border-gray-300 text-primary focus:ring-primary disabled:opacity-50" />
-                    I agree to the Terms & Conditions
-                  </label>
+                  {/* Step 2: Additional */}
+                  {registerStep === 2 && (
+                    <div className="space-y-4 animate-fade-in-up">
+                      <p className="text-xs text-[#666] flex items-center gap-1.5"><i className="ri-information-line text-[#d4a574]"></i> All fields below are optional</p>
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="text-xs font-medium text-[#aaa] mb-1.5 block tracking-wide">Gender</label>
+                          <select name="gender" value={registerData.gender} onChange={handleRegisterChange}
+                            className="w-full px-4 py-2.5 rounded-xl bg-[#222] border border-[#333] focus:border-[#d4a574] outline-none text-sm text-[#e8e8e8] transition-all appearance-none cursor-pointer">
+                            <option value="">Select</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                            <option value="Prefer not to say">Prefer not to say</option>
+                          </select>
+                        </div>
+                        <div>
+                          <label className="text-xs font-medium text-[#aaa] mb-1.5 block tracking-wide">Date of Birth</label>
+                          <input type="date" name="dateOfBirth" value={registerData.dateOfBirth} onChange={handleRegisterChange}
+                            className="w-full px-4 py-2.5 rounded-xl bg-[#222] border border-[#333] focus:border-[#d4a574] outline-none text-sm text-[#e8e8e8] transition-all" />
+                        </div>
+                      </div>
+                      <div>
+                        <label className="text-xs font-medium text-[#aaa] mb-1.5 block tracking-wide">Address</label>
+                        <textarea name="address" placeholder="Your address" value={registerData.address} onChange={handleRegisterChange} rows="2"
+                          className="w-full px-4 py-2.5 rounded-xl bg-[#222] border border-[#333] focus:border-[#d4a574] outline-none text-sm text-[#e8e8e8] placeholder-[#555] transition-all resize-none"></textarea>
+                      </div>
+                      <div>
+                        <label className="text-xs font-medium text-[#aaa] mb-1.5 block tracking-wide">Bio / Tagline</label>
+                        <input type="text" name="bio" placeholder="A short line about you" value={registerData.bio} onChange={handleRegisterChange}
+                          className="w-full px-4 py-2.5 rounded-xl bg-[#222] border border-[#333] focus:border-[#d4a574] outline-none text-sm text-[#e8e8e8] placeholder-[#555] transition-all" />
+                      </div>
 
-                  <button type="submit" disabled={!isRegisterFormValid() || isSubmitting}
-                    className="w-full py-3 rounded-xl bg-primary text-white font-semibold shadow-sm hover:bg-primary-dark transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none">
-                    {isSubmitting ? 'Creating Account...' : 'Create Account'}
-                  </button>
-                </form>
+                      <div className="border-t border-[#2a2a2a] pt-3 mt-2">
+                        <p className="text-xs font-medium text-[#aaa] mb-3 flex items-center gap-1.5 tracking-wide"><i className="ri-links-line text-[#d4a574]"></i> Social Profiles</p>
+                        <div className="space-y-2.5">
+                          {[
+                            { name: 'github', icon: 'ri-github-fill', color: 'text-[#e8e8e8]', placeholder: 'github.com/username' },
+                            { name: 'linkedin', icon: 'ri-linkedin-box-fill', color: 'text-[#0a66c2]', placeholder: 'linkedin.com/in/username' },
+                            { name: 'hackerrank', icon: 'ri-code-box-fill', color: 'text-[#2ec866]', placeholder: 'hackerrank.com/username' },
+                            { name: 'leetcode', icon: 'ri-terminal-box-fill', color: 'text-[#ffa116]', placeholder: 'leetcode.com/u/username' }
+                          ].map(s => (
+                            <div key={s.name} className="flex items-center gap-2">
+                              <div className="w-8 h-8 rounded-lg bg-[#222] border border-[#333] flex items-center justify-center flex-shrink-0">
+                                <i className={`${s.icon} ${s.color} text-sm`}></i>
+                              </div>
+                              <input type="url" name={s.name} placeholder={s.placeholder} value={registerData[s.name]} onChange={handleRegisterChange}
+                                className="flex-1 px-3 py-2 rounded-lg bg-[#222] border border-[#333] focus:border-[#d4a574] outline-none text-xs text-[#e8e8e8] placeholder-[#555] transition-all" />
+                            </div>
+                          ))}
+                        </div>
+                      </div>
 
-                <p className="text-center text-sm text-gray-500 dark-theme:text-gray-400 mt-6">
-                  Already have an account?{' '}
-                  <button onClick={() => toggleForm('login')} className="text-primary font-semibold hover:underline">Sign in</button>
-                </p>
+                      <div className="flex gap-3 pt-2">
+                        <button type="button" onClick={prevStep}
+                          className="flex-1 py-2.5 rounded-xl bg-[#222] border border-[#333] text-[#aaa] font-medium hover:bg-[#2a2a2a] transition-all flex items-center justify-center gap-2 text-sm">
+                          <i className="ri-arrow-left-line"></i> Back
+                        </button>
+                        <button type="button" onClick={nextStep}
+                          className="flex-[2] py-2.5 rounded-xl bg-[#d4a574] text-[#1a1a1a] font-semibold hover:bg-[#c4956a] transition-all flex items-center justify-center gap-2 text-sm shadow-lg shadow-[#d4a574]/10">
+                          Continue <i className="ri-arrow-right-line"></i>
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Step 3: Profile Photo */}
+                  {registerStep === 3 && (
+                    <div className="space-y-6 animate-fade-in-up">
+                      <div className="text-center">
+                        <div className="w-12 h-12 rounded-2xl bg-[#d4a574]/10 flex items-center justify-center mx-auto mb-3">
+                          <i className="ri-camera-fill text-[#d4a574] text-xl"></i>
+                        </div>
+                        <p className="text-sm font-medium text-[#e8e8e8]">Profile Photo</p>
+                        <p className="text-xs text-[#666] mt-1">Optional — you can always add one later</p>
+                      </div>
+                      <div className="flex justify-center">
+                        <label className="relative cursor-pointer group">
+                          <div className={`w-32 h-32 rounded-2xl border-2 border-dashed flex items-center justify-center overflow-hidden transition-all duration-300
+                            ${registerData.profilePreview ? 'border-[#d4a574] bg-[#222]' : 'border-[#333] bg-[#222] group-hover:border-[#555] group-hover:bg-[#2a2a2a]'}`}>
+                            {registerData.profilePreview ? (
+                              <img src={registerData.profilePreview} alt="Preview" className="w-full h-full object-cover rounded-xl" />
+                            ) : (
+                              <div className="text-center">
+                                <i className="ri-upload-2-line text-2xl text-[#555] group-hover:text-[#888] transition-colors"></i>
+                                <p className="text-[10px] text-[#555] mt-1 group-hover:text-[#888]">Click to upload</p>
+                              </div>
+                            )}
+                          </div>
+                          <input type="file" accept="image/*" onChange={handleProfileImageChange} className="hidden" />
+                          {registerData.profilePreview && (
+                            <button type="button" onClick={(e) => { e.preventDefault(); removeProfileImage(); }}
+                              className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-red-500/90 text-white flex items-center justify-center text-xs hover:bg-red-600 transition-colors shadow-lg">
+                              <i className="ri-close-line"></i>
+                            </button>
+                          )}
+                        </label>
+                      </div>
+                      <div className="text-center space-y-1">
+                        <p className="text-[11px] text-[#666]">Square image, at least 200×200px</p>
+                        <p className="text-[10px] text-[#555]">Max 5MB — JPG, PNG, or WebP</p>
+                      </div>
+                      <div className="flex gap-3">
+                        <button type="button" onClick={prevStep}
+                          className="flex-1 py-2.5 rounded-xl bg-[#222] border border-[#333] text-[#aaa] font-medium hover:bg-[#2a2a2a] transition-all flex items-center justify-center gap-2 text-sm">
+                          <i className="ri-arrow-left-line"></i> Back
+                        </button>
+                        <button type="button" onClick={nextStep}
+                          className="flex-[2] py-2.5 rounded-xl bg-[#d4a574] text-[#1a1a1a] font-semibold hover:bg-[#c4956a] transition-all flex items-center justify-center gap-2 text-sm shadow-lg shadow-[#d4a574]/10">
+                          Continue <i className="ri-arrow-right-line"></i>
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Step 4: Account Security */}
+                  {registerStep === 4 && (
+                    <form onSubmit={handleRegisterSubmit} className="space-y-4 animate-fade-in-up">
+                      <div>
+                        <label className="text-xs font-medium text-[#aaa] mb-1.5 block tracking-wide">Username <span className="text-[#d4a574]">*</span></label>
+                        <input type="text" name="username" placeholder="Choose a unique username" value={registerData.username} onChange={handleRegisterChange}
+                          className="w-full px-4 py-2.5 rounded-xl bg-[#222] border border-[#333] focus:border-[#d4a574] outline-none text-sm text-[#e8e8e8] placeholder-[#555] transition-all" />
+                        <p className="text-[10px] text-[#555] mt-1">Min 4 characters — letters, numbers, underscores</p>
+                      </div>
+                      <div>
+                        <label className="text-xs font-medium text-[#aaa] mb-1.5 block tracking-wide">Password <span className="text-[#d4a574]">*</span></label>
+                        <div className="relative">
+                          <input type={passwordVisibility.register ? 'text' : 'password'} name="password" placeholder="Create a strong password" value={registerData.password} onChange={handleRegisterChange}
+                            className="w-full px-4 py-2.5 rounded-xl bg-[#222] border border-[#333] focus:border-[#d4a574] outline-none text-sm text-[#e8e8e8] placeholder-[#555] transition-all pr-10" />
+                          <button type="button" onClick={() => togglePasswordVisibility('register')}
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-[#555] hover:text-[#aaa] transition-colors">
+                            <i className={passwordVisibility.register ? 'ri-eye-off-line' : 'ri-eye-line'}></i>
+                          </button>
+                        </div>
+                      </div>
+                      <div>
+                        <label className="text-xs font-medium text-[#aaa] mb-1.5 block tracking-wide">Confirm Password <span className="text-[#d4a574]">*</span></label>
+                        <div className="relative">
+                          <input type={passwordVisibility.registerConfirm ? 'text' : 'password'} name="confirmPassword" placeholder="Re-enter your password" value={registerData.confirmPassword} onChange={handleRegisterChange}
+                            className="w-full px-4 py-2.5 rounded-xl bg-[#222] border border-[#333] focus:border-[#d4a574] outline-none text-sm text-[#e8e8e8] placeholder-[#555] transition-all pr-10" />
+                          <button type="button" onClick={() => togglePasswordVisibility('registerConfirm')}
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-[#555] hover:text-[#aaa] transition-colors">
+                            <i className={passwordVisibility.registerConfirm ? 'ri-eye-off-line' : 'ri-eye-line'}></i>
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Password strength */}
+                      <div className="bg-[#222] rounded-xl p-3 border border-[#2a2a2a]">
+                        <div className="grid grid-cols-3 gap-x-4 gap-y-2">
+                          {[
+                            { key: 'length', label: '6+ characters' },
+                            { key: 'upper', label: 'Uppercase' },
+                            { key: 'number', label: 'Number' },
+                            { key: 'lower', label: 'Lowercase' },
+                            { key: 'special', label: 'Special char' },
+                            { key: 'match', label: 'Passwords match' }
+                          ].map(c => (
+                            <div key={c.key} className="flex items-center gap-1.5">
+                              <i className={`text-xs ${pwChecks[c.key] ? 'ri-checkbox-circle-fill text-emerald-500' : 'ri-checkbox-blank-circle-line text-[#444]'}`}></i>
+                              <span className={`text-[10px] font-medium ${pwChecks[c.key] ? 'text-[#aaa]' : 'text-[#555]'}`}>{c.label}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="flex gap-3 pt-1">
+                        <button type="button" onClick={prevStep}
+                          className="flex-1 py-2.5 rounded-xl bg-[#222] border border-[#333] text-[#aaa] font-medium hover:bg-[#2a2a2a] transition-all flex items-center justify-center gap-2 text-sm">
+                          <i className="ri-arrow-left-line"></i> Back
+                        </button>
+                        <button type="submit" disabled={isSubmitting || !pwChecks.length || !pwChecks.upper || !pwChecks.lower || !pwChecks.number || !pwChecks.special || !pwChecks.match || !registerData.username || registerData.username.length < 4}
+                          className="flex-[2] py-2.5 rounded-xl bg-[#d4a574] text-[#1a1a1a] font-semibold hover:bg-[#c4956a] transition-all disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm shadow-lg shadow-[#d4a574]/10">
+                          {isSubmitting ? (
+                            <><i className="ri-loader-4-line animate-spin"></i> Creating...</>
+                          ) : (
+                            <><i className="ri-user-add-line"></i> Create Account</>
+                          )}
+                        </button>
+                      </div>
+                    </form>
+                  )}
+                </div>
+
+                {/* Footer */}
+                <div className="px-6 py-4 border-t border-[#2a2a2a] bg-[#161616]">
+                  <p className="text-center text-xs text-[#666]">
+                    Already have an account?{' '}
+                    <button onClick={() => { toggleForm('login'); setRegisterStep(1); }} className="text-[#d4a574] font-medium hover:underline">Sign in</button>
+                  </p>
+                </div>
               </div>
             </div>
           )}
