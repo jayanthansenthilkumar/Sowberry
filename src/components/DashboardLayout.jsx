@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
+import { useAuth } from '../context/AuthContext';
 
 const studentNav = [
   { path: '/student', icon: 'ri-dashboard-line', label: 'Dashboard' },
@@ -28,6 +30,8 @@ const mentorNav = [
 const DashboardLayout = ({ children, pageTitle, role = 'student' }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, logout } = useAuth();
 
   const savedTheme = localStorage.getItem('theme');
   const [theme, setTheme] = useState(savedTheme || 'light');
@@ -48,6 +52,16 @@ const DashboardLayout = ({ children, pageTitle, role = 'student' }) => {
   };
 
   const navItems = role === 'mentor' ? mentorNav : studentNav;
+
+  const handleSignOut = () => {
+    Swal.fire({
+      title: 'Sign Out?', text: 'Are you sure you want to sign out?', icon: 'question',
+      showCancelButton: true, confirmButtonColor: '#c96442', confirmButtonText: 'Yes, sign out',
+      background: '#fff', color: '#1f2937'
+    }).then(result => {
+      if (result.isConfirmed) { logout(); navigate('/auth'); }
+    });
+  };
 
   return (
     <div className="flex h-screen overflow-hidden bg-cream dark-theme:bg-gray-950">
@@ -94,10 +108,10 @@ const DashboardLayout = ({ children, pageTitle, role = 'student' }) => {
 
         {/* Sidebar Footer */}
         <div className="px-3 py-4 border-t border-white/10">
-          <Link to="/auth" className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] font-medium text-gray-400 hover:bg-white/5 hover:text-gray-200 transition-all duration-150">
+          <button onClick={handleSignOut} className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] font-medium text-gray-400 hover:bg-white/5 hover:text-gray-200 transition-all duration-150">
             <i className="ri-logout-box-line text-base"></i>
             <span>Sign Out</span>
-          </Link>
+          </button>
         </div>
       </aside>
 

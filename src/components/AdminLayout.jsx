@@ -1,11 +1,17 @@
 import { useState, useEffect, useRef } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
+import { useAuth } from '../context/AuthContext';
+import { adminApi } from '../utils/api';
 
 const AdminLayout = ({ children, pageTitle }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const [notifications, setNotifications] = useState([]);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, logout } = useAuth();
 
   const savedTheme = localStorage.getItem('theme');
   const [theme, setTheme] = useState(savedTheme || 'light');
@@ -44,6 +50,31 @@ const AdminLayout = ({ children, pageTitle }) => {
     setNotificationsOpen(!notificationsOpen);
     setProfileOpen(false);
   };
+
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      const res = await adminApi.getNotifications();
+      if (res.success) setNotifications(res.notifications || []);
+    };
+    fetchNotifications();
+  }, []);
+
+  const handleMarkAllRead = async () => {
+    await adminApi.markAllRead();
+    setNotifications(prev => prev.map(n => ({ ...n, isRead: 1 })));
+  };
+
+  const handleSignOut = () => {
+    Swal.fire({
+      title: 'Sign Out?', text: 'Are you sure you want to sign out?', icon: 'question',
+      showCancelButton: true, confirmButtonColor: '#c96442', confirmButtonText: 'Yes, sign out',
+      background: '#fff', color: '#1f2937'
+    }).then(result => {
+      if (result.isConfirmed) { logout(); navigate('/auth'); }
+    });
+  };
+
+  const unreadCount = notifications.filter(n => !n.isRead).length;
 
   const navItems = [
     { path: '/admin', icon: 'ri-dashboard-line', label: 'Dashboard' },
@@ -108,10 +139,10 @@ const AdminLayout = ({ children, pageTitle }) => {
 
         {/* Sidebar Footer */}
         <div className="px-3 py-4 border-t border-white/10">
-          <Link to="/auth" className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] font-medium text-gray-400 hover:bg-white/5 hover:text-gray-200 transition-all duration-150">
+          <button onClick={handleSignOut} className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] font-medium text-gray-400 hover:bg-white/5 hover:text-gray-200 transition-all duration-150">
             <i className="ri-logout-box-line text-base"></i>
             <span>Sign Out</span>
-          </Link>
+          </button>
         </div>
       </div>
 
@@ -148,28 +179,26 @@ const AdminLayout = ({ children, pageTitle }) => {
                 className="relative w-9 h-9 rounded-lg flex items-center justify-center text-gray-500 dark-theme:text-gray-400 hover:bg-cream-dark dark-theme:hover:bg-gray-800 hover:text-gray-700 dark-theme:hover:text-gray-200 transition-colors"
               >
                 <i className="ri-notification-3-line text-base"></i>
-                <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-primary rounded-full"></span>
+                {unreadCount > 0 && <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-primary rounded-full"></span>}
               </button>
 
               {notificationsOpen && (
                 <div className="absolute right-0 top-11 w-80 bg-white dark-theme:bg-gray-900 rounded-xl shadow-lg border border-sand dark-theme:border-gray-800 overflow-hidden z-50">
                   <div className="flex items-center justify-between px-4 py-3 border-b border-sand dark-theme:border-gray-800">
                     <h4 className="font-semibold text-gray-800 dark-theme:text-gray-200 text-[13px]">Notifications</h4>
-                    <button className="text-xs text-primary hover:underline">Mark all read</button>
+                    <button onClick={handleMarkAllRead} className="text-xs text-primary hover:underline">Mark all read</button>
                   </div>
                   <div className="max-h-64 overflow-y-auto">
-                    {[
-                      { icon: 'ri-message-2-line', text: 'New comment on your post', time: '2 minutes ago', unread: true },
-                      { icon: 'ri-user-follow-line', text: 'New student enrolled', time: '1 hour ago', unread: true },
-                      { icon: 'ri-file-list-line', text: 'Assignment deadline', time: '3 hours ago', unread: false },
-                    ].map((n, i) => (
-                      <div key={i} className={`flex items-start gap-3 px-4 py-3 hover:bg-cream dark-theme:hover:bg-gray-800 transition-colors cursor-pointer ${n.unread ? 'bg-primary/5' : ''}`}>
+                    {notifications.length === 0 ? (
+                      <p className="px-4 py-6 text-center text-sm text-gray-400">No notifications</p>
+                    ) : notifications.slice(0, 5).map((n, i) => (
+                      <div key={n.id || i} className={`flex items-start gap-3 px-4 py-3 hover:bg-cream dark-theme:hover:bg-gray-800 transition-colors cursor-pointer ${!n.isRead ? 'bg-primary/5' : ''}`}>
                         <div className="w-7 h-7 rounded-md bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
-                          <i className={`${n.icon} text-primary text-xs`}></i>
+                          <i className={`ri-notification-3-line text-primary text-xs`}></i>
                         </div>
                         <div>
-                          <p className="text-[13px] text-gray-700 dark-theme:text-gray-200">{n.text}</p>
-                          <span className="text-[11px] text-gray-400">{n.time}</span>
+                          <p className="text-[13px] text-gray-700 dark-theme:text-gray-200">{n.title || n.message}</p>
+                          <span className="text-[11px] text-gray-400">{n.createdAt ? new Date(n.createdAt).toLocaleDateString() : ''}</span>
                         </div>
                       </div>
                     ))}
@@ -188,12 +217,12 @@ const AdminLayout = ({ children, pageTitle }) => {
                 className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-cream-dark dark-theme:hover:bg-gray-800 transition-colors"
               >
                 <img
-                  src="https://ui-avatars.com/api/?name=Admin&size=28&background=c96442&color=fff&bold=true"
+                  src={`https://ui-avatars.com/api/?name=${encodeURIComponent(user?.fullName || 'Admin')}&size=28&background=c96442&color=fff&bold=true`}
                   alt="User"
                   className="w-7 h-7 rounded-md"
                 />
                 <div className="hidden sm:flex flex-col items-start">
-                  <span className="text-[13px] font-medium text-gray-700 dark-theme:text-gray-200">Admin</span>
+                  <span className="text-[13px] font-medium text-gray-700 dark-theme:text-gray-200">{user?.fullName || 'Admin'}</span>
                 </div>
               </button>
 
@@ -206,9 +235,9 @@ const AdminLayout = ({ children, pageTitle }) => {
                     <i className="ri-settings-line text-sm"></i> Settings
                   </Link>
                   <div className="border-t border-sand dark-theme:border-gray-800 my-1"></div>
-                  <Link to="/auth" className="flex items-center gap-2 px-3 py-2 text-[13px] text-danger hover:bg-danger/5 transition-colors">
+                  <button onClick={handleSignOut} className="w-full flex items-center gap-2 px-3 py-2 text-[13px] text-danger hover:bg-danger/5 transition-colors">
                     <i className="ri-logout-box-line text-sm"></i> Sign Out
-                  </Link>
+                  </button>
                 </div>
               )}
             </div>

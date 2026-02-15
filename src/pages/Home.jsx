@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import ThemeToggle from '../components/ThemeToggle';
+import Swal from 'sweetalert2';
+import { publicApi } from '../utils/api';
 
 
 const Home = () => {
@@ -24,16 +26,36 @@ const Home = () => {
   };
 
   const [formStatus, setFormStatus] = useState('');
-  const handleContactFormSubmit = (e) => {
+  const handleContactFormSubmit = async (e) => {
     e.preventDefault();
-    setFormStatus('Message sent successfully!');
-    e.target.reset();
-    setTimeout(() => setFormStatus(''), 3000);
+    const form = e.target;
+    const body = {
+      name: form.querySelector('[placeholder*="name" i], [name="name"]')?.value || form.elements[0]?.value,
+      email: form.querySelector('[type="email"]')?.value || form.elements[1]?.value,
+      phone: form.querySelector('[type="tel"]')?.value || form.elements[2]?.value || '',
+      subject: form.querySelector('[placeholder*="subject" i], [name="subject"]')?.value || form.elements[3]?.value || 'Contact Form',
+      message: form.querySelector('textarea')?.value || ''
+    };
+    const res = await publicApi.submitContact(body);
+    if (res.success) {
+      Swal.fire({ icon: 'success', title: 'Sent!', text: 'Your message has been sent successfully.', timer: 2000, showConfirmButton: false, background: '#fff', color: '#1f2937' });
+      form.reset();
+    } else {
+      Swal.fire({ icon: 'error', title: 'Error', text: res.message || 'Failed to send message.', background: '#fff', color: '#1f2937' });
+    }
   };
 
-  const handleNewsletterSubmit = (e) => {
+  const handleNewsletterSubmit = async (e) => {
     e.preventDefault();
-    e.target.reset();
+    const email = e.target.querySelector('input[type="email"]')?.value;
+    if (!email) return;
+    const res = await publicApi.subscribeNewsletter({ email });
+    if (res.success) {
+      Swal.fire({ icon: 'success', title: 'Subscribed!', text: 'You have been subscribed to our newsletter.', timer: 2000, showConfirmButton: false, background: '#fff', color: '#1f2937' });
+      e.target.reset();
+    } else {
+      Swal.fire({ icon: 'error', title: 'Error', text: res.message || 'Could not subscribe.', background: '#fff', color: '#1f2937' });
+    }
   };
 
   const teamMembers = [

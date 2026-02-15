@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import AdminLayout from '../../components/AdminLayout';
+import { adminApi } from '../../utils/api';
+import { useAuth } from '../../context/AuthContext';
 
 
 const AdminDashboard = () => {
+  const { user } = useAuth();
+  const [stats, setStats] = useState({ totalStudents: 0, totalMentors: 0, totalCourses: 0, totalEnrollments: 0, completionRate: 0, avgRating: 0, recentActivities: [], systemAlerts: [] });
   const [activeLearnersCount, setActiveLearnersCount] = useState(0);
-  const mentorRating = 4.8;
-  const completionRate = 78;
   
   const studentsChartRef = useRef(null);
   const mentorChartRef = useRef(null);
@@ -13,6 +15,14 @@ const AdminDashboard = () => {
 
   // Initialize charts and counters
   useEffect(() => {
+    const fetchDashboard = async () => {
+      const res = await adminApi.getDashboard();
+      if (res.success) {
+        setStats(res.data);
+      }
+    };
+    fetchDashboard();
+
     // Sample data for charts
     const monthlyData = {
       students: [1847, 2100, 2320, 2500, 2700, 2847],
@@ -123,7 +133,7 @@ const AdminDashboard = () => {
         <div className="bg-gray-950 rounded-2xl p-8 text-white">
           <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
             <div>
-              <h1 className="text-3xl font-bold mb-2">Welcome, <span className="text-primary-light">Sowmiya!</span></h1>
+              <h1 className="text-3xl font-bold mb-2">Welcome, <span className="text-primary-light">{user?.fullName || 'Admin'}!</span></h1>
               <p className="text-white/60">Monitor and manage your platform activities from the admin dashboard</p>
             </div>
             <div className="flex gap-4">
@@ -131,14 +141,14 @@ const AdminDashboard = () => {
                 <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center text-xl"><i className="ri-team-line"></i></div>
                 <div>
                   <p className="text-white/60 text-sm">Total Mentors</p>
-                  <p className="text-xl font-bold">45</p>
+                  <p className="text-xl font-bold">{stats.totalMentors}</p>
                 </div>
               </div>
               <div className="flex items-center gap-3 bg-white/5 border border-white/10 rounded-xl p-4">
                 <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center text-xl"><i className="ri-user-line"></i></div>
                 <div>
                   <p className="text-white/60 text-sm">Total Students</p>
-                  <p className="text-xl font-bold">1,285</p>
+                  <p className="text-xl font-bold">{stats.totalStudents?.toLocaleString()}</p>
                 </div>
               </div>
             </div>
@@ -163,7 +173,7 @@ const AdminDashboard = () => {
             <h3 className="text-sm font-semibold text-gray-500 dark-theme:text-gray-400">Mentor Performance</h3>
             <i className="ri-team-line text-cyan-500 text-xl"></i>
           </div>
-          <h2 className="text-3xl font-bold text-gray-800 dark-theme:text-white mb-4">{mentorRating}</h2>
+          <h2 className="text-3xl font-bold text-gray-800 dark-theme:text-white mb-4">{stats.avgRating || 4.8}</h2>
           <div className="h-40">
             <canvas ref={mentorChartRef}></canvas>
           </div>
@@ -173,7 +183,7 @@ const AdminDashboard = () => {
             <h3 className="text-sm font-semibold text-gray-500 dark-theme:text-gray-400">Course Completion Rate</h3>
             <i className="ri-medal-line text-violet-500 text-xl"></i>
           </div>
-          <h2 className="text-3xl font-bold text-gray-800 dark-theme:text-white mb-4">{completionRate}%</h2>
+          <h2 className="text-3xl font-bold text-gray-800 dark-theme:text-white mb-4">{stats.completionRate || 0}%</h2>
           <div className="h-40">
             <canvas ref={completionChartRef}></canvas>
           </div>

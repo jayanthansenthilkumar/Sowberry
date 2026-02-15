@@ -1,8 +1,21 @@
 ﻿import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
+import { authApi } from '../../utils/api';
+import { useAuth } from '../../context/AuthContext';
 
 
 const AuthPage = () => {
+  const navigate = useNavigate();
+  const { login, isAuthenticated, user } = useAuth();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      const redirectPath = user.role === 'admin' ? '/admin' : user.role === 'mentor' ? '/mentor' : '/student';
+      navigate(redirectPath, { replace: true });
+    }
+  }, [isAuthenticated, user, navigate]);
   const [activeForm, setActiveForm] = useState('login');
   const [forgotStep, setForgotStep] = useState(1);
   const [loginData, setLoginData] = useState({
@@ -244,43 +257,121 @@ const AuthPage = () => {
     }));
   };
 
-  const handleLoginSubmit = (e) => {
+  const handleLoginSubmit = async (e) => {
     e.preventDefault();
-    console.log('Login data:', loginData);
-    // TODO: Implement login logic
+    if (isSubmitting) return;
+    setIsSubmitting(true);
+    try {
+      const res = await authApi.login({ email: loginData.email, password: loginData.password });
+      if (res.success) {
+        login(res.token, res.user);
+        await Swal.fire({ icon: 'success', title: 'Welcome back!', text: `Logged in as ${res.user.fullName}`, timer: 1500, showConfirmButton: false, background: '#fff', color: '#1f2937' });
+        const path = res.user.role === 'admin' ? '/admin' : res.user.role === 'mentor' ? '/mentor' : '/student';
+        navigate(path);
+      } else {
+        Swal.fire({ icon: 'error', title: 'Login Failed', text: res.message || 'Invalid credentials', background: '#fff', color: '#1f2937' });
+      }
+    } catch {
+      Swal.fire({ icon: 'error', title: 'Error', text: 'Something went wrong. Please try again.', background: '#fff', color: '#1f2937' });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  const handleRegisterSubmit = (e) => {
+  const handleRegisterSubmit = async (e) => {
     e.preventDefault();
-    console.log('Register data:', registerData);
-    // TODO: Implement registration logic
+    if (isSubmitting) return;
+    setIsSubmitting(true);
+    try {
+      const phone = registerData.countryCode + registerData.phone.replace(/\D/g, '');
+      const res = await authApi.register({
+        email: registerData.email,
+        username: registerData.username,
+        fullName: registerData.fullName,
+        phone,
+        password: registerData.username + '@123',
+        role: 'student'
+      });
+      if (res.success) {
+        await Swal.fire({ icon: 'success', title: 'Account Created!', html: `Your temporary password is: <strong>${registerData.username}@123</strong><br/>Please change it after login.`, background: '#fff', color: '#1f2937' });
+        toggleForm('login');
+      } else {
+        Swal.fire({ icon: 'error', title: 'Registration Failed', text: res.message || 'Could not create account', background: '#fff', color: '#1f2937' });
+      }
+    } catch {
+      Swal.fire({ icon: 'error', title: 'Error', text: 'Something went wrong. Please try again.', background: '#fff', color: '#1f2937' });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  const handleForgotEmailSubmit = (e) => {
+  const handleForgotEmailSubmit = async (e) => {
     e.preventDefault();
+    if (isSubmitting) return;
     const email = forgotData.email;
-    if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      alert('If the email exists in our system, you will receive reset instructions shortly.');
-      setForgotStep(2);
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return;
+    setIsSubmitting(true);
+    try {
+      const res = await authApi.forgotPassword({ email });
+      if (res.success) {
+        await Swal.fire({ icon: 'info', title: 'OTP Sent', text: res.message || 'Check your email for the OTP code.', background: '#fff', color: '#1f2937' });
+        setForgotStep(2);
+      } else {
+        Swal.fire({ icon: 'error', title: 'Error', text: res.message || 'Could not send OTP', background: '#fff', color: '#1f2937' });
+      }
+    } catch {
+      Swal.fire({ icon: 'error', title: 'Error', text: 'Network error. Try again.', background: '#fff', color: '#1f2937' });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-  const handleOTPSubmit = (e) => {
+  const handleOTPSubmit = async (e) => {
     e.preventDefault();
+    if (isSubmitting) return;
     const otp = forgotData.otp.join('');
-    if (/^\d{6}$/.test(otp)) {
-      alert('OTP verified!');
-      setForgotStep(3);
+    if (!/^\d{6}$/.test(otp)) return;
+    setIsSubmitting(true);
+    try {
+      const res = await authApi.verifyOtp({ email: forgotData.email, otp });
+      if (res.success) {
+        await Swal.fire({ icon: 'success', title: 'OTP Verified!', text: 'Set your new password.', timer: 1500, showConfirmButton: false, background: '#fff', color: '#1f2937' });
+        setForgotStep(3);
+      } else {
+        Swal.fire({ icon: 'error', title: 'Invalid OTP', text: res.message || 'Please check and try again.', background: '#fff', color: '#1f2937' });
+      }
+    } catch {
+      Swal.fire({ icon: 'error', title: 'Error', text: 'Network error.', background: '#fff', color: '#1f2937' });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-  const handleResetPasswordSubmit = (e) => {
+  const handleResetPasswordSubmit = async (e) => {
     e.preventDefault();
-    if (forgotData.newPassword === forgotData.confirmPassword && forgotData.newPassword.length >= 6) {
-      alert('Password reset successful!');
-      toggleForm('login');
-    } else {
-      alert('Passwords do not match or too short!');
+    if (isSubmitting) return;
+    if (forgotData.newPassword !== forgotData.confirmPassword) {
+      Swal.fire({ icon: 'warning', title: 'Mismatch', text: 'Passwords do not match!', background: '#fff', color: '#1f2937' });
+      return;
+    }
+    if (forgotData.newPassword.length < 6) {
+      Swal.fire({ icon: 'warning', title: 'Too Short', text: 'Password must be at least 6 characters.', background: '#fff', color: '#1f2937' });
+      return;
+    }
+    setIsSubmitting(true);
+    try {
+      const otp = forgotData.otp.join('');
+      const res = await authApi.resetPassword({ email: forgotData.email, otp, newPassword: forgotData.newPassword });
+      if (res.success) {
+        await Swal.fire({ icon: 'success', title: 'Password Reset!', text: 'You can now sign in with your new password.', background: '#fff', color: '#1f2937' });
+        toggleForm('login');
+      } else {
+        Swal.fire({ icon: 'error', title: 'Error', text: res.message || 'Could not reset password.', background: '#fff', color: '#1f2937' });
+      }
+    } catch {
+      Swal.fire({ icon: 'error', title: 'Error', text: 'Network error.', background: '#fff', color: '#1f2937' });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -361,9 +452,9 @@ const AuthPage = () => {
                     <button type="button" onClick={() => toggleForm('forgot')}
                       className="text-primary hover:underline font-medium">Forgot password?</button>
                   </div>
-                  <button type="submit"
-                    className="w-full py-3 rounded-xl bg-primary text-white font-semibold shadow-sm hover:bg-primary-dark transition-all duration-200">
-                    Sign in
+                  <button type="submit" disabled={isSubmitting}
+                    className="w-full py-3 rounded-xl bg-primary text-white font-semibold shadow-sm hover:bg-primary-dark transition-all duration-200 disabled:opacity-60">
+                    {isSubmitting ? 'Signing in...' : 'Sign in'}
                   </button>
                 </form>
 
@@ -473,9 +564,9 @@ const AuthPage = () => {
                     I agree to the Terms & Conditions
                   </label>
 
-                  <button type="submit" disabled={!isRegisterFormValid()}
+                  <button type="submit" disabled={!isRegisterFormValid() || isSubmitting}
                     className="w-full py-3 rounded-xl bg-primary text-white font-semibold shadow-sm hover:bg-primary-dark transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none">
-                    Create Account
+                    {isSubmitting ? 'Creating Account...' : 'Create Account'}
                   </button>
                 </form>
 
@@ -500,9 +591,9 @@ const AuthPage = () => {
                       <input type="email" name="email" placeholder="Enter your email address"
                         value={forgotData.email} onChange={handleForgotChange} required
                         className="w-full px-4 py-3 rounded-xl bg-cream dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 focus:border-primary outline-none text-sm text-gray-700 dark-theme:text-gray-200 transition-colors" />
-                      <button type="submit"
-                        className="w-full py-3 rounded-xl bg-primary text-white font-semibold shadow-sm hover:bg-primary-dark transition-all duration-200">
-                        Send OTP
+                      <button type="submit" disabled={isSubmitting}
+                        className="w-full py-3 rounded-xl bg-primary text-white font-semibold shadow-sm hover:bg-primary-dark transition-all duration-200 disabled:opacity-60">
+                        {isSubmitting ? 'Sending...' : 'Send OTP'}
                       </button>
                     </form>
                   </>
@@ -524,9 +615,9 @@ const AuthPage = () => {
                             className="otp-input w-12 h-12 text-center text-lg font-bold rounded-xl bg-cream dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 focus:border-primary outline-none text-gray-700 dark-theme:text-gray-200 transition-colors" />
                         ))}
                       </div>
-                      <button type="submit"
-                        className="w-full py-3 rounded-xl bg-primary text-white font-semibold shadow-sm hover:bg-primary-dark transition-all duration-200">
-                        Verify OTP
+                      <button type="submit" disabled={isSubmitting}
+                        className="w-full py-3 rounded-xl bg-primary text-white font-semibold shadow-sm hover:bg-primary-dark transition-all duration-200 disabled:opacity-60">
+                        {isSubmitting ? 'Verifying...' : 'Verify OTP'}
                       </button>
                     </form>
                   </>
@@ -558,9 +649,9 @@ const AuthPage = () => {
                           <i className={passwordVisibility.confirmPassword ? 'ri-eye-off-line' : 'ri-eye-line'}></i>
                         </button>
                       </div>
-                      <button type="submit"
-                        className="w-full py-3 rounded-xl bg-primary text-white font-semibold shadow-sm hover:bg-primary-dark transition-all duration-200">
-                        Reset Password
+                      <button type="submit" disabled={isSubmitting}
+                        className="w-full py-3 rounded-xl bg-primary text-white font-semibold shadow-sm hover:bg-primary-dark transition-all duration-200 disabled:opacity-60">
+                        {isSubmitting ? 'Resetting...' : 'Reset Password'}
                       </button>
                     </form>
                   </>
