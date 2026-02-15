@@ -41,23 +41,23 @@ const Sidebar = () => {
   ];
 
   return (
-    <div className="fixed left-4 top-1/2 -translate-y-1/2 z-50 hidden lg:block">
-      <nav className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border border-white/20 dark:border-gray-700/30 rounded-2xl p-2 flex flex-col gap-1 shadow-lg">
+    <div className="fixed left-5 top-1/2 -translate-y-1/2 z-50 hidden lg:block">
+      <nav className="bg-white dark-theme:bg-gray-900 border border-sand dark-theme:border-gray-800 rounded-2xl p-1.5 flex flex-col gap-0.5 shadow-sm">
         {navItems.map((item) => (
           <a
             key={item.id}
             href={`#${item.id}`}
-            className={`group relative flex items-center justify-center w-11 h-11 rounded-xl transition-all duration-300
+            className={`group relative flex items-center justify-center w-10 h-10 rounded-xl transition-all duration-200
               ${activeSection === item.id
-                ? 'bg-primary text-white shadow-lg shadow-primary/30'
-                : 'text-gray-500 hover:bg-primary/10 hover:text-primary dark:text-gray-400'
+                ? 'bg-primary text-white'
+                : 'text-gray-500 dark-theme:text-gray-400 hover:bg-cream-dark dark-theme:hover:bg-gray-800 hover:text-gray-800 dark-theme:hover:text-gray-200'
               }`}
             onClick={(e) => handleNavClick(e, item.id)}
           >
             <i className={`${item.icon} text-lg`}></i>
-            <span className="absolute left-14 px-3 py-1.5 rounded-lg bg-gray-800 text-white text-xs font-medium
-              opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200
-              whitespace-nowrap shadow-lg pointer-events-none">
+            <span className="absolute left-12 px-3 py-1.5 rounded-lg bg-gray-900 dark-theme:bg-gray-700 text-white text-xs font-medium
+              opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150
+              whitespace-nowrap pointer-events-none">
               {item.label}
             </span>
           </a>

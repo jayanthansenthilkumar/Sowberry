@@ -56,98 +56,106 @@ const AdminLayout = ({ children, pageTitle }) => {
   ];
 
   return (
-    <div className="flex h-screen overflow-hidden bg-gray-50 dark-theme:bg-gray-950">
+    <div className="flex h-screen overflow-hidden bg-cream dark-theme:bg-gray-950">
       {/* Overlay */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 bg-black/50 z-40 lg:hidden backdrop-blur-sm"
+          className="fixed inset-0 bg-black/30 z-40 lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
 
       {/* Mobile Menu Toggle */}
       <button
-        className="fixed top-4 left-4 z-50 lg:hidden w-10 h-10 rounded-xl bg-white dark-theme:bg-gray-800 shadow-lg flex items-center justify-center text-gray-600 dark-theme:text-gray-300"
+        className="fixed top-3 left-3 z-50 lg:hidden w-9 h-9 rounded-lg bg-white dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 shadow-sm flex items-center justify-center text-gray-600 dark-theme:text-gray-400"
         onClick={() => setSidebarOpen(!sidebarOpen)}
       >
-        <i className="ri-menu-line text-xl"></i>
+        <i className="ri-menu-line text-lg"></i>
       </button>
 
-      {/* Sidebar */}
-      <div className={`fixed lg:static inset-y-0 left-0 z-50 w-64 bg-white dark-theme:bg-gray-900 border-r border-gray-200 dark-theme:border-gray-800 flex flex-col transition-transform duration-300
+      {/* Sidebar — Claude-style dark sidebar */}
+      <div className={`fixed lg:static inset-y-0 left-0 z-50 w-[260px] bg-gray-950 dark-theme:bg-gray-900 flex flex-col transition-transform duration-300
         ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
         {/* Logo */}
-        <div className="flex items-center gap-3 px-6 py-5 border-b border-gray-200 dark-theme:border-gray-800">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center shadow-lg shadow-primary/20">
-            <i className="ri-seedling-fill text-white text-xl"></i>
+        <div className="flex items-center gap-3 px-5 py-5">
+          <div className="w-9 h-9 rounded-lg bg-primary/20 flex items-center justify-center">
+            <i className="ri-seedling-fill text-primary-light text-lg"></i>
           </div>
           <div className="flex flex-col">
-            <span className="font-bold text-lg text-gray-800 dark-theme:text-white leading-tight">Sowberry</span>
-            <span className="text-[10px] font-semibold tracking-widest text-primary uppercase">ACADEMY</span>
+            <span className="font-bold text-[15px] text-white leading-tight">Sowberry</span>
+            <span className="text-[10px] font-medium tracking-wider text-gray-500 uppercase">ADMIN</span>
           </div>
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-1">
+        <nav className="flex-1 overflow-y-auto py-2 px-3 space-y-0.5">
           {navItems.map(item => (
             <Link
               key={item.path}
               to={item.path}
-              className={`flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200
+              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] font-medium transition-all duration-150
                 ${location.pathname === item.path
-                  ? 'bg-primary text-white shadow-md shadow-primary/20'
-                  : 'text-gray-600 dark-theme:text-gray-400 hover:bg-gray-100 dark-theme:hover:bg-gray-800 hover:text-gray-900 dark-theme:hover:text-white'
+                  ? 'bg-white/10 text-white'
+                  : 'text-gray-400 hover:bg-white/5 hover:text-gray-200'
                 }`}
               onClick={() => setSidebarOpen(false)}
             >
-              <i className={`${item.icon} text-lg`}></i>
+              <i className={`${item.icon} text-base`}></i>
               <span>{item.label}</span>
             </Link>
           ))}
         </nav>
+
+        {/* Sidebar Footer */}
+        <div className="px-3 py-4 border-t border-white/10">
+          <Link to="/auth" className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] font-medium text-gray-400 hover:bg-white/5 hover:text-gray-200 transition-all duration-150">
+            <i className="ri-logout-box-line text-base"></i>
+            <span>Sign Out</span>
+          </Link>
+        </div>
       </div>
 
       {/* Main Content */}
       <main className="flex-1 flex flex-col min-h-screen overflow-hidden">
         {/* Header */}
-        <header className="h-16 bg-white dark-theme:bg-gray-900 border-b border-gray-200 dark-theme:border-gray-800 flex items-center justify-between px-4 lg:px-6 shrink-0">
+        <header className="h-14 bg-white dark-theme:bg-gray-900 border-b border-sand dark-theme:border-gray-800 flex items-center justify-between px-4 lg:px-6 shrink-0">
           {/* Search */}
-          <div className="flex items-center gap-3 flex-1 max-w-md">
+          <div className="flex items-center gap-3 flex-1 max-w-sm">
             <div className="relative w-full hidden sm:block">
               <i className="ri-search-line absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
               <input
                 type="text"
                 placeholder="Search..."
-                className="w-full pl-10 pr-4 py-2 rounded-xl bg-gray-100 dark-theme:bg-gray-800 border border-transparent focus:border-primary focus:bg-white dark-theme:focus:bg-gray-700 outline-none text-sm text-gray-700 dark-theme:text-gray-200 transition-all"
+                className="w-full pl-9 pr-4 py-2 rounded-lg bg-cream dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 focus:border-primary outline-none text-[13px] text-gray-700 dark-theme:text-gray-200 transition-colors"
               />
             </div>
           </div>
 
           {/* Header Tools */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1">
             {/* Theme Toggle */}
             <button
               onClick={toggleTheme}
-              className="w-10 h-10 rounded-xl flex items-center justify-center text-gray-600 dark-theme:text-gray-300 hover:bg-gray-100 dark-theme:hover:bg-gray-800 transition-colors"
+              className="w-9 h-9 rounded-lg flex items-center justify-center text-gray-500 dark-theme:text-gray-400 hover:bg-cream-dark dark-theme:hover:bg-gray-800 hover:text-gray-700 dark-theme:hover:text-gray-200 transition-colors"
             >
-              <i className={theme === 'dark-theme' ? 'ri-moon-line text-lg' : 'ri-sun-line text-lg'}></i>
+              <i className={theme === 'dark-theme' ? 'ri-moon-line text-base' : 'ri-sun-line text-base'}></i>
             </button>
 
             {/* Notifications */}
             <div ref={notificationsRef} className="relative">
               <button
                 onClick={toggleNotifications}
-                className="relative w-10 h-10 rounded-xl flex items-center justify-center text-gray-600 dark-theme:text-gray-300 hover:bg-gray-100 dark-theme:hover:bg-gray-800 transition-colors"
+                className="relative w-9 h-9 rounded-lg flex items-center justify-center text-gray-500 dark-theme:text-gray-400 hover:bg-cream-dark dark-theme:hover:bg-gray-800 hover:text-gray-700 dark-theme:hover:text-gray-200 transition-colors"
               >
-                <i className="ri-notification-3-line text-lg"></i>
-                <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
+                <i className="ri-notification-3-line text-base"></i>
+                <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-primary rounded-full"></span>
               </button>
 
               {notificationsOpen && (
-                <div className="absolute right-0 top-12 w-80 bg-white dark-theme:bg-gray-900 rounded-2xl shadow-2xl border border-gray-200 dark-theme:border-gray-700 overflow-hidden z-50">
-                  <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 dark-theme:border-gray-800">
-                    <h4 className="font-semibold text-gray-800 dark-theme:text-white text-sm">Notifications</h4>
-                    <button className="text-xs text-primary hover:underline">Mark all as read</button>
+                <div className="absolute right-0 top-11 w-80 bg-white dark-theme:bg-gray-900 rounded-xl shadow-lg border border-sand dark-theme:border-gray-800 overflow-hidden z-50">
+                  <div className="flex items-center justify-between px-4 py-3 border-b border-sand dark-theme:border-gray-800">
+                    <h4 className="font-semibold text-gray-800 dark-theme:text-gray-200 text-[13px]">Notifications</h4>
+                    <button className="text-xs text-primary hover:underline">Mark all read</button>
                   </div>
                   <div className="max-h-64 overflow-y-auto">
                     {[
@@ -155,55 +163,51 @@ const AdminLayout = ({ children, pageTitle }) => {
                       { icon: 'ri-user-follow-line', text: 'New student enrolled', time: '1 hour ago', unread: true },
                       { icon: 'ri-file-list-line', text: 'Assignment deadline', time: '3 hours ago', unread: false },
                     ].map((n, i) => (
-                      <div key={i} className={`flex items-start gap-3 px-4 py-3 hover:bg-gray-50 dark-theme:hover:bg-gray-800 transition-colors cursor-pointer ${n.unread ? 'bg-primary/5' : ''}`}>
-                        <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
-                          <i className={`${n.icon} text-primary text-sm`}></i>
+                      <div key={i} className={`flex items-start gap-3 px-4 py-3 hover:bg-cream dark-theme:hover:bg-gray-800 transition-colors cursor-pointer ${n.unread ? 'bg-primary/5' : ''}`}>
+                        <div className="w-7 h-7 rounded-md bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
+                          <i className={`${n.icon} text-primary text-xs`}></i>
                         </div>
                         <div>
-                          <p className="text-sm text-gray-700 dark-theme:text-gray-200">{n.text}</p>
-                          <span className="text-xs text-gray-400">{n.time}</span>
+                          <p className="text-[13px] text-gray-700 dark-theme:text-gray-200">{n.text}</p>
+                          <span className="text-[11px] text-gray-400">{n.time}</span>
                         </div>
                       </div>
                     ))}
                   </div>
-                  <div className="border-t border-gray-100 dark-theme:border-gray-800 p-2">
-                    <button className="w-full text-center text-sm text-primary hover:bg-primary/5 rounded-lg py-2 transition-colors">View all notifications</button>
+                  <div className="border-t border-sand dark-theme:border-gray-800 p-2">
+                    <button className="w-full text-center text-[13px] text-primary hover:bg-primary/5 rounded-lg py-2 transition-colors">View all</button>
                   </div>
                 </div>
               )}
             </div>
 
             {/* Profile */}
-            <div ref={profileRef} className="relative">
+            <div ref={profileRef} className="relative ml-1">
               <button
                 onClick={() => { setProfileOpen(!profileOpen); setNotificationsOpen(false); }}
-                className="flex items-center gap-2 px-2 py-1.5 rounded-xl hover:bg-gray-100 dark-theme:hover:bg-gray-800 transition-colors"
+                className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-cream-dark dark-theme:hover:bg-gray-800 transition-colors"
               >
                 <img
-                  src="https://ui-avatars.com/api/?name=Admin&size=30&background=6c5ce7&color=fff"
+                  src="https://ui-avatars.com/api/?name=Admin&size=28&background=c96442&color=fff&bold=true"
                   alt="User"
-                  className="w-8 h-8 rounded-lg"
+                  className="w-7 h-7 rounded-md"
                 />
                 <div className="hidden sm:flex flex-col items-start">
-                  <span className="text-sm font-medium text-gray-700 dark-theme:text-gray-200">Admin</span>
-                  <span className="text-[10px] text-green-500 flex items-center gap-1">
-                    <span className="w-1.5 h-1.5 bg-green-500 rounded-full inline-block"></span>
-                    Active
-                  </span>
+                  <span className="text-[13px] font-medium text-gray-700 dark-theme:text-gray-200">Admin</span>
                 </div>
               </button>
 
               {profileOpen && (
-                <div className="absolute right-0 top-12 w-48 bg-white dark-theme:bg-gray-900 rounded-2xl shadow-2xl border border-gray-200 dark-theme:border-gray-700 overflow-hidden z-50 py-1">
-                  <Link to="/admin" className="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 dark-theme:text-gray-200 hover:bg-gray-50 dark-theme:hover:bg-gray-800 transition-colors">
-                    <i className="ri-dashboard-line"></i> Dashboard
+                <div className="absolute right-0 top-11 w-44 bg-white dark-theme:bg-gray-900 rounded-xl shadow-lg border border-sand dark-theme:border-gray-800 overflow-hidden z-50 py-1">
+                  <Link to="/admin" className="flex items-center gap-2 px-3 py-2 text-[13px] text-gray-700 dark-theme:text-gray-200 hover:bg-cream dark-theme:hover:bg-gray-800 transition-colors">
+                    <i className="ri-dashboard-line text-sm"></i> Dashboard
                   </Link>
-                  <Link to="/admin/settings" className="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 dark-theme:text-gray-200 hover:bg-gray-50 dark-theme:hover:bg-gray-800 transition-colors">
-                    <i className="ri-settings-line"></i> Settings
+                  <Link to="/admin/settings" className="flex items-center gap-2 px-3 py-2 text-[13px] text-gray-700 dark-theme:text-gray-200 hover:bg-cream dark-theme:hover:bg-gray-800 transition-colors">
+                    <i className="ri-settings-line text-sm"></i> Settings
                   </Link>
-                  <div className="border-t border-gray-100 dark-theme:border-gray-800 my-1"></div>
-                  <Link to="/auth" className="flex items-center gap-2 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 dark-theme:hover:bg-red-900/20 transition-colors">
-                    <i className="ri-logout-box-line"></i> Logout
+                  <div className="border-t border-sand dark-theme:border-gray-800 my-1"></div>
+                  <Link to="/auth" className="flex items-center gap-2 px-3 py-2 text-[13px] text-danger hover:bg-danger/5 transition-colors">
+                    <i className="ri-logout-box-line text-sm"></i> Sign Out
                   </Link>
                 </div>
               )}
@@ -212,7 +216,7 @@ const AdminLayout = ({ children, pageTitle }) => {
         </header>
 
         {/* Page Content */}
-        <div className="flex-1 overflow-y-auto p-4 lg:p-6">
+        <div className="flex-1 overflow-y-auto p-5 lg:p-8">
           {children}
         </div>
       </main>

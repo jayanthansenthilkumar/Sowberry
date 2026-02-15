@@ -79,7 +79,7 @@ const Home = () => {
 
       <main className="ml-0 lg:ml-20">
         {/* Hero Section */}
-        <section id="hero" className="relative min-h-screen flex flex-col justify-center overflow-hidden bg-gradient-to-br from-gray-50 via-white to-primary/5 dark-theme:from-gray-950 dark-theme:via-gray-900 dark-theme:to-primary/10">
+        <section id="hero" className="relative min-h-screen flex flex-col justify-center overflow-hidden bg-cream dark-theme:bg-gray-950">
           {/* Top Contact Bar */}
           <div className="absolute top-0 left-0 right-0 flex justify-center gap-6 py-3 text-sm text-gray-500 dark-theme:text-gray-400 z-10">
             <div className="flex items-center gap-2">
@@ -105,7 +105,7 @@ const Home = () => {
               {/* Social Icons */}
               <div className="flex gap-3">
                 {['ri-facebook-fill', 'ri-twitter-x-fill', 'ri-instagram-fill', 'ri-linkedin-fill'].map((icon, i) => (
-                  <a key={i} href="#" className="w-10 h-10 rounded-xl bg-white dark-theme:bg-gray-800 shadow-md flex items-center justify-center text-gray-500 hover:bg-primary hover:text-white hover:shadow-primary/30 transition-all duration-300">
+                  <a key={i} href="#" className="w-9 h-9 rounded-lg bg-white dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 flex items-center justify-center text-gray-500 hover:text-primary hover:border-primary/30 transition-all duration-200">
                     <i className={icon}></i>
                   </a>
                 ))}
@@ -113,10 +113,10 @@ const Home = () => {
 
               {/* Buttons */}
               <div className="flex gap-4 pt-2">
-                <Link to="/auth" className="px-8 py-3 rounded-xl bg-primary text-white font-semibold shadow-lg shadow-primary/30 hover:bg-primary-dark hover:shadow-xl transition-all duration-300">
+                <Link to="/auth" className="px-8 py-3 rounded-xl bg-primary text-white font-semibold shadow-sm hover:bg-primary-dark transition-all duration-200">
                   Get Started
                 </Link>
-                <a href="#features" className="px-8 py-3 rounded-xl border-2 border-primary text-primary font-semibold hover:bg-primary hover:text-white transition-all duration-300">
+                <a href="#features" className="px-8 py-3 rounded-xl border border-primary text-primary font-semibold hover:bg-primary/5 transition-all duration-200">
                   Learn More
                 </a>
               </div>
@@ -124,7 +124,7 @@ const Home = () => {
 
             {/* Hero Visual */}
             <div className="relative flex justify-center items-center">
-              <div className="w-64 h-64 sm:w-80 sm:h-80 rounded-full bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center animate-pulse-glow">
+              <div className="w-64 h-64 sm:w-80 sm:h-80 rounded-full bg-primary/10 dark-theme:bg-primary/15 flex items-center justify-center animate-pulse-glow">
                 <i className="ri-seedling-line text-7xl sm:text-8xl text-primary"></i>
               </div>
               {/* Floating Badges */}
@@ -134,7 +134,7 @@ const Home = () => {
                 { icon: 'ri-rocket-line', text: 'Innovation', pos: 'bottom-0 left-0' },
                 { icon: 'ri-group-line', text: 'Community', pos: 'bottom-0 right-0' },
               ].map((badge, i) => (
-                <div key={i} className={`absolute ${badge.pos} px-4 py-2 bg-white dark-theme:bg-gray-800 rounded-xl shadow-lg flex items-center gap-2 text-sm font-medium text-gray-700 dark-theme:text-gray-200 ${i % 2 === 0 ? 'animate-float' : 'animate-float-delay'}`}>
+                <div key={i} className={`absolute ${badge.pos} px-4 py-2 bg-white dark-theme:bg-gray-800 rounded-lg border border-sand dark-theme:border-gray-700 shadow-sm flex items-center gap-2 text-sm font-medium text-gray-700 dark-theme:text-gray-200 ${i % 2 === 0 ? 'animate-float' : 'animate-float-delay'}`}>
                   <i className={`${badge.icon} text-primary`}></i>
                   {badge.text}
                 </div>
@@ -156,13 +156,13 @@ const Home = () => {
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               {/* Image */}
               <div className="relative flex justify-center">
-                <div className="w-64 h-64 sm:w-72 sm:h-72 rounded-3xl bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
+                <div className="w-64 h-64 sm:w-72 sm:h-72 rounded-3xl bg-primary/10 dark-theme:bg-primary/15 flex items-center justify-center">
                   <i className="ri-plant-line text-7xl text-primary"></i>
                 </div>
-                <div className="absolute -top-4 -left-4 px-4 py-2 bg-white dark-theme:bg-gray-800 rounded-xl shadow-lg flex items-center gap-2 text-sm font-medium text-gray-700 dark-theme:text-gray-200 animate-float">
+                <div className="absolute -top-4 -left-4 px-4 py-2 bg-white dark-theme:bg-gray-800 rounded-lg border border-sand dark-theme:border-gray-700 shadow-sm flex items-center gap-2 text-sm font-medium text-gray-700 dark-theme:text-gray-200 animate-float">
                   <i className="ri-shield-check-line text-green-500"></i> Trusted
                 </div>
-                <div className="absolute -bottom-4 -right-4 px-4 py-2 bg-white dark-theme:bg-gray-800 rounded-xl shadow-lg flex items-center gap-2 text-sm font-medium text-gray-700 dark-theme:text-gray-200 animate-float-delay">
+                <div className="absolute -bottom-4 -right-4 px-4 py-2 bg-white dark-theme:bg-gray-800 rounded-lg border border-sand dark-theme:border-gray-700 shadow-sm flex items-center gap-2 text-sm font-medium text-gray-700 dark-theme:text-gray-200 animate-float-delay">
                   <i className="ri-medal-line text-yellow-500"></i> Awarded
                 </div>
               </div>
@@ -187,7 +187,7 @@ const Home = () => {
         </section>
 
         {/* Team Section */}
-        <section id="team" className="py-20 bg-gray-50 dark-theme:bg-gray-950">
+        <section id="team" className="py-20 bg-cream dark-theme:bg-gray-950">
           <div className="max-w-7xl mx-auto px-6">
             <div className="text-center mb-16">
               <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark-theme:text-white">
@@ -198,8 +198,8 @@ const Home = () => {
 
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
               {teamMembers.map((member, index) => (
-                <div key={index} className="group bg-white dark-theme:bg-gray-900 rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-                  <div className="relative h-48 bg-gradient-to-br from-primary/10 to-secondary/10 overflow-hidden">
+                <div key={index} className="group bg-white dark-theme:bg-gray-900 rounded-2xl overflow-hidden border border-sand dark-theme:border-gray-800 hover:border-primary/30 transition-all duration-200">
+                  <div className="relative h-48 bg-primary/5 dark-theme:bg-primary/10 overflow-hidden">
                     <img src={member.image} alt={member.name} className="w-full h-full object-cover" />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-center pb-4 gap-3">
                       {['ri-linkedin-fill', 'ri-twitter-fill', 'ri-mail-fill'].map((icon, i) => (
@@ -232,7 +232,7 @@ const Home = () => {
 
             {/* Video Showcase */}
             <div className="grid lg:grid-cols-2 gap-8 mb-20 items-center">
-              <div className="relative rounded-2xl overflow-hidden bg-gradient-to-br from-primary/10 to-secondary/10 aspect-video flex items-center justify-center group cursor-pointer">
+              <div className="relative rounded-2xl overflow-hidden bg-primary/5 dark-theme:bg-primary/10 aspect-video flex items-center justify-center group cursor-pointer">
                 <img src="./assets/video-thumbnail.jpg" alt="Feature Video" className="absolute inset-0 w-full h-full object-cover" />
                 <div className="relative z-10 w-16 h-16 rounded-full bg-primary/90 flex items-center justify-center text-white shadow-xl group-hover:scale-110 transition-transform">
                   <i className="ri-play-fill text-2xl"></i>
@@ -245,7 +245,7 @@ const Home = () => {
                 <p className="text-gray-600 dark-theme:text-gray-300 leading-relaxed">
                   Experience our innovative teaching methodology that combines modern technology with proven educational practices. Watch our introduction video to see how Sowberry Academy transforms learning.
                 </p>
-                <a href="#" className="inline-flex px-6 py-3 rounded-xl bg-primary text-white font-semibold shadow-lg shadow-primary/30 hover:bg-primary-dark transition-all duration-300">
+                <a href="#" className="inline-flex px-6 py-3 rounded-xl bg-primary text-white font-semibold shadow-sm hover:bg-primary-dark transition-all duration-200">
                   Explore All Videos
                 </a>
               </div>
@@ -254,13 +254,13 @@ const Home = () => {
             {/* Feature Cards */}
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {features.map((feature, index) => (
-                <div key={index} className="group p-6 bg-gray-50 dark-theme:bg-gray-800 rounded-2xl hover:bg-primary hover:shadow-xl hover:shadow-primary/20 transition-all duration-300 cursor-pointer">
-                  <div className="w-14 h-14 rounded-2xl bg-primary/10 group-hover:bg-white/20 flex items-center justify-center mb-4 transition-colors">
-                    <i className={`${feature.icon} text-2xl text-primary group-hover:text-white transition-colors`}></i>
+                <div key={index} className="group p-6 bg-cream dark-theme:bg-gray-800 rounded-2xl border border-sand dark-theme:border-gray-700 hover:border-primary/30 transition-all duration-200 cursor-pointer">
+                  <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-4">
+                    <i className={`${feature.icon} text-2xl text-primary`}></i>
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-800 dark-theme:text-white group-hover:text-white mb-2 transition-colors">{feature.title}</h3>
-                  <p className="text-sm text-gray-500 dark-theme:text-gray-400 group-hover:text-white/80 mb-4 transition-colors">{feature.description}</p>
-                  <a href="#" className="inline-flex items-center gap-1 text-sm font-medium text-primary group-hover:text-white transition-colors">
+                  <h3 className="text-lg font-semibold text-gray-800 dark-theme:text-white mb-2">{feature.title}</h3>
+                  <p className="text-sm text-gray-500 dark-theme:text-gray-400 mb-4">{feature.description}</p>
+                  <a href="#" className="inline-flex items-center gap-1 text-sm font-medium text-primary">
                     Learn More <i className="ri-arrow-right-line"></i>
                   </a>
                 </div>
@@ -277,8 +277,8 @@ const Home = () => {
 
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {courses.map((course, index) => (
-                <div key={index} className="bg-white dark-theme:bg-gray-800 rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group">
-                  <div className="relative h-48 bg-gradient-to-br from-primary/10 to-secondary/10 overflow-hidden">
+                <div key={index} className="bg-white dark-theme:bg-gray-800 rounded-2xl overflow-hidden border border-sand dark-theme:border-gray-700 hover:border-primary/30 transition-all duration-200 group">
+                  <div className="relative h-48 bg-primary/5 dark-theme:bg-primary/10 overflow-hidden">
                     <img src={course.image} alt={course.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                     <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                       <div className="w-12 h-12 rounded-full bg-primary/80 flex items-center justify-center text-white">
@@ -311,7 +311,7 @@ const Home = () => {
             </div>
 
             <div className="text-center mt-10">
-              <a href="#" className="inline-flex items-center gap-2 px-8 py-3 rounded-xl border-2 border-primary text-primary font-semibold hover:bg-primary hover:text-white transition-all duration-300">
+              <a href="#" className="inline-flex items-center gap-2 px-8 py-3 rounded-xl border border-primary text-primary font-semibold hover:bg-primary/5 transition-all duration-200">
                 View All Courses <i className="ri-arrow-right-line"></i>
               </a>
             </div>
@@ -319,7 +319,7 @@ const Home = () => {
         </section>
 
         {/* Contact Section */}
-        <section id="contact" className="py-20 bg-gray-50 dark-theme:bg-gray-950">
+        <section id="contact" className="py-20 bg-cream dark-theme:bg-gray-950">
           <div className="max-w-7xl mx-auto px-6">
             <div className="text-center mb-16">
               <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark-theme:text-white">
@@ -330,7 +330,7 @@ const Home = () => {
 
             <div className="grid lg:grid-cols-2 gap-8">
               {/* Contact Info */}
-              <div className="bg-gradient-to-br from-primary to-primary-dark rounded-2xl p-8 text-white">
+              <div className="bg-gray-950 rounded-2xl p-8 text-white">
                 <h3 className="text-xl font-bold mb-3">Contact Information</h3>
                 <p className="text-white/70 text-sm mb-8">Our team is ready to assist you with any inquiries.</p>
 
@@ -368,27 +368,27 @@ const Home = () => {
               </div>
 
               {/* Contact Form */}
-              <div className="bg-white dark-theme:bg-gray-900 rounded-2xl p-8 shadow-lg">
+              <div className="bg-white dark-theme:bg-gray-900 rounded-2xl p-8 border border-sand dark-theme:border-gray-800">
                 <h3 className="text-xl font-bold text-gray-800 dark-theme:text-white mb-6">Send Us a Message</h3>
                 <form onSubmit={handleContactFormSubmit} className="space-y-4">
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div className="relative">
-                      <i className="ri-user-line absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                      <input type="text" placeholder="Your Name" required className="w-full pl-10 pr-4 py-3 rounded-xl bg-gray-50 dark-theme:bg-gray-800 border border-gray-200 dark-theme:border-gray-700 focus:border-primary outline-none text-sm text-gray-700 dark-theme:text-gray-200 transition-colors" />
+                    <i className="ri-user-line absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                      <input type="text" placeholder="Your Name" required className="w-full pl-10 pr-4 py-3 rounded-xl bg-cream dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 focus:border-primary outline-none text-sm text-gray-700 dark-theme:text-gray-200 transition-colors" />
                     </div>
                     <div className="relative">
                       <i className="ri-mail-line absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                      <input type="email" placeholder="Your Email" required className="w-full pl-10 pr-4 py-3 rounded-xl bg-gray-50 dark-theme:bg-gray-800 border border-gray-200 dark-theme:border-gray-700 focus:border-primary outline-none text-sm text-gray-700 dark-theme:text-gray-200 transition-colors" />
+                      <input type="email" placeholder="Your Email" required className="w-full pl-10 pr-4 py-3 rounded-xl bg-cream dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 focus:border-primary outline-none text-sm text-gray-700 dark-theme:text-gray-200 transition-colors" />
                     </div>
                   </div>
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div className="relative">
                       <i className="ri-phone-line absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                      <input type="tel" placeholder="Your Phone (optional)" className="w-full pl-10 pr-4 py-3 rounded-xl bg-gray-50 dark-theme:bg-gray-800 border border-gray-200 dark-theme:border-gray-700 focus:border-primary outline-none text-sm text-gray-700 dark-theme:text-gray-200 transition-colors" />
+                      <input type="tel" placeholder="Your Phone (optional)" className="w-full pl-10 pr-4 py-3 rounded-xl bg-cream dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 focus:border-primary outline-none text-sm text-gray-700 dark-theme:text-gray-200 transition-colors" />
                     </div>
                     <div className="relative">
                       <i className="ri-menu-line absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                      <select required className="w-full pl-10 pr-4 py-3 rounded-xl bg-gray-50 dark-theme:bg-gray-800 border border-gray-200 dark-theme:border-gray-700 focus:border-primary outline-none text-sm text-gray-700 dark-theme:text-gray-200 transition-colors appearance-none">
+                      <select required className="w-full pl-10 pr-4 py-3 rounded-xl bg-cream dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 focus:border-primary outline-none text-sm text-gray-700 dark-theme:text-gray-200 transition-colors appearance-none">
                         <option value="" disabled>Select Subject</option>
                         <option>Course Inquiry</option>
                         <option>Enrollment</option>
@@ -400,10 +400,10 @@ const Home = () => {
                   </div>
                   <div className="relative">
                     <i className="ri-message-2-line absolute left-3 top-4 text-gray-400"></i>
-                    <textarea placeholder="Your Message" required rows={4} className="w-full pl-10 pr-4 py-3 rounded-xl bg-gray-50 dark-theme:bg-gray-800 border border-gray-200 dark-theme:border-gray-700 focus:border-primary outline-none text-sm text-gray-700 dark-theme:text-gray-200 resize-none transition-colors"></textarea>
+                    <textarea placeholder="Your Message" required rows={4} className="w-full pl-10 pr-4 py-3 rounded-xl bg-cream dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 focus:border-primary outline-none text-sm text-gray-700 dark-theme:text-gray-200 resize-none transition-colors"></textarea>
                   </div>
                   <div className="flex items-center gap-4">
-                    <button type="submit" className="px-8 py-3 rounded-xl bg-primary text-white font-semibold shadow-lg shadow-primary/30 hover:bg-primary-dark transition-all duration-300 flex items-center gap-2">
+                    <button type="submit" className="px-8 py-3 rounded-xl bg-primary text-white font-semibold shadow-sm hover:bg-primary-dark transition-all duration-200 flex items-center gap-2">
                       <i className="ri-send-plane-fill"></i> Send Message
                     </button>
                     {formStatus && <span className="text-sm text-primary font-medium">{formStatus}</span>}
@@ -420,7 +420,7 @@ const Home = () => {
       </main>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white ml-0 lg:ml-20">
+      <footer className="bg-gray-950 text-white ml-0 lg:ml-20">
         <div className="max-w-7xl mx-auto px-6 py-16">
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-10">
             {/* About Column */}
@@ -536,7 +536,7 @@ const Home = () => {
       {/* Go to top */}
       <button
         onClick={scrollToTop}
-        className={`fixed bottom-6 right-6 z-50 w-11 h-11 rounded-xl bg-primary text-white shadow-lg shadow-primary/30 flex items-center justify-center hover:bg-primary-dark transition-all duration-300 cursor-pointer
+        className={`fixed bottom-6 right-6 z-50 w-11 h-11 rounded-xl bg-primary text-white shadow-sm flex items-center justify-center hover:bg-primary-dark transition-all duration-200 cursor-pointer
           ${showTopBtn ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'}`}
       >
         <i className="ri-arrow-up-line text-lg"></i>

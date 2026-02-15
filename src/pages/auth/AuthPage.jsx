@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 
@@ -73,13 +73,13 @@ const AuthPage = () => {
         const rightConfig = {
           particles: {
             number: { value: 60 },
-            color: { value: '#6c5ce7' },
+            color: { value: '#c96442' },
             opacity: { value: 0.8 },
             size: { value: 3 },
             line_linked: {
               enable: true,
               distance: 150,
-              color: '#6c5ce7',
+              color: '#c96442',
               opacity: 0.1,
               width: 1
             },
@@ -296,7 +296,7 @@ const AuthPage = () => {
   return (
     <div className="flex min-h-screen">
       {/* Brand Side */}
-      <div className="hidden lg:flex lg:w-1/2 relative bg-gradient-to-br from-primary via-primary-dark to-gray-900 flex-col items-center justify-center overflow-hidden">
+      <div className="hidden lg:flex lg:w-1/2 relative bg-gray-950 flex-col items-center justify-center overflow-hidden">
         <div id="particles-left" className="absolute inset-0 z-0"></div>
         {/* Decorative shapes */}
         <div className="absolute -top-20 -left-20 w-64 h-64 rounded-full bg-white/5"></div>
@@ -315,13 +315,13 @@ const AuthPage = () => {
       </div>
 
       {/* Forms Side */}
-      <div className="flex-1 flex items-center justify-center bg-gray-50 dark-theme:bg-gray-950 relative overflow-hidden">
+      <div className="flex-1 flex items-center justify-center bg-cream dark-theme:bg-gray-950 relative overflow-hidden">
         <div id="particles-right" className="absolute inset-0 z-0"></div>
 
         <div className="relative z-10 w-full max-w-md px-6 py-8">
           {/* Mobile Logo */}
           <div className="lg:hidden flex items-center justify-center gap-3 mb-8">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center">
+            <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
               <i className="ri-seedling-fill text-white text-xl"></i>
             </div>
             <h1 className="text-2xl font-bold text-gray-800 dark-theme:text-white">Sowberry</h1>
@@ -330,7 +330,7 @@ const AuthPage = () => {
           {/* Login Form */}
           {activeForm === 'login' && (
             <div className="animate-fade-in-up">
-              <div className="bg-white dark-theme:bg-gray-900 rounded-2xl shadow-xl p-8 border border-gray-100 dark-theme:border-gray-800">
+              <div className="bg-white dark-theme:bg-gray-900 rounded-2xl p-8 border border-sand dark-theme:border-gray-800">
                 <h2 className="text-2xl font-bold text-gray-800 dark-theme:text-white mb-1">Welcome back!</h2>
                 <p className="text-gray-500 dark-theme:text-gray-400 text-sm mb-6">Please enter your details to sign in</p>
 
@@ -338,14 +338,14 @@ const AuthPage = () => {
                   <input
                     type="email" name="email" placeholder="Email address"
                     value={loginData.email} onChange={handleLoginChange} required
-                    className="w-full px-4 py-3 rounded-xl bg-gray-50 dark-theme:bg-gray-800 border border-gray-200 dark-theme:border-gray-700 focus:border-primary outline-none text-sm text-gray-700 dark-theme:text-gray-200 transition-colors"
+                    className="w-full px-4 py-3 rounded-xl bg-cream dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 focus:border-primary outline-none text-sm text-gray-700 dark-theme:text-gray-200 transition-colors"
                   />
                   <div className="relative">
                     <input
                       type={passwordVisibility.login ? 'text' : 'password'}
                       name="password" placeholder="Password"
                       value={loginData.password} onChange={handleLoginChange} required
-                      className="w-full px-4 py-3 rounded-xl bg-gray-50 dark-theme:bg-gray-800 border border-gray-200 dark-theme:border-gray-700 focus:border-primary outline-none text-sm text-gray-700 dark-theme:text-gray-200 transition-colors pr-10"
+                      className="w-full px-4 py-3 rounded-xl bg-cream dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 focus:border-primary outline-none text-sm text-gray-700 dark-theme:text-gray-200 transition-colors pr-10"
                     />
                     <button type="button" onClick={() => togglePasswordVisibility('login')}
                       className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark-theme:hover:text-gray-300">
@@ -362,7 +362,7 @@ const AuthPage = () => {
                       className="text-primary hover:underline font-medium">Forgot password?</button>
                   </div>
                   <button type="submit"
-                    className="w-full py-3 rounded-xl bg-primary text-white font-semibold shadow-lg shadow-primary/30 hover:bg-primary-dark transition-all duration-300">
+                    className="w-full py-3 rounded-xl bg-primary text-white font-semibold shadow-sm hover:bg-primary-dark transition-all duration-200">
                     Sign in
                   </button>
                 </form>
@@ -370,10 +370,10 @@ const AuthPage = () => {
                 <div className="mt-6">
                   <p className="text-center text-sm text-gray-400 mb-4">Or continue with</p>
                   <div className="flex gap-3">
-                    <button className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl border border-gray-200 dark-theme:border-gray-700 text-sm font-medium text-gray-700 dark-theme:text-gray-200 hover:bg-gray-50 dark-theme:hover:bg-gray-800 transition-colors">
+                    <button className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl border border-sand dark-theme:border-gray-700 text-sm font-medium text-gray-700 dark-theme:text-gray-200 hover:bg-cream dark-theme:hover:bg-gray-800 transition-colors">
                       <i className="ri-google-fill text-red-500"></i> Google
                     </button>
-                    <button className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl border border-gray-200 dark-theme:border-gray-700 text-sm font-medium text-gray-700 dark-theme:text-gray-200 hover:bg-gray-50 dark-theme:hover:bg-gray-800 transition-colors">
+                    <button className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl border border-sand dark-theme:border-gray-700 text-sm font-medium text-gray-700 dark-theme:text-gray-200 hover:bg-cream dark-theme:hover:bg-gray-800 transition-colors">
                       <i className="ri-github-fill"></i> GitHub
                     </button>
                   </div>
@@ -390,7 +390,7 @@ const AuthPage = () => {
           {/* Registration Form */}
           {activeForm === 'register' && (
             <div className="animate-fade-in-up">
-              <div className="bg-white dark-theme:bg-gray-900 rounded-2xl shadow-xl p-8 border border-gray-100 dark-theme:border-gray-800">
+              <div className="bg-white dark-theme:bg-gray-900 rounded-2xl p-8 border border-sand dark-theme:border-gray-800">
                 <h2 className="text-2xl font-bold text-gray-800 dark-theme:text-white mb-1">Create Account</h2>
                 <p className="text-gray-500 dark-theme:text-gray-400 text-sm mb-6">Please fill in your details to register</p>
 
@@ -399,10 +399,10 @@ const AuthPage = () => {
                   <div className="relative">
                     <input type="email" placeholder="Email address" value={registerData.email}
                       onChange={handleRegisterEmailChange} required
-                      className="w-full px-4 py-3 rounded-xl bg-gray-50 dark-theme:bg-gray-800 border border-gray-200 dark-theme:border-gray-700 focus:border-primary outline-none text-sm text-gray-700 dark-theme:text-gray-200 transition-colors pr-10" />
+                      className="w-full px-4 py-3 rounded-xl bg-cream dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 focus:border-primary outline-none text-sm text-gray-700 dark-theme:text-gray-200 transition-colors pr-10" />
                     {registerData.email && (
                       <span className={`absolute right-3 top-1/2 -translate-y-1/2 text-sm font-bold ${registerValidation.email ? 'text-green-500' : 'text-red-400'}`}>
-                        {registerValidation.email ? '✓' : '×'}
+                        {registerValidation.email ? 'âœ“' : 'Ã—'}
                       </span>
                     )}
                   </div>
@@ -411,10 +411,10 @@ const AuthPage = () => {
                   <div className="relative">
                     <input type="text" placeholder="Choose username" value={registerData.username}
                       onChange={handleRegisterUsernameChange} disabled={!registerValidation.email} required
-                      className="w-full px-4 py-3 rounded-xl bg-gray-50 dark-theme:bg-gray-800 border border-gray-200 dark-theme:border-gray-700 focus:border-primary outline-none text-sm text-gray-700 dark-theme:text-gray-200 transition-colors pr-10 disabled:opacity-50 disabled:cursor-not-allowed" />
+                      className="w-full px-4 py-3 rounded-xl bg-cream dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 focus:border-primary outline-none text-sm text-gray-700 dark-theme:text-gray-200 transition-colors pr-10 disabled:opacity-50 disabled:cursor-not-allowed" />
                     {registerData.username && (
                       <span className={`absolute right-3 top-1/2 -translate-y-1/2 text-sm font-bold ${registerValidation.username ? 'text-green-500' : 'text-red-400'}`}>
-                        {registerValidation.username ? '✓' : '×'}
+                        {registerValidation.username ? 'âœ“' : 'Ã—'}
                       </span>
                     )}
                   </div>
@@ -423,10 +423,10 @@ const AuthPage = () => {
                   <div className="relative">
                     <input type="text" placeholder="Full name" value={registerData.fullName}
                       onChange={handleRegisterFullNameChange} disabled={!registerValidation.username} required
-                      className="w-full px-4 py-3 rounded-xl bg-gray-50 dark-theme:bg-gray-800 border border-gray-200 dark-theme:border-gray-700 focus:border-primary outline-none text-sm text-gray-700 dark-theme:text-gray-200 transition-colors pr-10 disabled:opacity-50 disabled:cursor-not-allowed" />
+                      className="w-full px-4 py-3 rounded-xl bg-cream dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 focus:border-primary outline-none text-sm text-gray-700 dark-theme:text-gray-200 transition-colors pr-10 disabled:opacity-50 disabled:cursor-not-allowed" />
                     {registerData.fullName && (
                       <span className={`absolute right-3 top-1/2 -translate-y-1/2 text-sm font-bold ${registerValidation.fullName ? 'text-green-500' : 'text-red-400'}`}>
-                        {registerValidation.fullName ? '✓' : '×'}
+                        {registerValidation.fullName ? 'âœ“' : 'Ã—'}
                       </span>
                     )}
                   </div>
@@ -435,7 +435,7 @@ const AuthPage = () => {
                   <div className="flex gap-2">
                     <select name="countryCode" value={registerData.countryCode} onChange={handleRegisterChange}
                       disabled={!registerValidation.fullName}
-                      className="w-28 px-3 py-3 rounded-xl bg-gray-50 dark-theme:bg-gray-800 border border-gray-200 dark-theme:border-gray-700 focus:border-primary outline-none text-sm text-gray-700 dark-theme:text-gray-200 disabled:opacity-50 disabled:cursor-not-allowed">
+                      className="w-28 px-3 py-3 rounded-xl bg-cream dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 focus:border-primary outline-none text-sm text-gray-700 dark-theme:text-gray-200 disabled:opacity-50 disabled:cursor-not-allowed">
                       <option value="+91">+91 (IN)</option>
                       <option value="+1">+1 (US)</option>
                       <option value="+44">+44 (UK)</option>
@@ -456,10 +456,10 @@ const AuthPage = () => {
                       <input type="tel" placeholder="Enter 10 digit number" value={registerData.phone}
                         onChange={handleRegisterPhoneChange} maxLength="12"
                         disabled={!registerValidation.fullName} required
-                        className="w-full px-4 py-3 rounded-xl bg-gray-50 dark-theme:bg-gray-800 border border-gray-200 dark-theme:border-gray-700 focus:border-primary outline-none text-sm text-gray-700 dark-theme:text-gray-200 transition-colors pr-10 disabled:opacity-50 disabled:cursor-not-allowed" />
+                        className="w-full px-4 py-3 rounded-xl bg-cream dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 focus:border-primary outline-none text-sm text-gray-700 dark-theme:text-gray-200 transition-colors pr-10 disabled:opacity-50 disabled:cursor-not-allowed" />
                       {registerData.phone && (
                         <span className={`absolute right-3 top-1/2 -translate-y-1/2 text-sm font-bold ${registerValidation.phone ? 'text-green-500' : 'text-red-400'}`}>
-                          {registerValidation.phone ? '✓' : '×'}
+                          {registerValidation.phone ? 'âœ“' : 'Ã—'}
                         </span>
                       )}
                     </div>
@@ -474,7 +474,7 @@ const AuthPage = () => {
                   </label>
 
                   <button type="submit" disabled={!isRegisterFormValid()}
-                    className="w-full py-3 rounded-xl bg-primary text-white font-semibold shadow-lg shadow-primary/30 hover:bg-primary-dark transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none">
+                    className="w-full py-3 rounded-xl bg-primary text-white font-semibold shadow-sm hover:bg-primary-dark transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none">
                     Create Account
                   </button>
                 </form>
@@ -490,7 +490,7 @@ const AuthPage = () => {
           {/* Forgot Password Form */}
           {activeForm === 'forgot' && (
             <div className="animate-fade-in-up">
-              <div className="bg-white dark-theme:bg-gray-900 rounded-2xl shadow-xl p-8 border border-gray-100 dark-theme:border-gray-800">
+              <div className="bg-white dark-theme:bg-gray-900 rounded-2xl p-8 border border-sand dark-theme:border-gray-800">
                 {/* Step 1: Email */}
                 {forgotStep === 1 && (
                   <>
@@ -499,9 +499,9 @@ const AuthPage = () => {
                     <form onSubmit={handleForgotEmailSubmit} className="space-y-4">
                       <input type="email" name="email" placeholder="Enter your email address"
                         value={forgotData.email} onChange={handleForgotChange} required
-                        className="w-full px-4 py-3 rounded-xl bg-gray-50 dark-theme:bg-gray-800 border border-gray-200 dark-theme:border-gray-700 focus:border-primary outline-none text-sm text-gray-700 dark-theme:text-gray-200 transition-colors" />
+                        className="w-full px-4 py-3 rounded-xl bg-cream dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 focus:border-primary outline-none text-sm text-gray-700 dark-theme:text-gray-200 transition-colors" />
                       <button type="submit"
-                        className="w-full py-3 rounded-xl bg-primary text-white font-semibold shadow-lg shadow-primary/30 hover:bg-primary-dark transition-all duration-300">
+                        className="w-full py-3 rounded-xl bg-primary text-white font-semibold shadow-sm hover:bg-primary-dark transition-all duration-200">
                         Send OTP
                       </button>
                     </form>
@@ -521,11 +521,11 @@ const AuthPage = () => {
                             onChange={(e) => handleOTPChange(index, e.target.value)}
                             onKeyDown={(e) => handleOTPKeyDown(index, e)}
                             required
-                            className="otp-input w-12 h-12 text-center text-lg font-bold rounded-xl bg-gray-50 dark-theme:bg-gray-800 border border-gray-200 dark-theme:border-gray-700 focus:border-primary outline-none text-gray-700 dark-theme:text-gray-200 transition-colors" />
+                            className="otp-input w-12 h-12 text-center text-lg font-bold rounded-xl bg-cream dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 focus:border-primary outline-none text-gray-700 dark-theme:text-gray-200 transition-colors" />
                         ))}
                       </div>
                       <button type="submit"
-                        className="w-full py-3 rounded-xl bg-primary text-white font-semibold shadow-lg shadow-primary/30 hover:bg-primary-dark transition-all duration-300">
+                        className="w-full py-3 rounded-xl bg-primary text-white font-semibold shadow-sm hover:bg-primary-dark transition-all duration-200">
                         Verify OTP
                       </button>
                     </form>
@@ -542,7 +542,7 @@ const AuthPage = () => {
                         <input type={passwordVisibility.newPassword ? 'text' : 'password'}
                           name="newPassword" placeholder="New password"
                           value={forgotData.newPassword} onChange={handleForgotChange} required
-                          className="w-full px-4 py-3 rounded-xl bg-gray-50 dark-theme:bg-gray-800 border border-gray-200 dark-theme:border-gray-700 focus:border-primary outline-none text-sm text-gray-700 dark-theme:text-gray-200 transition-colors pr-10" />
+                          className="w-full px-4 py-3 rounded-xl bg-cream dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 focus:border-primary outline-none text-sm text-gray-700 dark-theme:text-gray-200 transition-colors pr-10" />
                         <button type="button" onClick={() => togglePasswordVisibility('newPassword')}
                           className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark-theme:hover:text-gray-300">
                           <i className={passwordVisibility.newPassword ? 'ri-eye-off-line' : 'ri-eye-line'}></i>
@@ -552,14 +552,14 @@ const AuthPage = () => {
                         <input type={passwordVisibility.confirmPassword ? 'text' : 'password'}
                           name="confirmPassword" placeholder="Confirm password"
                           value={forgotData.confirmPassword} onChange={handleForgotChange} required
-                          className="w-full px-4 py-3 rounded-xl bg-gray-50 dark-theme:bg-gray-800 border border-gray-200 dark-theme:border-gray-700 focus:border-primary outline-none text-sm text-gray-700 dark-theme:text-gray-200 transition-colors pr-10" />
+                          className="w-full px-4 py-3 rounded-xl bg-cream dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 focus:border-primary outline-none text-sm text-gray-700 dark-theme:text-gray-200 transition-colors pr-10" />
                         <button type="button" onClick={() => togglePasswordVisibility('confirmPassword')}
                           className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark-theme:hover:text-gray-300">
                           <i className={passwordVisibility.confirmPassword ? 'ri-eye-off-line' : 'ri-eye-line'}></i>
                         </button>
                       </div>
                       <button type="submit"
-                        className="w-full py-3 rounded-xl bg-primary text-white font-semibold shadow-lg shadow-primary/30 hover:bg-primary-dark transition-all duration-300">
+                        className="w-full py-3 rounded-xl bg-primary text-white font-semibold shadow-sm hover:bg-primary-dark transition-all duration-200">
                         Reset Password
                       </button>
                     </form>
