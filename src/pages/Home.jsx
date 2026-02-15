@@ -16,9 +16,9 @@ const Home = () => {
     
     const handleScroll = () => {
       if (window.scrollY > 300) {
-        goToTopBtn?.classList.add('show');
+        goToTopBtn?.classList.add('active');
       } else {
-        goToTopBtn?.classList.remove('show');
+        goToTopBtn?.classList.remove('active');
       }
     };
 

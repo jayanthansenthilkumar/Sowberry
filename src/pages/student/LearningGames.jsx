@@ -1,4 +1,16 @@
+import DashboardLayout from '../../components/DashboardLayout';
+
 const LearningGames = () => {
-  return <div style={{ padding: '2rem' }}><h1>Learning Games</h1><p>Under construction.</p></div>;
+  return (
+    <DashboardLayout pageTitle="Learning Games" role="student">
+      <div className="under-construction-page">
+        <div className="under-construction-icon">
+          <i className="ri-gamepad-line"></i>
+        </div>
+        <h1>Learning <span>Games</span></h1>
+        <p>Make learning fun with interactive educational games designed to reinforce concepts and boost retention.</p>
+      </div>
+    </DashboardLayout>
+  );
 };
 export default LearningGames;

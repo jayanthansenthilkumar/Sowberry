@@ -28,22 +28,7 @@ body.dark-theme {
     --text-secondary: #94a3b8;
 }
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: 'Poppins', sans-serif;
-    background: var(--background);
-    background-image: 
-        radial-gradient(circle at 10% 20%, var(--primary) 0%, transparent 20%),
-        radial-gradient(circle at 90% 80%, var(--secondary) 0%, transparent 20%);
-    color: var(--text);
-    display: flex;
-    transition: background 0.3s ease;
-}
+/* Global resets are in main.css — do not duplicate here */
 
 /* Corrected Sidebar Styles */
 .sidebar {

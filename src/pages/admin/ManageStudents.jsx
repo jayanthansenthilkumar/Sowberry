@@ -1,4 +1,17 @@
+import AdminLayout from '../../components/AdminLayout';
+import '../../styles/dashboard-common.css';
+
 const ManageStudents = () => {
-  return <div style={{ padding: '2rem' }}><h1>ManageStudents</h1><p>Under construction.</p></div>;
+  return (
+    <AdminLayout pageTitle="Manage Students">
+      <div className="under-construction-page">
+        <div className="under-construction-icon">
+          <i className="ri-user-line"></i>
+        </div>
+        <h1>Manage <span>Students</span></h1>
+        <p>View student profiles, manage enrollments, handle verifications, and track individual student progress.</p>
+      </div>
+    </AdminLayout>
+  );
 };
 export default ManageStudents;

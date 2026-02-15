@@ -124,12 +124,13 @@ body.dark-theme {
 3. LAYOUT & GENERAL STYLES
 ============================ */
 .content {
-    margin-left: 120px; /* Increased from 100px */
+    margin-left: 90px; /* Match sidebar width + margin */
     padding: 0;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    width: calc(100% - 120px);
+    width: calc(100% - 90px); /* Adjust width calculation */
+    transition: margin-left 0.4s ease;
 }
 
 /* Section Headers */
@@ -181,125 +182,122 @@ body.dark-theme {
 ============================ */
 .floating-sidebar {
     position: fixed;
-    left: 30px;
+    left: 20px;
     top: 50%;
     transform: translateY(-50%);
     background: var(--card-bg);
     border-radius: 16px;
-    padding: 10px 8px;
+    padding: 15px 10px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 12px;
-    box-shadow: var(--shadow);
+    gap: 15px;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.05);
     border: 1px solid var(--border-color);
-    backdrop-filter: blur(12px);
+    backdrop-filter: blur(15px);
     z-index: 1000;
-    width: 80px;
-    transition: none;
+    width: 70px; /* Comfortable width for icons */
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden; /* Ensure text doesn't spill */
 }
 
 .floating-sidebar:hover {
-    width: 80px;
+    width: 240px; /* Spacious expand width */
+    align-items: flex-start;
+    padding-left: 25px;
+    box-shadow: 0 15px 40px rgba(108, 92, 231, 0.15);
 }
 
 .floating-sidebar .logo {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    overflow: hidden;
-    margin-bottom: 0;
-}
-
-.floating-sidebar .logo i {
-    font-size: 22px;
-    color: var(--primary);
-    animation: rotate3d 6s linear infinite;
-}
-
-.logo-text {
-    display: none;
+    display: none; /* Keep simple */
 }
 
 /* Navigation */
 .floating-sidebar nav {
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 8px;
     width: 100%;
 }
 
 .floating-sidebar nav a {
     display: flex;
-    flex-direction: column;
     align-items: center;
-    gap: 2px;
-    padding: 6px 2px;
+    gap: 15px; /* Space between icon and text */
+    padding: 10px 12px;
     text-decoration: none;
     color: var(--text);
     border-radius: 12px;
     transition: all 0.3s ease;
     width: 100%;
-    position: relative;
-    overflow: hidden;
-    text-align: center;
+    white-space: nowrap; /* Prevent text wrap */
+    height: 48px;
 }
 
 .floating-sidebar nav a i {
-    font-size: 20px;
-    display: block;
-    margin-bottom: 1px;
+    font-size: 22px;
+    min-width: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text);
+    transition: color 0.3s ease;
 }
 
 .floating-sidebar nav a span {
-    white-space: nowrap;
+    font-size: 0.95rem;
+    font-weight: 500;
+    opacity: 0;
+    transform: translateX(-10px);
+    transition: all 0.3s ease;
+    pointer-events: none; /* Prevent interaction when hidden */
+}
+
+/* Hover State - Show Text */
+.floating-sidebar:hover nav a span {
     opacity: 1;
-    transition: none;
-    font-size: 0.75rem; /* Increased from 0.7rem */
-    font-weight: 400; /* Reduced from 500 */
-    display: block;
-    text-align: center;
-    width: 100%;
+    transform: translateX(0);
+    pointer-events: auto;
+    transition-delay: 0.1s;
 }
 
 .floating-sidebar nav a:hover {
-    background: var(--hover-color);
-    transform: translateY(-5px);
+    background: rgba(108, 92, 231, 0.08);
 }
 
-/* Enhanced active state styling */
-.floating-sidebar nav a.active {
-    background: var(--gradient);
+.floating-sidebar nav a:hover i {
     color: var(--primary);
-    /* font-weight: 600; */
-    border: 1px solid var(--border-color);
-    box-shadow: 0 4px 12px rgba(108, 92, 231, 0.15);
-    transform: translateY(-3px);
-    position: relative;
+    transform: scale(1.1);
 }
 
-.floating-sidebar nav a.active::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    height: 100%;
-    width: 3px;
-    background: var(--primary);
-    border-radius: 0 4px 4px 0;
+.floating-sidebar nav a:hover span {
+    color: var(--primary);
+}
+
+/* Active State */
+.floating-sidebar nav a.active {
+    background: linear-gradient(135deg, rgba(108, 92, 231, 0.1), rgba(255, 107, 107, 0.1));
+    color: var(--primary);
+    border: 1px solid rgba(108, 92, 231, 0.2);
 }
 
 .floating-sidebar nav a.active i {
-    /* transform: scale(1.1); */
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+    color: var(--primary);
 }
 
 .floating-sidebar nav a.active span {
-    font-weight: normal;
+    color: var(--primary);
+    font-weight: 600;
 }
 
-/* Mobile Responsiveness for navbar */
+/* Content Layout Alignment - merged with main .content above */
+.footer {
+    margin-left: 90px; /* Align footer with content */
+    width: calc(100% - 90px);
+    transition: margin-left 0.4s ease;
+}
+
+/* Mobile Responsiveness */
 @media (max-width: 768px) {
     .floating-sidebar {
         bottom: 20px;
@@ -308,47 +306,75 @@ body.dark-theme {
         transform: translateX(-50%);
         flex-direction: row;
         width: 90%;
-        max-width: 350px;
+        max-width: 400px;
         height: auto;
-        padding: 5px;
-        gap: 3px;
+        padding: 8px 15px;
+        gap: 5px;
+        border-radius: 50px; /* Pill shape */
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        background: rgba(255, 255, 255, 0.9);
+        justify-content: space-between;
     }
     
     .floating-sidebar:hover {
         width: 90%;
+        padding: 8px 15px;
+        align-items: center;
+        padding-left: 15px; /* Reset */
     }
-    
+
+    body.dark-theme .floating-sidebar {
+        background: rgba(41, 41, 61, 0.9);
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+
     .floating-sidebar nav {
         flex-direction: row;
-        justify-content: space-around;
-        overflow-x: auto;
-        padding-bottom: 8px; /* Increased to allow space for scrollbar */
+        justify-content: space-between;
+        align-items: center;
     }
-    
+
     .floating-sidebar nav a {
-        flex-shrink: 0;
-        padding: 5px 3px;
-        margin: 0 2px;
+        flex-direction: column;
+        gap: 2px;
+        padding: 5px;
+        height: auto;
+        width: auto;
+        border-radius: 8px;
     }
-    
+
+    .floating-sidebar nav a i {
+        font-size: 20px;
+    }
+
     .floating-sidebar nav a span {
-        font-size: 0.75rem; /* Increased from 0.7rem */
-        display: block;
-        opacity: 1;
+        display: none; /* Hide text on mobile for cleaner look */
+    }
+
+    /* Active state for mobile */
+    .floating-sidebar nav a.active {
+        background: transparent;
+        box-shadow: none;
+        border: none;
     }
     
-    .floating-sidebar .theme-toggle {
-        width: 26px;
-        height: 26px;
-        padding: 4px;
+    .floating-sidebar nav a.active i {
+        background: var(--gradient);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        color: transparent;
+        transform: scale(1.2);
     }
     
-    .floating-sidebar nav a.active::before {
+    .content, .footer {
+        margin-left: 0;
         width: 100%;
-        height: 3px;
-        top: 0;
-        left: 0;
-        border-radius: 0 0 4px 4px;
+        padding-bottom: 90px; /* Space for bottom nav */
+    }
+    
+    .footer {
+        margin-bottom: 90px;
     }
 }
 
@@ -622,7 +648,7 @@ body.dark-theme {
 @media (max-width: 768px) {
     .content {
         margin-left: 0;
-        padding: 20px 15px 100px;
+        padding: 20px 15px 120px; /* Extra padding bottom for nav bar */
         width: 100%;
     }
     
@@ -1114,7 +1140,7 @@ body.dark-theme {
 
 .about-image .image-container i {
     font-size: 140px;
-    color: var (--secondary);
+    color: var(--secondary);
 }
 
 .badge-about-1 {
@@ -1396,7 +1422,7 @@ body.dark-theme {
 
 .member-social a i {
     font-size: 1rem;
-    color: var (--primary);
+    color: var(--primary);
     transition: all 0.3s ease;
 }
 
@@ -1488,25 +1514,6 @@ body.dark-theme {
 @media (max-width: 480px) {
     .team-member-photo {
         max-height: 200px;
-    }
-}
-
-/* Media queries to ensure responsive photo sizing */
-@media (max-width: 992px) {
-    .team-member-photo {
-        max-height: 160px;
-    }
-}
-
-@media (max-width: 768px) {
-    .team-member-photo {
-        max-height: 150px;
-    }
-}
-
-@media (max-width: 480px) {
-    .team-member-photo {
-        max-height: 170px;
     }
 }
 
@@ -1621,7 +1628,7 @@ body.dark-theme {
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(135deg, var(--primary)05, var(--secondary)05);
+    background: linear-gradient(135deg, rgba(255, 107, 107, 0.05), rgba(108, 92, 231, 0.05));
     z-index: -1;
     opacity: 0;
     transition: opacity 0.3s ease;
@@ -2280,15 +2287,29 @@ body.dark-theme {
 12. UTILITIES
 ============================ */
 /* Custom Scrollbar Styling */
-/* Hide scrollbars completely while maintaining scroll functionality */
 ::-webkit-scrollbar {
-    display: none;
+    width: 8px;
+    height: 8px;
 }
 
-/* Hide scrollbars for IE, Edge and Firefox */
+::-webkit-scrollbar-track {
+    background: var(--background); 
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--primary); 
+    border-radius: 4px;
+    opacity: 0.7;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--secondary); 
+}
+
+/* For Firefox */
 * {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary) var(--background);
 }
 
 /* ===========================
@@ -2407,7 +2428,7 @@ body.dark-theme {
 .detail-text p {
     font-size: 0.95rem;
     line-height: 1.6;
-    color: var (--text);
+    color: var(--text);
     opacity: 0.8;
 }
 
@@ -2454,7 +2475,7 @@ body.dark-theme {
     width: 100%;
 }
 
-.form-group {
+.contact-form .form-group {
     display: flex;
     gap: 20px;
     width: 100%;

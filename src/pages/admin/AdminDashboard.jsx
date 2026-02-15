@@ -172,7 +172,7 @@ const AdminDashboard = () => {
   };
 
   return (
-    <>
+    <div className="admin-layout">
       {/* Sidebar Overlay for Mobile */}
       <div 
         className={`sidebar-overlay ${sidebarOpen ? 'active' : ''}`}
@@ -185,7 +185,7 @@ const AdminDashboard = () => {
       </button>
 
       {/* Sidebar */}
-      <div className={`sidebar ${sidebarOpen ? 'active' : ''}`}>
+      <div className={`admin-sidebar ${sidebarOpen ? 'active' : ''}`}>
         <div className="logo">
           <i className="ri-seedling-fill"></i>
           <div className="logo-text">
@@ -198,23 +198,23 @@ const AdminDashboard = () => {
             <i className="ri-dashboard-line"></i>
             <span>Dashboard</span>
           </Link>
-          <Link to="/admin/students">
+          <Link to="/admin/manage-students">
             <i className="ri-user-line"></i>
             <span>Students</span>
           </Link>
-          <Link to="/admin/mentors">
+          <Link to="/admin/manage-mentors">
             <i className="ri-team-line"></i>
             <span>Mentors</span>
           </Link>
-          <Link to="/admin/courses">
+          <Link to="/admin/courses-overview">
             <i className="ri-book-open-line"></i>
             <span>Courses</span>
           </Link>
-          <Link to="/admin/analytics">
+          <Link to="/admin/performance-analytics">
             <i className="ri-line-chart-line"></i>
             <span>Analytics</span>
           </Link>
-          <Link to="/admin/reports">
+          <Link to="/admin/system-reports">
             <i className="ri-file-chart-line"></i>
             <span>Reports</span>
           </Link>
@@ -226,14 +226,14 @@ const AdminDashboard = () => {
       </div>
 
       {/* Main Content */}
-      <main>
+      <main className="admin-main">
         <header>
           <div className="search-bar">
             <i className="ri-search-line"></i>
             <input type="text" placeholder="Search..." />
           </div>
           <div className="header-tools">
-            <div className="theme-toggle" onClick={toggleTheme}>
+            <div className="admin-theme-toggle" onClick={toggleTheme}>
               <i className={theme === 'dark-theme' ? 'ri-moon-line' : 'ri-sun-line'}></i>
             </div>
             <div 
@@ -420,7 +420,7 @@ const AdminDashboard = () => {
           </div>
         </div>
       </main>
-    </>
+    </div>
   );
 };
 

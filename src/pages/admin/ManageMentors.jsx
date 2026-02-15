@@ -1,4 +1,17 @@
+import AdminLayout from '../../components/AdminLayout';
+import '../../styles/dashboard-common.css';
+
 const ManageMentors = () => {
-  return <div style={{ padding: '2rem' }}><h1>ManageMentors</h1><p>Under construction.</p></div>;
+  return (
+    <AdminLayout pageTitle="Manage Mentors">
+      <div className="under-construction-page">
+        <div className="under-construction-icon">
+          <i className="ri-team-line"></i>
+        </div>
+        <h1>Manage <span>Mentors</span></h1>
+        <p>Review mentor applications, manage active mentors, assign courses, and monitor mentor performance.</p>
+      </div>
+    </AdminLayout>
+  );
 };
 export default ManageMentors;

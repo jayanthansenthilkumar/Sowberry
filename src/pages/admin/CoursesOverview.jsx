@@ -1,4 +1,17 @@
+import AdminLayout from '../../components/AdminLayout';
+import '../../styles/dashboard-common.css';
+
 const CoursesOverview = () => {
-  return <div style={{ padding: '2rem' }}><h1>CoursesOverview</h1><p>Under construction.</p></div>;
+  return (
+    <AdminLayout pageTitle="Courses Overview">
+      <div className="under-construction-page">
+        <div className="under-construction-icon">
+          <i className="ri-book-open-line"></i>
+        </div>
+        <h1>Courses <span>Overview</span></h1>
+        <p>View and manage all courses across the platform, monitor enrollment, and review course performance metrics.</p>
+      </div>
+    </AdminLayout>
+  );
 };
 export default CoursesOverview;
