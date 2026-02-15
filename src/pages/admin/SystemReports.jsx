@@ -1,5 +1,5 @@
 import AdminLayout from '../../components/AdminLayout';
-import '../../styles/dashboard-common.css';
+
 
 const SystemReports = () => {
   return (

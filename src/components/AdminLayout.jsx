@@ -1,17 +1,20 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import '../styles/admin.css';
-import '../styles/dashboard-common.css';
+import '../styles/dashboard/variables.css';
+import '../styles/dashboard/layout.css';
+import '../styles/dashboard/components.css';
 import 'remixicon/fonts/remixicon.css';
 
 const AdminLayout = ({ children, pageTitle }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
   const location = useLocation();
 
   const savedTheme = localStorage.getItem('theme');
   const [theme, setTheme] = useState(savedTheme || 'light');
   const profileRef = useRef(null);
+  const notificationsRef = useRef(null);
 
   useEffect(() => {
     if (theme === 'dark-theme') {
@@ -26,6 +29,9 @@ const AdminLayout = ({ children, pageTitle }) => {
       if (profileRef.current && !profileRef.current.contains(event.target)) {
         setProfileOpen(false);
       }
+      if (notificationsRef.current && !notificationsRef.current.contains(event.target)) {
+        setNotificationsOpen(false);
+      }
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
@@ -36,6 +42,11 @@ const AdminLayout = ({ children, pageTitle }) => {
     setTheme(newTheme);
     document.body.classList.toggle('dark-theme');
     localStorage.setItem('theme', newTheme);
+  };
+
+  const toggleNotifications = () => {
+    setNotificationsOpen(!notificationsOpen);
+    setProfileOpen(false);
   };
 
   const navItems = [
@@ -92,6 +103,46 @@ const AdminLayout = ({ children, pageTitle }) => {
             <div className="admin-theme-toggle" onClick={toggleTheme}>
               <i className={theme === 'dark-theme' ? 'ri-moon-line' : 'ri-sun-line'}></i>
             </div>
+            
+            <div 
+              ref={notificationsRef}
+              className={`notifications ${notificationsOpen ? 'active' : ''}`} 
+              onClick={toggleNotifications}
+            >
+              <i className="ri-notification-3-line"></i>
+              <span className="notification-badge">3</span>
+              <div className="notifications-dropdown" onClick={(e) => e.stopPropagation()}>
+                <div className="notifications-header">
+                  <h4>Notifications</h4>
+                  <a href="#" className="mark-all-read">Mark all as read</a>
+                </div>
+                <div className="notification-list">
+                  <Link to="#" className="notification-item unread">
+                    <i className="ri-message-2-line"></i>
+                    <div className="notification-content">
+                      <p>New comment on your post</p>
+                      <span>2 minutes ago</span>
+                    </div>
+                  </Link>
+                  <Link to="#" className="notification-item unread">
+                    <i className="ri-user-follow-line"></i>
+                    <div className="notification-content">
+                      <p>New student enrolled</p>
+                      <span>1 hour ago</span>
+                    </div>
+                  </Link>
+                  <Link to="#" className="notification-item">
+                    <i className="ri-file-list-line"></i>
+                    <div className="notification-content">
+                      <p>Assignment deadline</p>
+                      <span>3 hours ago</span>
+                    </div>
+                  </Link>
+                </div>
+                <Link to="#" className="view-all">View all notifications</Link>
+              </div>
+            </div>
+
             <div
               ref={profileRef}
               className={`user-profile ${profileOpen ? 'active' : ''}`}

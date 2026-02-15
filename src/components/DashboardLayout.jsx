@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import '../styles/dashboard-common.css';
+import '../styles/dashboard/variables.css';
+import '../styles/dashboard/layout.css';
+import '../styles/dashboard/components.css';
 import 'remixicon/fonts/remixicon.css';
 
 const studentNav = [

@@ -1,4 +1,6 @@
 /* Auth Page Specific Styles */
+@import './dashboard/variables.css';
+
 
 /* Ensure font is applied */
 .auth-container, 

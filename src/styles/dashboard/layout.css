@@ -1,0 +1,341 @@
+/* Shared Dashboard Layout Styles */
+
+/* Base Layout Container */
+.dashboard-layout,
+.admin-layout,
+.layout-container {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+/* Sidebar Styling */
+.dashboard-sidebar,
+.admin-sidebar,
+.sidebar {
+  width: 240px;
+  height: 100vh;
+  background: var(--card-bg);
+  color: var(--text);
+  padding: 20px;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 1000;
+  transition: all 0.3s ease;
+  border-right: 1px solid var(--border-color);
+  backdrop-filter: blur(12px);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Sidebar Logo */
+.dashboard-sidebar .logo,
+.admin-sidebar .logo,
+.sidebar .logo,
+.dashboard-sidebar .sidebar-logo {
+  display: flex;
+  align-items: center;
+  /* justify-content: center; */ /* Some layouts use center, others left. Default to flex-start but allow overrides */
+  gap: 12px;
+  font-size: 24px;
+  margin-bottom: 30px;
+  padding: 0 10px;
+  position: relative;
+  text-decoration: none;
+  color: var(--text);
+}
+
+.dashboard-sidebar .logo i,
+.admin-sidebar .logo i,
+.sidebar .logo i,
+.dashboard-sidebar .sidebar-logo i {
+  color: var(--primary);
+  /* Animation from mentor.css */
+  animation: rotate3d 6s linear infinite;
+  font-size: 24px;
+}
+
+@keyframes rotate3d {
+  0% { transform: rotate3d(1, 1, 1, 0deg); }
+  100% { transform: rotate3d(1, 1, 1, 360deg); }
+}
+
+.logo-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+}
+
+.logo-text .brand-name {
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: var(--text);
+}
+
+.logo-text .brand-suffix {
+  font-size: 0.65rem;
+  letter-spacing: 2px;
+  opacity: 0.6;
+  text-transform: uppercase;
+}
+
+/* Navigation Links */
+.dashboard-sidebar nav,
+.admin-sidebar nav,
+.sidebar nav {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 0;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.dashboard-sidebar nav a,
+.admin-sidebar nav a,
+.sidebar nav a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  text-decoration: none;
+  color: var(--text);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid transparent;
+}
+
+.dashboard-sidebar nav a i,
+.admin-sidebar nav a i,
+.sidebar nav a i {
+  font-size: 20px;
+  min-width: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dashboard-sidebar nav a span,
+.admin-sidebar nav a span,
+.sidebar nav a span {
+  white-space: nowrap;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+  font-size: 0.9rem;
+}
+
+.dashboard-sidebar nav a:hover,
+.admin-sidebar nav a:hover,
+.sidebar nav a:hover {
+  background: var(--hover-color);
+  transform: translateX(5px);
+  border-color: var(--border-color);
+}
+
+.dashboard-sidebar nav a.active,
+.admin-sidebar nav a.active,
+.sidebar nav a.active {
+  background: var(--gradient);
+  color: var(--primary);
+  font-weight: 600;
+  border: 1px solid var(--border-color);
+}
+
+/* Main Content Area */
+.dashboard-main,
+.admin-main,
+main {
+  margin-left: 240px; /* Matched sidebar width */
+  padding: 20px;
+  flex: 1;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  transition: margin-left 0.3s ease;
+  position: relative;
+  width: calc(100% - 240px);
+  box-sizing: border-box;
+}
+
+/* Header Styling */
+.dashboard-header,
+.admin-main header,
+main header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  background: var(--card-bg);
+  padding: 10px 20px;
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  height: 70px;
+  position: sticky;
+  top: 10px;
+  z-index: 900;
+  border: 1px solid var(--border-color);
+}
+
+.header-tools,
+.dashboard-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  height: 100%;
+}
+
+/* Mobile Menu Toggle */
+.mobile-menu-toggle,
+.mobile-sidebar-toggle {
+  display: none;
+  /* position fixed removed to allow placement in header if needed, but keeping legacy fixed support if outside */
+}
+
+/* Overlay */
+.sidebar-overlay,
+.sidebar-overlay-dashboard {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  backdrop-filter: blur(4px);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.sidebar-overlay.active,
+.sidebar-overlay-dashboard.active {
+  display: block;
+  opacity: 1;
+}
+
+/* MEDIA QUERIES */
+
+/* Tablet (Small Sidebar) */
+@media (max-width: 992px) {
+  .dashboard-sidebar,
+  .admin-sidebar,
+  .sidebar {
+    width: 80px;
+  }
+
+  .dashboard-sidebar .logo span,
+  .admin-sidebar .logo span,
+  .sidebar .logo span,
+  .dashboard-sidebar .sidebar-logo .brand-name,
+  .dashboard-sidebar .sidebar-logo .brand-suffix,
+  .dashboard-sidebar nav a span,
+  .admin-sidebar nav a span,
+  .sidebar nav a span {
+    display: none;
+  }
+
+  .dashboard-sidebar nav a,
+  .admin-sidebar nav a,
+  .sidebar nav a {
+    justify-content: center;
+    padding: 12px 10px;
+  }
+  
+  .dashboard-sidebar .logo,
+  .admin-sidebar .logo,
+  .sidebar .logo {
+    justify-content: center;
+    padding: 0;
+  }
+
+  .dashboard-main,
+  .admin-main,
+  main {
+    margin-left: 80px;
+    width: calc(100% - 80px);
+  }
+}
+
+/* Mobile (Hidden Sidebar) */
+@media (max-width: 768px) {
+  .dashboard-sidebar,
+  .admin-sidebar,
+  .sidebar {
+    transform: translateX(-100%);
+    width: 240px; /* Restore width on mobile expansion */
+  }
+
+  .dashboard-sidebar.active,
+  .admin-sidebar.active,
+  .sidebar.active,
+  .dashboard-sidebar.open {
+    transform: translateX(0);
+  }
+
+  /* Show labels again on mobile menu */
+  .dashboard-sidebar .logo span,
+  .admin-sidebar .logo span,
+  .sidebar .logo span,
+  .dashboard-sidebar .sidebar-logo .brand-name,
+  .dashboard-sidebar .sidebar-logo .brand-suffix,
+  .dashboard-sidebar nav a span,
+  .admin-sidebar nav a span,
+  .sidebar nav a span {
+    display: inline;
+  }
+  
+  .dashboard-sidebar .logo,
+  .admin-sidebar .logo,
+  .sidebar .logo {
+    justify-content: flex-start;
+    padding: 0 10px;
+  }
+  
+  .dashboard-sidebar nav a,
+  .admin-sidebar nav a,
+  .sidebar nav a {
+      justify-content: flex-start;
+  }
+
+  .mobile-menu-toggle,
+  .mobile-sidebar-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text);
+    font-size: 24px;
+    cursor: pointer;
+  }
+
+  .dashboard-main,
+  .admin-main,
+  main {
+    margin-left: 0;
+    width: 100%;
+    padding: 15px;
+  }
+
+  .dashboard-header,
+  .admin-main header,
+  main header {
+    flex-direction: row; /* changed from column to row for better mobile header */
+    height: auto;
+    padding: 15px;
+    gap: 15px;
+    flex-wrap: wrap;
+  }
+  
+  .header-tools,
+  .dashboard-header-actions {
+      margin-left: auto;
+  }
+}

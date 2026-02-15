@@ -1,0 +1,45 @@
+:root {
+  --primary: #ff6b6b;
+  --secondary: #6c5ce7;
+  --background: #f0f3ff;
+  --card-bg: rgba(255, 255, 255, 0.95);
+  --text: #2d3436;
+  --gradient: linear-gradient(135deg, #ff6b6b20, #6c5ce720);
+  --border-color: rgba(255, 255, 255, 0.2);
+  --shadow: 0 8px 32px rgba(108, 92, 231, 0.1);
+  --card-hover: #ffffff;
+  --hover-color: rgba(108, 92, 231, 0.1);
+  --accent-color: #6c5ce7;
+  --text-secondary: #64748b;
+  
+  /* Additional variables found in mentor/student css */
+  --primary-rgb: 108, 92, 231;
+  --editor-bg: #ffffff;
+  --editor-text: #333333;
+  --editor-gutter-bg: #f5f5f5;
+  --editor-gutter-text: #666666;
+  --editor-active-line: #f8f9fa;
+}
+
+body.dark-theme {
+  --primary: #ff7979;
+  --secondary: #a29bfe;
+  --background: #1a1b2e;
+  --card-bg: rgba(41, 41, 61, 0.9);
+  --text: #f1f2f6;
+  --gradient: linear-gradient(135deg, #ff797920, #a29bfe20);
+  --border-color: rgba(255, 255, 255, 0.1);
+  --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  --card-hover: rgba(41, 41, 61, 0.95);
+  --hover-color: rgba(108, 92, 231, 0.2);
+  --accent-color: #a78bfa;
+  --text-secondary: #94a3b8;
+  
+  /* Additional variables found in mentor/student css */
+  --primary-rgb: 167, 139, 250;
+  --editor-bg: #1a1b2e;
+  --editor-text: #f8f8f2;
+  --editor-gutter-bg: #282a36;
+  --editor-gutter-text: #6272a4;
+  --editor-active-line: #232637;
+}
