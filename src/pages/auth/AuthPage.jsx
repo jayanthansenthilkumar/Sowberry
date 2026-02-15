@@ -321,7 +321,13 @@ const AuthPage = () => {
     return false;
   };
 
-  const nextStep = () => { if (canProceedStep(registerStep)) setRegisterStep(prev => Math.min(prev + 1, 4)); };
+  const nextStep = () => {
+    if (canProceedStep(registerStep)) {
+      setRegisterStep(prev => Math.min(prev + 1, 4));
+    } else {
+      Swal.fire({ icon: 'warning', title: 'Incomplete', text: 'Please fill all required fields before proceeding.', timer: 2000, showConfirmButton: false, background: document.body.classList.contains('dark-theme') ? '#1a1a1a' : '#fff', color: document.body.classList.contains('dark-theme') ? '#e8e8e8' : '#1f2937' });
+    }
+  };
   const prevStep = () => setRegisterStep(prev => Math.max(prev - 1, 1));
 
   const handleOTPChange = (index, value) => {
@@ -601,11 +607,11 @@ const AuthPage = () => {
           {/* Registration Form */}
           {activeForm === 'register' && (
             <div className="animate-fade-in-up">
-              <div className="bg-[#1a1a1a] rounded-2xl border border-[#2a2a2a] w-full overflow-hidden">
+              <div className="bg-white dark-theme:bg-gray-900 rounded-2xl border border-sand dark-theme:border-gray-800 w-full overflow-hidden">
                 {/* Header */}
-                <div className="px-6 pt-6 pb-4 border-b border-[#2a2a2a]">
-                  <h2 className="text-xl font-semibold text-[#e8e8e8] tracking-tight">Create your account</h2>
-                  <p className="text-[#888] text-sm mt-1">Fill in each section to complete registration</p>
+                <div className="px-6 pt-6 pb-4 border-b border-sand dark-theme:border-gray-800">
+                  <h2 className="text-xl font-semibold text-gray-800 dark-theme:text-gray-100 tracking-tight">Create your account</h2>
+                  <p className="text-gray-500 dark-theme:text-gray-400 text-sm mt-1">Fill in each section to complete registration</p>
                 </div>
 
                 {/* Step Indicator */}
@@ -614,16 +620,24 @@ const AuthPage = () => {
                     {[{n:1,l:'Personal',icon:'ri-user-line'},{n:2,l:'Details',icon:'ri-file-list-line'},{n:3,l:'Photo',icon:'ri-camera-line'},{n:4,l:'Security',icon:'ri-lock-line'}].map((s, i) => (
                       <React.Fragment key={s.n}>
                         <button type="button"
-                          onClick={() => { if (s.n < registerStep || (s.n > 1 && canProceedStep(s.n - 1)) || s.n === 1) setRegisterStep(s.n); }}
+                          onClick={() => {
+                            if (s.n < registerStep) { setRegisterStep(s.n); }
+                            else if (s.n > registerStep) {
+                              let canGo = true;
+                              for (let i = 1; i < s.n; i++) { if (!canProceedStep(i)) { canGo = false; break; } }
+                              if (canGo) setRegisterStep(s.n);
+                              else Swal.fire({ icon: 'warning', title: 'Incomplete', text: 'Please fill all required fields before proceeding.', timer: 2000, showConfirmButton: false, background: document.body.classList.contains('dark-theme') ? '#1a1a1a' : '#fff', color: document.body.classList.contains('dark-theme') ? '#e8e8e8' : '#1f2937' });
+                            }
+                          }}
                           className={`flex flex-col items-center gap-1 group cursor-pointer`}>
                           <div className={`w-9 h-9 rounded-full flex items-center justify-center text-sm transition-all duration-300
-                            ${registerStep === s.n ? 'bg-[#d4a574] text-[#1a1a1a] shadow-lg shadow-[#d4a574]/20' : registerStep > s.n ? 'bg-[#d4a574]/20 text-[#d4a574]' : 'bg-[#2a2a2a] text-[#555]'}`}>
+                            ${registerStep === s.n ? 'bg-primary text-white shadow-lg shadow-primary/20' : registerStep > s.n ? 'bg-primary/20 text-primary' : 'bg-cream-dark dark-theme:bg-gray-800 text-gray-400 dark-theme:text-gray-500'}`}>
                             {registerStep > s.n ? <i className="ri-check-line text-sm"></i> : <i className={`${s.icon} text-sm`}></i>}
                           </div>
                           <span className={`text-[10px] font-medium tracking-wide uppercase
-                            ${registerStep === s.n ? 'text-[#d4a574]' : registerStep > s.n ? 'text-[#888]' : 'text-[#555]'}`}>{s.l}</span>
+                            ${registerStep === s.n ? 'text-primary' : registerStep > s.n ? 'text-gray-500 dark-theme:text-gray-400' : 'text-gray-400 dark-theme:text-gray-500'}`}>{s.l}</span>
                         </button>
-                        {i < 3 && <div className={`flex-1 h-[1px] mx-2 mt-[-12px] transition-colors duration-300 ${registerStep > s.n ? 'bg-[#d4a574]/40' : 'bg-[#2a2a2a]'}`}></div>}
+                        {i < 3 && <div className={`flex-1 h-[1px] mx-2 mt-[-12px] transition-colors duration-300 ${registerStep > s.n ? 'bg-primary/40' : 'bg-sand dark-theme:bg-gray-800'}`}></div>}
                       </React.Fragment>
                     ))}
                   </div>
@@ -634,65 +648,65 @@ const AuthPage = () => {
                   {registerStep === 1 && (
                     <div className="space-y-4 animate-fade-in-up">
                       <div>
-                        <label className="text-xs font-medium text-[#aaa] mb-1.5 block tracking-wide">Full Name <span className="text-[#d4a574]">*</span></label>
+                        <label className="text-xs font-medium text-gray-600 dark-theme:text-gray-400 mb-1.5 block tracking-wide">Full Name <span className="text-primary">*</span></label>
                         <input type="text" name="fullName" placeholder="Enter your full name" value={registerData.fullName} onChange={handleRegisterChange}
-                          className="w-full px-4 py-2.5 rounded-xl bg-[#222] border border-[#333] focus:border-[#d4a574] focus:ring-1 focus:ring-[#d4a574]/20 outline-none text-sm text-[#e8e8e8] placeholder-[#555] transition-all" />
+                          className="w-full px-4 py-2.5 rounded-xl bg-cream dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 focus:border-primary focus:ring-1 focus:ring-primary/20 outline-none text-sm text-gray-700 dark-theme:text-gray-200 placeholder-gray-400 dark-theme:placeholder-gray-500 transition-all" />
                       </div>
                       <div>
-                        <label className="text-xs font-medium text-[#aaa] mb-1.5 block tracking-wide">College <span className="text-[#d4a574]">*</span></label>
+                        <label className="text-xs font-medium text-gray-600 dark-theme:text-gray-400 mb-1.5 block tracking-wide">College <span className="text-primary">*</span></label>
                         <select name="college" value={registerData.college} onChange={handleRegisterChange}
-                          className="w-full px-4 py-2.5 rounded-xl bg-[#222] border border-[#333] focus:border-[#d4a574] outline-none text-sm text-[#e8e8e8] transition-all appearance-none cursor-pointer">
-                          <option value="" className="text-[#555]">Select your college</option>
+                          className="w-full px-4 py-2.5 rounded-xl bg-cream dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 focus:border-primary outline-none text-sm text-gray-700 dark-theme:text-gray-200 transition-all appearance-none cursor-pointer">
+                          <option value="" className="text-gray-400">Select your college</option>
                           {colleges.map(c => <option key={c} value={c}>{c}</option>)}
                         </select>
                       </div>
                       <div className="grid grid-cols-2 gap-3">
                         <div>
-                          <label className="text-xs font-medium text-[#aaa] mb-1.5 block tracking-wide">Department <span className="text-[#d4a574]">*</span></label>
+                          <label className="text-xs font-medium text-gray-600 dark-theme:text-gray-400 mb-1.5 block tracking-wide">Department <span className="text-primary">*</span></label>
                           <select name="department" value={registerData.department} onChange={handleRegisterChange}
-                            className="w-full px-4 py-2.5 rounded-xl bg-[#222] border border-[#333] focus:border-[#d4a574] outline-none text-sm text-[#e8e8e8] transition-all appearance-none cursor-pointer">
+                            className="w-full px-4 py-2.5 rounded-xl bg-cream dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 focus:border-primary outline-none text-sm text-gray-700 dark-theme:text-gray-200 transition-all appearance-none cursor-pointer">
                             <option value="">Select</option>
                             {departments.map(d => <option key={d.value} value={d.value}>{d.label}</option>)}
                           </select>
                         </div>
                         <div>
-                          <label className="text-xs font-medium text-[#aaa] mb-1.5 block tracking-wide">Year <span className="text-[#d4a574]">*</span></label>
+                          <label className="text-xs font-medium text-gray-600 dark-theme:text-gray-400 mb-1.5 block tracking-wide">Year <span className="text-primary">*</span></label>
                           <select name="year" value={registerData.year} onChange={handleRegisterChange}
-                            className="w-full px-4 py-2.5 rounded-xl bg-[#222] border border-[#333] focus:border-[#d4a574] outline-none text-sm text-[#e8e8e8] transition-all appearance-none cursor-pointer">
+                            className="w-full px-4 py-2.5 rounded-xl bg-cream dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 focus:border-primary outline-none text-sm text-gray-700 dark-theme:text-gray-200 transition-all appearance-none cursor-pointer">
                             <option value="">Select</option>
                             {getFilteredYears().map(y => <option key={y} value={y}>{y}</option>)}
                           </select>
                         </div>
                       </div>
                       <div>
-                        <label className="text-xs font-medium text-[#aaa] mb-1.5 block tracking-wide">Roll Number <span className="text-[#d4a574]">*</span></label>
+                        <label className="text-xs font-medium text-gray-600 dark-theme:text-gray-400 mb-1.5 block tracking-wide">Roll Number <span className="text-primary">*</span></label>
                         <div className="relative">
                           <input type="text" name="rollNumber"
                             placeholder={rollPrefix ? rollPrefix + '...' : 'Select dept & year first'}
                             value={registerData.rollNumber} onChange={handleRegisterChange} maxLength="12"
-                            className={`w-full px-4 py-2.5 rounded-xl bg-[#222] border outline-none text-sm text-[#e8e8e8] placeholder-[#555] transition-all pr-16
-                              ${registerData.rollNumber && (isRollNumberValid ? 'border-emerald-500/50 focus:border-emerald-500' : 'border-amber-500/50 focus:border-amber-500') || 'border-[#333] focus:border-[#d4a574]'}`} />
-                          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-mono text-[#555]">
+                            className={`w-full px-4 py-2.5 rounded-xl bg-cream dark-theme:bg-gray-800 border outline-none text-sm text-gray-700 dark-theme:text-gray-200 placeholder-gray-400 dark-theme:placeholder-gray-500 transition-all pr-16
+                              ${registerData.rollNumber && (isRollNumberValid ? 'border-emerald-500/50 focus:border-emerald-500' : 'border-amber-500/50 focus:border-amber-500') || 'border-sand dark-theme:border-gray-700 focus:border-primary'}`} />
+                          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-mono text-gray-400 dark-theme:text-gray-500">
                             {registerData.rollNumber.length}/12
                           </span>
                         </div>
-                        {rollPrefix && <p className="text-[10px] text-[#666] mt-1 font-mono">Prefix: {rollPrefix} (auto-filled)</p>}
+                        {rollPrefix && <p className="text-[10px] text-gray-500 dark-theme:text-gray-500 mt-1 font-mono">Prefix: {rollPrefix} (auto-filled)</p>}
                       </div>
                       <div className="grid grid-cols-2 gap-3">
                         <div>
-                          <label className="text-xs font-medium text-[#aaa] mb-1.5 block tracking-wide">Email <span className="text-[#d4a574]">*</span></label>
+                          <label className="text-xs font-medium text-gray-600 dark-theme:text-gray-400 mb-1.5 block tracking-wide">Email <span className="text-primary">*</span></label>
                           <input type="email" name="email" placeholder="you@example.com" value={registerData.email} onChange={handleRegisterChange}
-                            className="w-full px-4 py-2.5 rounded-xl bg-[#222] border border-[#333] focus:border-[#d4a574] outline-none text-sm text-[#e8e8e8] placeholder-[#555] transition-all" />
+                            className="w-full px-4 py-2.5 rounded-xl bg-cream dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 focus:border-primary outline-none text-sm text-gray-700 dark-theme:text-gray-200 placeholder-gray-400 dark-theme:placeholder-gray-500 transition-all" />
                         </div>
                         <div>
-                          <label className="text-xs font-medium text-[#aaa] mb-1.5 block tracking-wide">Phone <span className="text-[#d4a574]">*</span></label>
+                          <label className="text-xs font-medium text-gray-600 dark-theme:text-gray-400 mb-1.5 block tracking-wide">Phone <span className="text-primary">*</span></label>
                           <input type="tel" name="phone" placeholder="9876543210" value={registerData.phone} onChange={handleRegisterChange} maxLength="15"
-                            className="w-full px-4 py-2.5 rounded-xl bg-[#222] border border-[#333] focus:border-[#d4a574] outline-none text-sm text-[#e8e8e8] placeholder-[#555] transition-all" />
+                            className="w-full px-4 py-2.5 rounded-xl bg-cream dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 focus:border-primary outline-none text-sm text-gray-700 dark-theme:text-gray-200 placeholder-gray-400 dark-theme:placeholder-gray-500 transition-all" />
                         </div>
                       </div>
 
                       <button type="button" onClick={nextStep} disabled={!canProceedStep(1)}
-                        className="w-full py-3 rounded-xl bg-[#d4a574] text-[#1a1a1a] font-semibold hover:bg-[#c4956a] transition-all disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm shadow-lg shadow-[#d4a574]/10">
+                        className="w-full py-3 rounded-xl bg-primary text-white font-semibold hover:bg-primary-dark transition-all disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm shadow-lg shadow-primary/10">
                         Continue <i className="ri-arrow-right-line text-base"></i>
                       </button>
                     </div>
@@ -701,12 +715,12 @@ const AuthPage = () => {
                   {/* Step 2: Additional */}
                   {registerStep === 2 && (
                     <div className="space-y-4 animate-fade-in-up">
-                      <p className="text-xs text-[#666] flex items-center gap-1.5"><i className="ri-information-line text-[#d4a574]"></i> All fields below are optional</p>
+                      <p className="text-xs text-gray-500 dark-theme:text-gray-500 flex items-center gap-1.5"><i className="ri-information-line text-primary"></i> All fields below are optional</p>
                       <div className="grid grid-cols-2 gap-3">
                         <div>
-                          <label className="text-xs font-medium text-[#aaa] mb-1.5 block tracking-wide">Gender</label>
+                          <label className="text-xs font-medium text-gray-600 dark-theme:text-gray-400 mb-1.5 block tracking-wide">Gender</label>
                           <select name="gender" value={registerData.gender} onChange={handleRegisterChange}
-                            className="w-full px-4 py-2.5 rounded-xl bg-[#222] border border-[#333] focus:border-[#d4a574] outline-none text-sm text-[#e8e8e8] transition-all appearance-none cursor-pointer">
+                            className="w-full px-4 py-2.5 rounded-xl bg-cream dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 focus:border-primary outline-none text-sm text-gray-700 dark-theme:text-gray-200 transition-all appearance-none cursor-pointer">
                             <option value="">Select</option>
                             <option value="Male">Male</option>
                             <option value="Female">Female</option>
@@ -715,37 +729,37 @@ const AuthPage = () => {
                           </select>
                         </div>
                         <div>
-                          <label className="text-xs font-medium text-[#aaa] mb-1.5 block tracking-wide">Date of Birth</label>
+                          <label className="text-xs font-medium text-gray-600 dark-theme:text-gray-400 mb-1.5 block tracking-wide">Date of Birth</label>
                           <input type="date" name="dateOfBirth" value={registerData.dateOfBirth} onChange={handleRegisterChange}
-                            className="w-full px-4 py-2.5 rounded-xl bg-[#222] border border-[#333] focus:border-[#d4a574] outline-none text-sm text-[#e8e8e8] transition-all" />
+                            className="w-full px-4 py-2.5 rounded-xl bg-cream dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 focus:border-primary outline-none text-sm text-gray-700 dark-theme:text-gray-200 transition-all" />
                         </div>
                       </div>
                       <div>
-                        <label className="text-xs font-medium text-[#aaa] mb-1.5 block tracking-wide">Address</label>
+                        <label className="text-xs font-medium text-gray-600 dark-theme:text-gray-400 mb-1.5 block tracking-wide">Address</label>
                         <textarea name="address" placeholder="Your address" value={registerData.address} onChange={handleRegisterChange} rows="2"
-                          className="w-full px-4 py-2.5 rounded-xl bg-[#222] border border-[#333] focus:border-[#d4a574] outline-none text-sm text-[#e8e8e8] placeholder-[#555] transition-all resize-none"></textarea>
+                          className="w-full px-4 py-2.5 rounded-xl bg-cream dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 focus:border-primary outline-none text-sm text-gray-700 dark-theme:text-gray-200 placeholder-gray-400 dark-theme:placeholder-gray-500 transition-all resize-none"></textarea>
                       </div>
                       <div>
-                        <label className="text-xs font-medium text-[#aaa] mb-1.5 block tracking-wide">Bio / Tagline</label>
+                        <label className="text-xs font-medium text-gray-600 dark-theme:text-gray-400 mb-1.5 block tracking-wide">Bio / Tagline</label>
                         <input type="text" name="bio" placeholder="A short line about you" value={registerData.bio} onChange={handleRegisterChange}
-                          className="w-full px-4 py-2.5 rounded-xl bg-[#222] border border-[#333] focus:border-[#d4a574] outline-none text-sm text-[#e8e8e8] placeholder-[#555] transition-all" />
+                          className="w-full px-4 py-2.5 rounded-xl bg-cream dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 focus:border-primary outline-none text-sm text-gray-700 dark-theme:text-gray-200 placeholder-gray-400 dark-theme:placeholder-gray-500 transition-all" />
                       </div>
 
-                      <div className="border-t border-[#2a2a2a] pt-3 mt-2">
-                        <p className="text-xs font-medium text-[#aaa] mb-3 flex items-center gap-1.5 tracking-wide"><i className="ri-links-line text-[#d4a574]"></i> Social Profiles</p>
+                      <div className="border-t border-sand dark-theme:border-gray-800 pt-3 mt-2">
+                        <p className="text-xs font-medium text-gray-600 dark-theme:text-gray-400 mb-3 flex items-center gap-1.5 tracking-wide"><i className="ri-links-line text-primary"></i> Social Profiles</p>
                         <div className="space-y-2.5">
                           {[
-                            { name: 'github', icon: 'ri-github-fill', color: 'text-[#e8e8e8]', placeholder: 'github.com/username' },
+                            { name: 'github', icon: 'ri-github-fill', color: 'text-gray-800 dark-theme:text-gray-200', placeholder: 'github.com/username' },
                             { name: 'linkedin', icon: 'ri-linkedin-box-fill', color: 'text-[#0a66c2]', placeholder: 'linkedin.com/in/username' },
                             { name: 'hackerrank', icon: 'ri-code-box-fill', color: 'text-[#2ec866]', placeholder: 'hackerrank.com/username' },
                             { name: 'leetcode', icon: 'ri-terminal-box-fill', color: 'text-[#ffa116]', placeholder: 'leetcode.com/u/username' }
                           ].map(s => (
                             <div key={s.name} className="flex items-center gap-2">
-                              <div className="w-8 h-8 rounded-lg bg-[#222] border border-[#333] flex items-center justify-center flex-shrink-0">
+                              <div className="w-8 h-8 rounded-lg bg-cream dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 flex items-center justify-center flex-shrink-0">
                                 <i className={`${s.icon} ${s.color} text-sm`}></i>
                               </div>
                               <input type="url" name={s.name} placeholder={s.placeholder} value={registerData[s.name]} onChange={handleRegisterChange}
-                                className="flex-1 px-3 py-2 rounded-lg bg-[#222] border border-[#333] focus:border-[#d4a574] outline-none text-xs text-[#e8e8e8] placeholder-[#555] transition-all" />
+                                className="flex-1 px-3 py-2 rounded-lg bg-cream dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 focus:border-primary outline-none text-xs text-gray-700 dark-theme:text-gray-200 placeholder-gray-400 dark-theme:placeholder-gray-500 transition-all" />
                             </div>
                           ))}
                         </div>
@@ -753,11 +767,11 @@ const AuthPage = () => {
 
                       <div className="flex gap-3 pt-2">
                         <button type="button" onClick={prevStep}
-                          className="flex-1 py-2.5 rounded-xl bg-[#222] border border-[#333] text-[#aaa] font-medium hover:bg-[#2a2a2a] transition-all flex items-center justify-center gap-2 text-sm">
+                          className="flex-1 py-2.5 rounded-xl bg-cream dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 text-gray-600 dark-theme:text-gray-400 font-medium hover:bg-cream-dark dark-theme:hover:bg-gray-700 transition-all flex items-center justify-center gap-2 text-sm">
                           <i className="ri-arrow-left-line"></i> Back
                         </button>
                         <button type="button" onClick={nextStep}
-                          className="flex-[2] py-2.5 rounded-xl bg-[#d4a574] text-[#1a1a1a] font-semibold hover:bg-[#c4956a] transition-all flex items-center justify-center gap-2 text-sm shadow-lg shadow-[#d4a574]/10">
+                          className="flex-[2] py-2.5 rounded-xl bg-primary text-white font-semibold hover:bg-primary-dark transition-all flex items-center justify-center gap-2 text-sm shadow-lg shadow-primary/10">
                           Continue <i className="ri-arrow-right-line"></i>
                         </button>
                       </div>
@@ -768,22 +782,22 @@ const AuthPage = () => {
                   {registerStep === 3 && (
                     <div className="space-y-6 animate-fade-in-up">
                       <div className="text-center">
-                        <div className="w-12 h-12 rounded-2xl bg-[#d4a574]/10 flex items-center justify-center mx-auto mb-3">
-                          <i className="ri-camera-fill text-[#d4a574] text-xl"></i>
+                        <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-3">
+                          <i className="ri-camera-fill text-primary text-xl"></i>
                         </div>
-                        <p className="text-sm font-medium text-[#e8e8e8]">Profile Photo</p>
-                        <p className="text-xs text-[#666] mt-1">Optional — you can always add one later</p>
+                        <p className="text-sm font-medium text-gray-800 dark-theme:text-gray-100">Profile Photo</p>
+                        <p className="text-xs text-gray-500 dark-theme:text-gray-500 mt-1">Optional — you can always add one later</p>
                       </div>
                       <div className="flex justify-center">
                         <label className="relative cursor-pointer group">
                           <div className={`w-32 h-32 rounded-2xl border-2 border-dashed flex items-center justify-center overflow-hidden transition-all duration-300
-                            ${registerData.profilePreview ? 'border-[#d4a574] bg-[#222]' : 'border-[#333] bg-[#222] group-hover:border-[#555] group-hover:bg-[#2a2a2a]'}`}>
+                            ${registerData.profilePreview ? 'border-primary bg-cream dark-theme:bg-gray-800' : 'border-sand dark-theme:border-gray-700 bg-cream dark-theme:bg-gray-800 group-hover:border-gray-400 dark-theme:group-hover:border-gray-600 group-hover:bg-cream-dark dark-theme:group-hover:bg-gray-700'}`}>
                             {registerData.profilePreview ? (
                               <img src={registerData.profilePreview} alt="Preview" className="w-full h-full object-cover rounded-xl" />
                             ) : (
                               <div className="text-center">
-                                <i className="ri-upload-2-line text-2xl text-[#555] group-hover:text-[#888] transition-colors"></i>
-                                <p className="text-[10px] text-[#555] mt-1 group-hover:text-[#888]">Click to upload</p>
+                                <i className="ri-upload-2-line text-2xl text-gray-400 dark-theme:text-gray-500 group-hover:text-gray-600 dark-theme:group-hover:text-gray-300 transition-colors"></i>
+                                <p className="text-[10px] text-gray-400 dark-theme:text-gray-500 mt-1 group-hover:text-gray-600 dark-theme:group-hover:text-gray-300">Click to upload</p>
                               </div>
                             )}
                           </div>
@@ -797,16 +811,16 @@ const AuthPage = () => {
                         </label>
                       </div>
                       <div className="text-center space-y-1">
-                        <p className="text-[11px] text-[#666]">Square image, at least 200×200px</p>
-                        <p className="text-[10px] text-[#555]">Max 5MB — JPG, PNG, or WebP</p>
+                        <p className="text-[11px] text-gray-500 dark-theme:text-gray-500">Square image, at least 200×200px</p>
+                        <p className="text-[10px] text-gray-400 dark-theme:text-gray-500">Max 5MB — JPG, PNG, or WebP</p>
                       </div>
                       <div className="flex gap-3">
                         <button type="button" onClick={prevStep}
-                          className="flex-1 py-2.5 rounded-xl bg-[#222] border border-[#333] text-[#aaa] font-medium hover:bg-[#2a2a2a] transition-all flex items-center justify-center gap-2 text-sm">
+                          className="flex-1 py-2.5 rounded-xl bg-cream dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 text-gray-600 dark-theme:text-gray-400 font-medium hover:bg-cream-dark dark-theme:hover:bg-gray-700 transition-all flex items-center justify-center gap-2 text-sm">
                           <i className="ri-arrow-left-line"></i> Back
                         </button>
                         <button type="button" onClick={nextStep}
-                          className="flex-[2] py-2.5 rounded-xl bg-[#d4a574] text-[#1a1a1a] font-semibold hover:bg-[#c4956a] transition-all flex items-center justify-center gap-2 text-sm shadow-lg shadow-[#d4a574]/10">
+                          className="flex-[2] py-2.5 rounded-xl bg-primary text-white font-semibold hover:bg-primary-dark transition-all flex items-center justify-center gap-2 text-sm shadow-lg shadow-primary/10">
                           Continue <i className="ri-arrow-right-line"></i>
                         </button>
                       </div>
@@ -817,36 +831,36 @@ const AuthPage = () => {
                   {registerStep === 4 && (
                     <form onSubmit={handleRegisterSubmit} className="space-y-4 animate-fade-in-up">
                       <div>
-                        <label className="text-xs font-medium text-[#aaa] mb-1.5 block tracking-wide">Username <span className="text-[#d4a574]">*</span></label>
+                        <label className="text-xs font-medium text-gray-600 dark-theme:text-gray-400 mb-1.5 block tracking-wide">Username <span className="text-primary">*</span></label>
                         <input type="text" name="username" placeholder="Choose a unique username" value={registerData.username} onChange={handleRegisterChange}
-                          className="w-full px-4 py-2.5 rounded-xl bg-[#222] border border-[#333] focus:border-[#d4a574] outline-none text-sm text-[#e8e8e8] placeholder-[#555] transition-all" />
-                        <p className="text-[10px] text-[#555] mt-1">Min 4 characters — letters, numbers, underscores</p>
+                          className="w-full px-4 py-2.5 rounded-xl bg-cream dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 focus:border-primary outline-none text-sm text-gray-700 dark-theme:text-gray-200 placeholder-gray-400 dark-theme:placeholder-gray-500 transition-all" />
+                        <p className="text-[10px] text-gray-400 dark-theme:text-gray-500 mt-1">Min 4 characters — letters, numbers, underscores</p>
                       </div>
                       <div>
-                        <label className="text-xs font-medium text-[#aaa] mb-1.5 block tracking-wide">Password <span className="text-[#d4a574]">*</span></label>
+                        <label className="text-xs font-medium text-gray-600 dark-theme:text-gray-400 mb-1.5 block tracking-wide">Password <span className="text-primary">*</span></label>
                         <div className="relative">
                           <input type={passwordVisibility.register ? 'text' : 'password'} name="password" placeholder="Create a strong password" value={registerData.password} onChange={handleRegisterChange}
-                            className="w-full px-4 py-2.5 rounded-xl bg-[#222] border border-[#333] focus:border-[#d4a574] outline-none text-sm text-[#e8e8e8] placeholder-[#555] transition-all pr-10" />
+                            className="w-full px-4 py-2.5 rounded-xl bg-cream dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 focus:border-primary outline-none text-sm text-gray-700 dark-theme:text-gray-200 placeholder-gray-400 dark-theme:placeholder-gray-500 transition-all pr-10" />
                           <button type="button" onClick={() => togglePasswordVisibility('register')}
-                            className="absolute right-3 top-1/2 -translate-y-1/2 text-[#555] hover:text-[#aaa] transition-colors">
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark-theme:hover:text-gray-300 transition-colors">
                             <i className={passwordVisibility.register ? 'ri-eye-off-line' : 'ri-eye-line'}></i>
                           </button>
                         </div>
                       </div>
                       <div>
-                        <label className="text-xs font-medium text-[#aaa] mb-1.5 block tracking-wide">Confirm Password <span className="text-[#d4a574]">*</span></label>
+                        <label className="text-xs font-medium text-gray-600 dark-theme:text-gray-400 mb-1.5 block tracking-wide">Confirm Password <span className="text-primary">*</span></label>
                         <div className="relative">
                           <input type={passwordVisibility.registerConfirm ? 'text' : 'password'} name="confirmPassword" placeholder="Re-enter your password" value={registerData.confirmPassword} onChange={handleRegisterChange}
-                            className="w-full px-4 py-2.5 rounded-xl bg-[#222] border border-[#333] focus:border-[#d4a574] outline-none text-sm text-[#e8e8e8] placeholder-[#555] transition-all pr-10" />
+                            className="w-full px-4 py-2.5 rounded-xl bg-cream dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 focus:border-primary outline-none text-sm text-gray-700 dark-theme:text-gray-200 placeholder-gray-400 dark-theme:placeholder-gray-500 transition-all pr-10" />
                           <button type="button" onClick={() => togglePasswordVisibility('registerConfirm')}
-                            className="absolute right-3 top-1/2 -translate-y-1/2 text-[#555] hover:text-[#aaa] transition-colors">
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark-theme:hover:text-gray-300 transition-colors">
                             <i className={passwordVisibility.registerConfirm ? 'ri-eye-off-line' : 'ri-eye-line'}></i>
                           </button>
                         </div>
                       </div>
 
                       {/* Password strength */}
-                      <div className="bg-[#222] rounded-xl p-3 border border-[#2a2a2a]">
+                      <div className="bg-cream dark-theme:bg-gray-800 rounded-xl p-3 border border-sand dark-theme:border-gray-700">
                         <div className="grid grid-cols-3 gap-x-4 gap-y-2">
                           {[
                             { key: 'length', label: '6+ characters' },
@@ -857,8 +871,8 @@ const AuthPage = () => {
                             { key: 'match', label: 'Passwords match' }
                           ].map(c => (
                             <div key={c.key} className="flex items-center gap-1.5">
-                              <i className={`text-xs ${pwChecks[c.key] ? 'ri-checkbox-circle-fill text-emerald-500' : 'ri-checkbox-blank-circle-line text-[#444]'}`}></i>
-                              <span className={`text-[10px] font-medium ${pwChecks[c.key] ? 'text-[#aaa]' : 'text-[#555]'}`}>{c.label}</span>
+                              <i className={`text-xs ${pwChecks[c.key] ? 'ri-checkbox-circle-fill text-emerald-500' : 'ri-checkbox-blank-circle-line text-gray-300 dark-theme:text-gray-600'}`}></i>
+                              <span className={`text-[10px] font-medium ${pwChecks[c.key] ? 'text-gray-600 dark-theme:text-gray-400' : 'text-gray-400 dark-theme:text-gray-500'}`}>{c.label}</span>
                             </div>
                           ))}
                         </div>
@@ -866,11 +880,11 @@ const AuthPage = () => {
 
                       <div className="flex gap-3 pt-1">
                         <button type="button" onClick={prevStep}
-                          className="flex-1 py-2.5 rounded-xl bg-[#222] border border-[#333] text-[#aaa] font-medium hover:bg-[#2a2a2a] transition-all flex items-center justify-center gap-2 text-sm">
+                          className="flex-1 py-2.5 rounded-xl bg-cream dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 text-gray-600 dark-theme:text-gray-400 font-medium hover:bg-cream-dark dark-theme:hover:bg-gray-700 transition-all flex items-center justify-center gap-2 text-sm">
                           <i className="ri-arrow-left-line"></i> Back
                         </button>
                         <button type="submit" disabled={isSubmitting || !pwChecks.length || !pwChecks.upper || !pwChecks.lower || !pwChecks.number || !pwChecks.special || !pwChecks.match || !registerData.username || registerData.username.length < 4}
-                          className="flex-[2] py-2.5 rounded-xl bg-[#d4a574] text-[#1a1a1a] font-semibold hover:bg-[#c4956a] transition-all disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm shadow-lg shadow-[#d4a574]/10">
+                          className="flex-[2] py-2.5 rounded-xl bg-primary text-white font-semibold hover:bg-primary-dark transition-all disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm shadow-lg shadow-primary/10">
                           {isSubmitting ? (
                             <><i className="ri-loader-4-line animate-spin"></i> Creating...</>
                           ) : (
@@ -883,10 +897,10 @@ const AuthPage = () => {
                 </div>
 
                 {/* Footer */}
-                <div className="px-6 py-4 border-t border-[#2a2a2a] bg-[#161616]">
-                  <p className="text-center text-xs text-[#666]">
+                <div className="px-6 py-4 border-t border-sand dark-theme:border-gray-800 bg-cream-dark/50 dark-theme:bg-gray-950/50">
+                  <p className="text-center text-xs text-gray-500 dark-theme:text-gray-500">
                     Already have an account?{' '}
-                    <button onClick={() => { toggleForm('login'); setRegisterStep(1); }} className="text-[#d4a574] font-medium hover:underline">Sign in</button>
+                    <button onClick={() => { toggleForm('login'); setRegisterStep(1); }} className="text-primary font-medium hover:underline">Sign in</button>
                   </p>
                 </div>
               </div>
@@ -985,14 +999,14 @@ const AuthPage = () => {
       {cropModal && (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center">
           <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={handleCropCancel}></div>
-          <div className="relative bg-[#1a1a1a] rounded-2xl border border-[#333] w-[90vw] max-w-lg mx-4 overflow-hidden shadow-2xl">
+          <div className="relative bg-white dark-theme:bg-gray-900 rounded-2xl border border-sand dark-theme:border-gray-700 w-[90vw] max-w-lg mx-4 overflow-hidden shadow-2xl">
             {/* Header */}
-            <div className="flex items-center justify-between px-5 py-4 border-b border-[#333]">
+            <div className="flex items-center justify-between px-5 py-4 border-b border-sand dark-theme:border-gray-700">
               <div className="flex items-center gap-2">
-                <i className="ri-crop-line text-[#d4a574] text-lg"></i>
-                <h3 className="text-[#e8e8e8] font-semibold text-sm">Crop Profile Photo</h3>
+                <i className="ri-crop-line text-primary text-lg"></i>
+                <h3 className="text-gray-800 dark-theme:text-gray-100 font-semibold text-sm">Crop Profile Photo</h3>
               </div>
-              <button onClick={handleCropCancel} className="w-7 h-7 rounded-lg bg-[#222] border border-[#333] flex items-center justify-center text-[#888] hover:text-white hover:border-[#555] transition-all">
+              <button onClick={handleCropCancel} className="w-7 h-7 rounded-lg bg-cream dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 flex items-center justify-center text-gray-500 dark-theme:text-gray-400 hover:text-gray-800 dark-theme:hover:text-white hover:border-gray-400 dark-theme:hover:border-gray-500 transition-all">
                 <i className="ri-close-line text-sm"></i>
               </button>
             </div>
@@ -1011,9 +1025,9 @@ const AuthPage = () => {
               />
             </div>
             {/* Zoom Slider */}
-            <div className="px-5 py-3 border-t border-[#333] bg-[#1a1a1a]">
+            <div className="px-5 py-3 border-t border-sand dark-theme:border-gray-700 bg-white dark-theme:bg-gray-900">
               <div className="flex items-center gap-3">
-                <i className="ri-subtract-line text-[#888] text-sm"></i>
+                <i className="ri-subtract-line text-gray-500 dark-theme:text-gray-400 text-sm"></i>
                 <input
                   type="range"
                   min={1}
@@ -1021,22 +1035,22 @@ const AuthPage = () => {
                   step={0.05}
                   value={zoom}
                   onChange={(e) => setZoom(Number(e.target.value))}
-                  className="flex-1 h-1 appearance-none rounded-full bg-[#333] outline-none cursor-pointer"
+                  className="flex-1 h-1 appearance-none rounded-full bg-sand dark-theme:bg-gray-700 outline-none cursor-pointer"
                   style={{
                     accentColor: '#d4a574'
                   }}
                 />
-                <i className="ri-add-line text-[#888] text-sm"></i>
+                <i className="ri-add-line text-gray-500 dark-theme:text-gray-400 text-sm"></i>
               </div>
             </div>
             {/* Actions */}
-            <div className="flex gap-3 px-5 py-4 border-t border-[#333]">
+            <div className="flex gap-3 px-5 py-4 border-t border-sand dark-theme:border-gray-700">
               <button type="button" onClick={handleCropCancel}
-                className="flex-1 py-2.5 rounded-xl bg-[#222] border border-[#333] text-[#aaa] font-medium hover:bg-[#2a2a2a] hover:border-[#555] transition-all text-sm">
+                className="flex-1 py-2.5 rounded-xl bg-cream dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 text-gray-600 dark-theme:text-gray-400 font-medium hover:bg-cream-dark dark-theme:hover:bg-gray-700 hover:border-gray-400 dark-theme:hover:border-gray-500 transition-all text-sm">
                 Cancel
               </button>
               <button type="button" onClick={handleCropConfirm}
-                className="flex-[2] py-2.5 rounded-xl bg-[#d4a574] text-[#1a1a1a] font-semibold hover:bg-[#c4956a] transition-all text-sm shadow-lg shadow-[#d4a574]/10 flex items-center justify-center gap-2">
+                className="flex-[2] py-2.5 rounded-xl bg-primary text-white font-semibold hover:bg-primary-dark transition-all text-sm shadow-lg shadow-primary/10 flex items-center justify-center gap-2">
                 <i className="ri-check-line"></i> Apply Crop
               </button>
             </div>

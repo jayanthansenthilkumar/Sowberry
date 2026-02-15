@@ -202,7 +202,7 @@ const CourseViewer = () => {
                           <div className="flex items-center justify-end">
                             <a href={activeContent.contentData} target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 rounded-lg bg-red-500/10 text-red-400 text-xs font-medium hover:bg-red-500/20 inline-flex items-center gap-1.5 transition-colors"><i className="ri-external-link-line"></i>Open in Tab</a>
                           </div>
-                          <div className="rounded-xl overflow-hidden border border-[#2a2a2a]" style={{ height: '75vh' }}>
+                          <div className="rounded-xl overflow-hidden border border-sand dark-theme:border-gray-800" style={{ height: '75vh' }}>
                             <iframe src={activeContent.contentData} title={activeContent.title} className="w-full h-full border-0" />
                           </div>
                         </div>

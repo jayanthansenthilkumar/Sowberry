@@ -6,7 +6,7 @@ import { studentApi } from '../../utils/api';
 // ════════════════════════════════════════════════════════════════
 //     BUILT-IN PRACTICE TEST BANK  (available even when DB empty)
 // ════════════════════════════════════════════════════════════════
-const swalOpts = { background: '#0f0f0f', color: '#e8e8e8', confirmButtonColor: '#d4a574' };
+const getSwalOpts = () => { const isDark = document.body.classList.contains('dark-theme'); return { background: isDark ? '#1a1a1a' : '#fff', color: isDark ? '#e8e8e8' : '#1f2937', confirmButtonColor: '#d4a574' }; };
 
 const PRACTICE_TESTS = [
   {
@@ -180,7 +180,7 @@ const AptitudeTests = () => {
       setAttemptId(res.attemptId);
       setAnswers({}); setCurrentQ(0); setIsPractice(false);
       setTimeLeft((res.test.duration || 30) * 60);
-    } else Swal.fire({ ...swalOpts, icon: 'error', title: 'Error', text: res.message });
+    } else Swal.fire({ ...getSwalOpts(), icon: 'error', title: 'Error', text: res.message });
   };
 
   // ─── START PRACTICE TEST ────
@@ -196,7 +196,7 @@ const AptitudeTests = () => {
 
   const submitTest = async (auto = false) => {
     if (!auto) {
-      const confirm = await Swal.fire({ ...swalOpts, title: 'Submit Test?', text: 'You cannot change answers after submission.', icon: 'question', showCancelButton: true, confirmButtonText: 'Submit', cancelButtonColor: '#333' });
+      const confirm = await Swal.fire({ ...getSwalOpts(), title: 'Submit Test?', text: 'You cannot change answers after submission.', icon: 'question', showCancelButton: true, confirmButtonText: 'Submit', cancelButtonColor: '#333' });
       if (!confirm.isConfirmed) return;
     }
 
@@ -211,7 +211,7 @@ const AptitudeTests = () => {
       setPracticeHistory(prev => ({ ...prev, [attemptId]: [...(prev[attemptId] || []), result] }));
       setShowResult(result);
       setTimeLeft(0);
-      Swal.fire({ ...swalOpts, icon: score >= total * 0.7 ? 'success' : score >= total * 0.4 ? 'info' : 'warning', title: auto ? "Time's Up!" : 'Test Submitted!', text: `Score: ${score}/${total} (${Math.round(score / total * 100)}%)` });
+      Swal.fire({ ...getSwalOpts(), icon: score >= total * 0.7 ? 'success' : score >= total * 0.4 ? 'info' : 'warning', title: auto ? "Time's Up!" : 'Test Submitted!', text: `Score: ${score}/${total} (${Math.round(score / total * 100)}%)` });
       return;
     }
 
@@ -220,9 +220,9 @@ const AptitudeTests = () => {
     const res = await studentApi.submitAptitudeTest(attemptId, { answers: answersArray });
     setSubmitting(false);
     if (res.success) {
-      Swal.fire({ ...swalOpts, icon: 'success', title: auto ? "Time's Up!" : 'Submitted!', text: `Score: ${res.score || 0}/${res.totalMarks || 0}` });
+      Swal.fire({ ...getSwalOpts(), icon: 'success', title: auto ? "Time's Up!" : 'Submitted!', text: `Score: ${res.score || 0}/${res.totalMarks || 0}` });
       setActiveTest(null); setAttemptId(null);
-    } else Swal.fire({ ...swalOpts, icon: 'error', title: 'Error', text: res.message });
+    } else Swal.fire({ ...getSwalOpts(), icon: 'error', title: 'Error', text: res.message });
   };
 
   const goBack = () => { setActiveTest(null); setAttemptId(null); setShowResult(null); setIsPractice(false); };
@@ -245,42 +245,42 @@ const AptitudeTests = () => {
       <DashboardLayout pageTitle="Test Results" role="student">
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h1 className="text-xl font-bold text-[#e8e8e8]">{activeTest.title} — Results</h1>
-            <button onClick={goBack} className="px-4 py-2 rounded-xl bg-[#222] border border-[#333] text-[#aaa] text-sm hover:bg-[#2a2a2a] transition-colors"><i className="ri-arrow-left-line mr-1"></i>Back</button>
+            <h1 className="text-xl font-bold text-gray-800 dark-theme:text-gray-100">{activeTest.title} — Results</h1>
+            <button onClick={goBack} className="px-4 py-2 rounded-xl bg-cream dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 text-gray-500 dark-theme:text-gray-400 text-sm hover:bg-cream-dark dark-theme:hover:bg-gray-700 transition-colors"><i className="ri-arrow-left-line mr-1"></i>Back</button>
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {[
               { label: 'Score', value: `${showResult.score}/${showResult.total}`, icon: 'ri-medal-line', color: showResult.score >= showResult.total * 0.7 ? 'text-green-400' : 'text-amber-400' },
-              { label: 'Percentage', value: `${Math.round(showResult.score / showResult.total * 100)}%`, icon: 'ri-percent-line', color: 'text-[#d4a574]' },
+              { label: 'Percentage', value: `${Math.round(showResult.score / showResult.total * 100)}%`, icon: 'ri-percent-line', color: 'text-primary' },
               { label: 'Answered', value: `${showResult.answered}/${showResult.questions}`, icon: 'ri-checkbox-circle-line', color: 'text-blue-400' },
-              { label: 'Skipped', value: `${showResult.questions - showResult.answered}`, icon: 'ri-skip-forward-line', color: 'text-[#666]' },
+              { label: 'Skipped', value: `${showResult.questions - showResult.answered}`, icon: 'ri-skip-forward-line', color: 'text-gray-500 dark-theme:text-gray-400' },
             ].map((s, i) => (
-              <div key={i} className="bg-[#1a1a1a] rounded-2xl p-4 border border-[#2a2a2a] text-center">
+              <div key={i} className="bg-white dark-theme:bg-gray-900 rounded-2xl p-4 border border-sand dark-theme:border-gray-800 text-center">
                 <i className={`${s.icon} text-xl ${s.color} block mb-1`}></i>
                 <p className={`text-lg font-bold ${s.color}`}>{s.value}</p>
-                <p className="text-[10px] text-[#666]">{s.label}</p>
+                <p className="text-[10px] text-gray-500 dark-theme:text-gray-400">{s.label}</p>
               </div>
             ))}
           </div>
 
           <div className="space-y-3">
-            <h2 className="text-sm font-semibold text-[#888]">Review Answers</h2>
+            <h2 className="text-sm font-semibold text-gray-500 dark-theme:text-gray-500">Review Answers</h2>
             {qs.map((q, idx) => {
               const userAns = answers[q.id];
               const correct = userAns === q.correctOption;
               return (
-                <div key={q.id} className={`bg-[#1a1a1a] rounded-2xl p-5 border ${correct ? 'border-green-500/30' : userAns ? 'border-red-500/30' : 'border-[#2a2a2a]'}`}>
+                <div key={q.id} className={`bg-white dark-theme:bg-gray-900 rounded-2xl p-5 border ${correct ? 'border-green-500/30' : userAns ? 'border-red-500/30' : 'border-sand dark-theme:border-gray-800'}`}>
                   <div className="flex items-start gap-3 mb-3">
-                    <span className={`w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold flex-shrink-0 ${correct ? 'bg-green-500/15 text-green-400' : userAns ? 'bg-red-500/15 text-red-400' : 'bg-[#2a2a2a] text-[#666]'}`}>{idx + 1}</span>
-                    <p className="text-sm text-[#e8e8e8] font-medium">{q.question}</p>
+                    <span className={`w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold flex-shrink-0 ${correct ? 'bg-green-500/15 text-green-400' : userAns ? 'bg-red-500/15 text-red-400' : 'bg-cream-dark dark-theme:bg-gray-800 text-gray-500 dark-theme:text-gray-400'}`}>{idx + 1}</span>
+                    <p className="text-sm text-gray-800 dark-theme:text-gray-100 font-medium">{q.question}</p>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 ml-10">
                     {['A', 'B', 'C', 'D'].map(opt => {
                       const isCorrect = opt === q.correctOption;
                       const isUser = opt === userAns;
                       return (
-                        <div key={opt} className={`p-3 rounded-xl text-xs border transition-all ${isCorrect ? 'border-green-500 bg-green-500/10 text-green-400 font-medium' : isUser ? 'border-red-500 bg-red-500/10 text-red-400' : 'border-[#2a2a2a] text-[#888]'}`}>
+                        <div key={opt} className={`p-3 rounded-xl text-xs border transition-all ${isCorrect ? 'border-green-500 bg-green-500/10 text-green-400 font-medium' : isUser ? 'border-red-500 bg-red-500/10 text-red-400' : 'border-sand dark-theme:border-gray-800 text-gray-500 dark-theme:text-gray-500'}`}>
                           <span className="font-bold mr-2">{opt}.</span>{q[`option${opt}`]}
                           {isCorrect && <i className="ri-check-line ml-2 text-green-400"></i>}
                           {isUser && !isCorrect && <i className="ri-close-line ml-2 text-red-400"></i>}
@@ -307,48 +307,48 @@ const AptitudeTests = () => {
       <DashboardLayout pageTitle="Aptitude Test" role="student">
         <div className="space-y-4">
           {/* Header bar */}
-          <div className="bg-[#1a1a1a] rounded-2xl p-4 border border-[#2a2a2a] sticky top-0 z-10">
+          <div className="bg-white dark-theme:bg-gray-900 rounded-2xl p-4 border border-sand dark-theme:border-gray-800 sticky top-0 z-10">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="font-bold text-[#e8e8e8] text-sm">{activeTest.title}</h2>
-                <p className="text-[11px] text-[#666]">{Object.keys(answers).length}/{questions.length} answered</p>
+                <h2 className="font-bold text-gray-800 dark-theme:text-gray-100 text-sm">{activeTest.title}</h2>
+                <p className="text-[11px] text-gray-500 dark-theme:text-gray-400">{Object.keys(answers).length}/{questions.length} answered</p>
               </div>
               <div className="flex items-center gap-3">
-                <span className={`text-lg font-mono font-bold ${timeLeft < 60 ? 'text-red-500 animate-pulse' : 'text-[#d4a574]'}`}><i className="ri-time-line mr-1"></i>{formatTime(timeLeft)}</span>
-                <button onClick={() => submitTest()} disabled={submitting} className="px-4 py-2 rounded-xl bg-[#d4a574] text-[#1a1a1a] text-xs font-semibold hover:bg-[#c4956a] disabled:opacity-50 transition-colors">{submitting ? 'Submitting...' : 'Submit'}</button>
+                <span className={`text-lg font-mono font-bold ${timeLeft < 60 ? 'text-red-500 animate-pulse' : 'text-primary'}`}><i className="ri-time-line mr-1"></i>{formatTime(timeLeft)}</span>
+                <button onClick={() => submitTest()} disabled={submitting} className="px-4 py-2 rounded-xl bg-primary text-white text-xs font-semibold hover:bg-primary-dark disabled:opacity-50 transition-colors">{submitting ? 'Submitting...' : 'Submit'}</button>
               </div>
             </div>
             {/* Question navigation pills */}
             <div className="flex flex-wrap gap-1.5 mt-3">
               {questions.map((_, idx) => (
-                <button key={idx} onClick={() => setCurrentQ(idx)} className={`w-7 h-7 rounded-lg text-[10px] font-bold transition-colors ${currentQ === idx ? 'bg-[#d4a574] text-[#1a1a1a]' : answers[questions[idx].id] !== undefined ? 'bg-green-500/20 text-green-400 border border-green-500/30' : 'bg-[#222] text-[#666] border border-[#333]'}`}>{idx + 1}</button>
+                <button key={idx} onClick={() => setCurrentQ(idx)} className={`w-7 h-7 rounded-lg text-[10px] font-bold transition-colors ${currentQ === idx ? 'bg-primary text-white' : answers[questions[idx].id] !== undefined ? 'bg-green-500/20 text-green-400 border border-green-500/30' : 'bg-cream dark-theme:bg-gray-800 text-gray-500 dark-theme:text-gray-400 border border-sand dark-theme:border-gray-700'}`}>{idx + 1}</button>
               ))}
             </div>
           </div>
 
           {/* Current question */}
           {q && (
-            <div className="bg-[#1a1a1a] rounded-2xl p-6 border border-[#2a2a2a]">
+            <div className="bg-white dark-theme:bg-gray-900 rounded-2xl p-6 border border-sand dark-theme:border-gray-800">
               <div className="flex items-start gap-3 mb-4">
-                <span className="w-8 h-8 rounded-xl bg-[#d4a574]/15 flex items-center justify-center text-sm font-bold text-[#d4a574] flex-shrink-0">{currentQ + 1}</span>
-                <p className="text-[#e8e8e8] font-medium leading-relaxed">{q.question}</p>
+                <span className="w-8 h-8 rounded-xl bg-primary/15 flex items-center justify-center text-sm font-bold text-primary flex-shrink-0">{currentQ + 1}</span>
+                <p className="text-gray-800 dark-theme:text-gray-100 font-medium leading-relaxed">{q.question}</p>
               </div>
               <div className="grid grid-cols-1 gap-2.5 ml-11">
                 {['A', 'B', 'C', 'D'].map(opt => (
-                  <button key={opt} onClick={() => setAnswers({ ...answers, [q.id]: opt })} className={`p-4 rounded-xl text-sm text-left transition-all border ${answers[q.id] === opt ? 'border-[#d4a574] bg-[#d4a574]/10 text-[#d4a574] font-medium' : 'border-[#2a2a2a] text-[#aaa] hover:border-[#555] hover:text-[#e8e8e8]'}`}>
+                  <button key={opt} onClick={() => setAnswers({ ...answers, [q.id]: opt })} className={`p-4 rounded-xl text-sm text-left transition-all border ${answers[q.id] === opt ? 'border-primary bg-primary/10 text-primary font-medium' : 'border-sand dark-theme:border-gray-800 text-gray-500 dark-theme:text-gray-400 hover:border-gray-400 dark-theme:hover:border-gray-600 hover:text-gray-800 dark-theme:hover:text-gray-100'}`}>
                     <span className="font-bold mr-3 text-xs opacity-60">{opt}.</span>{q[`option${opt}`]}
                   </button>
                 ))}
               </div>
-              <p className="ml-11 mt-3 text-[10px] text-[#555]">{q.marks || 1} mark{(q.marks || 1) > 1 ? 's' : ''}</p>
+              <p className="ml-11 mt-3 text-[10px] text-gray-400 dark-theme:text-gray-500">{q.marks || 1} mark{(q.marks || 1) > 1 ? 's' : ''}</p>
             </div>
           )}
 
           {/* Navigation */}
           <div className="flex items-center justify-between">
-            <button onClick={() => setCurrentQ(c => Math.max(0, c - 1))} disabled={currentQ === 0} className="px-4 py-2 rounded-xl bg-[#222] border border-[#333] text-[#aaa] text-xs font-medium hover:bg-[#2a2a2a] disabled:opacity-30 transition-colors"><i className="ri-arrow-left-line mr-1"></i>Previous</button>
-            <span className="text-xs text-[#555]">{currentQ + 1} of {questions.length}</span>
-            <button onClick={() => setCurrentQ(c => Math.min(questions.length - 1, c + 1))} disabled={currentQ >= questions.length - 1} className="px-4 py-2 rounded-xl bg-[#222] border border-[#333] text-[#aaa] text-xs font-medium hover:bg-[#2a2a2a] disabled:opacity-30 transition-colors">Next<i className="ri-arrow-right-line ml-1"></i></button>
+            <button onClick={() => setCurrentQ(c => Math.max(0, c - 1))} disabled={currentQ === 0} className="px-4 py-2 rounded-xl bg-cream dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 text-gray-500 dark-theme:text-gray-400 text-xs font-medium hover:bg-cream-dark dark-theme:hover:bg-gray-700 disabled:opacity-30 transition-colors"><i className="ri-arrow-left-line mr-1"></i>Previous</button>
+            <span className="text-xs text-gray-400 dark-theme:text-gray-500">{currentQ + 1} of {questions.length}</span>
+            <button onClick={() => setCurrentQ(c => Math.min(questions.length - 1, c + 1))} disabled={currentQ >= questions.length - 1} className="px-4 py-2 rounded-xl bg-cream dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 text-gray-500 dark-theme:text-gray-400 text-xs font-medium hover:bg-cream-dark dark-theme:hover:bg-gray-700 disabled:opacity-30 transition-colors">Next<i className="ri-arrow-right-line ml-1"></i></button>
           </div>
         </div>
       </DashboardLayout>
@@ -363,15 +363,15 @@ const AptitudeTests = () => {
       <div className="space-y-6">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-[#e8e8e8]">Aptitude Tests</h1>
-            <p className="text-sm text-[#666] mt-1">{allTests.length} tests available across {CATEGORIES.length - 1} categories</p>
+            <h1 className="text-2xl font-bold text-gray-800 dark-theme:text-gray-100">Aptitude Tests</h1>
+            <p className="text-sm text-gray-500 dark-theme:text-gray-400 mt-1">{allTests.length} tests available across {CATEGORIES.length - 1} categories</p>
           </div>
         </div>
 
         {/* Category filter */}
         <div className="flex gap-2 flex-wrap">
           {CATEGORIES.map(c => (
-            <button key={c} onClick={() => setCategory(c)} className={`px-4 py-2 rounded-xl text-xs font-medium transition-colors ${category === c ? 'bg-[#d4a574] text-[#1a1a1a]' : 'bg-[#222] text-[#888] border border-[#333] hover:border-[#555]'}`}>
+            <button key={c} onClick={() => setCategory(c)} className={`px-4 py-2 rounded-xl text-xs font-medium transition-colors ${category === c ? 'bg-primary text-white' : 'bg-cream dark-theme:bg-gray-800 text-gray-500 dark-theme:text-gray-500 border border-sand dark-theme:border-gray-700 hover:border-gray-400 dark-theme:hover:border-gray-600'}`}>
               {c !== 'All' && <i className={`${CAT_ICONS[c]} mr-1`}></i>}{c}
             </button>
           ))}
@@ -380,26 +380,26 @@ const AptitudeTests = () => {
         {/* Stats bar */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {[
-            { label: 'Total Tests', value: allTests.length, icon: 'ri-file-list-3-line', color: 'text-[#d4a574]' },
+            { label: 'Total Tests', value: allTests.length, icon: 'ri-file-list-3-line', color: 'text-primary' },
             { label: 'Questions', value: allTests.reduce((s, t) => s + (t.totalQuestions || t.questions?.length || 0), 0), icon: 'ri-question-line', color: 'text-blue-400' },
             { label: 'Attempted', value: Object.keys(practiceHistory).length, icon: 'ri-check-double-line', color: 'text-green-400' },
             { label: 'Categories', value: CATEGORIES.length - 1, icon: 'ri-folder-line', color: 'text-violet-400' },
           ].map((s, i) => (
-            <div key={i} className="bg-[#1a1a1a] rounded-2xl p-4 border border-[#2a2a2a] flex items-center gap-3">
-              <div className={`w-10 h-10 rounded-xl bg-[#222] flex items-center justify-center ${s.color}`}><i className={`${s.icon} text-lg`}></i></div>
-              <div><p className="text-lg font-bold text-[#e8e8e8]">{s.value}</p><p className="text-[10px] text-[#666]">{s.label}</p></div>
+            <div key={i} className="bg-white dark-theme:bg-gray-900 rounded-2xl p-4 border border-sand dark-theme:border-gray-800 flex items-center gap-3">
+              <div className={`w-10 h-10 rounded-xl bg-cream dark-theme:bg-gray-800 flex items-center justify-center ${s.color}`}><i className={`${s.icon} text-lg`}></i></div>
+              <div><p className="text-lg font-bold text-gray-800 dark-theme:text-gray-100">{s.value}</p><p className="text-[10px] text-gray-500 dark-theme:text-gray-400">{s.label}</p></div>
             </div>
           ))}
         </div>
 
-        {loading ? <div className="flex justify-center py-20"><div className="w-8 h-8 border-3 border-[#d4a574] border-t-transparent rounded-full animate-spin"></div></div> :
-        filteredTests.length === 0 ? <div className="text-center py-20 text-[#555]"><i className="ri-question-answer-line text-4xl mb-3 block"></i><p>No tests in this category</p></div> :
+        {loading ? <div className="flex justify-center py-20"><div className="w-8 h-8 border-3 border-primary border-t-transparent rounded-full animate-spin"></div></div> :
+        filteredTests.length === 0 ? <div className="text-center py-20 text-gray-400 dark-theme:text-gray-500"><i className="ri-question-answer-line text-4xl mb-3 block"></i><p>No tests in this category</p></div> :
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {filteredTests.map(t => {
             const history = practiceHistory[t.id];
             const bestScore = history ? Math.max(...history.map(h => Math.round(h.score / h.total * 100))) : null;
             return (
-              <div key={t.id} className="bg-[#1a1a1a] rounded-2xl border border-[#2a2a2a] overflow-hidden hover:border-[#d4a574]/30 hover:shadow-lg hover:shadow-[#d4a574]/5 transition-all group">
+              <div key={t.id} className="bg-white dark-theme:bg-gray-900 rounded-2xl border border-sand dark-theme:border-gray-800 overflow-hidden hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 transition-all group">
                 <div className={`h-1.5 bg-gradient-to-r ${CAT_COLORS[t.category] || 'from-gray-500 to-gray-600'}`}></div>
                 <div className="p-5">
                   <div className="flex items-start justify-between mb-3">
@@ -411,9 +411,9 @@ const AptitudeTests = () => {
                       {t.source === 'practice' && <span className="text-[10px] font-medium px-2 py-1 rounded-full bg-violet-500/10 text-violet-400">Practice</span>}
                     </div>
                   </div>
-                  <h3 className="font-bold text-[#e8e8e8] text-sm mb-1">{t.title}</h3>
-                  <p className="text-[11px] text-[#666] line-clamp-2 mb-3">{t.description}</p>
-                  <div className="flex items-center gap-3 text-[11px] text-[#555] mb-4">
+                  <h3 className="font-bold text-gray-800 dark-theme:text-gray-100 text-sm mb-1">{t.title}</h3>
+                  <p className="text-[11px] text-gray-500 dark-theme:text-gray-400 line-clamp-2 mb-3">{t.description}</p>
+                  <div className="flex items-center gap-3 text-[11px] text-gray-400 dark-theme:text-gray-500 mb-4">
                     <span><i className="ri-time-line mr-0.5"></i>{t.duration} min</span>
                     <span><i className="ri-file-list-line mr-0.5"></i>{t.totalQuestions || t.questions?.length} Q</span>
                     <span><i className="ri-medal-line mr-0.5"></i>{t.totalMarks || t.questions?.reduce((s, q) => s + (q.marks || 1), 0)} marks</span>
@@ -421,13 +421,13 @@ const AptitudeTests = () => {
                   {bestScore !== null && (
                     <div className="mb-3">
                       <div className="flex items-center justify-between text-[10px] mb-1">
-                        <span className="text-[#666]">Best Score</span>
+                        <span className="text-gray-500 dark-theme:text-gray-400">Best Score</span>
                         <span className={bestScore >= 70 ? 'text-green-400' : 'text-amber-400'}>{bestScore}%</span>
                       </div>
-                      <div className="h-1.5 bg-[#222] rounded-full"><div className={`h-full rounded-full ${bestScore >= 70 ? 'bg-green-500' : 'bg-amber-500'}`} style={{ width: `${bestScore}%` }}></div></div>
+                      <div className="h-1.5 bg-cream dark-theme:bg-gray-800 rounded-full"><div className={`h-full rounded-full ${bestScore >= 70 ? 'bg-green-500' : 'bg-amber-500'}`} style={{ width: `${bestScore}%` }}></div></div>
                     </div>
                   )}
-                  <button onClick={() => t.source === 'practice' ? startPracticeTest(t) : startDbTest(t.id)} className="w-full py-2.5 rounded-xl bg-[#d4a574] text-[#1a1a1a] text-xs font-semibold hover:bg-[#c4956a] transition-colors">
+                  <button onClick={() => t.source === 'practice' ? startPracticeTest(t) : startDbTest(t.id)} className="w-full py-2.5 rounded-xl bg-primary text-white text-xs font-semibold hover:bg-primary-dark transition-colors">
                     <i className="ri-play-line mr-1"></i>{bestScore !== null ? 'Retake' : 'Start Test'}
                   </button>
                 </div>
