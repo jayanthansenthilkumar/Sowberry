@@ -48,6 +48,16 @@
   --color-cream-dark: #f0ebe3;
   --color-sand: #e8e0d4;
 
+  /* Claude palette — warm organic tones for decorative elements */
+  --color-peach: #f0c4a8;
+  --color-blush: #e8a98a;
+  --color-terracotta: #c96442;
+  --color-amber: #d4a843;
+  --color-sage: #a8c4a0;
+  --color-clay: #b8886e;
+  --color-linen: #f5ede3;
+  --color-sienna: #a0522d;
+
   /* Warm gray scale */
   --color-dark: #1a1a1a;
   --color-gray-950: #1a1a1a;
@@ -220,4 +230,83 @@
 
 .animate-pulse-glow {
   animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* Hero gradient orbs */
+@keyframes orb-drift {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(12px, -18px) scale(1.04); }
+  66% { transform: translate(-8px, 10px) scale(0.97); }
+}
+
+@keyframes orb-drift-reverse {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(-14px, 12px) scale(0.96); }
+  66% { transform: translate(10px, -16px) scale(1.03); }
+}
+
+@keyframes shimmer {
+  0% { opacity: 0.5; }
+  50% { opacity: 0.8; }
+  100% { opacity: 0.5; }
+}
+
+.hero-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.45;
+  pointer-events: none;
+  will-change: transform;
+}
+
+.dark-theme .hero-orb {
+  opacity: 0.15;
+  filter: blur(80px);
+}
+
+.hero-orb-1 {
+  width: 380px;
+  height: 380px;
+  background: radial-gradient(circle, var(--color-peach) 0%, transparent 70%);
+  animation: orb-drift 14s ease-in-out infinite;
+}
+
+.hero-orb-2 {
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, var(--color-sage) 0%, transparent 70%);
+  animation: orb-drift-reverse 18s ease-in-out infinite;
+}
+
+.hero-orb-3 {
+  width: 260px;
+  height: 260px;
+  background: radial-gradient(circle, var(--color-amber) 0%, transparent 70%);
+  animation: orb-drift 20s ease-in-out infinite 2s;
+}
+
+.hero-orb-4 {
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, var(--color-blush) 0%, transparent 70%);
+  animation: orb-drift-reverse 16s ease-in-out infinite 1s;
+}
+
+.hero-orb-5 {
+  width: 340px;
+  height: 340px;
+  background: radial-gradient(circle, var(--color-linen) 0%, transparent 70%);
+  animation: orb-drift 22s ease-in-out infinite 3s;
+}
+
+.hero-grid-line {
+  position: absolute;
+  background: var(--color-sand);
+  opacity: 0.3;
+}
+
+.dark-theme .hero-grid-line {
+  background: var(--color-gray-800);
+  opacity: 0.15;
 }
