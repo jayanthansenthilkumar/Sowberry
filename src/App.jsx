@@ -86,15 +86,15 @@ function App() {
           <Route path="/admin/courses-overview" element={<ProtectedRoute allowedRoles={['admin']}><CoursesOverview /></ProtectedRoute>} />
           <Route path="/admin/manage-mentors" element={<ProtectedRoute allowedRoles={['admin']}><ManageMentors /></ProtectedRoute>} />
           
-          {/* Mentor Routes */}
-          <Route path="/mentor" element={<ProtectedRoute allowedRoles={['mentor']}><MentorDashboard /></ProtectedRoute>} />
-          <Route path="/mentor/new-courses" element={<ProtectedRoute allowedRoles={['mentor']}><NewCourses /></ProtectedRoute>} />
-          <Route path="/mentor/new-problem-solving" element={<ProtectedRoute allowedRoles={['mentor']}><NewProblemSolving /></ProtectedRoute>} />
-          <Route path="/mentor/students-progress" element={<ProtectedRoute allowedRoles={['mentor']}><StudentsProgress /></ProtectedRoute>} />
-          <Route path="/mentor/new-events" element={<ProtectedRoute allowedRoles={['mentor']}><NewEvents /></ProtectedRoute>} />
-          <Route path="/mentor/new-aptitude" element={<ProtectedRoute allowedRoles={['mentor']}><NewAptitude /></ProtectedRoute>} />
-          <Route path="/mentor/new-assignments" element={<ProtectedRoute allowedRoles={['mentor']}><NewAssignments /></ProtectedRoute>} />
-          <Route path="/mentor/discussion" element={<ProtectedRoute allowedRoles={['mentor']}><MentorDiscussion /></ProtectedRoute>} />
+          {/* Mentor Routes (accessible by mentor + admin) */}
+          <Route path="/mentor" element={<ProtectedRoute allowedRoles={['mentor', 'admin']}><MentorDashboard /></ProtectedRoute>} />
+          <Route path="/mentor/new-courses" element={<ProtectedRoute allowedRoles={['mentor', 'admin']}><NewCourses /></ProtectedRoute>} />
+          <Route path="/mentor/new-problem-solving" element={<ProtectedRoute allowedRoles={['mentor', 'admin']}><NewProblemSolving /></ProtectedRoute>} />
+          <Route path="/mentor/students-progress" element={<ProtectedRoute allowedRoles={['mentor', 'admin']}><StudentsProgress /></ProtectedRoute>} />
+          <Route path="/mentor/new-events" element={<ProtectedRoute allowedRoles={['mentor', 'admin']}><NewEvents /></ProtectedRoute>} />
+          <Route path="/mentor/new-aptitude" element={<ProtectedRoute allowedRoles={['mentor', 'admin']}><NewAptitude /></ProtectedRoute>} />
+          <Route path="/mentor/new-assignments" element={<ProtectedRoute allowedRoles={['mentor', 'admin']}><NewAssignments /></ProtectedRoute>} />
+          <Route path="/mentor/discussion" element={<ProtectedRoute allowedRoles={['mentor', 'admin']}><MentorDiscussion /></ProtectedRoute>} />
           
           {/* Student Routes */}
           <Route path="/student" element={<ProtectedRoute allowedRoles={['student']}><StudentDashboard /></ProtectedRoute>} />

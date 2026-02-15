@@ -84,6 +84,15 @@ const AdminLayout = ({ children, pageTitle }) => {
     { path: '/admin/performance-analytics', icon: 'ri-line-chart-line', label: 'Analytics' },
     { path: '/admin/system-reports', icon: 'ri-file-chart-line', label: 'Reports' },
     { path: '/admin/settings', icon: 'ri-settings-line', label: 'Settings' },
+    { type: 'separator', label: 'Mentor Tools' },
+    { path: '/mentor', icon: 'ri-dashboard-line', label: 'Mentor Dashboard' },
+    { path: '/mentor/new-courses', icon: 'ri-book-open-line', label: 'Manage Courses' },
+    { path: '/mentor/new-assignments', icon: 'ri-task-line', label: 'Assignments' },
+    { path: '/mentor/students-progress', icon: 'ri-line-chart-line', label: 'Student Progress' },
+    { path: '/mentor/new-problem-solving', icon: 'ri-code-s-slash-line', label: 'Problem Solving' },
+    { path: '/mentor/new-aptitude', icon: 'ri-question-answer-line', label: 'Aptitude' },
+    { path: '/mentor/new-events', icon: 'ri-calendar-event-line', label: 'Events' },
+    { path: '/mentor/discussion', icon: 'ri-discuss-line', label: 'Discussion' },
   ];
 
   return (
@@ -120,20 +129,26 @@ const AdminLayout = ({ children, pageTitle }) => {
 
         {/* Navigation */}
         <nav className="flex-1 overflow-y-auto py-2 px-3 space-y-0.5">
-          {navItems.map(item => (
-            <Link
-              key={item.path}
-              to={item.path}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] font-medium transition-all duration-150
-                ${location.pathname === item.path
-                  ? 'bg-white/10 text-white'
-                  : 'text-gray-400 hover:bg-white/5 hover:text-gray-200'
-                }`}
-              onClick={() => setSidebarOpen(false)}
-            >
-              <i className={`${item.icon} text-base`}></i>
-              <span>{item.label}</span>
-            </Link>
+          {navItems.map((item, index) => (
+            item.type === 'separator' ? (
+              <div key={`sep-${index}`} className="pt-4 pb-1.5 px-3">
+                <p className="text-[10px] font-semibold tracking-wider text-gray-600 uppercase">{item.label}</p>
+              </div>
+            ) : (
+              <Link
+                key={item.path}
+                to={item.path}
+                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] font-medium transition-all duration-150
+                  ${location.pathname === item.path
+                    ? 'bg-white/10 text-white'
+                    : 'text-gray-400 hover:bg-white/5 hover:text-gray-200'
+                  }`}
+                onClick={() => setSidebarOpen(false)}
+              >
+                <i className={`${item.icon} text-base`}></i>
+                <span>{item.label}</span>
+              </Link>
+            )
           ))}
         </nav>
 

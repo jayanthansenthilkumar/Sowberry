@@ -4,8 +4,8 @@ import { authenticate, authorize } from '../middleware/auth.js';
 
 const router = Router();
 
-// All mentor routes require authentication + mentor role
-router.use(authenticate, authorize('mentor'));
+// All mentor routes require authentication + mentor or admin role
+router.use(authenticate, authorize('mentor', 'admin'));
 
 // ──────────────── DASHBOARD ────────────────
 router.get('/dashboard', async (req, res) => {

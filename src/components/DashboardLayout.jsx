@@ -119,7 +119,17 @@ const DashboardLayout = ({ children, pageTitle, role = 'student' }) => {
         </nav>
 
         {/* Sidebar Footer */}
-        <div className="px-3 py-4 border-t border-white/10">
+        <div className="px-3 py-4 border-t border-white/10 space-y-0.5">
+          {user?.role === 'admin' && role === 'mentor' && (
+            <Link
+              to="/admin"
+              className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] font-medium text-primary-light hover:bg-white/5 hover:text-white transition-all duration-150"
+              onClick={() => setSidebarOpen(false)}
+            >
+              <i className="ri-arrow-left-line text-base"></i>
+              <span>Back to Admin</span>
+            </Link>
+          )}
           <button onClick={handleSignOut} className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] font-medium text-gray-400 hover:bg-white/5 hover:text-gray-200 transition-all duration-150">
             <i className="ri-logout-box-line text-base"></i>
             <span>Sign Out</span>

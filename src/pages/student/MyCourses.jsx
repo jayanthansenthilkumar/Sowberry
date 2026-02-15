@@ -93,7 +93,11 @@ const MyCourses = () => {
                   <h3 className="font-semibold text-gray-800 dark-theme:text-white text-sm mb-1">{c.title}</h3>
                   <p className="text-xs text-gray-500 line-clamp-2 mb-2">{c.description}</p>
                   <p className="text-[11px] text-gray-400 mb-3"><i className="ri-user-line mr-1"></i>{c.mentorName || 'Instructor'}</p>
-                  <button onClick={() => handleEnroll(c.id)} className="w-full py-2 rounded-xl bg-green-500 text-white text-xs font-medium hover:bg-green-600"><i className="ri-add-line mr-1"></i>Enroll Now</button>
+                  {c.isEnrolled ? (
+                    <button disabled className="w-full py-2 rounded-xl bg-gray-200 dark-theme:bg-gray-700 text-gray-500 dark-theme:text-gray-400 text-xs font-medium cursor-not-allowed"><i className="ri-check-line mr-1"></i>Already Enrolled</button>
+                  ) : (
+                    <button onClick={() => handleEnroll(c.id)} className="w-full py-2 rounded-xl bg-green-500 text-white text-xs font-medium hover:bg-green-600"><i className="ri-add-line mr-1"></i>Enroll Now</button>
+                  )}
                 </div>
               </div>
             ))}
