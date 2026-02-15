@@ -6,7 +6,7 @@ import { useAuth } from '../../context/AuthContext';
 
 const AdminDashboard = () => {
   const { user } = useAuth();
-  const [stats, setStats] = useState({ totalStudents: 0, totalMentors: 0, totalCourses: 0, totalEnrollments: 0, completionRate: 0, avgRating: 0, recentActivities: [], systemAlerts: [] });
+  const [stats, setStats] = useState({ totalStudents: 0, totalMentors: 0, totalCourses: 0, totalEnrollments: 0, avgCompletion: 0, activeStudents: 0, recentActivities: [], pendingVerifications: 0 });
   const [activeLearnersCount, setActiveLearnersCount] = useState(0);
   
   const studentsChartRef = useRef(null);
@@ -18,7 +18,7 @@ const AdminDashboard = () => {
     const fetchDashboard = async () => {
       const res = await adminApi.getDashboard();
       if (res.success) {
-        setStats(res.data);
+        setStats(res.stats || {});
       }
     };
     fetchDashboard();
@@ -173,7 +173,7 @@ const AdminDashboard = () => {
             <h3 className="text-sm font-semibold text-gray-500 dark-theme:text-gray-400">Mentor Performance</h3>
             <i className="ri-team-line text-cyan-500 text-xl"></i>
           </div>
-          <h2 className="text-3xl font-bold text-gray-800 dark-theme:text-white mb-4">{stats.avgRating || 4.8}</h2>
+          <h2 className="text-3xl font-bold text-gray-800 dark-theme:text-white mb-4">{stats.totalMentors || 0}</h2>
           <div className="h-40">
             <canvas ref={mentorChartRef}></canvas>
           </div>
@@ -183,7 +183,7 @@ const AdminDashboard = () => {
             <h3 className="text-sm font-semibold text-gray-500 dark-theme:text-gray-400">Course Completion Rate</h3>
             <i className="ri-medal-line text-violet-500 text-xl"></i>
           </div>
-          <h2 className="text-3xl font-bold text-gray-800 dark-theme:text-white mb-4">{stats.completionRate || 0}%</h2>
+          <h2 className="text-3xl font-bold text-gray-800 dark-theme:text-white mb-4">{stats.avgCompletion || 0}%</h2>
           <div className="h-40">
             <canvas ref={completionChartRef}></canvas>
           </div>

@@ -6,8 +6,13 @@ export const setToken = (token) => localStorage.setItem('sowberry_token', token)
 export const removeToken = () => localStorage.removeItem('sowberry_token');
 
 export const getUser = () => {
-  const user = localStorage.getItem('sowberry_user');
-  return user ? JSON.parse(user) : null;
+  try {
+    const user = localStorage.getItem('sowberry_user');
+    return user ? JSON.parse(user) : null;
+  } catch {
+    localStorage.removeItem('sowberry_user');
+    return null;
+  }
 };
 export const setUser = (user) => localStorage.setItem('sowberry_user', JSON.stringify(user));
 export const removeUser = () => localStorage.removeItem('sowberry_user');
@@ -35,14 +40,25 @@ const apiCall = async (endpoint, options = {}) => {
       headers
     });
 
-    const data = await response.json();
+    const json = await response.json();
 
     if (response.status === 401) {
       logout();
-      return data;
+      return json;
     }
 
-    return data;
+    // Unwrap the `data` wrapper: spread data properties to top-level
+    // so frontend can read e.g. res.students, res.stats directly
+    if (json.success && json.data !== undefined) {
+      // If data is an object (not array), spread its keys to top level
+      if (json.data && typeof json.data === 'object' && !Array.isArray(json.data)) {
+        return { success: true, message: json.message, ...json.data };
+      }
+      // If data is an array or primitive, keep as-is but also add as 'data'
+      return { success: true, message: json.message, data: json.data };
+    }
+
+    return json;
   } catch (error) {
     console.error('API Error:', error);
     return { success: false, message: 'Network error. Please check your connection.' };

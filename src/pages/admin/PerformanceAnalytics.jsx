@@ -9,7 +9,7 @@ const PerformanceAnalytics = () => {
   useEffect(() => {
     const fetch = async () => {
       const res = await adminApi.getAnalytics();
-      if (res.success) setAnalytics(res.data);
+      if (res.success) { const { success, message, ...data } = res; setAnalytics(data); }
       setLoading(false);
     };
     fetch();
@@ -46,7 +46,7 @@ const PerformanceAnalytics = () => {
           <div className="bg-white dark-theme:bg-gray-900 rounded-2xl p-6 border border-sand dark-theme:border-gray-800">
             <h3 className="text-lg font-bold text-gray-800 dark-theme:text-white mb-4">Top Courses by Enrollment</h3>
             <div className="space-y-4">
-              {(analytics?.coursePerformance || []).slice(0, 5).map((c, i) => (
+              {(analytics?.courseCompletion || []).slice(0, 5).map((c, i) => (
                 <div key={i} className="flex items-center gap-4">
                   <span className="w-6 h-6 rounded-md bg-primary/10 text-primary text-xs font-bold flex items-center justify-center">{i + 1}</span>
                   <div className="flex-1 min-w-0">
@@ -58,14 +58,14 @@ const PerformanceAnalytics = () => {
                   <span className="text-sm font-semibold text-gray-600 dark-theme:text-gray-400">{c.enrollmentCount}</span>
                 </div>
               ))}
-              {(!analytics?.coursePerformance || analytics.coursePerformance.length === 0) && <p className="text-sm text-gray-400 text-center py-4">No course data available</p>}
+              {(!analytics?.courseCompletion || analytics.courseCompletion.length === 0) && <p className="text-sm text-gray-400 text-center py-4">No course data available</p>}
             </div>
           </div>
 
           <div className="bg-white dark-theme:bg-gray-900 rounded-2xl p-6 border border-sand dark-theme:border-gray-800">
             <h3 className="text-lg font-bold text-gray-800 dark-theme:text-white mb-4">Monthly Trends</h3>
             <div className="space-y-4">
-              {(analytics?.monthlyTrends || []).map((t, i) => (
+              {(analytics?.registrationTrends || []).map((t, i) => (
                 <div key={i} className="flex items-center justify-between p-3 rounded-xl bg-cream/50 dark-theme:bg-gray-800/50">
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center"><i className="ri-calendar-line text-primary text-sm"></i></div>
@@ -77,7 +77,7 @@ const PerformanceAnalytics = () => {
                   </div>
                 </div>
               ))}
-              {(!analytics?.monthlyTrends || analytics.monthlyTrends.length === 0) && <p className="text-sm text-gray-400 text-center py-4">No trend data available</p>}
+              {(!analytics?.registrationTrends || analytics.registrationTrends.length === 0) && <p className="text-sm text-gray-400 text-center py-4">No trend data available</p>}
             </div>
           </div>
         </div>

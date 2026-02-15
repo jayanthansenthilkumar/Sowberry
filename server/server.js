@@ -63,6 +63,24 @@ app.get('/', (req, res) => {
   });
 });
 
+// API root
+app.get('/api', (req, res) => {
+  res.json({
+    success: true,
+    message: 'Sowberry API is running!',
+    version: '1.0.0',
+    timestamp: new Date().toISOString(),
+    endpoints: {
+      health: 'GET /api/health',
+      auth: '/api/auth (login, register, forgot-password, verify-otp, reset-password, me, profile, change-password)',
+      admin: '/api/admin (dashboard, students, mentors, courses, analytics, reports, settings, notifications, contact-messages)',
+      mentor: '/api/mentor (dashboard, courses, assignments, students-progress, problems, aptitude-tests, events, discussions, study-materials)',
+      student: '/api/student (dashboard, courses, assignments, grades, progress, coding-problems, aptitude-tests, study-materials, events, discussions, notifications)',
+      public: '/api/public (courses, contact, newsletter)'
+    }
+  });
+});
+
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({ success: true, message: 'Sowberry API is running!', timestamp: new Date().toISOString() });

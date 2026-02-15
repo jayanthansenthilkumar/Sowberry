@@ -89,7 +89,7 @@ router.get('/courses', async (req, res) => {
       ORDER BY ce.enrolledAt DESC
     `, [req.user.id]);
 
-    res.json({ success: true, data: courses });
+    res.json({ success: true, data: { courses } });
   } catch (error) {
     console.error('Get courses error:', error);
     res.status(500).json({ success: false, message: 'Server error.' });
@@ -118,7 +118,7 @@ router.get('/courses/browse', async (req, res) => {
     query += ' ORDER BY c.createdAt DESC';
     const [courses] = await pool.query(query, params);
 
-    res.json({ success: true, data: courses });
+    res.json({ success: true, data: { courses } });
   } catch (error) {
     console.error('Browse courses error:', error);
     res.status(500).json({ success: false, message: 'Server error.' });
@@ -182,7 +182,7 @@ router.get('/courses/:id/materials', async (req, res) => {
       [req.params.id]
     );
 
-    res.json({ success: true, data: materials });
+    res.json({ success: true, data: { materials } });
   } catch (error) {
     console.error('Get materials error:', error);
     res.status(500).json({ success: false, message: 'Server error.' });
@@ -203,7 +203,7 @@ router.get('/assignments', async (req, res) => {
       ORDER BY a.dueDate ASC
     `, [req.user.id, req.user.id]);
 
-    res.json({ success: true, data: assignments });
+    res.json({ success: true, data: { assignments } });
   } catch (error) {
     console.error('Get assignments error:', error);
     res.status(500).json({ success: false, message: 'Server error.' });
@@ -318,9 +318,20 @@ router.get('/progress', async (req, res) => {
       FROM codingSubmissions WHERE studentId = ?
     `, [req.user.id]);
 
+    // Compute overall progress
+    const totalCourses = courseProgress.length;
+    const completedCourses = courseProgress.filter(c => c.status === 'completed').length;
+    const overallProgress = totalCourses > 0 ? Math.round(courseProgress.reduce((sum, c) => sum + (c.completionPercentage || 0), 0) / totalCourses) : 0;
+
     res.json({
       success: true,
-      data: { courseProgress, assignmentStats: assignmentStats[0], aptitudeHistory, codingStats: codingStats[0] }
+      data: {
+        progress: courseProgress,
+        overall: { totalCourses, completedCourses, overallProgress },
+        assignmentStats: assignmentStats[0],
+        aptitudeHistory,
+        codingStats: codingStats[0]
+      }
     });
   } catch (error) {
     console.error('Get progress error:', error);
@@ -348,7 +359,7 @@ router.get('/coding-problems', async (req, res) => {
     query += ' ORDER BY FIELD(cp.difficulty, "easy", "medium", "hard"), cp.createdAt DESC';
     const [problems] = await pool.query(query, params);
 
-    res.json({ success: true, data: problems });
+    res.json({ success: true, data: { problems } });
   } catch (error) {
     console.error('Get problems error:', error);
     res.status(500).json({ success: false, message: 'Server error.' });
@@ -413,7 +424,7 @@ router.get('/aptitude-tests', async (req, res) => {
       ORDER BY at.createdAt DESC
     `, [req.user.id, req.user.id]);
 
-    res.json({ success: true, data: tests });
+    res.json({ success: true, data: { tests } });
   } catch (error) {
     console.error('Get tests error:', error);
     res.status(500).json({ success: false, message: 'Server error.' });
@@ -526,7 +537,7 @@ router.get('/study-materials', async (req, res) => {
     query += ' ORDER BY sm.createdAt DESC';
 
     const [materials] = await pool.query(query, params);
-    res.json({ success: true, data: materials });
+    res.json({ success: true, data: { materials } });
   } catch (error) {
     console.error('Get materials error:', error);
     res.status(500).json({ success: false, message: 'Server error.' });
@@ -546,7 +557,7 @@ router.get('/events', async (req, res) => {
       ORDER BY e.startDate ASC
     `, [req.user.id]);
 
-    res.json({ success: true, data: events });
+    res.json({ success: true, data: { events } });
   } catch (error) {
     console.error('Get events error:', error);
     res.status(500).json({ success: false, message: 'Server error.' });
@@ -591,7 +602,7 @@ router.get('/discussions', async (req, res) => {
       ORDER BY d.createdAt DESC
     `, [req.user.id]);
 
-    res.json({ success: true, data: discussions });
+    res.json({ success: true, data: { discussions } });
   } catch (error) {
     console.error('Get discussions error:', error);
     res.status(500).json({ success: false, message: 'Server error.' });

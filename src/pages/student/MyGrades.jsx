@@ -4,7 +4,7 @@ import { studentApi } from '../../utils/api';
 
 const MyGrades = () => {
   const [grades, setGrades] = useState([]);
-  const [summary, setSummary] = useState({ average: 0, highest: 0, totalGraded: 0 });
+  const [summary, setSummary] = useState({ avgPercentage: 0, highestScore: 0, totalGrades: 0 });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -12,7 +12,7 @@ const MyGrades = () => {
       const res = await studentApi.getGrades();
       if (res.success) {
         setGrades(res.grades || []);
-        setSummary(res.summary || summary);
+        setSummary(res.stats || summary);
       }
       setLoading(false);
     };
@@ -30,17 +30,17 @@ const MyGrades = () => {
         <div className="grid grid-cols-3 gap-4">
           <div className="bg-white dark-theme:bg-gray-900 rounded-2xl p-5 border border-sand dark-theme:border-gray-800 text-center">
             <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center mx-auto mb-2"><i className="ri-bar-chart-box-line text-blue-600"></i></div>
-            <p className="text-2xl font-bold text-gray-800 dark-theme:text-white">{summary.average}%</p>
+            <p className="text-2xl font-bold text-gray-800 dark-theme:text-white">{summary.avgPercentage}%</p>
             <p className="text-xs text-gray-500">Average</p>
           </div>
           <div className="bg-white dark-theme:bg-gray-900 rounded-2xl p-5 border border-sand dark-theme:border-gray-800 text-center">
             <div className="w-10 h-10 rounded-xl bg-green-100 flex items-center justify-center mx-auto mb-2"><i className="ri-arrow-up-line text-green-600"></i></div>
-            <p className="text-2xl font-bold text-gray-800 dark-theme:text-white">{summary.highest}%</p>
+            <p className="text-2xl font-bold text-gray-800 dark-theme:text-white">{summary.highestScore}%</p>
             <p className="text-xs text-gray-500">Highest</p>
           </div>
           <div className="bg-white dark-theme:bg-gray-900 rounded-2xl p-5 border border-sand dark-theme:border-gray-800 text-center">
             <div className="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center mx-auto mb-2"><i className="ri-file-list-line text-purple-600"></i></div>
-            <p className="text-2xl font-bold text-gray-800 dark-theme:text-white">{summary.totalGraded}</p>
+            <p className="text-2xl font-bold text-gray-800 dark-theme:text-white">{summary.totalGrades}</p>
             <p className="text-xs text-gray-500">Graded</p>
           </div>
         </div>

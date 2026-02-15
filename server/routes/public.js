@@ -37,7 +37,7 @@ router.get('/courses', async (req, res) => {
       ORDER BY c.rating DESC, c.createdAt DESC
     `);
 
-    res.json({ success: true, data: courses });
+    res.json({ success: true, data: { courses } });
   } catch (error) {
     console.error('Public courses error:', error);
     res.status(500).json({ success: false, message: 'Server error.' });

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { useAuth } from '../context/AuthContext';
@@ -29,9 +29,11 @@ const mentorNav = [
 
 const DashboardLayout = ({ children, pageTitle, role = 'student' }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const { user, logout } = useAuth();
+  const profileRef = useRef(null);
 
   const savedTheme = localStorage.getItem('theme');
   const [theme, setTheme] = useState(savedTheme || 'light');
@@ -43,6 +45,16 @@ const DashboardLayout = ({ children, pageTitle, role = 'student' }) => {
       document.body.classList.remove('dark-theme');
     }
   }, [theme]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (profileRef.current && !profileRef.current.contains(event.target)) {
+        setProfileOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const toggleTheme = () => {
     const newTheme = theme === 'light' ? 'dark-theme' : 'light';
@@ -129,12 +141,75 @@ const DashboardLayout = ({ children, pageTitle, role = 'student' }) => {
             <h2 className="text-[15px] font-semibold text-gray-800 dark-theme:text-gray-200">{pageTitle}</h2>
           </div>
           <div className="flex items-center gap-1">
+            {/* Theme Toggle */}
             <button
               onClick={toggleTheme}
               className="w-9 h-9 rounded-lg flex items-center justify-center text-gray-500 dark-theme:text-gray-400 hover:bg-cream-dark dark-theme:hover:bg-gray-800 hover:text-gray-700 dark-theme:hover:text-gray-200 transition-colors"
             >
               <i className={theme === 'dark-theme' ? 'ri-moon-line text-base' : 'ri-sun-line text-base'}></i>
             </button>
+
+            {/* Profile Dropdown */}
+            <div ref={profileRef} className="relative ml-1">
+              <button
+                onClick={() => setProfileOpen(!profileOpen)}
+                className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-cream-dark dark-theme:hover:bg-gray-800 transition-colors"
+              >
+                <img
+                  src={`https://ui-avatars.com/api/?name=${encodeURIComponent(user?.fullName || (role === 'mentor' ? 'Mentor' : 'Student'))}&size=28&background=c96442&color=fff&bold=true`}
+                  alt="User"
+                  className="w-7 h-7 rounded-md"
+                />
+                <div className="hidden sm:flex flex-col items-start">
+                  <span className="text-[13px] font-medium text-gray-700 dark-theme:text-gray-200 leading-tight">{user?.fullName || (role === 'mentor' ? 'Mentor' : 'Student')}</span>
+                  <span className="text-[10px] text-gray-400 capitalize">{role}</span>
+                </div>
+                <i className={`ri-arrow-down-s-line text-gray-400 text-sm hidden sm:block transition-transform ${profileOpen ? 'rotate-180' : ''}`}></i>
+              </button>
+
+              {profileOpen && (
+                <div className="absolute right-0 top-11 w-48 bg-white dark-theme:bg-gray-900 rounded-xl shadow-lg border border-sand dark-theme:border-gray-800 overflow-hidden z-50 py-1">
+                  {/* User Info */}
+                  <div className="px-3 py-2.5 border-b border-sand dark-theme:border-gray-800">
+                    <p className="text-[13px] font-semibold text-gray-700 dark-theme:text-gray-200">{user?.fullName || (role === 'mentor' ? 'Mentor' : 'Student')}</p>
+                    <p className="text-[11px] text-gray-400 truncate">{user?.email || ''}</p>
+                  </div>
+                  {/* Menu Items */}
+                  <Link
+                    to={role === 'mentor' ? '/mentor' : '/student'}
+                    onClick={() => setProfileOpen(false)}
+                    className="flex items-center gap-2 px-3 py-2 text-[13px] text-gray-700 dark-theme:text-gray-200 hover:bg-cream dark-theme:hover:bg-gray-800 transition-colors"
+                  >
+                    <i className="ri-dashboard-line text-sm"></i> Dashboard
+                  </Link>
+                  {role === 'student' && (
+                    <Link
+                      to="/student/my-progress"
+                      onClick={() => setProfileOpen(false)}
+                      className="flex items-center gap-2 px-3 py-2 text-[13px] text-gray-700 dark-theme:text-gray-200 hover:bg-cream dark-theme:hover:bg-gray-800 transition-colors"
+                    >
+                      <i className="ri-line-chart-line text-sm"></i> My Progress
+                    </Link>
+                  )}
+                  {role === 'mentor' && (
+                    <Link
+                      to="/mentor/students-progress"
+                      onClick={() => setProfileOpen(false)}
+                      className="flex items-center gap-2 px-3 py-2 text-[13px] text-gray-700 dark-theme:text-gray-200 hover:bg-cream dark-theme:hover:bg-gray-800 transition-colors"
+                    >
+                      <i className="ri-line-chart-line text-sm"></i> Student Progress
+                    </Link>
+                  )}
+                  <div className="border-t border-sand dark-theme:border-gray-800 my-1"></div>
+                  <button
+                    onClick={() => { setProfileOpen(false); handleSignOut(); }}
+                    className="w-full flex items-center gap-2 px-3 py-2 text-[13px] text-danger hover:bg-danger/5 transition-colors"
+                  >
+                    <i className="ri-logout-box-line text-sm"></i> Sign Out
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </header>
 

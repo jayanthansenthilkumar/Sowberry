@@ -26,7 +26,7 @@ const MentorDiscussion = () => {
   const openThread = async (id) => {
     setSelectedThread(id);
     const res = await mentorApi.getDiscussion(id);
-    if (res.success) setThreadData(res.discussion);
+    if (res.success) setThreadData({ ...res.discussion, replies: res.replies || [] });
   };
 
   const handleCreate = async (e) => {

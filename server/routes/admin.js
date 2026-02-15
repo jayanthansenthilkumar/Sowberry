@@ -340,7 +340,7 @@ router.get('/courses', async (req, res) => {
       ORDER BY c.createdAt DESC
     `);
 
-    res.json({ success: true, data: courses });
+    res.json({ success: true, data: { courses } });
   } catch (error) {
     console.error('Get courses error:', error);
     res.status(500).json({ success: false, message: 'Server error.' });
@@ -350,10 +350,17 @@ router.get('/courses', async (req, res) => {
 // ──────────────── PERFORMANCE ANALYTICS ────────────────
 router.get('/analytics', async (req, res) => {
   try {
+    // Summary counts
+    const [totalStudents] = await pool.query("SELECT COUNT(*) as count FROM users WHERE role = 'student'");
+    const [totalMentors] = await pool.query("SELECT COUNT(*) as count FROM users WHERE role = 'mentor'");
+    const [totalCourses] = await pool.query("SELECT COUNT(*) as count FROM courses");
+    const [avgCompletion] = await pool.query("SELECT COALESCE(AVG(completionPercentage), 0) as avg FROM courseEnrollments");
+
     // Course completion rates
     const [courseCompletion] = await pool.query(`
       SELECT c.title, c.category,
         COUNT(ce.id) as totalEnrolled,
+        COUNT(ce.id) as enrollmentCount,
         SUM(CASE WHEN ce.status = 'completed' THEN 1 ELSE 0 END) as completedCount,
         COALESCE(AVG(ce.completionPercentage), 0) as avgCompletion
       FROM courses c
@@ -392,8 +399,9 @@ router.get('/analytics', async (req, res) => {
     // Monthly registration trends
     const [registrationTrends] = await pool.query(`
       SELECT DATE_FORMAT(createdAt, '%Y-%m') as month,
-        SUM(CASE WHEN role = 'student' THEN 1 ELSE 0 END) as students,
-        SUM(CASE WHEN role = 'mentor' THEN 1 ELSE 0 END) as mentors
+        SUM(CASE WHEN role = 'student' THEN 1 ELSE 0 END) as newStudents,
+        SUM(CASE WHEN role = 'mentor' THEN 1 ELSE 0 END) as mentors,
+        COUNT(*) as enrollments
       FROM users
       WHERE createdAt >= DATE_SUB(NOW(), INTERVAL 12 MONTH)
       GROUP BY month ORDER BY month
@@ -401,7 +409,16 @@ router.get('/analytics', async (req, res) => {
 
     res.json({
       success: true,
-      data: { courseCompletion, topStudents, mentorStats, registrationTrends }
+      data: {
+        totalStudents: totalStudents[0].count,
+        totalMentors: totalMentors[0].count,
+        totalCourses: totalCourses[0].count,
+        completionRate: Math.round(avgCompletion[0].avg),
+        courseCompletion,
+        topStudents,
+        mentorStats,
+        registrationTrends
+      }
     });
   } catch (error) {
     console.error('Analytics error:', error);
@@ -428,9 +445,22 @@ router.get('/reports', async (req, res) => {
       SELECT * FROM contactMessages ORDER BY createdAt DESC LIMIT 20
     `);
 
+    // Summary stats for cards
+    const [totalUsersResult] = await pool.query("SELECT COUNT(*) as count FROM users");
+    const [totalSubmissions] = await pool.query("SELECT COUNT(*) as count FROM assignmentSubmissions");
+    const [totalEnrollments] = await pool.query("SELECT COUNT(*) as count FROM courseEnrollments");
+
     res.json({
       success: true,
-      data: { activityLogs, userStats, contactMessages }
+      data: {
+        activityLogs,
+        userStats,
+        contactMessages,
+        totalUsers: totalUsersResult[0].count,
+        totalSubmissions: totalSubmissions[0].count,
+        totalEnrollments: totalEnrollments[0].count,
+        totalContactMessages: contactMessages.length
+      }
     });
   } catch (error) {
     console.error('Reports error:', error);
@@ -444,7 +474,7 @@ router.get('/settings', async (req, res) => {
     const [settings] = await pool.query('SELECT * FROM systemSettings');
     const settingsObj = {};
     settings.forEach(s => { settingsObj[s.settingKey] = s.settingValue; });
-    res.json({ success: true, data: settingsObj });
+    res.json({ success: true, data: { settings: settingsObj } });
   } catch (error) {
     console.error('Get settings error:', error);
     res.status(500).json({ success: false, message: 'Server error.' });
@@ -499,7 +529,7 @@ router.put('/notifications/read-all', async (req, res) => {
 router.get('/contact-messages', async (req, res) => {
   try {
     const [messages] = await pool.query('SELECT * FROM contactMessages ORDER BY createdAt DESC');
-    res.json({ success: true, data: messages });
+    res.json({ success: true, data: { messages } });
   } catch (error) {
     console.error('Get messages error:', error);
     res.status(500).json({ success: false, message: 'Server error.' });

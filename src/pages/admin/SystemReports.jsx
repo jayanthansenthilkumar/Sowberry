@@ -9,7 +9,7 @@ const SystemReports = () => {
   useEffect(() => {
     const fetch = async () => {
       const res = await adminApi.getReports();
-      if (res.success) setReports(res.data);
+      if (res.success) { const { success, message, ...data } = res; setReports(data); }
       setLoading(false);
     };
     fetch();
@@ -58,7 +58,7 @@ const SystemReports = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-sand dark-theme:divide-gray-800">
-                {(reports?.recentLogs || []).map((log, i) => (
+                {(reports?.activityLogs || []).map((log, i) => (
                   <tr key={i} className="hover:bg-cream/30 dark-theme:hover:bg-gray-800/30">
                     <td className="px-6 py-3 text-sm text-gray-700 dark-theme:text-gray-300">{log.fullName || log.userId || 'System'}</td>
                     <td className="px-6 py-3"><span className="px-2 py-0.5 rounded-md bg-primary/10 text-primary text-xs font-medium">{log.action}</span></td>
@@ -66,7 +66,7 @@ const SystemReports = () => {
                     <td className="px-6 py-3 text-sm text-gray-400">{new Date(log.createdAt).toLocaleString()}</td>
                   </tr>
                 ))}
-                {(!reports?.recentLogs || reports.recentLogs.length === 0) && (
+                {(!reports?.activityLogs || reports.activityLogs.length === 0) && (
                   <tr><td colSpan="4" className="px-6 py-10 text-center text-gray-400">No activity logs yet</td></tr>
                 )}
               </tbody>

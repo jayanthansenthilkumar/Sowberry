@@ -7,6 +7,7 @@ const AptitudeTests = () => {
   const [tests, setTests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTest, setActiveTest] = useState(null);
+  const [attemptId, setAttemptId] = useState(null);
   const [answers, setAnswers] = useState({});
   const [timeLeft, setTimeLeft] = useState(0);
   const [submitting, setSubmitting] = useState(false);
@@ -29,7 +30,8 @@ const AptitudeTests = () => {
   const startTest = async (testId) => {
     const res = await studentApi.startAptitudeTest(testId);
     if (res.success) {
-      setActiveTest(res.test);
+      setActiveTest({ ...res.test, questions: res.questions || [] });
+      setAttemptId(res.attemptId);
       setAnswers({});
       setTimeLeft((res.test.duration || 30) * 60);
     } else Swal.fire({ icon: 'error', title: 'Error', text: res.message, background: '#fff', color: '#1f2937' });
@@ -43,11 +45,14 @@ const AptitudeTests = () => {
       if (!confirm.isConfirmed) return;
     }
     setSubmitting(true);
-    const res = await studentApi.submitAptitudeTest(activeTest.id, { answers });
+    // Convert answers from {questionId: 'A'} map to [{questionId, selectedOption}] array
+    const answersArray = Object.entries(answers).map(([questionId, selectedOption]) => ({ questionId: Number(questionId), selectedOption }));
+    const res = await studentApi.submitAptitudeTest(attemptId, { answers: answersArray });
     setSubmitting(false);
     if (res.success) {
-      Swal.fire({ icon: 'success', title: auto ? 'Time\'s Up!' : 'Submitted!', text: `Score: ${res.score || 0}/${res.total || 0}`, background: '#fff', color: '#1f2937' });
+      Swal.fire({ icon: 'success', title: auto ? 'Time\'s Up!' : 'Submitted!', text: `Score: ${res.score || 0}/${res.totalMarks || 0}`, background: '#fff', color: '#1f2937' });
       setActiveTest(null);
+      setAttemptId(null);
     } else Swal.fire({ icon: 'error', title: 'Error', text: res.message, background: '#fff', color: '#1f2937' });
   };
 

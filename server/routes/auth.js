@@ -249,7 +249,7 @@ router.get('/me', authenticate, async (req, res) => {
       return res.status(404).json({ success: false, message: 'User not found.' });
     }
 
-    res.json({ success: true, data: users[0] });
+    res.json({ success: true, data: { user: users[0] } });
   } catch (error) {
     console.error('Get user error:', error);
     res.status(500).json({ success: false, message: 'Server error.' });
@@ -271,7 +271,7 @@ router.put('/profile', authenticate, async (req, res) => {
       [req.user.id]
     );
 
-    res.json({ success: true, message: 'Profile updated successfully.', data: updated[0] });
+    res.json({ success: true, message: 'Profile updated successfully.', data: { user: updated[0] } });
   } catch (error) {
     console.error('Update profile error:', error);
     res.status(500).json({ success: false, message: 'Server error.' });

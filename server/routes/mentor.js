@@ -84,7 +84,7 @@ router.get('/courses', async (req, res) => {
       ORDER BY c.createdAt DESC
     `, [req.user.id]);
 
-    res.json({ success: true, data: courses });
+    res.json({ success: true, data: { courses } });
   } catch (error) {
     console.error('Get courses error:', error);
     res.status(500).json({ success: false, message: 'Server error.' });
@@ -152,7 +152,7 @@ router.get('/assignments', async (req, res) => {
       ORDER BY a.createdAt DESC
     `, [req.user.id]);
 
-    res.json({ success: true, data: assignments });
+    res.json({ success: true, data: { assignments } });
   } catch (error) {
     console.error('Get assignments error:', error);
     res.status(500).json({ success: false, message: 'Server error.' });
@@ -250,7 +250,7 @@ router.get('/assignments/:id/submissions', async (req, res) => {
       ORDER BY asub.submittedAt DESC
     `, [req.params.id]);
 
-    res.json({ success: true, data: submissions });
+    res.json({ success: true, data: { submissions } });
   } catch (error) {
     console.error('Get submissions error:', error);
     res.status(500).json({ success: false, message: 'Server error.' });
@@ -275,7 +275,7 @@ router.get('/students-progress', async (req, res) => {
       ORDER BY avgCompletion DESC
     `, [req.user.id, req.user.id]);
 
-    res.json({ success: true, data: students });
+    res.json({ success: true, data: { students } });
   } catch (error) {
     console.error('Students progress error:', error);
     res.status(500).json({ success: false, message: 'Server error.' });
@@ -294,7 +294,7 @@ router.get('/problems', async (req, res) => {
       ORDER BY cp.createdAt DESC
     `, [req.user.id]);
 
-    res.json({ success: true, data: problems });
+    res.json({ success: true, data: { problems } });
   } catch (error) {
     console.error('Get problems error:', error);
     res.status(500).json({ success: false, message: 'Server error.' });
@@ -366,7 +366,7 @@ router.get('/aptitude-tests', async (req, res) => {
       ORDER BY at.createdAt DESC
     `, [req.user.id]);
 
-    res.json({ success: true, data: tests });
+    res.json({ success: true, data: { tests } });
   } catch (error) {
     console.error('Get aptitude tests error:', error);
     res.status(500).json({ success: false, message: 'Server error.' });
@@ -443,13 +443,16 @@ router.get('/events', async (req, res) => {
   try {
     const [events] = await pool.query(`
       SELECT e.*,
+        DATE_FORMAT(e.startDate, '%Y-%m-%d') as eventDate,
+        DATE_FORMAT(e.startDate, '%H:%i') as eventTime,
+        TIMESTAMPDIFF(MINUTE, e.startDate, e.endDate) as duration,
         (SELECT COUNT(*) FROM eventRegistrations WHERE eventId = e.id) as registrationCount
       FROM events e
       WHERE e.mentorId = ?
       ORDER BY e.startDate DESC
     `, [req.user.id]);
 
-    res.json({ success: true, data: events });
+    res.json({ success: true, data: { events } });
   } catch (error) {
     console.error('Get events error:', error);
     res.status(500).json({ success: false, message: 'Server error.' });
@@ -458,15 +461,23 @@ router.get('/events', async (req, res) => {
 
 router.post('/events', async (req, res) => {
   try {
-    const { title, description, eventType, startDate, endDate, location, maxParticipants } = req.body;
+    let { title, description, eventType, startDate, endDate, location, maxParticipants, eventDate, eventTime, duration } = req.body;
 
-    if (!title || !startDate || !endDate) {
-      return res.status(400).json({ success: false, message: 'Title, start date, and end date are required.' });
+    // Support frontend format: eventDate + eventTime + duration → startDate + endDate
+    if (!startDate && eventDate) {
+      startDate = eventTime ? `${eventDate}T${eventTime}` : `${eventDate}T00:00:00`;
+      const durationMs = (duration || 60) * 60 * 1000;
+      endDate = new Date(new Date(startDate).getTime() + durationMs).toISOString();
     }
+
+    if (!title || !startDate) {
+      return res.status(400).json({ success: false, message: 'Title and date are required.' });
+    }
+    if (!endDate) endDate = startDate;
 
     const [result] = await pool.query(
       'INSERT INTO events (mentorId, title, description, eventType, startDate, endDate, location, maxParticipants, isPublished) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1)',
-      [req.user.id, title, description, eventType || 'liveSession', startDate, endDate, location, maxParticipants || 100]
+      [req.user.id, title, description, eventType || 'webinar', startDate, endDate, location, maxParticipants || 100]
     );
 
     res.status(201).json({ success: true, message: 'Event created successfully.', data: { id: result.insertId } });
@@ -478,7 +489,14 @@ router.post('/events', async (req, res) => {
 
 router.put('/events/:id', async (req, res) => {
   try {
-    const { title, description, eventType, startDate, endDate, location, maxParticipants, isPublished } = req.body;
+    let { title, description, eventType, startDate, endDate, location, maxParticipants, isPublished, eventDate, eventTime, duration } = req.body;
+
+    // Support frontend format
+    if (!startDate && eventDate) {
+      startDate = eventTime ? `${eventDate}T${eventTime}` : `${eventDate}T00:00:00`;
+      const durationMs = (duration || 60) * 60 * 1000;
+      endDate = new Date(new Date(startDate).getTime() + durationMs).toISOString();
+    }
 
     await pool.query(
       `UPDATE events SET title = COALESCE(?, title), description = COALESCE(?, description),
@@ -518,7 +536,7 @@ router.get('/discussions', async (req, res) => {
       ORDER BY d.createdAt DESC
     `, [req.user.id, req.user.id]);
 
-    res.json({ success: true, data: discussions });
+    res.json({ success: true, data: { discussions } });
   } catch (error) {
     console.error('Get discussions error:', error);
     res.status(500).json({ success: false, message: 'Server error.' });
@@ -600,7 +618,7 @@ router.get('/study-materials', async (req, res) => {
       ORDER BY sm.createdAt DESC
     `, [req.user.id]);
 
-    res.json({ success: true, data: materials });
+    res.json({ success: true, data: { materials } });
   } catch (error) {
     console.error('Get materials error:', error);
     res.status(500).json({ success: false, message: 'Server error.' });

@@ -5,7 +5,7 @@ import { useAuth } from '../../context/AuthContext';
 
 const StudentDashboard = () => {
   const { user } = useAuth();
-  const [stats, setStats] = useState({ enrolledCourses: 0, completedCourses: 0, pendingAssignments: 0, averageGrade: 0 });
+  const [stats, setStats] = useState({ enrolledCourses: 0, completedCourses: 0, pendingAssignments: 0, avgGrade: 0 });
   const [recentCourses, setRecentCourses] = useState([]);
   const [upcomingAssignments, setUpcomingAssignments] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -15,7 +15,7 @@ const StudentDashboard = () => {
       const res = await studentApi.getDashboard();
       if (res.success) {
         setStats(res.stats || stats);
-        setRecentCourses(res.recentCourses || []);
+        setRecentCourses(res.currentCourses || []);
         setUpcomingAssignments(res.upcomingAssignments || []);
       }
       setLoading(false);
@@ -27,7 +27,7 @@ const StudentDashboard = () => {
     { label: 'Enrolled Courses', value: stats.enrolledCourses, icon: 'ri-book-open-line', color: 'from-blue-500 to-blue-600' },
     { label: 'Completed', value: stats.completedCourses, icon: 'ri-check-double-line', color: 'from-green-500 to-green-600' },
     { label: 'Pending Tasks', value: stats.pendingAssignments, icon: 'ri-task-line', color: 'from-amber-500 to-amber-600' },
-    { label: 'Avg Grade', value: `${stats.averageGrade}%`, icon: 'ri-bar-chart-box-line', color: 'from-purple-500 to-purple-600' },
+    { label: 'Avg Grade', value: `${stats.avgGrade}%`, icon: 'ri-bar-chart-box-line', color: 'from-purple-500 to-purple-600' },
   ];
 
   if (loading) return <DashboardLayout pageTitle="Dashboard" role="student"><div className="flex justify-center py-20"><div className="w-8 h-8 border-3 border-primary border-t-transparent rounded-full animate-spin"></div></div></DashboardLayout>;

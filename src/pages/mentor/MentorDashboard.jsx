@@ -11,7 +11,9 @@ const MentorDashboard = () => {
   useEffect(() => {
     const fetch = async () => {
       const res = await mentorApi.getDashboard();
-      if (res.success) setStats(res.data);
+      if (res.success) {
+        setStats({ ...(res.stats || {}), recentSubmissions: res.recentSubmissions || [], upcomingEvents: res.upcomingEvents || [] });
+      }
       setLoading(false);
     };
     fetch();

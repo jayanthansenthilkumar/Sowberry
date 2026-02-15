@@ -29,6 +29,37 @@ import MyAssignments from './pages/student/MyAssignments'
 import MyGrades from './pages/student/MyGrades'
 import MyProgress from './pages/student/MyProgress'
 
+// Error Boundary to catch runtime errors and show a visible message
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+  componentDidCatch(error, info) {
+    console.error('React Error Boundary caught:', error, info);
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div style={{ padding: '40px', fontFamily: 'sans-serif', maxWidth: '600px', margin: '40px auto' }}>
+          <h1 style={{ color: '#c96442', fontSize: '24px', marginBottom: '16px' }}>Something went wrong</h1>
+          <p style={{ color: '#666', marginBottom: '12px' }}>The application encountered an error. Please try refreshing the page.</p>
+          <pre style={{ background: '#f5f5f5', padding: '16px', borderRadius: '8px', fontSize: '13px', overflow: 'auto', color: '#333' }}>
+            {this.state.error?.message || 'Unknown error'}
+          </pre>
+          <button onClick={() => window.location.reload()} style={{ marginTop: '16px', padding: '10px 24px', background: '#c96442', color: '#fff', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '14px' }}>
+            Reload Page
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const { user, loading, isAuthenticated } = useAuth();
   if (loading) return <div className="flex items-center justify-center h-screen bg-cream dark-theme:bg-gray-950"><div className="w-8 h-8 border-3 border-primary border-t-transparent rounded-full animate-spin"></div></div>;
@@ -39,9 +70,10 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
 
 function App() {
   return (
-    <Router basename="/">
-      <AuthProvider>
-        <Routes>
+    <ErrorBoundary>
+      <Router basename="/">
+        <AuthProvider>
+          <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/auth" element={<AuthPage />} />
           
@@ -78,6 +110,7 @@ function App() {
         </Routes>
       </AuthProvider>
     </Router>
+    </ErrorBoundary>
   )
 }
 
