@@ -90,11 +90,16 @@ function App() {
           <Route path="/admin/courses-overview" element={<ProtectedRoute allowedRoles={['admin']}><CoursesOverview /></ProtectedRoute>} />
           <Route path="/admin/manage-mentors" element={<ProtectedRoute allowedRoles={['admin']}><ManageMentors /></ProtectedRoute>} />
           
-          {/* Mentor Routes (accessible by mentor + admin) */}
-          <Route path="/mentor" element={<ProtectedRoute allowedRoles={['mentor', 'admin']}><MentorDashboard /></ProtectedRoute>} />
-          <Route path="/mentor/doubts" element={<ProtectedRoute allowedRoles={['mentor', 'admin']}><MentorDoubts /></ProtectedRoute>} />
-          <Route path="/mentor/students-progress" element={<ProtectedRoute allowedRoles={['mentor', 'admin']}><StudentsProgress /></ProtectedRoute>} />
-          <Route path="/mentor/new-assignments" element={<ProtectedRoute allowedRoles={['mentor', 'admin']}><NewAssignments /></ProtectedRoute>} />
+          {/* Mentor Routes */}
+          <Route path="/mentor" element={<ProtectedRoute allowedRoles={['mentor']}><MentorDashboard /></ProtectedRoute>} />
+          <Route path="/mentor/doubts" element={<ProtectedRoute allowedRoles={['mentor']}><MentorDoubts /></ProtectedRoute>} />
+          <Route path="/mentor/students-progress" element={<ProtectedRoute allowedRoles={['mentor']}><StudentsProgress /></ProtectedRoute>} />
+          <Route path="/mentor/new-assignments" element={<ProtectedRoute allowedRoles={['mentor']}><NewAssignments /></ProtectedRoute>} />
+          
+          {/* Admin-accessible Mentor features (same pages, admin layout) */}
+          <Route path="/admin/assignments" element={<ProtectedRoute allowedRoles={['admin']}><NewAssignments /></ProtectedRoute>} />
+          <Route path="/admin/doubts" element={<ProtectedRoute allowedRoles={['admin']}><MentorDoubts /></ProtectedRoute>} />
+          <Route path="/admin/students-progress" element={<ProtectedRoute allowedRoles={['admin']}><StudentsProgress /></ProtectedRoute>} />
           
           {/* Admin-only Content Management (moved from mentor) */}
           <Route path="/admin/problem-solving" element={<ProtectedRoute allowedRoles={['admin']}><NewProblemSolving /></ProtectedRoute>} />

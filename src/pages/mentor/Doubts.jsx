@@ -1,9 +1,15 @@
 import { useState, useEffect } from 'react';
 import DashboardLayout from '../../components/DashboardLayout';
+import AdminLayout from '../../components/AdminLayout';
 import Swal from 'sweetalert2';
 import { mentorApi } from '../../utils/api';
+import { useAuth } from '../../context/AuthContext';
 
 const MentorDoubts = () => {
+  const { user } = useAuth();
+  const isAdmin = user?.role === 'admin';
+  const Layout = isAdmin ? AdminLayout : DashboardLayout;
+  const layoutProps = isAdmin ? {} : { pageTitle: 'Student Doubts', role: 'mentor' };
   const [doubts, setDoubts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedDoubt, setSelectedDoubt] = useState(null);
@@ -93,7 +99,7 @@ const MentorDoubts = () => {
   // ===================== DETAIL VIEW =====================
   if (selectedDoubt) {
     return (
-      <DashboardLayout>
+      <Layout {...layoutProps}>
         <div className="max-w-4xl mx-auto">
           <button onClick={() => setSelectedDoubt(null)} className="flex items-center gap-2 text-purple-600 hover:text-purple-800 mb-4 font-medium">
             <i className="ri-arrow-left-line"></i> Back to Doubts
@@ -188,13 +194,13 @@ const MentorDoubts = () => {
             </div>
           )}
         </div>
-      </DashboardLayout>
+      </Layout>
     );
   }
 
   // ===================== LIST VIEW =====================
   return (
-    <DashboardLayout>
+    <Layout {...layoutProps}>
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="mb-6">
@@ -285,7 +291,7 @@ const MentorDoubts = () => {
           </div>
         )}
       </div>
-    </DashboardLayout>
+    </Layout>
   );
 };
 

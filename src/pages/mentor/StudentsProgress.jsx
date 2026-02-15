@@ -1,8 +1,14 @@
 import { useState, useEffect } from 'react';
 import DashboardLayout from '../../components/DashboardLayout';
+import AdminLayout from '../../components/AdminLayout';
 import { mentorApi } from '../../utils/api';
+import { useAuth } from '../../context/AuthContext';
 
 const StudentsProgress = () => {
+  const { user } = useAuth();
+  const isAdmin = user?.role === 'admin';
+  const Layout = isAdmin ? AdminLayout : DashboardLayout;
+  const layoutProps = isAdmin ? {} : { pageTitle: 'Student Progress', role: 'mentor' };
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -16,7 +22,7 @@ const StudentsProgress = () => {
   }, []);
 
   return (
-    <DashboardLayout pageTitle="Student Progress" role="mentor">
+    <Layout {...layoutProps}>
       <div className="space-y-6">
         <h1 className="text-2xl font-bold text-gray-800 dark-theme:text-white">Student Progress</h1>
 
@@ -59,7 +65,7 @@ const StudentsProgress = () => {
           </div>
         </div>}
       </div>
-    </DashboardLayout>
+    </Layout>
   );
 };
 export default StudentsProgress;
