@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import AdminLayout from '../../components/AdminLayout';
-import '../../styles/admin/dashboard.css';
+
 
 const AdminDashboard = () => {
   const [activeLearnersCount, setActiveLearnersCount] = useState(0);

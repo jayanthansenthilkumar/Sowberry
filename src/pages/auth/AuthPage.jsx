@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import '../../styles/main.css';
-import '../../styles/auth.css';
+
 
 const AuthPage = () => {
   const [activeForm, setActiveForm] = useState('login');

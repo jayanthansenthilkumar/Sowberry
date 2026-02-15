@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import ThemeToggle from '../components/ThemeToggle';
-import '../styles/main.css';
+
 
 const Home = () => {
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());

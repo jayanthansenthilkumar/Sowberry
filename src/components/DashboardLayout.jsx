@@ -1,9 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import '../styles/dashboard/variables.css';
-import '../styles/dashboard/layout.css';
-import '../styles/dashboard/components.css';
-import 'remixicon/fonts/remixicon.css';
+
+
 
 const studentNav = [
   { path: '/student', icon: 'ri-dashboard-line', label: 'Dashboard' },
@@ -85,7 +83,7 @@ const DashboardLayout = ({ children, pageTitle, role = 'student' }) => {
 
       <div className="dashboard-main">
         <header className="dashboard-header">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <div>
             <button
               className="mobile-sidebar-toggle"
               onClick={() => setSidebarOpen(!sidebarOpen)}
@@ -98,7 +96,7 @@ const DashboardLayout = ({ children, pageTitle, role = 'student' }) => {
             <div className="dashboard-theme-toggle" onClick={toggleTheme}>
               <i className={theme === 'dark-theme' ? 'ri-moon-line' : 'ri-sun-line'}></i>
             </div>
-            <Link to="/auth" title="Logout" style={{ textDecoration: 'none' }}>
+            <Link to="/auth" title="Logout">
               <div className="dashboard-theme-toggle">
                 <i className="ri-logout-box-line"></i>
               </div>

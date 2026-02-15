@@ -1,9 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import '../styles/dashboard/variables.css';
-import '../styles/dashboard/layout.css';
-import '../styles/dashboard/components.css';
-import 'remixicon/fonts/remixicon.css';
+
+
 
 const AdminLayout = ({ children, pageTitle }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
