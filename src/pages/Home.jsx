@@ -109,6 +109,15 @@ const Home = () => {
           {/* Centered Hero Content */}
           <div className="relative z-10 max-w-4xl mx-auto px-6 py-32 text-center">
             <div className="animate-fade-in-up">
+              {/* Live Activity Indicator */}
+              <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white/60 dark-theme:bg-gray-900/60 backdrop-blur-sm border border-sand/60 dark-theme:border-gray-800 text-xs text-gray-500 dark-theme:text-gray-400 mb-5">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                </span>
+                <span><span className="font-semibold text-gray-700 dark-theme:text-gray-200">2,847</span> students learning right now</span>
+              </div>
+
               {/* Badge */}
               <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/8 border border-primary/15 text-primary text-sm font-medium mb-8">
                 <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
@@ -139,39 +148,49 @@ const Home = () => {
               </p>
 
               {/* CTA Buttons */}
-              <div className="flex flex-col sm:flex-row gap-4 justify-center mb-14">
+              <div className="flex flex-col sm:flex-row gap-4 justify-center mb-6">
                 <Link to="/auth" className="group inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl bg-primary text-white font-semibold shadow-sm hover:bg-primary-dark transition-all duration-200">
-                  Start Learning
+                  Start Learning Free
                   <i className="ri-arrow-right-line group-hover:translate-x-0.5 transition-transform"></i>
                 </Link>
                 <a href="#features" className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl bg-white dark-theme:bg-gray-900 border border-sand dark-theme:border-gray-700 text-gray-700 dark-theme:text-gray-200 font-semibold hover:border-primary/30 hover:text-primary transition-all duration-200">
                   <i className="ri-play-circle-line"></i>
-                  Explore Features
+                  Watch Demo
                 </a>
               </div>
+
+              {/* Trust line */}
+              <p className="text-xs text-gray-400 dark-theme:text-gray-500 mb-14">
+                <i className="ri-shield-check-line text-sage mr-1"></i> No credit card required &nbsp;·&nbsp; <i className="ri-time-line text-amber mr-1"></i> 14-day free trial &nbsp;·&nbsp; <i className="ri-lock-line text-primary mr-1"></i> Cancel anytime
+              </p>
 
               {/* Stats Row */}
               <div className="flex flex-wrap justify-center gap-x-10 gap-y-4 mb-12">
                 {[
-                  { value: '15,000+', label: 'Students', color: 'text-primary' },
-                  { value: '25+', label: 'Courses', color: 'text-amber' },
-                  { value: '95%', label: 'Success Rate', color: 'text-sage' },
-                  { value: '4.8', label: 'Avg Rating', color: 'text-clay' },
+                  { value: '15,000+', label: 'Students', color: 'text-primary', icon: 'ri-group-fill' },
+                  { value: '25+', label: 'Courses', color: 'text-amber', icon: 'ri-book-2-fill' },
+                  { value: '95%', label: 'Success Rate', color: 'text-sage', icon: 'ri-bar-chart-fill' },
+                  { value: '4.8', label: 'Avg Rating', color: 'text-clay', icon: 'ri-star-fill' },
                 ].map((stat, i) => (
-                  <div key={i} className="text-center">
-                    <p className={`text-2xl sm:text-3xl font-bold ${stat.color}`}>{stat.value}</p>
+                  <div key={i} className="text-center group">
+                    <div className="flex items-center justify-center gap-1.5">
+                      <i className={`${stat.icon} ${stat.color} text-sm opacity-60`}></i>
+                      <p className={`text-2xl sm:text-3xl font-bold ${stat.color}`}>{stat.value}</p>
+                    </div>
                     <p className="text-xs text-gray-400 dark-theme:text-gray-500 font-medium uppercase tracking-wider mt-1">{stat.label}</p>
                   </div>
                 ))}
               </div>
 
               {/* Palette Accent Cards — floating organic tiles */}
-              <div className="flex flex-wrap justify-center gap-3">
+              <div className="flex flex-wrap justify-center gap-3 mb-10">
                 {[
                   { icon: 'ri-book-open-line', text: 'Interactive Courses', bg: 'bg-peach/30 dark-theme:bg-peach/10', iconColor: 'text-terracotta' },
                   { icon: 'ri-award-line', text: 'Certified Programs', bg: 'bg-sage/30 dark-theme:bg-sage/10', iconColor: 'text-sage' },
                   { icon: 'ri-rocket-line', text: 'Career Growth', bg: 'bg-amber/20 dark-theme:bg-amber/10', iconColor: 'text-amber' },
                   { icon: 'ri-group-line', text: 'Expert Mentors', bg: 'bg-blush/25 dark-theme:bg-blush/10', iconColor: 'text-clay' },
+                  { icon: 'ri-code-s-slash-line', text: 'Hands-on Projects', bg: 'bg-primary/10 dark-theme:bg-primary/8', iconColor: 'text-primary' },
+                  { icon: 'ri-trophy-line', text: 'Industry Recognition', bg: 'bg-linen dark-theme:bg-sienna/10', iconColor: 'text-sienna' },
                 ].map((card, i) => (
                   <div key={i} className={`${card.bg} px-4 py-2.5 rounded-xl border border-sand/50 dark-theme:border-gray-800 flex items-center gap-2.5 text-sm font-medium text-gray-700 dark-theme:text-gray-300 hover:scale-[1.03] transition-transform duration-200`}>
                     <i className={`${card.icon} ${card.iconColor} text-base`}></i>
@@ -180,17 +199,91 @@ const Home = () => {
                 ))}
               </div>
 
+              {/* Mini Testimonial */}
+              <div className="max-w-md mx-auto mb-10 px-6 py-4 rounded-2xl bg-white/70 dark-theme:bg-gray-900/50 backdrop-blur-sm border border-sand/60 dark-theme:border-gray-800">
+                <div className="flex gap-1 mb-2 justify-center">
+                  {[...Array(5)].map((_, i) => (
+                    <i key={i} className="ri-star-fill text-amber text-xs"></i>
+                  ))}
+                </div>
+                <p className="text-sm text-gray-600 dark-theme:text-gray-400 italic leading-relaxed">
+                  "Sowberry transformed my career. The mentorship and hands-on projects gave me skills no textbook could."
+                </p>
+                <div className="flex items-center justify-center gap-2 mt-3">
+                  <div className="w-6 h-6 rounded-full bg-peach/40 flex items-center justify-center text-[10px] font-bold text-terracotta">A</div>
+                  <span className="text-xs font-medium text-gray-700 dark-theme:text-gray-300">Aarav K.</span>
+                  <span className="text-[10px] text-gray-400">— Data Science Graduate</span>
+                </div>
+              </div>
+
               {/* Social Icons */}
-              <div className="flex justify-center gap-2 mt-10">
+              <div className="flex justify-center gap-2 mb-12">
                 {[
                   { icon: 'ri-facebook-fill', hover: 'hover:bg-blue-50 hover:text-blue-600 dark-theme:hover:bg-blue-900/20' },
                   { icon: 'ri-twitter-x-fill', hover: 'hover:bg-gray-100 hover:text-gray-900 dark-theme:hover:bg-gray-800' },
                   { icon: 'ri-instagram-fill', hover: 'hover:bg-pink-50 hover:text-pink-500 dark-theme:hover:bg-pink-900/20' },
                   { icon: 'ri-linkedin-fill', hover: 'hover:bg-blue-50 hover:text-blue-700 dark-theme:hover:bg-blue-900/20' },
+                  { icon: 'ri-youtube-fill', hover: 'hover:bg-red-50 hover:text-red-500 dark-theme:hover:bg-red-900/20' },
                 ].map((social, i) => (
                   <a key={i} href="#" className={`w-9 h-9 rounded-lg bg-white dark-theme:bg-gray-900 border border-sand dark-theme:border-gray-800 flex items-center justify-center text-gray-400 transition-all duration-200 ${social.hover}`}>
                     <i className={social.icon}></i>
                   </a>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Trusted-by Marquee */}
+          <div className="relative z-10 mb-16">
+            <p className="text-center text-[10px] uppercase tracking-[0.2em] text-gray-400 dark-theme:text-gray-600 font-medium mb-4">Trusted by leading institutions & companies</p>
+            <div className="overflow-hidden">
+              <div className="hero-marquee flex gap-12 items-center whitespace-nowrap">
+                {[...Array(2)].map((_, setIdx) => (
+                  <div key={setIdx} className="flex gap-12 items-center shrink-0" aria-hidden={setIdx === 1}>
+                    {[
+                      { icon: 'ri-google-fill', name: 'Google' },
+                      { icon: 'ri-microsoft-fill', name: 'Microsoft' },
+                      { icon: 'ri-amazon-fill', name: 'Amazon' },
+                      { icon: 'ri-meta-fill', name: 'Meta' },
+                      { icon: 'ri-netflix-fill', name: 'Netflix' },
+                      { icon: 'ri-apple-fill', name: 'Apple' },
+                      { icon: 'ri-spotify-fill', name: 'Spotify' },
+                      { icon: 'ri-github-fill', name: 'GitHub' },
+                    ].map((brand, i) => (
+                      <div key={i} className="flex items-center gap-2 text-gray-300 dark-theme:text-gray-700">
+                        <i className={`${brand.icon} text-xl`}></i>
+                        <span className="text-sm font-medium tracking-wide">{brand.name}</span>
+                      </div>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Subjects Ticker */}
+          <div className="relative z-10 mb-20">
+            <div className="overflow-hidden">
+              <div className="hero-marquee-reverse flex gap-4 whitespace-nowrap">
+                {[...Array(2)].map((_, setIdx) => (
+                  <div key={setIdx} className="flex gap-4 shrink-0" aria-hidden={setIdx === 1}>
+                    {[
+                      { text: 'React', color: 'bg-blue-500/10 text-blue-600 dark-theme:text-blue-400' },
+                      { text: 'Python', color: 'bg-amber/15 text-amber' },
+                      { text: 'Machine Learning', color: 'bg-sage/15 text-sage' },
+                      { text: 'UI/UX Design', color: 'bg-pink-500/10 text-pink-500' },
+                      { text: 'Data Science', color: 'bg-primary/10 text-primary' },
+                      { text: 'Cybersecurity', color: 'bg-red-500/10 text-red-500 dark-theme:text-red-400' },
+                      { text: 'Cloud Computing', color: 'bg-sky-500/10 text-sky-500' },
+                      { text: 'JavaScript', color: 'bg-yellow-400/15 text-yellow-600 dark-theme:text-yellow-400' },
+                      { text: 'Blockchain', color: 'bg-purple-500/10 text-purple-500' },
+                      { text: 'DevOps', color: 'bg-blush/15 text-clay' },
+                      { text: 'AI & Deep Learning', color: 'bg-emerald-500/10 text-emerald-600 dark-theme:text-emerald-400' },
+                      { text: 'Mobile Apps', color: 'bg-peach/25 text-terracotta' },
+                    ].map((tag, i) => (
+                      <span key={i} className={`${tag.color} px-3.5 py-1.5 rounded-full text-xs font-medium border border-transparent`}>{tag.text}</span>
+                    ))}
+                  </div>
                 ))}
               </div>
             </div>
