@@ -32,49 +32,36 @@ const Sidebar = () => {
     }
   };
 
+  const navItems = [
+    { id: 'home', icon: 'ri-home-4-line', label: 'Home' },
+    { id: 'about', icon: 'ri-information-line', label: 'About' },
+    { id: 'team', icon: 'ri-team-line', label: 'Team' },
+    { id: 'features', icon: 'ri-star-line', label: 'Features' },
+    { id: 'contact', icon: 'ri-mail-line', label: 'Contact' },
+  ];
+
   return (
-    <div className="floating-sidebar">
-      <nav>
-        <a
-          href="#"
-          className={activeSection === 'home' ? 'active' : ''}
-          onClick={(e) => handleNavClick(e, 'home')}
-        >
-          <i className="ri-home-4-line"></i>
-          <span>Home</span>
-        </a>
-        <a
-          href="#about"
-          className={activeSection === 'about' ? 'active' : ''}
-          onClick={(e) => handleNavClick(e, 'about')}
-        >
-          <i className="ri-information-line"></i>
-          <span>About</span>
-        </a>
-        <a
-          href="#team"
-          className={activeSection === 'team' ? 'active' : ''}
-          onClick={(e) => handleNavClick(e, 'team')}
-        >
-          <i className="ri-team-line"></i>
-          <span>Team</span>
-        </a>
-        <a
-          href="#features"
-          className={activeSection === 'features' ? 'active' : ''}
-          onClick={(e) => handleNavClick(e, 'features')}
-        >
-          <i className="ri-star-line"></i>
-          <span>Features</span>
-        </a>
-        <a
-          href="#contact"
-          className={activeSection === 'contact' ? 'active' : ''}
-          onClick={(e) => handleNavClick(e, 'contact')}
-        >
-          <i className="ri-mail-line"></i>
-          <span>Contact</span>
-        </a>
+    <div className="fixed left-4 top-1/2 -translate-y-1/2 z-50 hidden lg:block">
+      <nav className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border border-white/20 dark:border-gray-700/30 rounded-2xl p-2 flex flex-col gap-1 shadow-lg">
+        {navItems.map((item) => (
+          <a
+            key={item.id}
+            href={`#${item.id}`}
+            className={`group relative flex items-center justify-center w-11 h-11 rounded-xl transition-all duration-300
+              ${activeSection === item.id
+                ? 'bg-primary text-white shadow-lg shadow-primary/30'
+                : 'text-gray-500 hover:bg-primary/10 hover:text-primary dark:text-gray-400'
+              }`}
+            onClick={(e) => handleNavClick(e, item.id)}
+          >
+            <i className={`${item.icon} text-lg`}></i>
+            <span className="absolute left-14 px-3 py-1.5 rounded-lg bg-gray-800 text-white text-xs font-medium
+              opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200
+              whitespace-nowrap shadow-lg pointer-events-none">
+              {item.label}
+            </span>
+          </a>
+        ))}
       </nav>
     </div>
   );

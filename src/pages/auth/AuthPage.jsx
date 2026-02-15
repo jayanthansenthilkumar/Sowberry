@@ -294,348 +294,288 @@ const AuthPage = () => {
   };
 
   return (
-    <>
+    <div className="flex min-h-screen">
+      {/* Brand Side */}
+      <div className="hidden lg:flex lg:w-1/2 relative bg-gradient-to-br from-primary via-primary-dark to-gray-900 flex-col items-center justify-center overflow-hidden">
+        <div id="particles-left" className="absolute inset-0 z-0"></div>
+        {/* Decorative shapes */}
+        <div className="absolute -top-20 -left-20 w-64 h-64 rounded-full bg-white/5"></div>
+        <div className="absolute -bottom-32 -right-32 w-96 h-96 rounded-full bg-white/5"></div>
 
-
-      <div className="split-container">
-        <div className="brand-side">
-          <div id="particles-left" className="particles"></div>
-          <div className="brand-content">
-            <Link to="/" className="back-home-link">
-              <i className="ri-arrow-left-line"></i> Home
-            </Link>
-            <div className="brand-logo">
-              <i className="ri-seedling-fill"></i>
-            </div>
-            <h1>Sowberry</h1>
-            <p className="tagline">Grow your skills, bloom your future</p>
+        <div className="relative z-10 text-center text-white space-y-6 p-8">
+          <Link to="/" className="inline-flex items-center gap-2 text-white/70 hover:text-white transition-colors text-sm mb-8">
+            <i className="ri-arrow-left-line"></i> Home
+          </Link>
+          <div className="w-20 h-20 mx-auto rounded-2xl bg-white/10 backdrop-blur flex items-center justify-center mb-4">
+            <i className="ri-seedling-fill text-4xl"></i>
           </div>
-          <div className="brand-background">
-            <div className="shape shape-1"></div>
-            <div className="shape shape-2"></div>
-          </div>
-        </div>
-
-        <div className="forms-side">
-          <div id="particles-right" className="particles"></div>
-          <div className="auth-container">
-            <div className="forms-container">
-              {/* Login Form */}
-              <div className={`form-section login-section ${activeForm === 'login' ? 'active' : ''}`}>
-                <div className="login-header">
-                  <i className="ri-seedling-fill"></i>
-                  <h1>Sowberry</h1>
-                </div>
-                <div className="login-form">
-                  <h2>Welcome back!</h2>
-                  <p>Please enter your details to sign in</p>
-                  
-                  <form onSubmit={handleLoginSubmit}>
-                    <div className="form-group">
-                      <input 
-                        type="email" 
-                        name="email" 
-                        placeholder="Email address"
-                        value={loginData.email}
-                        onChange={handleLoginChange}
-                        required 
-                      />
-                    </div>
-                    <div className="form-group">
-                      <div className="password-input">
-                        <input 
-                          type={passwordVisibility.login ? 'text' : 'password'}
-                          name="password" 
-                          placeholder="Password"
-                          value={loginData.password}
-                          onChange={handleLoginChange}
-                          required 
-                        />
-                        <i 
-                          className={`toggle-password ${passwordVisibility.login ? 'ri-eye-off-line' : 'ri-eye-line'}`}
-                          onClick={() => togglePasswordVisibility('login')}
-                        ></i>
-                      </div>
-                    </div>
-                    <div className="form-options">
-                      <label className="remember-me">
-                        <input 
-                          type="checkbox" 
-                          name="remember"
-                          checked={loginData.remember}
-                          onChange={handleLoginChange}
-                        />
-                        Remember me
-                      </label>
-                      <a href="#" className="forgot-password" onClick={(e) => { e.preventDefault(); toggleForm('forgot'); }}>
-                        Forgot password?
-                      </a>
-                    </div>
-                    <button type="submit" className="auth-btn">Sign in</button>
-                  </form>
-
-                  <div className="social-login">
-                    <p>Or continue with</p>
-                    <div className="social-buttons">
-                      <button className="social-btn google">
-                        <i className="ri-google-fill"></i>
-                        Google
-                      </button>
-                      <button className="social-btn github">
-                        <i className="ri-github-fill"></i>
-                        GitHub
-                      </button>
-                    </div>
-                  </div>
-
-                  <p className="switch-form-link">
-                    Don't have an account? <a href="#" onClick={(e) => { e.preventDefault(); toggleForm('register'); }}>Sign up</a>
-                  </p>
-                </div>
-              </div>
-
-              {/* Registration Form */}
-              <div className={`form-section register-section ${activeForm === 'register' ? 'active' : ''}`}>
-                <div className="login-header">
-                  <i className="ri-seedling-fill"></i>
-                  <h1>Sowberry</h1>
-                </div>
-                <div className="login-form">
-                  <h2>Create Account</h2>
-                  <p>Please fill in your details to register</p>
-                  
-                  <form onSubmit={handleRegisterSubmit} className="compact-form">
-                    <div className="form-group">
-                      <div className="input-wrapper">
-                        <input 
-                          type="email" 
-                          name="email" 
-                          placeholder="Email address"
-                          value={registerData.email}
-                          onChange={handleRegisterEmailChange}
-                          required 
-                        />
-                        <span className={`validation-message ${registerValidation.email ? 'valid' : 'invalid'}`}>
-                          {registerData.email && (registerValidation.email ? '✓' : '×')}
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="form-group">
-                      <div className="input-wrapper">
-                        <input 
-                          type="text" 
-                          name="username" 
-                          placeholder="Choose username"
-                          value={registerData.username}
-                          onChange={handleRegisterUsernameChange}
-                          disabled={!registerValidation.email}
-                          required 
-                        />
-                        <span className={`validation-message ${registerValidation.username ? 'valid' : 'invalid'}`}>
-                          {registerData.username && (registerValidation.username ? '✓' : '×')}
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="form-group">
-                      <div className="input-wrapper">
-                        <input 
-                          type="text" 
-                          name="fullName" 
-                          placeholder="Full name"
-                          value={registerData.fullName}
-                          onChange={handleRegisterFullNameChange}
-                          disabled={!registerValidation.username}
-                          required 
-                        />
-                        <span className={`validation-message ${registerValidation.fullName ? 'valid' : 'invalid'}`}>
-                          {registerData.fullName && (registerValidation.fullName ? '✓' : '×')}
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="form-group">
-                      <div className="input-wrapper">
-                        <div className="phone-input-group">
-                          <select 
-                            className="country-code" 
-                            name="countryCode"
-                            value={registerData.countryCode}
-                            onChange={handleRegisterChange}
-                            disabled={!registerValidation.fullName}
-                            required
-                          >
-                            <option value="+91">+91 (IN)</option>
-                            <option value="+1">+1 (US)</option>
-                            <option value="+44">+44 (UK)</option>
-                            <option value="+61">+61 (AU)</option>
-                            <option value="+86">+86 (CN)</option>
-                            <option value="+81">+81 (JP)</option>
-                            <option value="+49">+49 (DE)</option>
-                            <option value="+33">+33 (FR)</option>
-                            <option value="+7">+7 (RU)</option>
-                            <option value="+55">+55 (BR)</option>
-                            <option value="+52">+52 (MX)</option>
-                            <option value="+82">+82 (KR)</option>
-                            <option value="+39">+39 (IT)</option>
-                            <option value="+34">+34 (ES)</option>
-                            <option value="+1">+1 (CA)</option>
-                          </select>
-                          <div className="phone-input-wrapper">
-                            <input 
-                              type="tel" 
-                              name="phone" 
-                              placeholder="Enter 10 digit number"
-                              value={registerData.phone}
-                              onChange={handleRegisterPhoneChange}
-                              maxLength="12"
-                              disabled={!registerValidation.fullName}
-                              required 
-                            />
-                            <span className={`validation-message ${registerValidation.phone ? 'valid' : 'invalid'}`}>
-                              {registerData.phone && (registerValidation.phone ? '✓' : '×')}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="form-options">
-                      <label className="terms-checkbox">
-                        <input 
-                          type="checkbox" 
-                          name="terms"
-                          checked={registerData.terms}
-                          onChange={handleRegisterChange}
-                          disabled={!registerValidation.phone}
-                          required 
-                        />
-                        <span>I agree to the Terms & Conditions</span>
-                      </label>
-                    </div>
-
-                    <button type="submit" className="auth-btn" disabled={!isRegisterFormValid()}>
-                      Create Account
-                    </button>
-                  </form>
-
-                  <p className="switch-form-link">
-                    Already have an account? <a href="#" onClick={(e) => { e.preventDefault(); toggleForm('login'); }}>Sign in</a>
-                  </p>
-                </div>
-              </div>
-
-              {/* Forgot Password Form */}
-              <div className={`form-section forgot-section ${activeForm === 'forgot' ? 'active' : ''}`}>
-                <div className="login-header">
-                  <i className="ri-seedling-fill"></i>
-                  <h1>Sowberry</h1>
-                </div>
-                <div className="login-form">
-                  {/* Step 1: Email */}
-                  <div className={`forgot-step step-1 ${forgotStep === 1 ? 'active' : ''}`}>
-                    <h2>Reset Password</h2>
-                    <p>Enter your email to receive OTP</p>
-                    
-                    <form onSubmit={handleForgotEmailSubmit} className="compact-form">
-                      <div className="form-group">
-                        <div className="input-wrapper">
-                          <input 
-                            type="email" 
-                            name="email" 
-                            placeholder="Enter your email address"
-                            value={forgotData.email}
-                            onChange={handleForgotChange}
-                            required 
-                          />
-                          <span className="validation-message"></span>
-                        </div>
-                      </div>
-                      <button type="submit" className="auth-btn">Send OTP</button>
-                    </form>
-                  </div>
-
-                  {/* Step 2: OTP */}
-                  <div className={`forgot-step step-2 ${forgotStep === 2 ? 'active' : ''}`}>
-                    <h2>Enter OTP</h2>
-                    <p>Please enter the OTP sent to your email</p>
-                    
-                    <form onSubmit={handleOTPSubmit} className="compact-form">
-                      <div className="form-group">
-                        <div className="otp-wrapper">
-                          {forgotData.otp.map((digit, index) => (
-                            <input
-                              key={index}
-                              type="text"
-                              className="otp-input"
-                              maxLength="1"
-                              pattern="[0-9]"
-                              inputMode="numeric"
-                              value={digit}
-                              onChange={(e) => handleOTPChange(index, e.target.value)}
-                              onKeyDown={(e) => handleOTPKeyDown(index, e)}
-                              required
-                            />
-                          ))}
-                        </div>
-                      </div>
-                      <button type="submit" className="auth-btn">Verify OTP</button>
-                    </form>
-                  </div>
-
-                  {/* Step 3: New Password */}
-                  <div className={`forgot-step step-3 ${forgotStep === 3 ? 'active' : ''}`}>
-                    <h2>Set New Password</h2>
-                    <p>Enter your new password</p>
-                    
-                    <form onSubmit={handleResetPasswordSubmit} className="compact-form">
-                      <div className="form-group">
-                        <div className="password-input">
-                          <input 
-                            type={passwordVisibility.newPassword ? 'text' : 'password'}
-                            name="newPassword" 
-                            placeholder="New password"
-                            value={forgotData.newPassword}
-                            onChange={handleForgotChange}
-                            required 
-                          />
-                          <i 
-                            className={`toggle-password ${passwordVisibility.newPassword ? 'ri-eye-off-line' : 'ri-eye-line'}`}
-                            onClick={() => togglePasswordVisibility('newPassword')}
-                          ></i>
-                        </div>
-                      </div>
-                      <div className="form-group">
-                        <div className="password-input">
-                          <input 
-                            type={passwordVisibility.confirmPassword ? 'text' : 'password'}
-                            name="confirmPassword" 
-                            placeholder="Confirm password"
-                            value={forgotData.confirmPassword}
-                            onChange={handleForgotChange}
-                            required 
-                          />
-                          <i 
-                            className={`toggle-password ${passwordVisibility.confirmPassword ? 'ri-eye-off-line' : 'ri-eye-line'}`}
-                            onClick={() => togglePasswordVisibility('confirmPassword')}
-                          ></i>
-                        </div>
-                      </div>
-                      <button type="submit" className="auth-btn">Reset Password</button>
-                    </form>
-                  </div>
-
-                  <p className="switch-form-link">
-                    Remember your password? <a href="#" onClick={(e) => { e.preventDefault(); toggleForm('login'); }}>Sign in</a>
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
+          <h1 className="text-4xl font-bold">Sowberry</h1>
+          <p className="text-white/70 text-lg">Grow your skills, bloom your future</p>
         </div>
       </div>
-    </>
+
+      {/* Forms Side */}
+      <div className="flex-1 flex items-center justify-center bg-gray-50 dark-theme:bg-gray-950 relative overflow-hidden">
+        <div id="particles-right" className="absolute inset-0 z-0"></div>
+
+        <div className="relative z-10 w-full max-w-md px-6 py-8">
+          {/* Mobile Logo */}
+          <div className="lg:hidden flex items-center justify-center gap-3 mb-8">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center">
+              <i className="ri-seedling-fill text-white text-xl"></i>
+            </div>
+            <h1 className="text-2xl font-bold text-gray-800 dark-theme:text-white">Sowberry</h1>
+          </div>
+
+          {/* Login Form */}
+          {activeForm === 'login' && (
+            <div className="animate-fade-in-up">
+              <div className="bg-white dark-theme:bg-gray-900 rounded-2xl shadow-xl p-8 border border-gray-100 dark-theme:border-gray-800">
+                <h2 className="text-2xl font-bold text-gray-800 dark-theme:text-white mb-1">Welcome back!</h2>
+                <p className="text-gray-500 dark-theme:text-gray-400 text-sm mb-6">Please enter your details to sign in</p>
+
+                <form onSubmit={handleLoginSubmit} className="space-y-4">
+                  <input
+                    type="email" name="email" placeholder="Email address"
+                    value={loginData.email} onChange={handleLoginChange} required
+                    className="w-full px-4 py-3 rounded-xl bg-gray-50 dark-theme:bg-gray-800 border border-gray-200 dark-theme:border-gray-700 focus:border-primary outline-none text-sm text-gray-700 dark-theme:text-gray-200 transition-colors"
+                  />
+                  <div className="relative">
+                    <input
+                      type={passwordVisibility.login ? 'text' : 'password'}
+                      name="password" placeholder="Password"
+                      value={loginData.password} onChange={handleLoginChange} required
+                      className="w-full px-4 py-3 rounded-xl bg-gray-50 dark-theme:bg-gray-800 border border-gray-200 dark-theme:border-gray-700 focus:border-primary outline-none text-sm text-gray-700 dark-theme:text-gray-200 transition-colors pr-10"
+                    />
+                    <button type="button" onClick={() => togglePasswordVisibility('login')}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark-theme:hover:text-gray-300">
+                      <i className={passwordVisibility.login ? 'ri-eye-off-line' : 'ri-eye-line'}></i>
+                    </button>
+                  </div>
+                  <div className="flex items-center justify-between text-sm">
+                    <label className="flex items-center gap-2 text-gray-600 dark-theme:text-gray-400 cursor-pointer">
+                      <input type="checkbox" name="remember" checked={loginData.remember} onChange={handleLoginChange}
+                        className="rounded border-gray-300 text-primary focus:ring-primary" />
+                      Remember me
+                    </label>
+                    <button type="button" onClick={() => toggleForm('forgot')}
+                      className="text-primary hover:underline font-medium">Forgot password?</button>
+                  </div>
+                  <button type="submit"
+                    className="w-full py-3 rounded-xl bg-primary text-white font-semibold shadow-lg shadow-primary/30 hover:bg-primary-dark transition-all duration-300">
+                    Sign in
+                  </button>
+                </form>
+
+                <div className="mt-6">
+                  <p className="text-center text-sm text-gray-400 mb-4">Or continue with</p>
+                  <div className="flex gap-3">
+                    <button className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl border border-gray-200 dark-theme:border-gray-700 text-sm font-medium text-gray-700 dark-theme:text-gray-200 hover:bg-gray-50 dark-theme:hover:bg-gray-800 transition-colors">
+                      <i className="ri-google-fill text-red-500"></i> Google
+                    </button>
+                    <button className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl border border-gray-200 dark-theme:border-gray-700 text-sm font-medium text-gray-700 dark-theme:text-gray-200 hover:bg-gray-50 dark-theme:hover:bg-gray-800 transition-colors">
+                      <i className="ri-github-fill"></i> GitHub
+                    </button>
+                  </div>
+                </div>
+
+                <p className="text-center text-sm text-gray-500 dark-theme:text-gray-400 mt-6">
+                  Don't have an account?{' '}
+                  <button onClick={() => toggleForm('register')} className="text-primary font-semibold hover:underline">Sign up</button>
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* Registration Form */}
+          {activeForm === 'register' && (
+            <div className="animate-fade-in-up">
+              <div className="bg-white dark-theme:bg-gray-900 rounded-2xl shadow-xl p-8 border border-gray-100 dark-theme:border-gray-800">
+                <h2 className="text-2xl font-bold text-gray-800 dark-theme:text-white mb-1">Create Account</h2>
+                <p className="text-gray-500 dark-theme:text-gray-400 text-sm mb-6">Please fill in your details to register</p>
+
+                <form onSubmit={handleRegisterSubmit} className="space-y-3">
+                  {/* Email */}
+                  <div className="relative">
+                    <input type="email" placeholder="Email address" value={registerData.email}
+                      onChange={handleRegisterEmailChange} required
+                      className="w-full px-4 py-3 rounded-xl bg-gray-50 dark-theme:bg-gray-800 border border-gray-200 dark-theme:border-gray-700 focus:border-primary outline-none text-sm text-gray-700 dark-theme:text-gray-200 transition-colors pr-10" />
+                    {registerData.email && (
+                      <span className={`absolute right-3 top-1/2 -translate-y-1/2 text-sm font-bold ${registerValidation.email ? 'text-green-500' : 'text-red-400'}`}>
+                        {registerValidation.email ? '✓' : '×'}
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Username */}
+                  <div className="relative">
+                    <input type="text" placeholder="Choose username" value={registerData.username}
+                      onChange={handleRegisterUsernameChange} disabled={!registerValidation.email} required
+                      className="w-full px-4 py-3 rounded-xl bg-gray-50 dark-theme:bg-gray-800 border border-gray-200 dark-theme:border-gray-700 focus:border-primary outline-none text-sm text-gray-700 dark-theme:text-gray-200 transition-colors pr-10 disabled:opacity-50 disabled:cursor-not-allowed" />
+                    {registerData.username && (
+                      <span className={`absolute right-3 top-1/2 -translate-y-1/2 text-sm font-bold ${registerValidation.username ? 'text-green-500' : 'text-red-400'}`}>
+                        {registerValidation.username ? '✓' : '×'}
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Full Name */}
+                  <div className="relative">
+                    <input type="text" placeholder="Full name" value={registerData.fullName}
+                      onChange={handleRegisterFullNameChange} disabled={!registerValidation.username} required
+                      className="w-full px-4 py-3 rounded-xl bg-gray-50 dark-theme:bg-gray-800 border border-gray-200 dark-theme:border-gray-700 focus:border-primary outline-none text-sm text-gray-700 dark-theme:text-gray-200 transition-colors pr-10 disabled:opacity-50 disabled:cursor-not-allowed" />
+                    {registerData.fullName && (
+                      <span className={`absolute right-3 top-1/2 -translate-y-1/2 text-sm font-bold ${registerValidation.fullName ? 'text-green-500' : 'text-red-400'}`}>
+                        {registerValidation.fullName ? '✓' : '×'}
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Phone */}
+                  <div className="flex gap-2">
+                    <select name="countryCode" value={registerData.countryCode} onChange={handleRegisterChange}
+                      disabled={!registerValidation.fullName}
+                      className="w-28 px-3 py-3 rounded-xl bg-gray-50 dark-theme:bg-gray-800 border border-gray-200 dark-theme:border-gray-700 focus:border-primary outline-none text-sm text-gray-700 dark-theme:text-gray-200 disabled:opacity-50 disabled:cursor-not-allowed">
+                      <option value="+91">+91 (IN)</option>
+                      <option value="+1">+1 (US)</option>
+                      <option value="+44">+44 (UK)</option>
+                      <option value="+61">+61 (AU)</option>
+                      <option value="+86">+86 (CN)</option>
+                      <option value="+81">+81 (JP)</option>
+                      <option value="+49">+49 (DE)</option>
+                      <option value="+33">+33 (FR)</option>
+                      <option value="+7">+7 (RU)</option>
+                      <option value="+55">+55 (BR)</option>
+                      <option value="+52">+52 (MX)</option>
+                      <option value="+82">+82 (KR)</option>
+                      <option value="+39">+39 (IT)</option>
+                      <option value="+34">+34 (ES)</option>
+                      <option value="+1">+1 (CA)</option>
+                    </select>
+                    <div className="relative flex-1">
+                      <input type="tel" placeholder="Enter 10 digit number" value={registerData.phone}
+                        onChange={handleRegisterPhoneChange} maxLength="12"
+                        disabled={!registerValidation.fullName} required
+                        className="w-full px-4 py-3 rounded-xl bg-gray-50 dark-theme:bg-gray-800 border border-gray-200 dark-theme:border-gray-700 focus:border-primary outline-none text-sm text-gray-700 dark-theme:text-gray-200 transition-colors pr-10 disabled:opacity-50 disabled:cursor-not-allowed" />
+                      {registerData.phone && (
+                        <span className={`absolute right-3 top-1/2 -translate-y-1/2 text-sm font-bold ${registerValidation.phone ? 'text-green-500' : 'text-red-400'}`}>
+                          {registerValidation.phone ? '✓' : '×'}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Terms */}
+                  <label className="flex items-center gap-2 text-sm text-gray-600 dark-theme:text-gray-400 cursor-pointer">
+                    <input type="checkbox" name="terms" checked={registerData.terms} onChange={handleRegisterChange}
+                      disabled={!registerValidation.phone}
+                      className="rounded border-gray-300 text-primary focus:ring-primary disabled:opacity-50" />
+                    I agree to the Terms & Conditions
+                  </label>
+
+                  <button type="submit" disabled={!isRegisterFormValid()}
+                    className="w-full py-3 rounded-xl bg-primary text-white font-semibold shadow-lg shadow-primary/30 hover:bg-primary-dark transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none">
+                    Create Account
+                  </button>
+                </form>
+
+                <p className="text-center text-sm text-gray-500 dark-theme:text-gray-400 mt-6">
+                  Already have an account?{' '}
+                  <button onClick={() => toggleForm('login')} className="text-primary font-semibold hover:underline">Sign in</button>
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* Forgot Password Form */}
+          {activeForm === 'forgot' && (
+            <div className="animate-fade-in-up">
+              <div className="bg-white dark-theme:bg-gray-900 rounded-2xl shadow-xl p-8 border border-gray-100 dark-theme:border-gray-800">
+                {/* Step 1: Email */}
+                {forgotStep === 1 && (
+                  <>
+                    <h2 className="text-2xl font-bold text-gray-800 dark-theme:text-white mb-1">Reset Password</h2>
+                    <p className="text-gray-500 dark-theme:text-gray-400 text-sm mb-6">Enter your email to receive OTP</p>
+                    <form onSubmit={handleForgotEmailSubmit} className="space-y-4">
+                      <input type="email" name="email" placeholder="Enter your email address"
+                        value={forgotData.email} onChange={handleForgotChange} required
+                        className="w-full px-4 py-3 rounded-xl bg-gray-50 dark-theme:bg-gray-800 border border-gray-200 dark-theme:border-gray-700 focus:border-primary outline-none text-sm text-gray-700 dark-theme:text-gray-200 transition-colors" />
+                      <button type="submit"
+                        className="w-full py-3 rounded-xl bg-primary text-white font-semibold shadow-lg shadow-primary/30 hover:bg-primary-dark transition-all duration-300">
+                        Send OTP
+                      </button>
+                    </form>
+                  </>
+                )}
+
+                {/* Step 2: OTP */}
+                {forgotStep === 2 && (
+                  <>
+                    <h2 className="text-2xl font-bold text-gray-800 dark-theme:text-white mb-1">Enter OTP</h2>
+                    <p className="text-gray-500 dark-theme:text-gray-400 text-sm mb-6">Please enter the OTP sent to your email</p>
+                    <form onSubmit={handleOTPSubmit} className="space-y-4">
+                      <div className="flex justify-center gap-3">
+                        {forgotData.otp.map((digit, index) => (
+                          <input key={index} type="text" maxLength="1" pattern="[0-9]" inputMode="numeric"
+                            value={digit}
+                            onChange={(e) => handleOTPChange(index, e.target.value)}
+                            onKeyDown={(e) => handleOTPKeyDown(index, e)}
+                            required
+                            className="otp-input w-12 h-12 text-center text-lg font-bold rounded-xl bg-gray-50 dark-theme:bg-gray-800 border border-gray-200 dark-theme:border-gray-700 focus:border-primary outline-none text-gray-700 dark-theme:text-gray-200 transition-colors" />
+                        ))}
+                      </div>
+                      <button type="submit"
+                        className="w-full py-3 rounded-xl bg-primary text-white font-semibold shadow-lg shadow-primary/30 hover:bg-primary-dark transition-all duration-300">
+                        Verify OTP
+                      </button>
+                    </form>
+                  </>
+                )}
+
+                {/* Step 3: New Password */}
+                {forgotStep === 3 && (
+                  <>
+                    <h2 className="text-2xl font-bold text-gray-800 dark-theme:text-white mb-1">Set New Password</h2>
+                    <p className="text-gray-500 dark-theme:text-gray-400 text-sm mb-6">Enter your new password</p>
+                    <form onSubmit={handleResetPasswordSubmit} className="space-y-4">
+                      <div className="relative">
+                        <input type={passwordVisibility.newPassword ? 'text' : 'password'}
+                          name="newPassword" placeholder="New password"
+                          value={forgotData.newPassword} onChange={handleForgotChange} required
+                          className="w-full px-4 py-3 rounded-xl bg-gray-50 dark-theme:bg-gray-800 border border-gray-200 dark-theme:border-gray-700 focus:border-primary outline-none text-sm text-gray-700 dark-theme:text-gray-200 transition-colors pr-10" />
+                        <button type="button" onClick={() => togglePasswordVisibility('newPassword')}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark-theme:hover:text-gray-300">
+                          <i className={passwordVisibility.newPassword ? 'ri-eye-off-line' : 'ri-eye-line'}></i>
+                        </button>
+                      </div>
+                      <div className="relative">
+                        <input type={passwordVisibility.confirmPassword ? 'text' : 'password'}
+                          name="confirmPassword" placeholder="Confirm password"
+                          value={forgotData.confirmPassword} onChange={handleForgotChange} required
+                          className="w-full px-4 py-3 rounded-xl bg-gray-50 dark-theme:bg-gray-800 border border-gray-200 dark-theme:border-gray-700 focus:border-primary outline-none text-sm text-gray-700 dark-theme:text-gray-200 transition-colors pr-10" />
+                        <button type="button" onClick={() => togglePasswordVisibility('confirmPassword')}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark-theme:hover:text-gray-300">
+                          <i className={passwordVisibility.confirmPassword ? 'ri-eye-off-line' : 'ri-eye-line'}></i>
+                        </button>
+                      </div>
+                      <button type="submit"
+                        className="w-full py-3 rounded-xl bg-primary text-white font-semibold shadow-lg shadow-primary/30 hover:bg-primary-dark transition-all duration-300">
+                        Reset Password
+                      </button>
+                    </form>
+                  </>
+                )}
+
+                <p className="text-center text-sm text-gray-500 dark-theme:text-gray-400 mt-6">
+                  Remember your password?{' '}
+                  <button onClick={() => toggleForm('login')} className="text-primary font-semibold hover:underline">Sign in</button>
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
   );
 };
 

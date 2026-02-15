@@ -25,9 +25,14 @@ const ThemeToggle = () => {
   };
 
   return (
-    <div className="theme-toggle" onClick={toggleTheme}>
-      <i className={isDarkTheme ? 'ri-moon-line' : 'ri-sun-line'}></i>
-    </div>
+    <button
+      onClick={toggleTheme}
+      className="fixed top-6 right-6 z-50 w-11 h-11 rounded-xl bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl
+        border border-white/20 dark:border-gray-700/30 shadow-lg flex items-center justify-center
+        text-gray-600 dark:text-gray-300 hover:bg-primary/10 hover:text-primary transition-all duration-300 cursor-pointer"
+    >
+      <i className={isDarkTheme ? 'ri-moon-line text-lg' : 'ri-sun-line text-lg'}></i>
+    </button>
   );
 };
 

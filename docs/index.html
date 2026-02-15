@@ -5,29 +5,44 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sowberry Academy</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+
+    <!-- Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.6.0/fonts/remixicon.css" rel="stylesheet" />
+    <!-- Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-    <script type="module" crossorigin src="/assets/index-VZCHUD7W.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-CzzfXDMs.css">
+    <script type="module" crossorigin src="/assets/index-Dyyew-fK.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-3nszR7Dd.css">
   </head>
   <body>
     <div id="root"></div>
-    <script>
-      // Handle redirect from 404.html for SPA routing on GitHub Pages
-      (function() {
-        var redirect = sessionStorage.redirect;
-        delete sessionStorage.redirect;
-        if (redirect && redirect !== location.href) {
-          history.replaceState(null, null, redirect);
+    <script type="text/javascript">
+      // Single Page Apps for GitHub Pages
+      // MIT License
+      // https://github.com/rafgraph/spa-github-pages
+      // This script checks to see if a redirect is present in the query string,
+      // converts it back into the correct url and adds it to the
+      // browser's history using window.history.replaceState(...),
+      // which won't cause the browser to attempt to load the new url.
+      // When the single page app is loaded further down in this file,
+      // the correct url will be displayed in the browser's address bar
+      // without triggering an extra page load which saves web requests.
+      (function (l) {
+        if (l.search[1] === "/") {
+          var decoded = l.search
+            .slice(1)
+            .split("&")
+            .map(function (s) {
+              return s.replace(/~and~/g, "&");
+            })
+            .join("?");
+          window.history.replaceState(
+            null,
+            null,
+            l.pathname.slice(0, -1) + decoded + l.hash,
+          );
         }
-        // Handle query parameter redirect
-        var params = new URLSearchParams(window.location.search);
-        var path = params.get('p');
-        if (path) {
-          window.history.replaceState(null, null, '/' + decodeURIComponent(path));
-        }
-      })();
+      })(window.location);
     </script>
   </body>
 </html>
