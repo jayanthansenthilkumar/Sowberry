@@ -198,9 +198,13 @@ const CourseViewer = () => {
                         </div>
                       )}
                       {activeContent.contentType === 'pdf' && activeContent.contentData && (
-                        <div className="text-center py-8">
-                          <i className="ri-file-pdf-2-line text-5xl text-red-400 mb-3 block"></i>
-                          <a href={activeContent.contentData} target="_blank" rel="noopener noreferrer" className="px-5 py-2.5 rounded-xl bg-red-500/100 text-white text-sm font-medium hover:bg-red-600 inline-flex items-center gap-2"><i className="ri-external-link-line"></i>Open PDF</a>
+                        <div className="space-y-3">
+                          <div className="flex items-center justify-end">
+                            <a href={activeContent.contentData} target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 rounded-lg bg-red-500/10 text-red-400 text-xs font-medium hover:bg-red-500/20 inline-flex items-center gap-1.5 transition-colors"><i className="ri-external-link-line"></i>Open in Tab</a>
+                          </div>
+                          <div className="rounded-xl overflow-hidden border border-[#2a2a2a]" style={{ height: '75vh' }}>
+                            <iframe src={activeContent.contentData} title={activeContent.title} className="w-full h-full border-0" />
+                          </div>
                         </div>
                       )}
                       {activeContent.contentType === 'text' && (
