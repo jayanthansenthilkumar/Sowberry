@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import DashboardLayout from '../../components/DashboardLayout';
+import AdminLayout from '../../components/AdminLayout';
 import Swal from 'sweetalert2';
 import { mentorApi } from '../../utils/api';
 
@@ -39,7 +39,7 @@ const NewProblemSolving = () => {
   const diffColors = { easy: 'bg-green-100 text-green-700', medium: 'bg-amber-100 text-amber-700', hard: 'bg-red-100 text-red-700' };
 
   return (
-    <DashboardLayout pageTitle="Problem Solving" role="mentor">
+    <AdminLayout>
       <div className="space-y-6">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div><h1 className="text-2xl font-bold text-gray-800 dark-theme:text-white">Coding Problems</h1><p className="text-sm text-gray-500 mt-1">{problems.length} problems</p></div>
@@ -101,7 +101,7 @@ const NewProblemSolving = () => {
           </div>
         </div>
       )}
-    </DashboardLayout>
+    </AdminLayout>
   );
 };
 export default NewProblemSolving;

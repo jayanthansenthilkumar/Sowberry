@@ -498,7 +498,42 @@ async function setup() {
     ) ENGINE=InnoDB
   `);
 
-  console.log('✅ All 26 tables created successfully');
+  // 27. doubts
+  await connection.query(`
+    CREATE TABLE IF NOT EXISTS doubts (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      studentId INT NOT NULL,
+      courseId INT DEFAULT NULL,
+      title VARCHAR(255) NOT NULL,
+      description TEXT,
+      status ENUM('open', 'in-progress', 'resolved', 'closed') DEFAULT 'open',
+      assignedMentorId INT DEFAULT NULL,
+      priority ENUM('low', 'medium', 'high') DEFAULT 'medium',
+      createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+      FOREIGN KEY (studentId) REFERENCES users(id) ON DELETE CASCADE,
+      FOREIGN KEY (courseId) REFERENCES courses(id) ON DELETE SET NULL,
+      FOREIGN KEY (assignedMentorId) REFERENCES users(id) ON DELETE SET NULL,
+      INDEX idx_student (studentId),
+      INDEX idx_mentor (assignedMentorId),
+      INDEX idx_status (status)
+    ) ENGINE=InnoDB
+  `);
+
+  // 28. doubtReplies
+  await connection.query(`
+    CREATE TABLE IF NOT EXISTS doubtReplies (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      doubtId INT NOT NULL,
+      userId INT NOT NULL,
+      content TEXT NOT NULL,
+      createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (doubtId) REFERENCES doubts(id) ON DELETE CASCADE,
+      FOREIGN KEY (userId) REFERENCES users(id) ON DELETE CASCADE
+    ) ENGINE=InnoDB
+  `);
+
+  console.log('✅ All 28 tables created successfully');
 
   // ──────────────── ALTER for existing databases ────────────────
   // These run safely even if columns already exist
@@ -762,7 +797,7 @@ async function setup() {
   console.log('🌱 Sowberry database setup complete!');
   console.log('─────────────────────────────────────');
   console.log('Database: sowberry');
-  console.log('Tables: 26');
+  console.log('Tables: 28');
   console.log('');
   console.log('Login Credentials:');
   console.log('  Admin:   admin@sowberry.com    / Admin@123');

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import DashboardLayout from '../../components/DashboardLayout';
+import AdminLayout from '../../components/AdminLayout';
 import Swal from 'sweetalert2';
 import { mentorApi } from '../../utils/api';
 
@@ -40,7 +40,7 @@ const NewEvents = () => {
   const typeIcons = { webinar: 'ri-live-line', workshop: 'ri-tools-line', 'live-session': 'ri-webcam-line', hackathon: 'ri-code-s-slash-line', seminar: 'ri-presentation-line' };
 
   return (
-    <DashboardLayout pageTitle="Events" role="mentor">
+    <AdminLayout>
       <div className="space-y-6">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div><h1 className="text-2xl font-bold text-gray-800 dark-theme:text-white">Events</h1><p className="text-sm text-gray-500 mt-1">{events.length} events scheduled</p></div>
@@ -104,7 +104,7 @@ const NewEvents = () => {
           </div>
         </div>
       )}
-    </DashboardLayout>
+    </AdminLayout>
   );
 };
 export default NewEvents;

@@ -73,6 +73,7 @@ export const authApi = {
   verifyOtp: (body) => apiCall('/auth/verify-otp', { method: 'POST', body: JSON.stringify(body) }),
   resetPassword: (body) => apiCall('/auth/reset-password', { method: 'POST', body: JSON.stringify(body) }),
   getMe: () => apiCall('/auth/me'),
+  refreshToken: () => apiCall('/auth/refresh-token', { method: 'POST' }),
   updateProfile: (body) => apiCall('/auth/profile', { method: 'PUT', body: JSON.stringify(body) }),
   changePassword: (body) => apiCall('/auth/change-password', { method: 'PUT', body: JSON.stringify(body) }),
 };
@@ -96,9 +97,24 @@ export const adminApi = {
   getCourses: () => apiCall('/admin/courses'),
   getCourse: (id) => apiCall(`/admin/courses/${id}`),
   approveCourse: (id) => apiCall(`/admin/courses/${id}/approve`, { method: 'PUT' }),
-  rejectCourse: (id, body) => apiCall(`/admin/courses/${id}/reject`, { method: 'PUT', body: JSON.stringify(body) }),
+  rejectCourse: (id, reason) => apiCall(`/admin/courses/${id}/reject`, { method: 'PUT', body: JSON.stringify({ reason }) }),
   deleteCourse: (id) => apiCall(`/admin/courses/${id}`, { method: 'DELETE' }),
-  updateCourseStatus: (id, body) => apiCall(`/admin/courses/${id}/status`, { method: 'PUT', body: JSON.stringify(body) }),
+  updateCourseStatus: (id, status) => apiCall(`/admin/courses/${id}/status`, { method: 'PUT', body: JSON.stringify({ status }) }),
+  // Course Management (Full CRUD)
+  createCourse: (body) => apiCall('/admin/courses', { method: 'POST', body: JSON.stringify(body) }),
+  updateCourse: (id, body) => apiCall(`/admin/courses/${id}`, { method: 'PUT', body: JSON.stringify(body) }),
+  getCourseDetail: (id) => apiCall(`/admin/courses/${id}/detail`),
+  addSubject: (courseId, body) => apiCall(`/admin/courses/${courseId}/subjects`, { method: 'POST', body: JSON.stringify(body) }),
+  updateSubject: (id, body) => apiCall(`/admin/subjects/${id}`, { method: 'PUT', body: JSON.stringify(body) }),
+  deleteSubject: (id) => apiCall(`/admin/subjects/${id}`, { method: 'DELETE' }),
+  addTopic: (subjectId, body) => apiCall(`/admin/subjects/${subjectId}/topics`, { method: 'POST', body: JSON.stringify(body) }),
+  deleteTopic: (id) => apiCall(`/admin/topics/${id}`, { method: 'DELETE' }),
+  getCourseContent: (courseId) => apiCall(`/admin/courses/${courseId}/content`),
+  addContent: (courseId, body) => apiCall(`/admin/courses/${courseId}/content`, { method: 'POST', body: JSON.stringify(body) }),
+  updateContent: (id, body) => apiCall(`/admin/content/${id}`, { method: 'PUT', body: JSON.stringify(body) }),
+  deleteContent: (id) => apiCall(`/admin/content/${id}`, { method: 'DELETE' }),
+  // Doubts
+  getDoubts: () => apiCall('/admin/doubts'),
   // Analytics
   getAnalytics: () => apiCall('/admin/analytics'),
   // Reports
@@ -170,6 +186,11 @@ export const mentorApi = {
   getStudyMaterials: () => apiCall('/mentor/study-materials'),
   createStudyMaterial: (body) => apiCall('/mentor/study-materials', { method: 'POST', body: JSON.stringify(body) }),
   deleteStudyMaterial: (id) => apiCall(`/mentor/study-materials/${id}`, { method: 'DELETE' }),
+  // Doubts
+  getDoubts: () => apiCall('/mentor/doubts'),
+  getDoubt: (id) => apiCall(`/mentor/doubts/${id}`),
+  replyDoubt: (id, body) => apiCall(`/mentor/doubts/${id}/reply`, { method: 'POST', body: JSON.stringify(body) }),
+  resolveDoubt: (id) => apiCall(`/mentor/doubts/${id}/resolve`, { method: 'PUT' }),
 };
 
 // ──────────────── STUDENT API ────────────────
@@ -208,6 +229,11 @@ export const studentApi = {
   replyDiscussion: (id, body) => apiCall(`/student/discussions/${id}/reply`, { method: 'POST', body: JSON.stringify(body) }),
   // Notifications
   getNotifications: () => apiCall('/student/notifications'),
+  // Doubts
+  getDoubts: () => apiCall('/student/doubts'),
+  createDoubt: (body) => apiCall('/student/doubts', { method: 'POST', body: JSON.stringify(body) }),
+  getDoubt: (id) => apiCall(`/student/doubts/${id}`),
+  replyDoubt: (id, body) => apiCall(`/student/doubts/${id}/reply`, { method: 'POST', body: JSON.stringify(body) }),
 };
 
 // ──────────────── PUBLIC API ────────────────

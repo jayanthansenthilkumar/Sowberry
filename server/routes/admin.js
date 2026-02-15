@@ -452,6 +452,187 @@ router.put('/courses/:id/status', async (req, res) => {
   }
 });
 
+// ──────────────── COURSE MANAGEMENT (Full CRUD for Admin) ────────────────
+
+// Create a course (admin)
+router.post('/courses', async (req, res) => {
+  try {
+    const { title, courseCode, description, image, duration, mentorId, category, courseType, difficulty, semester, regulation, academicYear, maxStudents, subjects } = req.body;
+    if (!title) return res.status(400).json({ success: false, message: 'Course title is required.' });
+    const [result] = await pool.query(
+      `INSERT INTO courses (title, courseCode, description, image, duration, mentorId, category, courseType, difficulty, semester, regulation, academicYear, maxStudents, isPublished, status)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, 'active')`,
+      [title, courseCode, description, image, duration, mentorId || req.user.id, category, courseType || 'theory', difficulty || 'beginner', semester, regulation, academicYear, maxStudents || 100]
+    );
+    if (subjects && Array.isArray(subjects)) {
+      for (let i = 0; i < subjects.length; i++) {
+        if (subjects[i].title) {
+          await pool.query('INSERT INTO courseSubjects (courseId, title, code, description, sortOrder) VALUES (?, ?, ?, ?, ?)',
+            [result.insertId, subjects[i].title, subjects[i].code || null, subjects[i].description || null, i + 1]);
+        }
+      }
+    }
+    res.status(201).json({ success: true, message: 'Course created.', data: { id: result.insertId } });
+  } catch (error) {
+    console.error('Admin create course error:', error);
+    res.status(500).json({ success: false, message: 'Server error.' });
+  }
+});
+
+// Update a course (admin)
+router.put('/courses/:id', async (req, res) => {
+  try {
+    const fields = ['title', 'courseCode', 'description', 'image', 'duration', 'category', 'courseType', 'difficulty', 'semester', 'regulation', 'academicYear', 'maxStudents', 'isPublished', 'status'];
+    const updates = []; const params = [];
+    for (const f of fields) {
+      if (req.body[f] !== undefined) { updates.push(`${f} = ?`); params.push(req.body[f]); }
+    }
+    if (updates.length === 0) return res.status(400).json({ success: false, message: 'No fields to update.' });
+    params.push(req.params.id);
+    await pool.query(`UPDATE courses SET ${updates.join(', ')} WHERE id = ?`, params);
+    res.json({ success: true, message: 'Course updated.' });
+  } catch (error) {
+    console.error('Admin update course error:', error);
+    res.status(500).json({ success: false, message: 'Server error.' });
+  }
+});
+
+// Full course detail with subjects + topics
+router.get('/courses/:id/detail', async (req, res) => {
+  try {
+    const [courses] = await pool.query(`
+      SELECT c.*, u.fullName as mentorName,
+        (SELECT COUNT(*) FROM courseEnrollments WHERE courseId = c.id) as enrollmentCount,
+        (SELECT COUNT(*) FROM courseContent WHERE courseId = c.id AND status = 'active') as contentCount
+      FROM courses c JOIN users u ON c.mentorId = u.id WHERE c.id = ?
+    `, [req.params.id]);
+    if (courses.length === 0) return res.status(404).json({ success: false, message: 'Course not found.' });
+    const course = courses[0];
+    const [subjects] = await pool.query(`
+      SELECT cs.*, (SELECT COUNT(*) FROM courseTopics WHERE subjectId = cs.id) as topicCount,
+        (SELECT COUNT(*) FROM courseContent WHERE subjectId = cs.id AND status = 'active') as contentCount
+      FROM courseSubjects cs WHERE cs.courseId = ? ORDER BY cs.sortOrder ASC, cs.createdAt ASC
+    `, [req.params.id]);
+    for (const sub of subjects) {
+      const [topics] = await pool.query('SELECT * FROM courseTopics WHERE subjectId = ? ORDER BY sortOrder ASC, createdAt ASC', [sub.id]);
+      sub.topics = topics;
+    }
+    course.subjects = subjects;
+    res.json({ success: true, data: { course } });
+  } catch (error) {
+    console.error('Get course detail error:', error);
+    res.status(500).json({ success: false, message: 'Server error.' });
+  }
+});
+
+// ──── Subjects CRUD (Admin) ────
+router.post('/courses/:courseId/subjects', async (req, res) => {
+  try {
+    const { title, code, description } = req.body;
+    if (!title) return res.status(400).json({ success: false, message: 'Subject title is required.' });
+    const [maxOrder] = await pool.query('SELECT COALESCE(MAX(sortOrder), 0) + 1 as next FROM courseSubjects WHERE courseId = ?', [req.params.courseId]);
+    const [result] = await pool.query('INSERT INTO courseSubjects (courseId, title, code, description, sortOrder) VALUES (?, ?, ?, ?, ?)',
+      [req.params.courseId, title, code || null, description || null, maxOrder[0].next]);
+    res.status(201).json({ success: true, message: 'Subject added.', data: { id: result.insertId } });
+  } catch (error) { res.status(500).json({ success: false, message: 'Server error.' }); }
+});
+
+router.put('/subjects/:id', async (req, res) => {
+  try {
+    const { title, code, description } = req.body;
+    await pool.query('UPDATE courseSubjects SET title = COALESCE(?, title), code = COALESCE(?, code), description = COALESCE(?, description) WHERE id = ?', [title, code, description, req.params.id]);
+    res.json({ success: true, message: 'Subject updated.' });
+  } catch (error) { res.status(500).json({ success: false, message: 'Server error.' }); }
+});
+
+router.delete('/subjects/:id', async (req, res) => {
+  try {
+    await pool.query('DELETE FROM courseSubjects WHERE id = ?', [req.params.id]);
+    res.json({ success: true, message: 'Subject deleted.' });
+  } catch (error) { res.status(500).json({ success: false, message: 'Server error.' }); }
+});
+
+// ──── Topics CRUD (Admin) ────
+router.post('/subjects/:subjectId/topics', async (req, res) => {
+  try {
+    const { title, description } = req.body;
+    if (!title) return res.status(400).json({ success: false, message: 'Topic title is required.' });
+    const [maxOrder] = await pool.query('SELECT COALESCE(MAX(sortOrder), 0) + 1 as next FROM courseTopics WHERE subjectId = ?', [req.params.subjectId]);
+    const [result] = await pool.query('INSERT INTO courseTopics (subjectId, title, description, sortOrder) VALUES (?, ?, ?, ?)',
+      [req.params.subjectId, title, description || null, maxOrder[0].next]);
+    res.status(201).json({ success: true, message: 'Topic added.', data: { id: result.insertId } });
+  } catch (error) { res.status(500).json({ success: false, message: 'Server error.' }); }
+});
+
+router.delete('/topics/:id', async (req, res) => {
+  try {
+    await pool.query('DELETE FROM courseTopics WHERE id = ?', [req.params.id]);
+    res.json({ success: true, message: 'Topic deleted.' });
+  } catch (error) { res.status(500).json({ success: false, message: 'Server error.' }); }
+});
+
+// ──── Content CRUD (Admin) ────
+router.get('/courses/:courseId/content', async (req, res) => {
+  try {
+    const [content] = await pool.query(`
+      SELECT cc.*, u.fullName as uploaderName, cs.title as subjectTitle
+      FROM courseContent cc LEFT JOIN users u ON cc.uploadedBy = u.id LEFT JOIN courseSubjects cs ON cc.subjectId = cs.id
+      WHERE cc.courseId = ? ORDER BY cc.sortOrder ASC, cc.createdAt ASC
+    `, [req.params.courseId]);
+    res.json({ success: true, data: { content } });
+  } catch (error) { res.status(500).json({ success: false, message: 'Server error.' }); }
+});
+
+router.post('/courses/:courseId/content', async (req, res) => {
+  try {
+    const { subjectId, title, description, contentType, contentData, sortOrder } = req.body;
+    if (!title) return res.status(400).json({ success: false, message: 'Content title is required.' });
+    const [result] = await pool.query(
+      'INSERT INTO courseContent (courseId, subjectId, title, description, contentType, contentData, sortOrder, status, uploadedBy) VALUES (?, NULLIF(?, 0), ?, ?, ?, ?, ?, ?, ?)',
+      [req.params.courseId, subjectId || 0, title, description || null, contentType || 'text', contentData || null, sortOrder || 0, 'active', req.user.id]);
+    res.status(201).json({ success: true, message: 'Content added.', data: { id: result.insertId } });
+  } catch (error) { res.status(500).json({ success: false, message: 'Server error.' }); }
+});
+
+router.put('/content/:id', async (req, res) => {
+  try {
+    const { title, description, contentType, contentData, sortOrder, status, subjectId } = req.body;
+    await pool.query(
+      `UPDATE courseContent SET title = COALESCE(?, title), description = COALESCE(?, description),
+       contentType = COALESCE(?, contentType), contentData = COALESCE(?, contentData),
+       sortOrder = COALESCE(?, sortOrder), status = COALESCE(?, status),
+       subjectId = COALESCE(NULLIF(?, 0), subjectId) WHERE id = ?`,
+      [title, description, contentType, contentData, sortOrder, status, subjectId || 0, req.params.id]);
+    res.json({ success: true, message: 'Content updated.' });
+  } catch (error) { res.status(500).json({ success: false, message: 'Server error.' }); }
+});
+
+router.delete('/content/:id', async (req, res) => {
+  try {
+    await pool.query('DELETE FROM courseContent WHERE id = ?', [req.params.id]);
+    res.json({ success: true, message: 'Content deleted.' });
+  } catch (error) { res.status(500).json({ success: false, message: 'Server error.' }); }
+});
+
+// ──────────────── DOUBTS (Admin view all) ────────────────
+router.get('/doubts', async (req, res) => {
+  try {
+    const [doubts] = await pool.query(`
+      SELECT d.*, u.fullName as studentName, c.title as courseTitle, m.fullName as mentorName,
+        (SELECT COUNT(*) FROM doubtReplies WHERE doubtId = d.id) as replyCount
+      FROM doubts d
+      JOIN users u ON d.studentId = u.id
+      LEFT JOIN courses c ON d.courseId = c.id
+      LEFT JOIN users m ON d.assignedMentorId = m.id
+      ORDER BY d.createdAt DESC
+    `);
+    res.json({ success: true, data: { doubts } });
+  } catch (error) {
+    console.error('Admin get doubts error:', error);
+    res.status(500).json({ success: false, message: 'Server error.' });
+  }
+});
+
 // ──────────────── PERFORMANCE ANALYTICS ────────────────
 router.get('/analytics', async (req, res) => {
   try {

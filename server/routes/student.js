@@ -752,4 +752,79 @@ router.get('/notifications', async (req, res) => {
   }
 });
 
+// ──────────────── DOUBTS (Student) ────────────────
+
+// List my doubts
+router.get('/doubts', async (req, res) => {
+  try {
+    const [doubts] = await pool.query(`
+      SELECT d.*, c.title as courseTitle, m.fullName as mentorName,
+        (SELECT COUNT(*) FROM doubtReplies WHERE doubtId = d.id) as replyCount
+      FROM doubts d
+      LEFT JOIN courses c ON d.courseId = c.id
+      LEFT JOIN users m ON d.assignedMentorId = m.id
+      WHERE d.studentId = ?
+      ORDER BY d.createdAt DESC
+    `, [req.user.id]);
+    res.json({ success: true, data: { doubts } });
+  } catch (error) {
+    console.error('Student get doubts error:', error);
+    res.status(500).json({ success: false, message: 'Server error.' });
+  }
+});
+
+// Create a doubt
+router.post('/doubts', async (req, res) => {
+  try {
+    const { courseId, title, description, priority } = req.body;
+    if (!title) return res.status(400).json({ success: false, message: 'Doubt title is required.' });
+    const [result] = await pool.query(
+      'INSERT INTO doubts (studentId, courseId, title, description, priority) VALUES (?, ?, ?, ?, ?)',
+      [req.user.id, courseId || null, title, description || null, priority || 'medium']
+    );
+    res.status(201).json({ success: true, message: 'Doubt posted successfully. A mentor will respond soon.', data: { id: result.insertId } });
+  } catch (error) {
+    console.error('Student create doubt error:', error);
+    res.status(500).json({ success: false, message: 'Server error.' });
+  }
+});
+
+// Get doubt detail with replies
+router.get('/doubts/:id', async (req, res) => {
+  try {
+    const [doubts] = await pool.query(`
+      SELECT d.*, c.title as courseTitle, m.fullName as mentorName
+      FROM doubts d
+      LEFT JOIN courses c ON d.courseId = c.id
+      LEFT JOIN users m ON d.assignedMentorId = m.id
+      WHERE d.id = ? AND d.studentId = ?
+    `, [req.params.id, req.user.id]);
+    if (doubts.length === 0) return res.status(404).json({ success: false, message: 'Doubt not found.' });
+    const [replies] = await pool.query(`
+      SELECT dr.*, u.fullName as authorName, u.role as authorRole
+      FROM doubtReplies dr JOIN users u ON dr.userId = u.id
+      WHERE dr.doubtId = ? ORDER BY dr.createdAt ASC
+    `, [req.params.id]);
+    res.json({ success: true, data: { doubt: doubts[0], replies } });
+  } catch (error) {
+    console.error('Student get doubt error:', error);
+    res.status(500).json({ success: false, message: 'Server error.' });
+  }
+});
+
+// Student reply to own doubt (follow-up)
+router.post('/doubts/:id/reply', async (req, res) => {
+  try {
+    const { content } = req.body;
+    if (!content) return res.status(400).json({ success: false, message: 'Reply content is required.' });
+    const [doubts] = await pool.query('SELECT id FROM doubts WHERE id = ? AND studentId = ?', [req.params.id, req.user.id]);
+    if (doubts.length === 0) return res.status(404).json({ success: false, message: 'Doubt not found.' });
+    await pool.query('INSERT INTO doubtReplies (doubtId, userId, content) VALUES (?, ?, ?)', [req.params.id, req.user.id, content]);
+    res.status(201).json({ success: true, message: 'Reply posted.' });
+  } catch (error) {
+    console.error('Student reply doubt error:', error);
+    res.status(500).json({ success: false, message: 'Server error.' });
+  }
+});
+
 export default router;

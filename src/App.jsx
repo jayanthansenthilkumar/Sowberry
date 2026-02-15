@@ -11,7 +11,7 @@ import ManageStudents from './pages/admin/ManageStudents'
 import CoursesOverview from './pages/admin/CoursesOverview'
 import ManageMentors from './pages/admin/ManageMentors'
 import MentorDashboard from './pages/mentor/MentorDashboard'
-import NewCourses from './pages/mentor/NewCourses'
+import MentorDoubts from './pages/mentor/Doubts'
 import NewProblemSolving from './pages/mentor/NewProblemSolving'
 import StudentsProgress from './pages/mentor/StudentsProgress'
 import NewEvents from './pages/mentor/NewEvents'
@@ -29,6 +29,8 @@ import MyAssignments from './pages/student/MyAssignments'
 import MyGrades from './pages/student/MyGrades'
 import MyProgress from './pages/student/MyProgress'
 import CourseViewer from './pages/student/CourseViewer'
+import MyDoubts from './pages/student/MyDoubts'
+import SessionManager from './components/SessionManager'
 
 // Error Boundary to catch runtime errors and show a visible message
 class ErrorBoundary extends React.Component {
@@ -74,6 +76,7 @@ function App() {
     <ErrorBoundary>
       <Router basename="/">
         <AuthProvider>
+          <SessionManager />
           <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/auth" element={<AuthPage />} />
@@ -89,13 +92,15 @@ function App() {
           
           {/* Mentor Routes (accessible by mentor + admin) */}
           <Route path="/mentor" element={<ProtectedRoute allowedRoles={['mentor', 'admin']}><MentorDashboard /></ProtectedRoute>} />
-          <Route path="/mentor/new-courses" element={<ProtectedRoute allowedRoles={['mentor', 'admin']}><NewCourses /></ProtectedRoute>} />
-          <Route path="/mentor/new-problem-solving" element={<ProtectedRoute allowedRoles={['mentor', 'admin']}><NewProblemSolving /></ProtectedRoute>} />
+          <Route path="/mentor/doubts" element={<ProtectedRoute allowedRoles={['mentor', 'admin']}><MentorDoubts /></ProtectedRoute>} />
           <Route path="/mentor/students-progress" element={<ProtectedRoute allowedRoles={['mentor', 'admin']}><StudentsProgress /></ProtectedRoute>} />
-          <Route path="/mentor/new-events" element={<ProtectedRoute allowedRoles={['mentor', 'admin']}><NewEvents /></ProtectedRoute>} />
-          <Route path="/mentor/new-aptitude" element={<ProtectedRoute allowedRoles={['mentor', 'admin']}><NewAptitude /></ProtectedRoute>} />
           <Route path="/mentor/new-assignments" element={<ProtectedRoute allowedRoles={['mentor', 'admin']}><NewAssignments /></ProtectedRoute>} />
-          <Route path="/mentor/discussion" element={<ProtectedRoute allowedRoles={['mentor', 'admin']}><MentorDiscussion /></ProtectedRoute>} />
+          
+          {/* Admin-only Content Management (moved from mentor) */}
+          <Route path="/admin/problem-solving" element={<ProtectedRoute allowedRoles={['admin']}><NewProblemSolving /></ProtectedRoute>} />
+          <Route path="/admin/aptitude" element={<ProtectedRoute allowedRoles={['admin']}><NewAptitude /></ProtectedRoute>} />
+          <Route path="/admin/events" element={<ProtectedRoute allowedRoles={['admin']}><NewEvents /></ProtectedRoute>} />
+          <Route path="/admin/discussion" element={<ProtectedRoute allowedRoles={['admin']}><MentorDiscussion /></ProtectedRoute>} />
           
           {/* Student Routes */}
           <Route path="/student" element={<ProtectedRoute allowedRoles={['student']}><StudentDashboard /></ProtectedRoute>} />
@@ -108,6 +113,7 @@ function App() {
           <Route path="/student/my-assignments" element={<ProtectedRoute allowedRoles={['student']}><MyAssignments /></ProtectedRoute>} />
           <Route path="/student/my-grades" element={<ProtectedRoute allowedRoles={['student']}><MyGrades /></ProtectedRoute>} />
           <Route path="/student/my-progress" element={<ProtectedRoute allowedRoles={['student']}><MyProgress /></ProtectedRoute>} />
+          <Route path="/student/my-doubts" element={<ProtectedRoute allowedRoles={['student']}><MyDoubts /></ProtectedRoute>} />
           <Route path="/student/course-viewer/:id" element={<ProtectedRoute allowedRoles={['student']}><CourseViewer /></ProtectedRoute>} />
         </Routes>
       </AuthProvider>

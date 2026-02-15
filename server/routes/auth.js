@@ -237,6 +237,43 @@ router.post('/reset-password', async (req, res) => {
   }
 });
 
+// ──────────────── REFRESH TOKEN ────────────────
+router.post('/refresh-token', authenticate, async (req, res) => {
+  try {
+    const [users] = await pool.query(
+      'SELECT id, email, username, fullName, role, profileImage, isVerified, isActive FROM users WHERE id = ? AND isActive = 1',
+      [req.user.id]
+    );
+
+    if (users.length === 0) {
+      return res.status(401).json({ success: false, message: 'User not found or inactive.' });
+    }
+
+    const user = users[0];
+    const newToken = generateToken(user);
+
+    res.json({
+      success: true,
+      message: 'Token refreshed.',
+      data: {
+        token: newToken,
+        user: {
+          id: user.id,
+          email: user.email,
+          username: user.username,
+          fullName: user.fullName,
+          role: user.role,
+          profileImage: user.profileImage,
+          isVerified: user.isVerified
+        }
+      }
+    });
+  } catch (error) {
+    console.error('Refresh token error:', error);
+    res.status(500).json({ success: false, message: 'Server error.' });
+  }
+});
+
 // ──────────────── GET CURRENT USER ────────────────
 router.get('/me', authenticate, async (req, res) => {
   try {

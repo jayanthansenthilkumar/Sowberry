@@ -7,6 +7,7 @@ const studentNav = [
   { path: '/student', icon: 'ri-dashboard-line', label: 'Dashboard' },
   { path: '/student/my-courses', icon: 'ri-book-open-line', label: 'My Courses' },
   { path: '/student/my-assignments', icon: 'ri-task-line', label: 'Assignments' },
+  { path: '/student/my-doubts', icon: 'ri-chat-3-line', label: 'My Doubts' },
   { path: '/student/my-grades', icon: 'ri-bar-chart-box-line', label: 'My Grades' },
   { path: '/student/my-progress', icon: 'ri-line-chart-line', label: 'My Progress' },
   { path: '/student/coding-practice', icon: 'ri-code-s-slash-line', label: 'Coding Practice' },
@@ -18,13 +19,9 @@ const studentNav = [
 
 const mentorNav = [
   { path: '/mentor', icon: 'ri-dashboard-line', label: 'Dashboard' },
-  { path: '/mentor/new-courses', icon: 'ri-book-open-line', label: 'Courses' },
   { path: '/mentor/new-assignments', icon: 'ri-task-line', label: 'Assignments' },
+  { path: '/mentor/doubts', icon: 'ri-chat-3-line', label: 'Student Doubts' },
   { path: '/mentor/students-progress', icon: 'ri-line-chart-line', label: 'Student Progress' },
-  { path: '/mentor/new-problem-solving', icon: 'ri-code-s-slash-line', label: 'Problem Solving' },
-  { path: '/mentor/new-aptitude', icon: 'ri-question-answer-line', label: 'Aptitude' },
-  { path: '/mentor/new-events', icon: 'ri-calendar-event-line', label: 'Events' },
-  { path: '/mentor/discussion', icon: 'ri-discuss-line', label: 'Discussion' },
 ];
 
 const DashboardLayout = ({ children, pageTitle, role = 'student' }) => {

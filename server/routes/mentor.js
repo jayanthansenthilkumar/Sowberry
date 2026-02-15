@@ -865,4 +865,81 @@ router.delete('/study-materials/:id', async (req, res) => {
   }
 });
 
+// ──────────────── DOUBTS (Mentor) ────────────────
+
+// List all open doubts + doubts assigned to me
+router.get('/doubts', async (req, res) => {
+  try {
+    const [doubts] = await pool.query(`
+      SELECT d.*, u.fullName as studentName, c.title as courseTitle, m.fullName as mentorName,
+        (SELECT COUNT(*) FROM doubtReplies WHERE doubtId = d.id) as replyCount
+      FROM doubts d
+      JOIN users u ON d.studentId = u.id
+      LEFT JOIN courses c ON d.courseId = c.id
+      LEFT JOIN users m ON d.assignedMentorId = m.id
+      WHERE d.status = 'open' OR d.assignedMentorId = ?
+      ORDER BY FIELD(d.status, 'open', 'in-progress', 'resolved', 'closed'), d.createdAt DESC
+    `, [req.user.id]);
+    res.json({ success: true, data: { doubts } });
+  } catch (error) {
+    console.error('Mentor get doubts error:', error);
+    res.status(500).json({ success: false, message: 'Server error.' });
+  }
+});
+
+// Get doubt detail with replies
+router.get('/doubts/:id', async (req, res) => {
+  try {
+    const [doubts] = await pool.query(`
+      SELECT d.*, u.fullName as studentName, u.email as studentEmail, c.title as courseTitle, m.fullName as mentorName
+      FROM doubts d
+      JOIN users u ON d.studentId = u.id
+      LEFT JOIN courses c ON d.courseId = c.id
+      LEFT JOIN users m ON d.assignedMentorId = m.id
+      WHERE d.id = ?
+    `, [req.params.id]);
+    if (doubts.length === 0) return res.status(404).json({ success: false, message: 'Doubt not found.' });
+    const [replies] = await pool.query(`
+      SELECT dr.*, u.fullName as authorName, u.role as authorRole
+      FROM doubtReplies dr JOIN users u ON dr.userId = u.id
+      WHERE dr.doubtId = ? ORDER BY dr.createdAt ASC
+    `, [req.params.id]);
+    res.json({ success: true, data: { doubt: doubts[0], replies } });
+  } catch (error) {
+    console.error('Mentor get doubt error:', error);
+    res.status(500).json({ success: false, message: 'Server error.' });
+  }
+});
+
+// Reply to a doubt — first mentor to reply gets auto-assigned
+router.post('/doubts/:id/reply', async (req, res) => {
+  try {
+    const { content } = req.body;
+    if (!content) return res.status(400).json({ success: false, message: 'Reply content is required.' });
+    const [doubts] = await pool.query('SELECT * FROM doubts WHERE id = ?', [req.params.id]);
+    if (doubts.length === 0) return res.status(404).json({ success: false, message: 'Doubt not found.' });
+    const doubt = doubts[0];
+    // Auto-assign: if no mentor assigned yet, assign this mentor
+    if (!doubt.assignedMentorId) {
+      await pool.query("UPDATE doubts SET assignedMentorId = ?, status = 'in-progress' WHERE id = ? AND assignedMentorId IS NULL", [req.user.id, req.params.id]);
+    }
+    await pool.query('INSERT INTO doubtReplies (doubtId, userId, content) VALUES (?, ?, ?)', [req.params.id, req.user.id, content]);
+    res.status(201).json({ success: true, message: 'Reply posted. You are now assigned to this doubt.' });
+  } catch (error) {
+    console.error('Mentor reply doubt error:', error);
+    res.status(500).json({ success: false, message: 'Server error.' });
+  }
+});
+
+// Resolve a doubt
+router.put('/doubts/:id/resolve', async (req, res) => {
+  try {
+    await pool.query("UPDATE doubts SET status = 'resolved' WHERE id = ? AND assignedMentorId = ?", [req.params.id, req.user.id]);
+    res.json({ success: true, message: 'Doubt resolved.' });
+  } catch (error) {
+    console.error('Resolve doubt error:', error);
+    res.status(500).json({ success: false, message: 'Server error.' });
+  }
+});
+
 export default router;

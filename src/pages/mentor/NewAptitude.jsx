@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import DashboardLayout from '../../components/DashboardLayout';
+import AdminLayout from '../../components/AdminLayout';
 import Swal from 'sweetalert2';
 import { mentorApi } from '../../utils/api';
 
@@ -49,7 +49,7 @@ const NewAptitude = () => {
   };
 
   return (
-    <DashboardLayout pageTitle="Aptitude" role="mentor">
+    <AdminLayout>
       <div className="space-y-6">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div><h1 className="text-2xl font-bold text-gray-800 dark-theme:text-white">Aptitude Tests</h1><p className="text-sm text-gray-500 mt-1">{tests.length} tests</p></div>
@@ -133,7 +133,7 @@ const NewAptitude = () => {
           </div>
         </div>
       )}
-    </DashboardLayout>
+    </AdminLayout>
   );
 };
 export default NewAptitude;
