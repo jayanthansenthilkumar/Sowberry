@@ -1,4 +1,5 @@
-﻿import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect, useCallback } from 'react';
+import Cropper from 'react-easy-crop';
 import { Link, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { authApi } from '../../utils/api';
@@ -34,6 +35,12 @@ const AuthPage = () => {
     username: '', password: '', confirmPassword: ''
   });
   const [registerStep, setRegisterStep] = useState(1);
+  // Crop modal state
+  const [cropModal, setCropModal] = useState(false);
+  const [cropImage, setCropImage] = useState(null);
+  const [crop, setCrop] = useState({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(1);
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
   const [forgotData, setForgotData] = useState({
     email: '',
     otp: ['', '', '', '', '', ''],
@@ -180,12 +187,59 @@ const AuthPage = () => {
       return;
     }
     const reader = new FileReader();
-    reader.onloadend = () => setRegisterData(prev => ({ ...prev, profileImage: file, profilePreview: reader.result }));
+    reader.onloadend = () => {
+      setCropImage(reader.result);
+      setCropModal(true);
+    };
     reader.readAsDataURL(file);
+    e.target.value = '';
   };
 
   const removeProfileImage = () => {
     setRegisterData(prev => ({ ...prev, profileImage: null, profilePreview: null }));
+  };
+
+  const onCropComplete = useCallback((_, pixels) => {
+    setCroppedAreaPixels(pixels);
+  }, []);
+
+  const getCroppedImg = (imageSrc, pixelCrop) => {
+    return new Promise((resolve) => {
+      const image = new Image();
+      image.src = imageSrc;
+      image.onload = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = pixelCrop.width;
+        canvas.height = pixelCrop.height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(image, pixelCrop.x, pixelCrop.y, pixelCrop.width, pixelCrop.height, 0, 0, pixelCrop.width, pixelCrop.height);
+        canvas.toBlob((blob) => {
+          resolve({ blob, url: URL.createObjectURL(blob) });
+        }, 'image/jpeg', 0.95);
+      };
+    });
+  };
+
+  const handleCropConfirm = async () => {
+    if (!croppedAreaPixels || !cropImage) return;
+    try {
+      const { blob, url } = await getCroppedImg(cropImage, croppedAreaPixels);
+      const croppedFile = new File([blob], 'profile.jpg', { type: 'image/jpeg' });
+      setRegisterData(prev => ({ ...prev, profileImage: croppedFile, profilePreview: url }));
+    } catch (err) {
+      console.error('Crop failed:', err);
+    }
+    setCropModal(false);
+    setCropImage(null);
+    setCrop({ x: 0, y: 0 });
+    setZoom(1);
+  };
+
+  const handleCropCancel = () => {
+    setCropModal(false);
+    setCropImage(null);
+    setCrop({ x: 0, y: 0 });
+    setZoom(1);
   };
 
   // College/Department/Year lists
@@ -637,26 +691,6 @@ const AuthPage = () => {
                         </div>
                       </div>
 
-                      {/* Validation hints */}
-                      {(registerData.fullName || registerData.email || registerData.phone || registerData.rollNumber) && (
-                        <div className="bg-[#222] rounded-xl p-3 space-y-1.5">
-                          {[
-                            { ok: !!registerData.fullName.trim(), label: 'Full name entered' },
-                            { ok: !!registerData.college, label: 'College selected' },
-                            { ok: !!registerData.department, label: 'Department selected' },
-                            { ok: !!registerData.year, label: 'Year selected' },
-                            { ok: registerData.rollNumber.length === 12, label: 'Roll number (12 digits)' },
-                            { ok: /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(registerData.email), label: 'Valid email' },
-                            { ok: /^\d{10,15}$/.test(registerData.phone.replace(/\D/g, '')), label: 'Valid phone' },
-                          ].map((v, i) => (
-                            <div key={i} className="flex items-center gap-2">
-                              <i className={`text-xs ${v.ok ? 'ri-checkbox-circle-fill text-emerald-500' : 'ri-checkbox-blank-circle-line text-[#444]'}`}></i>
-                              <span className={`text-[11px] ${v.ok ? 'text-[#aaa]' : 'text-[#555]'}`}>{v.label}</span>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-
                       <button type="button" onClick={nextStep} disabled={!canProceedStep(1)}
                         className="w-full py-3 rounded-xl bg-[#d4a574] text-[#1a1a1a] font-semibold hover:bg-[#c4956a] transition-all disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm shadow-lg shadow-[#d4a574]/10">
                         Continue <i className="ri-arrow-right-line text-base"></i>
@@ -947,6 +981,68 @@ const AuthPage = () => {
           )}
         </div>
       </div>
+      {/* Crop Modal */}
+      {cropModal && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center">
+          <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={handleCropCancel}></div>
+          <div className="relative bg-[#1a1a1a] rounded-2xl border border-[#333] w-[90vw] max-w-lg mx-4 overflow-hidden shadow-2xl">
+            {/* Header */}
+            <div className="flex items-center justify-between px-5 py-4 border-b border-[#333]">
+              <div className="flex items-center gap-2">
+                <i className="ri-crop-line text-[#d4a574] text-lg"></i>
+                <h3 className="text-[#e8e8e8] font-semibold text-sm">Crop Profile Photo</h3>
+              </div>
+              <button onClick={handleCropCancel} className="w-7 h-7 rounded-lg bg-[#222] border border-[#333] flex items-center justify-center text-[#888] hover:text-white hover:border-[#555] transition-all">
+                <i className="ri-close-line text-sm"></i>
+              </button>
+            </div>
+            {/* Cropper */}
+            <div className="relative w-full" style={{ height: '350px', background: '#111' }}>
+              <Cropper
+                image={cropImage}
+                crop={crop}
+                zoom={zoom}
+                aspect={1}
+                cropShape="round"
+                showGrid={false}
+                onCropChange={setCrop}
+                onZoomChange={setZoom}
+                onCropComplete={onCropComplete}
+              />
+            </div>
+            {/* Zoom Slider */}
+            <div className="px-5 py-3 border-t border-[#333] bg-[#1a1a1a]">
+              <div className="flex items-center gap-3">
+                <i className="ri-subtract-line text-[#888] text-sm"></i>
+                <input
+                  type="range"
+                  min={1}
+                  max={3}
+                  step={0.05}
+                  value={zoom}
+                  onChange={(e) => setZoom(Number(e.target.value))}
+                  className="flex-1 h-1 appearance-none rounded-full bg-[#333] outline-none cursor-pointer"
+                  style={{
+                    accentColor: '#d4a574'
+                  }}
+                />
+                <i className="ri-add-line text-[#888] text-sm"></i>
+              </div>
+            </div>
+            {/* Actions */}
+            <div className="flex gap-3 px-5 py-4 border-t border-[#333]">
+              <button type="button" onClick={handleCropCancel}
+                className="flex-1 py-2.5 rounded-xl bg-[#222] border border-[#333] text-[#aaa] font-medium hover:bg-[#2a2a2a] hover:border-[#555] transition-all text-sm">
+                Cancel
+              </button>
+              <button type="button" onClick={handleCropConfirm}
+                className="flex-[2] py-2.5 rounded-xl bg-[#d4a574] text-[#1a1a1a] font-semibold hover:bg-[#c4956a] transition-all text-sm shadow-lg shadow-[#d4a574]/10 flex items-center justify-center gap-2">
+                <i className="ri-check-line"></i> Apply Crop
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
