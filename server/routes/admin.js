@@ -2,6 +2,13 @@ import { Router } from 'express';
 import bcrypt from 'bcryptjs';
 import pool from '../config/db.js';
 import { authenticate, authorize } from '../middleware/auth.js';
+import archiver from 'archiver';
+import path from 'path';
+import fs from 'fs';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const router = Router();
 
@@ -828,6 +835,61 @@ router.put('/contact-messages/:id/read', async (req, res) => {
     res.json({ success: true, message: 'Message marked as read.' });
   } catch (error) {
     console.error('Mark message error:', error);
+    res.status(500).json({ success: false, message: 'Server error.' });
+  }
+});
+
+// ──────────────── DOWNLOAD UPLOADS (Profile Photos) ────────────────
+router.get('/download-uploads', async (req, res) => {
+  try {
+    const uploadsDir = path.join(__dirname, '..', 'uploads', 'profiles');
+    if (!fs.existsSync(uploadsDir)) {
+      return res.status(404).json({ success: false, message: 'No uploads folder found.' });
+    }
+
+    const files = fs.readdirSync(uploadsDir).filter(f => /\.(jpg|jpeg|png|gif|webp)$/i.test(f));
+    if (files.length === 0) {
+      return res.status(404).json({ success: false, message: 'No profile photos found.' });
+    }
+
+    res.setHeader('Content-Type', 'application/zip');
+    res.setHeader('Content-Disposition', 'attachment; filename=profile-photos.zip');
+
+    const archive = archiver('zip', { zlib: { level: 6 } });
+    archive.on('error', (err) => { throw err; });
+    archive.pipe(res);
+
+    for (const file of files) {
+      archive.file(path.join(uploadsDir, file), { name: file });
+    }
+
+    await archive.finalize();
+  } catch (error) {
+    console.error('Download uploads error:', error);
+    if (!res.headersSent) {
+      res.status(500).json({ success: false, message: 'Failed to create zip.' });
+    }
+  }
+});
+
+// ──────────────── LIST UPLOADS (Profile Photos) ────────────────
+router.get('/list-uploads', async (req, res) => {
+  try {
+    const uploadsDir = path.join(__dirname, '..', 'uploads', 'profiles');
+    if (!fs.existsSync(uploadsDir)) {
+      return res.json({ success: true, files: [], totalSize: 0 });
+    }
+
+    const fileNames = fs.readdirSync(uploadsDir).filter(f => /\.(jpg|jpeg|png|gif|webp)$/i.test(f));
+    const files = fileNames.map(f => {
+      const stat = fs.statSync(path.join(uploadsDir, f));
+      return { name: f, size: stat.size, modified: stat.mtime };
+    });
+
+    const totalSize = files.reduce((sum, f) => sum + f.size, 0);
+    res.json({ success: true, files, totalSize, count: files.length });
+  } catch (error) {
+    console.error('List uploads error:', error);
     res.status(500).json({ success: false, message: 'Server error.' });
   }
 });

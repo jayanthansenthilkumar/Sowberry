@@ -25,7 +25,7 @@ const CodingPractice = () => {
     <DashboardLayout pageTitle="Coding Practice" role="student">
       <div className="space-y-6">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div><h1 className="text-2xl font-bold text-gray-800 dark-theme:text-white">Coding Practice</h1><p className="text-sm text-gray-500 mt-1">{filteredProblems.length} problems</p></div>
+          <div><h1 className="text-2xl font-bold text-gray-800 dark-theme:text-gray-100">Coding Practice</h1><p className="text-sm text-gray-500 mt-1">{filteredProblems.length} problems</p></div>
           <div className="flex bg-cream dark-theme:bg-gray-800 rounded-xl p-1">
             {['all', 'easy', 'medium', 'hard'].map(f => (
               <button key={f} onClick={() => setFilter(f)} className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors capitalize ${filter === f ? 'bg-primary text-white' : 'text-gray-500 hover:text-gray-700'}`}>{f}</button>
@@ -42,7 +42,7 @@ const CodingPractice = () => {
                 <div className="flex items-start gap-3">
                   <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0"><span className="text-sm font-bold text-primary">{i + 1}</span></div>
                   <div>
-                    <h3 className="font-semibold text-gray-800 dark-theme:text-white text-sm">{p.title}</h3>
+                    <h3 className="font-semibold text-gray-800 dark-theme:text-gray-100 text-sm">{p.title}</h3>
                     <p className="text-xs text-gray-500 line-clamp-1 mt-0.5">{p.description}</p>
                     <div className="flex items-center gap-2 mt-2">
                       <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${diffColors[p.difficulty] || diffColors.easy}`}>{p.difficulty}</span>

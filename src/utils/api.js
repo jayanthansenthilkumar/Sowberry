@@ -76,9 +76,10 @@ export const authApi = {
   refreshToken: () => apiCall('/auth/refresh-token', { method: 'POST' }),
   updateProfile: (body) => apiCall('/auth/profile', { method: 'PUT', body: JSON.stringify(body) }),
   changePassword: (body) => apiCall('/auth/change-password', { method: 'PUT', body: JSON.stringify(body) }),
-  uploadProfileImage: async (file) => {
+  uploadProfileImage: async (file, rollNumber) => {
     const formData = new FormData();
     formData.append('profileImage', file);
+    if (rollNumber) formData.append('rollNumber', rollNumber);
     try {
       const res = await fetch(`${API_BASE}/auth/upload-profile`, { method: 'POST', body: formData });
       const json = await res.json();
@@ -140,6 +141,9 @@ export const adminApi = {
   // Contact Messages
   getContactMessages: () => apiCall('/admin/contact-messages'),
   markMessageRead: (id) => apiCall(`/admin/contact-messages/${id}/read`, { method: 'PUT' }),
+  // Upload management
+  listUploads: () => apiCall('/admin/list-uploads'),
+  downloadUploads: () => `${API_BASE}/admin/download-uploads`,
 };
 
 // ──────────────── MENTOR API ────────────────

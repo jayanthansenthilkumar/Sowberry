@@ -83,7 +83,7 @@ const ManageMentors = () => {
       <div className="space-y-6">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-gray-800 dark-theme:text-white">Manage Mentors</h1>
+            <h1 className="text-2xl font-bold text-gray-800 dark-theme:text-gray-100">Manage Mentors</h1>
             <p className="text-sm text-gray-500 dark-theme:text-gray-400 mt-1">{mentors.length} total mentors</p>
           </div>
           <div className="flex gap-3">
@@ -112,7 +112,7 @@ const ManageMentors = () => {
                 <div className="flex items-center gap-3">
                   <img src={`https://ui-avatars.com/api/?name=${encodeURIComponent(m.fullName)}&size=44&background=c96442&color=fff`} className="w-11 h-11 rounded-xl" alt="" />
                   <div>
-                    <h3 className="font-semibold text-gray-800 dark-theme:text-white text-sm">{m.fullName}</h3>
+                    <h3 className="font-semibold text-gray-800 dark-theme:text-gray-100 text-sm">{m.fullName}</h3>
                     <p className="text-xs text-gray-400">@{m.username}</p>
                   </div>
                 </div>
@@ -138,7 +138,7 @@ const ManageMentors = () => {
         <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40">
           <div className="bg-white dark-theme:bg-gray-900 rounded-2xl p-6 w-full max-w-md mx-4 border border-sand dark-theme:border-gray-800">
             <div className="flex items-center justify-between mb-5">
-              <h3 className="text-lg font-bold text-gray-800 dark-theme:text-white">{editMentor ? 'Edit Mentor' : 'Add Mentor'}</h3>
+              <h3 className="text-lg font-bold text-gray-800 dark-theme:text-gray-100">{editMentor ? 'Edit Mentor' : 'Add Mentor'}</h3>
               <button onClick={() => setShowModal(false)} className="w-8 h-8 rounded-lg hover:bg-gray-100 dark-theme:hover:bg-gray-800 flex items-center justify-center"><i className="ri-close-line text-lg text-gray-500"></i></button>
             </div>
             <form onSubmit={handleSubmit} className="space-y-3">

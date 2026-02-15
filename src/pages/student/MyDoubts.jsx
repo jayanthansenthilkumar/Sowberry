@@ -59,7 +59,7 @@ const MyDoubts = () => {
       focusConfirm: false,
       showCancelButton: true,
       confirmButtonText: 'Submit Doubt',
-      confirmButtonColor: '#7c3aed',
+      confirmButtonColor: '#d4a574',
       preConfirm: () => {
         const title = document.getElementById('swal-title').value;
         if (!title) { Swal.showValidationMessage('Doubt title is required'); return false; }
@@ -92,10 +92,10 @@ const MyDoubts = () => {
   };
 
   const statusColor = (s) => ({
-    open: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300',
-    'in-progress': 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300',
-    resolved: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300',
-    closed: 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
+    open: 'bg-amber-100 text-amber-800 dark-theme:bg-amber-900/30 dark-theme:text-amber-300',
+    'in-progress': 'bg-blue-100 text-blue-800 dark-theme:bg-blue-900/30 dark-theme:text-blue-300',
+    resolved: 'bg-green-100 text-green-800 dark-theme:bg-green-900/30 dark-theme:text-green-300',
+    closed: 'bg-gray-100 text-gray-800 dark-theme:bg-gray-700 dark-theme:text-gray-300'
   })[s] || 'bg-gray-100 text-gray-800';
 
   const priorityColor = (p) => ({
@@ -111,20 +111,20 @@ const MyDoubts = () => {
     return (
       <DashboardLayout>
         <div className="max-w-4xl mx-auto">
-          <button onClick={() => setSelectedDoubt(null)} className="flex items-center gap-2 text-purple-600 hover:text-purple-800 mb-4 font-medium">
+          <button onClick={() => setSelectedDoubt(null)} className="flex items-center gap-2 text-primary hover:text-primary-dark mb-4 font-medium">
             <i className="ri-arrow-left-line"></i> Back to My Doubts
           </button>
           {detailLoading ? (
-            <div className="text-center py-16"><i className="ri-loader-4-line animate-spin text-3xl text-purple-500"></i></div>
+            <div className="text-center py-16"><i className="ri-loader-4-line animate-spin text-3xl text-primary"></i></div>
           ) : (
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
+            <div className="bg-white dark-theme:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
               {/* Header */}
-              <div className="p-6 border-b dark:border-gray-700">
+              <div className="p-6 border-b dark-theme:border-gray-700">
                 <div className="flex items-start justify-between gap-4">
                   <div>
-                    <h2 className="text-xl font-bold text-gray-900 dark:text-white">{selectedDoubt.title}</h2>
+                    <h2 className="text-xl font-bold text-gray-900 dark-theme:text-gray-100">{selectedDoubt.title}</h2>
                     {selectedDoubt.courseTitle && (
-                      <p className="text-sm text-purple-600 dark:text-purple-400 mt-1">
+                      <p className="text-sm text-primary dark-theme:text-primary mt-1">
                         <i className="ri-book-open-line mr-1"></i>{selectedDoubt.courseTitle}
                       </p>
                     )}
@@ -137,9 +137,9 @@ const MyDoubts = () => {
                   </div>
                 </div>
                 {selectedDoubt.description && (
-                  <p className="mt-3 text-gray-600 dark:text-gray-300">{selectedDoubt.description}</p>
+                  <p className="mt-3 text-gray-600 dark-theme:text-gray-300">{selectedDoubt.description}</p>
                 )}
-                <div className="mt-3 flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
+                <div className="mt-3 flex items-center gap-4 text-sm text-gray-500 dark-theme:text-gray-400">
                   {selectedDoubt.mentorName && (
                     <span><i className="ri-user-star-line mr-1"></i>Assigned: {selectedDoubt.mentorName}</span>
                   )}
@@ -150,7 +150,7 @@ const MyDoubts = () => {
               {/* Replies */}
               <div className="p-6 space-y-4 max-h-[28rem] overflow-y-auto">
                 {replies.length === 0 ? (
-                  <p className="text-center text-gray-500 dark:text-gray-400 py-8">
+                  <p className="text-center text-gray-500 dark-theme:text-gray-400 py-8">
                     <i className="ri-chat-3-line text-3xl block mb-2"></i>
                     No replies yet. A mentor will respond soon.
                   </p>
@@ -158,8 +158,8 @@ const MyDoubts = () => {
                   <div key={r.id} className={`flex ${r.authorRole === 'student' ? 'justify-end' : 'justify-start'}`}>
                     <div className={`max-w-[80%] rounded-xl p-4 ${
                       r.authorRole === 'student'
-                        ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-900 dark:text-purple-100'
-                        : 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100'
+                        ? 'bg-primary/10 dark-theme:bg-primary/20 text-purple-900 dark-theme:text-purple-100'
+                        : 'bg-gray-100 dark-theme:bg-gray-700 text-gray-900 dark-theme:text-gray-100'
                     }`}>
                       <div className="flex items-center gap-2 mb-1">
                         <span className="font-semibold text-sm">{r.authorName}</span>
@@ -176,15 +176,15 @@ const MyDoubts = () => {
 
               {/* Reply Input */}
               {selectedDoubt.status !== 'resolved' && selectedDoubt.status !== 'closed' && (
-                <div className="p-4 border-t dark:border-gray-700 flex gap-3">
+                <div className="p-4 border-t dark-theme:border-gray-700 flex gap-3">
                   <input
                     value={replyText}
                     onChange={e => setReplyText(e.target.value)}
                     onKeyDown={e => e.key === 'Enter' && handleReply()}
                     placeholder="Type a follow-up message..."
-                    className="flex-1 px-4 py-2.5 border rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    className="flex-1 px-4 py-2.5 border rounded-lg dark-theme:bg-gray-700 dark-theme:border-gray-600 dark-theme:text-gray-100 focus:ring-2 focus:ring-primary focus:border-transparent"
                   />
-                  <button onClick={handleReply} className="px-6 py-2.5 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition font-medium">
+                  <button onClick={handleReply} className="px-6 py-2.5 bg-primary text-white rounded-lg hover:bg-primary-dark transition font-medium">
                     <i className="ri-send-plane-fill mr-1"></i>Send
                   </button>
                 </div>
@@ -203,31 +203,31 @@ const MyDoubts = () => {
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">My Doubts</h1>
-            <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">Ask questions and get help from mentors</p>
+            <h1 className="text-2xl font-bold text-gray-900 dark-theme:text-gray-100">My Doubts</h1>
+            <p className="text-gray-500 dark-theme:text-gray-400 text-sm mt-1">Ask questions and get help from mentors</p>
           </div>
-          <button onClick={handleCreate} className="px-5 py-2.5 bg-purple-600 text-white rounded-xl hover:bg-purple-700 transition shadow-lg hover:shadow-xl font-medium">
+          <button onClick={handleCreate} className="px-5 py-2.5 bg-primary text-white rounded-xl hover:bg-primary-dark transition shadow-lg hover:shadow-xl font-medium">
             <i className="ri-add-line mr-1"></i>Ask a Doubt
           </button>
         </div>
 
         {/* Stats */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
-          <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm">
-            <p className="text-2xl font-bold text-purple-600">{doubts.length}</p>
-            <p className="text-sm text-gray-500 dark:text-gray-400">Total Doubts</p>
+          <div className="bg-white dark-theme:bg-gray-800 rounded-xl p-4 shadow-sm">
+            <p className="text-2xl font-bold text-primary">{doubts.length}</p>
+            <p className="text-sm text-gray-500 dark-theme:text-gray-400">Total Doubts</p>
           </div>
-          <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm">
+          <div className="bg-white dark-theme:bg-gray-800 rounded-xl p-4 shadow-sm">
             <p className="text-2xl font-bold text-amber-600">{doubts.filter(d => d.status === 'open').length}</p>
-            <p className="text-sm text-gray-500 dark:text-gray-400">Awaiting Reply</p>
+            <p className="text-sm text-gray-500 dark-theme:text-gray-400">Awaiting Reply</p>
           </div>
-          <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm">
+          <div className="bg-white dark-theme:bg-gray-800 rounded-xl p-4 shadow-sm">
             <p className="text-2xl font-bold text-blue-600">{doubts.filter(d => d.status === 'in-progress').length}</p>
-            <p className="text-sm text-gray-500 dark:text-gray-400">In Progress</p>
+            <p className="text-sm text-gray-500 dark-theme:text-gray-400">In Progress</p>
           </div>
-          <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm">
+          <div className="bg-white dark-theme:bg-gray-800 rounded-xl p-4 shadow-sm">
             <p className="text-2xl font-bold text-green-600">{doubts.filter(d => d.status === 'resolved').length}</p>
-            <p className="text-sm text-gray-500 dark:text-gray-400">Resolved</p>
+            <p className="text-sm text-gray-500 dark-theme:text-gray-400">Resolved</p>
           </div>
         </div>
 
@@ -236,8 +236,8 @@ const MyDoubts = () => {
           {['all', 'open', 'in-progress', 'resolved', 'closed'].map(s => (
             <button key={s} onClick={() => setFilter(s)} className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition ${
               filter === s
-                ? 'bg-purple-600 text-white shadow'
-                : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 border dark:border-gray-700'
+                ? 'bg-primary text-white shadow'
+                : 'bg-white dark-theme:bg-gray-800 text-gray-600 dark-theme:text-gray-300 hover:bg-gray-50 dark-theme:hover:bg-gray-700 border dark-theme:border-gray-700'
             }`}>
               {s === 'all' ? 'All' : s.charAt(0).toUpperCase() + s.slice(1)}
               {' '}({s === 'all' ? doubts.length : doubts.filter(d => d.status === s).length})
@@ -248,14 +248,14 @@ const MyDoubts = () => {
         {/* Doubt List */}
         {loading ? (
           <div className="text-center py-16">
-            <i className="ri-loader-4-line animate-spin text-3xl text-purple-500"></i>
+            <i className="ri-loader-4-line animate-spin text-3xl text-primary"></i>
             <p className="mt-3 text-gray-500">Loading...</p>
           </div>
         ) : filtered.length === 0 ? (
-          <div className="text-center py-16 bg-white dark:bg-gray-800 rounded-xl">
-            <i className="ri-question-answer-line text-5xl text-gray-300 dark:text-gray-600 mb-3 block"></i>
-            <h3 className="text-lg font-semibold text-gray-600 dark:text-gray-400">No doubts yet</h3>
-            <p className="text-gray-400 dark:text-gray-500 text-sm mt-1">Click "Ask a Doubt" to post your first question</p>
+          <div className="text-center py-16 bg-white dark-theme:bg-gray-800 rounded-xl">
+            <i className="ri-question-answer-line text-5xl text-gray-300 dark-theme:text-gray-600 mb-3 block"></i>
+            <h3 className="text-lg font-semibold text-gray-600 dark-theme:text-gray-400">No doubts yet</h3>
+            <p className="text-gray-400 dark-theme:text-gray-500 text-sm mt-1">Click "Ask a Doubt" to post your first question</p>
           </div>
         ) : (
           <div className="space-y-3">
@@ -263,15 +263,15 @@ const MyDoubts = () => {
               <div
                 key={d.id}
                 onClick={() => openDetail(d)}
-                className="bg-white dark:bg-gray-800 rounded-xl p-5 shadow-sm hover:shadow-md transition cursor-pointer border border-transparent hover:border-purple-200 dark:hover:border-purple-800 group"
+                className="bg-white dark-theme:bg-gray-800 rounded-xl p-5 shadow-sm hover:shadow-md transition cursor-pointer border border-transparent hover:border-primary/20 dark-theme:hover:border-purple-800 group"
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-3 mb-1">
-                      <h3 className="font-semibold text-gray-900 dark:text-white truncate group-hover:text-purple-600 transition">{d.title}</h3>
+                      <h3 className="font-semibold text-gray-900 dark-theme:text-gray-100 truncate group-hover:text-primary transition">{d.title}</h3>
                       <span className={priorityColor(d.priority)}><i className="ri-flag-fill text-sm"></i></span>
                     </div>
-                    <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400 flex-wrap">
+                    <div className="flex items-center gap-4 text-sm text-gray-500 dark-theme:text-gray-400 flex-wrap">
                       {d.courseTitle && <span><i className="ri-book-open-line mr-1"></i>{d.courseTitle}</span>}
                       {d.mentorName && <span><i className="ri-user-star-line mr-1"></i>{d.mentorName}</span>}
                       <span><i className="ri-chat-3-line mr-1"></i>{d.replyCount || 0} replies</span>

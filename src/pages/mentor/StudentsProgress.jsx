@@ -24,7 +24,7 @@ const StudentsProgress = () => {
   return (
     <Layout {...layoutProps}>
       <div className="space-y-6">
-        <h1 className="text-2xl font-bold text-gray-800 dark-theme:text-white">Student Progress</h1>
+        <h1 className="text-2xl font-bold text-gray-800 dark-theme:text-gray-100">Student Progress</h1>
 
         {loading ? <div className="flex justify-center py-20"><div className="w-8 h-8 border-3 border-primary border-t-transparent rounded-full animate-spin"></div></div> :
         students.length === 0 ? <div className="text-center py-20 text-gray-400"><i className="ri-line-chart-line text-4xl mb-3 block"></i><p>No student data available</p></div> :

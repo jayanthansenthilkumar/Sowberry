@@ -44,7 +44,7 @@ const StudentDashboard = () => {
           {statCards.map((s, i) => (
             <div key={i} className="bg-white dark-theme:bg-gray-900 rounded-2xl p-5 border border-sand dark-theme:border-gray-800">
               <div className={`w-10 h-10 rounded-xl bg-gradient-to-r ${s.color} flex items-center justify-center mb-3`}><i className={`${s.icon} text-white`}></i></div>
-              <p className="text-2xl font-bold text-gray-800 dark-theme:text-white">{s.value}</p>
+              <p className="text-2xl font-bold text-gray-800 dark-theme:text-gray-100">{s.value}</p>
               <p className="text-xs text-gray-500 mt-1">{s.label}</p>
             </div>
           ))}
@@ -52,14 +52,14 @@ const StudentDashboard = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="bg-white dark-theme:bg-gray-900 rounded-2xl p-5 border border-sand dark-theme:border-gray-800">
-            <h3 className="font-semibold text-gray-800 dark-theme:text-white mb-4">Recent Courses</h3>
+            <h3 className="font-semibold text-gray-800 dark-theme:text-gray-100 mb-4">Recent Courses</h3>
             {recentCourses.length === 0 ? <p className="text-sm text-gray-400 text-center py-6">No courses yet</p> :
             <div className="space-y-3">
               {recentCourses.slice(0, 5).map((c, i) => (
                 <div key={i} className="flex items-center gap-3 p-3 bg-cream dark-theme:bg-gray-800 rounded-xl">
                   <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center"><i className="ri-book-open-line text-primary text-sm"></i></div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-gray-800 dark-theme:text-white truncate">{c.title}</p>
+                    <p className="text-sm font-medium text-gray-800 dark-theme:text-gray-100 truncate">{c.title}</p>
                     <p className="text-[11px] text-gray-400">{c.mentorName || 'Mentor'}</p>
                   </div>
                   <div className="w-16">
@@ -72,14 +72,14 @@ const StudentDashboard = () => {
           </div>
 
           <div className="bg-white dark-theme:bg-gray-900 rounded-2xl p-5 border border-sand dark-theme:border-gray-800">
-            <h3 className="font-semibold text-gray-800 dark-theme:text-white mb-4">Upcoming Assignments</h3>
+            <h3 className="font-semibold text-gray-800 dark-theme:text-gray-100 mb-4">Upcoming Assignments</h3>
             {upcomingAssignments.length === 0 ? <p className="text-sm text-gray-400 text-center py-6">No pending assignments</p> :
             <div className="space-y-3">
               {upcomingAssignments.slice(0, 5).map((a, i) => (
                 <div key={i} className="flex items-center gap-3 p-3 bg-cream dark-theme:bg-gray-800 rounded-xl">
                   <div className="w-10 h-10 rounded-lg bg-amber-100 dark-theme:bg-amber-900/30 flex items-center justify-center"><i className="ri-task-line text-amber-600 text-sm"></i></div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-gray-800 dark-theme:text-white truncate">{a.title}</p>
+                    <p className="text-sm font-medium text-gray-800 dark-theme:text-gray-100 truncate">{a.title}</p>
                     <p className="text-[11px] text-gray-400">{a.courseName}</p>
                   </div>
                   <span className="text-[10px] text-red-500 font-medium">{a.dueDate ? new Date(a.dueDate).toLocaleDateString() : 'No due'}</span>

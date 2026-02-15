@@ -20,32 +20,32 @@ const SystemReports = () => {
   return (
     <AdminLayout pageTitle="System Reports">
       <div className="space-y-6">
-        <h1 className="text-2xl font-bold text-gray-800 dark-theme:text-white">System Reports</h1>
+        <h1 className="text-2xl font-bold text-gray-800 dark-theme:text-gray-100">System Reports</h1>
 
         {/* Summary Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="bg-white dark-theme:bg-gray-900 rounded-2xl p-5 border border-sand dark-theme:border-gray-800">
             <div className="flex items-center gap-3"><div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center"><i className="ri-user-line text-primary text-lg"></i></div>
-            <div><p className="text-xs text-gray-400">Total Users</p><p className="text-xl font-bold text-gray-800 dark-theme:text-white">{reports?.totalUsers || 0}</p></div></div>
+            <div><p className="text-xs text-gray-400">Total Users</p><p className="text-xl font-bold text-gray-800 dark-theme:text-gray-100">{reports?.totalUsers || 0}</p></div></div>
           </div>
           <div className="bg-white dark-theme:bg-gray-900 rounded-2xl p-5 border border-sand dark-theme:border-gray-800">
             <div className="flex items-center gap-3"><div className="w-10 h-10 rounded-xl bg-green-500/10 flex items-center justify-center"><i className="ri-check-double-line text-green-500 text-lg"></i></div>
-            <div><p className="text-xs text-gray-400">Total Submissions</p><p className="text-xl font-bold text-gray-800 dark-theme:text-white">{reports?.totalSubmissions || 0}</p></div></div>
+            <div><p className="text-xs text-gray-400">Total Submissions</p><p className="text-xl font-bold text-gray-800 dark-theme:text-gray-100">{reports?.totalSubmissions || 0}</p></div></div>
           </div>
           <div className="bg-white dark-theme:bg-gray-900 rounded-2xl p-5 border border-sand dark-theme:border-gray-800">
             <div className="flex items-center gap-3"><div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center"><i className="ri-book-open-line text-blue-500 text-lg"></i></div>
-            <div><p className="text-xs text-gray-400">Total Enrollments</p><p className="text-xl font-bold text-gray-800 dark-theme:text-white">{reports?.totalEnrollments || 0}</p></div></div>
+            <div><p className="text-xs text-gray-400">Total Enrollments</p><p className="text-xl font-bold text-gray-800 dark-theme:text-gray-100">{reports?.totalEnrollments || 0}</p></div></div>
           </div>
           <div className="bg-white dark-theme:bg-gray-900 rounded-2xl p-5 border border-sand dark-theme:border-gray-800">
             <div className="flex items-center gap-3"><div className="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center"><i className="ri-mail-line text-amber-500 text-lg"></i></div>
-            <div><p className="text-xs text-gray-400">Contact Messages</p><p className="text-xl font-bold text-gray-800 dark-theme:text-white">{reports?.totalContactMessages || 0}</p></div></div>
+            <div><p className="text-xs text-gray-400">Contact Messages</p><p className="text-xl font-bold text-gray-800 dark-theme:text-gray-100">{reports?.totalContactMessages || 0}</p></div></div>
           </div>
         </div>
 
         {/* Activity Logs */}
         <div className="bg-white dark-theme:bg-gray-900 rounded-2xl border border-sand dark-theme:border-gray-800 overflow-hidden">
           <div className="px-6 py-4 border-b border-sand dark-theme:border-gray-800">
-            <h3 className="font-bold text-gray-800 dark-theme:text-white">Recent Activity Logs</h3>
+            <h3 className="font-bold text-gray-800 dark-theme:text-gray-100">Recent Activity Logs</h3>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full">

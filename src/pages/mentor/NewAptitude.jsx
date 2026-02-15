@@ -52,7 +52,7 @@ const NewAptitude = () => {
     <AdminLayout>
       <div className="space-y-6">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div><h1 className="text-2xl font-bold text-gray-800 dark-theme:text-white">Aptitude Tests</h1><p className="text-sm text-gray-500 mt-1">{tests.length} tests</p></div>
+          <div><h1 className="text-2xl font-bold text-gray-800 dark-theme:text-gray-100">Aptitude Tests</h1><p className="text-sm text-gray-500 mt-1">{tests.length} tests</p></div>
           <button onClick={() => { setForm({ title: '', description: '', duration: 30, totalMarks: 100, isPublished: false, questions: [{ question: '', optionA: '', optionB: '', optionC: '', optionD: '', correctOption: 'A', marks: 1 }] }); setShowModal(true); }}
             className="px-4 py-2.5 rounded-xl bg-primary text-white text-sm font-medium hover:bg-primary-dark flex items-center gap-2"><i className="ri-add-line"></i>New Test</button>
         </div>
@@ -66,7 +66,7 @@ const NewAptitude = () => {
                 <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center"><i className="ri-question-answer-line text-primary"></i></div>
                 <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${t.isPublished ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}`}>{t.isPublished ? 'Published' : 'Draft'}</span>
               </div>
-              <h3 className="font-semibold text-gray-800 dark-theme:text-white text-sm mb-1">{t.title}</h3>
+              <h3 className="font-semibold text-gray-800 dark-theme:text-gray-100 text-sm mb-1">{t.title}</h3>
               <p className="text-xs text-gray-500 line-clamp-2 mb-3">{t.description}</p>
               <div className="flex items-center gap-3 text-xs text-gray-400 mb-3">
                 <span><i className="ri-time-line mr-1"></i>{t.duration} min</span>
@@ -83,7 +83,7 @@ const NewAptitude = () => {
         <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40">
           <div className="bg-white dark-theme:bg-gray-900 rounded-2xl p-6 w-full max-w-2xl mx-4 border border-sand dark-theme:border-gray-800 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-5">
-              <h3 className="text-lg font-bold text-gray-800 dark-theme:text-white">Create Aptitude Test</h3>
+              <h3 className="text-lg font-bold text-gray-800 dark-theme:text-gray-100">Create Aptitude Test</h3>
               <button onClick={() => setShowModal(false)} className="w-8 h-8 rounded-lg hover:bg-gray-100 flex items-center justify-center"><i className="ri-close-line text-lg text-gray-500"></i></button>
             </div>
             <form onSubmit={handleSubmit} className="space-y-4">

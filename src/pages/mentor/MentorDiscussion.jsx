@@ -50,14 +50,14 @@ const MentorDiscussion = () => {
     <AdminLayout>
       <div className="space-y-6">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div><h1 className="text-2xl font-bold text-gray-800 dark-theme:text-white">Discussion Forum</h1><p className="text-sm text-gray-500 mt-1">{discussions.length} threads</p></div>
+          <div><h1 className="text-2xl font-bold text-gray-800 dark-theme:text-gray-100">Discussion Forum</h1><p className="text-sm text-gray-500 mt-1">{discussions.length} threads</p></div>
           <button onClick={() => { setShowCreate(true); setSelectedThread(null); }} className="px-4 py-2.5 rounded-xl bg-primary text-white text-sm font-medium hover:bg-primary-dark flex items-center gap-2"><i className="ri-add-line"></i>New Thread</button>
         </div>
 
         {selectedThread && threadData ? (
           <div className="bg-white dark-theme:bg-gray-900 rounded-2xl border border-sand dark-theme:border-gray-800 p-6">
             <button onClick={() => { setSelectedThread(null); setThreadData(null); }} className="text-sm text-primary hover:underline mb-4 flex items-center gap-1"><i className="ri-arrow-left-line"></i>Back to threads</button>
-            <h2 className="text-lg font-bold text-gray-800 dark-theme:text-white mb-2">{threadData.title}</h2>
+            <h2 className="text-lg font-bold text-gray-800 dark-theme:text-gray-100 mb-2">{threadData.title}</h2>
             <div className="flex items-center gap-2 text-xs text-gray-400 mb-4">
               <span>{threadData.authorName || 'Unknown'}</span><span>·</span><span>{threadData.createdAt ? new Date(threadData.createdAt).toLocaleDateString() : ''}</span>
             </div>
@@ -87,7 +87,7 @@ const MentorDiscussion = () => {
         ) : showCreate ? (
           <div className="bg-white dark-theme:bg-gray-900 rounded-2xl border border-sand dark-theme:border-gray-800 p-6">
             <div className="flex items-center justify-between mb-5">
-              <h3 className="text-lg font-bold text-gray-800 dark-theme:text-white">New Discussion Thread</h3>
+              <h3 className="text-lg font-bold text-gray-800 dark-theme:text-gray-100">New Discussion Thread</h3>
               <button onClick={() => setShowCreate(false)} className="w-8 h-8 rounded-lg hover:bg-gray-100 flex items-center justify-center"><i className="ri-close-line text-lg text-gray-500"></i></button>
             </div>
             <form onSubmit={handleCreate} className="space-y-4">
@@ -108,7 +108,7 @@ const MentorDiscussion = () => {
                 <div className="flex items-start gap-4">
                   <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0"><i className="ri-discuss-line text-primary"></i></div>
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-semibold text-gray-800 dark-theme:text-white text-sm mb-1">{d.title}</h3>
+                    <h3 className="font-semibold text-gray-800 dark-theme:text-gray-100 text-sm mb-1">{d.title}</h3>
                     <p className="text-xs text-gray-500 line-clamp-1 mb-2">{d.content}</p>
                     <div className="flex items-center gap-3 text-[11px] text-gray-400">
                       <span><i className="ri-user-line mr-1"></i>{d.authorName || 'Unknown'}</span>

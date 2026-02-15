@@ -22,11 +22,11 @@ const MyProgress = () => {
   return (
     <DashboardLayout pageTitle="My Progress" role="student">
       <div className="space-y-6">
-        <h1 className="text-2xl font-bold text-gray-800 dark-theme:text-white">My Progress</h1>
+        <h1 className="text-2xl font-bold text-gray-800 dark-theme:text-gray-100">My Progress</h1>
 
         <div className="bg-white dark-theme:bg-gray-900 rounded-2xl p-6 border border-sand dark-theme:border-gray-800">
           <div className="flex items-center justify-between mb-4">
-            <div><p className="text-sm text-gray-500">Overall Progress</p><p className="text-3xl font-bold text-gray-800 dark-theme:text-white">{overall.overallProgress}%</p></div>
+            <div><p className="text-sm text-gray-500">Overall Progress</p><p className="text-3xl font-bold text-gray-800 dark-theme:text-gray-100">{overall.overallProgress}%</p></div>
             <div className="w-20 h-20 rounded-full border-4 border-primary flex items-center justify-center">
               <span className="text-lg font-bold text-primary">{overall.overallProgress}%</span>
             </div>
@@ -46,9 +46,9 @@ const MyProgress = () => {
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center"><i className="ri-book-open-line text-primary"></i></div>
-                  <div><h3 className="font-semibold text-gray-800 dark-theme:text-white text-sm">{p.courseTitle || p.title}</h3><p className="text-[11px] text-gray-400">{p.mentorName || 'Instructor'}</p></div>
+                  <div><h3 className="font-semibold text-gray-800 dark-theme:text-gray-100 text-sm">{p.courseTitle || p.title}</h3><p className="text-[11px] text-gray-400">{p.mentorName || 'Instructor'}</p></div>
                 </div>
-                <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${p.progress >= 100 ? 'bg-green-100 text-green-700' : p.progress >= 50 ? 'bg-blue-100 text-blue-700' : 'bg-amber-100 text-amber-700'}`}>{p.progress >= 100 ? 'Completed' : 'In Progress'}</span>
+                <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${p.progress >= 100 ? 'bg-green-500/15 text-green-400' : p.progress >= 50 ? 'bg-blue-500/15 text-blue-400' : 'bg-amber-500/15 text-amber-400'}`}>{p.progress >= 100 ? 'Completed' : 'In Progress'}</span>
               </div>
               <div className="w-full h-2 bg-gray-200 dark-theme:bg-gray-700 rounded-full"><div className={`h-2 rounded-full transition-all ${p.progress >= 100 ? 'bg-green-500' : 'bg-primary'}`} style={{ width: `${p.progress || 0}%` }}></div></div>
               <div className="flex justify-between mt-2 text-[11px] text-gray-400">

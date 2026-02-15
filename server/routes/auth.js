@@ -20,7 +20,12 @@ const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, uploadsDir),
   filename: (req, file, cb) => {
     const ext = path.extname(file.originalname);
-    cb(null, `profile_${Date.now()}${ext}`);
+    const rollNumber = req.body.rollNumber;
+    if (rollNumber) {
+      cb(null, `${rollNumber}${ext}`);
+    } else {
+      cb(null, `profile_${Date.now()}${ext}`);
+    }
   }
 });
 const upload = multer({
@@ -41,7 +46,7 @@ router.post('/upload-profile', upload.single('profileImage'), (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ success: false, message: 'No file uploaded.' });
     const imageUrl = `/uploads/profiles/${req.file.filename}`;
-    res.json({ success: true, data: { imageUrl } });
+    res.json({ success: true, data: { imageUrl, filename: req.file.filename } });
   } catch (error) {
     console.error('Upload error:', error);
     res.status(500).json({ success: false, message: 'Upload failed.' });

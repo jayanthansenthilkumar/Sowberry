@@ -395,7 +395,7 @@ const AuthPage = () => {
       // Upload profile image first if exists
       let profileImageUrl = null;
       if (registerData.profileImage) {
-        const uploadRes = await authApi.uploadProfileImage(registerData.profileImage);
+        const uploadRes = await authApi.uploadProfileImage(registerData.profileImage, registerData.rollNumber);
         if (uploadRes.success) profileImageUrl = uploadRes.imageUrl;
       }
       const phone = registerData.countryCode + registerData.phone.replace(/\D/g, '');
@@ -535,14 +535,14 @@ const AuthPage = () => {
             <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
               <i className="ri-seedling-fill text-white text-xl"></i>
             </div>
-            <h1 className="text-2xl font-bold text-gray-800 dark-theme:text-white">Sowberry</h1>
+            <h1 className="text-2xl font-bold text-gray-800 dark-theme:text-gray-100">Sowberry</h1>
           </div>
 
           {/* Login Form */}
           {activeForm === 'login' && (
             <div className="animate-fade-in-up">
               <div className="bg-white dark-theme:bg-gray-900 rounded-2xl p-8 border border-sand dark-theme:border-gray-800">
-                <h2 className="text-2xl font-bold text-gray-800 dark-theme:text-white mb-1">Welcome back!</h2>
+                <h2 className="text-2xl font-bold text-gray-800 dark-theme:text-gray-100 mb-1">Welcome back!</h2>
                 <p className="text-gray-500 dark-theme:text-gray-400 text-sm mb-6">Please enter your details to sign in</p>
 
                 <form onSubmit={handleLoginSubmit} className="space-y-4">
@@ -900,7 +900,7 @@ const AuthPage = () => {
                 {/* Step 1: Email */}
                 {forgotStep === 1 && (
                   <>
-                    <h2 className="text-2xl font-bold text-gray-800 dark-theme:text-white mb-1">Reset Password</h2>
+                    <h2 className="text-2xl font-bold text-gray-800 dark-theme:text-gray-100 mb-1">Reset Password</h2>
                     <p className="text-gray-500 dark-theme:text-gray-400 text-sm mb-6">Enter your email to receive OTP</p>
                     <form onSubmit={handleForgotEmailSubmit} className="space-y-4">
                       <input type="email" name="email" placeholder="Enter your email address"
@@ -917,7 +917,7 @@ const AuthPage = () => {
                 {/* Step 2: OTP */}
                 {forgotStep === 2 && (
                   <>
-                    <h2 className="text-2xl font-bold text-gray-800 dark-theme:text-white mb-1">Enter OTP</h2>
+                    <h2 className="text-2xl font-bold text-gray-800 dark-theme:text-gray-100 mb-1">Enter OTP</h2>
                     <p className="text-gray-500 dark-theme:text-gray-400 text-sm mb-6">Please enter the OTP sent to your email</p>
                     <form onSubmit={handleOTPSubmit} className="space-y-4">
                       <div className="flex justify-center gap-3">
@@ -941,7 +941,7 @@ const AuthPage = () => {
                 {/* Step 3: New Password */}
                 {forgotStep === 3 && (
                   <>
-                    <h2 className="text-2xl font-bold text-gray-800 dark-theme:text-white mb-1">Set New Password</h2>
+                    <h2 className="text-2xl font-bold text-gray-800 dark-theme:text-gray-100 mb-1">Set New Password</h2>
                     <p className="text-gray-500 dark-theme:text-gray-400 text-sm mb-6">Enter your new password</p>
                     <form onSubmit={handleResetPasswordSubmit} className="space-y-4">
                       <div className="relative">

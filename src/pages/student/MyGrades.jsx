@@ -20,27 +20,27 @@ const MyGrades = () => {
   }, []);
 
   const getGradeColor = (pct) => pct >= 80 ? 'text-green-600' : pct >= 60 ? 'text-amber-600' : 'text-red-600';
-  const getGradeBg = (pct) => pct >= 80 ? 'bg-green-100' : pct >= 60 ? 'bg-amber-100' : 'bg-red-100';
+  const getGradeBg = (pct) => pct >= 80 ? 'bg-green-500/15' : pct >= 60 ? 'bg-amber-500/15' : 'bg-red-500/15';
 
   return (
     <DashboardLayout pageTitle="My Grades" role="student">
       <div className="space-y-6">
-        <h1 className="text-2xl font-bold text-gray-800 dark-theme:text-white">My Grades</h1>
+        <h1 className="text-2xl font-bold text-gray-800 dark-theme:text-gray-100">My Grades</h1>
 
         <div className="grid grid-cols-3 gap-4">
           <div className="bg-white dark-theme:bg-gray-900 rounded-2xl p-5 border border-sand dark-theme:border-gray-800 text-center">
-            <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center mx-auto mb-2"><i className="ri-bar-chart-box-line text-blue-600"></i></div>
-            <p className="text-2xl font-bold text-gray-800 dark-theme:text-white">{summary.avgPercentage}%</p>
+            <div className="w-10 h-10 rounded-xl bg-blue-500/15 flex items-center justify-center mx-auto mb-2"><i className="ri-bar-chart-box-line text-blue-600"></i></div>
+            <p className="text-2xl font-bold text-gray-800 dark-theme:text-gray-100">{summary.avgPercentage}%</p>
             <p className="text-xs text-gray-500">Average</p>
           </div>
           <div className="bg-white dark-theme:bg-gray-900 rounded-2xl p-5 border border-sand dark-theme:border-gray-800 text-center">
-            <div className="w-10 h-10 rounded-xl bg-green-100 flex items-center justify-center mx-auto mb-2"><i className="ri-arrow-up-line text-green-600"></i></div>
-            <p className="text-2xl font-bold text-gray-800 dark-theme:text-white">{summary.highestScore}%</p>
+            <div className="w-10 h-10 rounded-xl bg-green-500/15 flex items-center justify-center mx-auto mb-2"><i className="ri-arrow-up-line text-green-600"></i></div>
+            <p className="text-2xl font-bold text-gray-800 dark-theme:text-gray-100">{summary.highestScore}%</p>
             <p className="text-xs text-gray-500">Highest</p>
           </div>
           <div className="bg-white dark-theme:bg-gray-900 rounded-2xl p-5 border border-sand dark-theme:border-gray-800 text-center">
             <div className="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center mx-auto mb-2"><i className="ri-file-list-line text-purple-600"></i></div>
-            <p className="text-2xl font-bold text-gray-800 dark-theme:text-white">{summary.totalGrades}</p>
+            <p className="text-2xl font-bold text-gray-800 dark-theme:text-gray-100">{summary.totalGrades}</p>
             <p className="text-xs text-gray-500">Graded</p>
           </div>
         </div>
@@ -64,7 +64,7 @@ const MyGrades = () => {
                   const pct = g.maxScore ? Math.round((g.grade / g.maxScore) * 100) : 0;
                   return (
                     <tr key={i} className="hover:bg-cream/50 dark-theme:hover:bg-gray-800/50">
-                      <td className="px-5 py-3 font-medium text-gray-800 dark-theme:text-white">{g.assignmentTitle}</td>
+                      <td className="px-5 py-3 font-medium text-gray-800 dark-theme:text-gray-100">{g.assignmentTitle}</td>
                       <td className="px-5 py-3 text-gray-500">{g.courseName}</td>
                       <td className="px-5 py-3 text-gray-600 dark-theme:text-gray-300">{g.grade}/{g.maxScore}</td>
                       <td className="px-5 py-3"><span className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${getGradeBg(pct)} ${getGradeColor(pct)}`}>{pct}%</span></td>

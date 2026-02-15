@@ -43,7 +43,7 @@ const NewEvents = () => {
     <AdminLayout>
       <div className="space-y-6">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div><h1 className="text-2xl font-bold text-gray-800 dark-theme:text-white">Events</h1><p className="text-sm text-gray-500 mt-1">{events.length} events scheduled</p></div>
+          <div><h1 className="text-2xl font-bold text-gray-800 dark-theme:text-gray-100">Events</h1><p className="text-sm text-gray-500 mt-1">{events.length} events scheduled</p></div>
           <button onClick={openCreate} className="px-4 py-2.5 rounded-xl bg-primary text-white text-sm font-medium hover:bg-primary-dark flex items-center gap-2"><i className="ri-add-line"></i>New Event</button>
         </div>
 
@@ -58,7 +58,7 @@ const NewEvents = () => {
                   <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center"><i className={`${typeIcons[ev.eventType] || 'ri-calendar-line'} text-primary`}></i></div>
                   <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${typeColors[ev.eventType] || 'bg-gray-100 text-gray-700'}`}>{ev.eventType}</span>
                 </div>
-                <h3 className="font-semibold text-gray-800 dark-theme:text-white text-sm mb-1">{ev.title}</h3>
+                <h3 className="font-semibold text-gray-800 dark-theme:text-gray-100 text-sm mb-1">{ev.title}</h3>
                 <p className="text-xs text-gray-500 line-clamp-2 mb-3">{ev.description}</p>
                 <div className="space-y-1 text-xs text-gray-400 mb-4">
                   <div className="flex items-center gap-1"><i className="ri-calendar-line"></i>{ev.eventDate ? new Date(ev.eventDate).toLocaleDateString() : 'TBD'}</div>
@@ -79,7 +79,7 @@ const NewEvents = () => {
         <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40">
           <div className="bg-white dark-theme:bg-gray-900 rounded-2xl p-6 w-full max-w-lg mx-4 border border-sand dark-theme:border-gray-800">
             <div className="flex items-center justify-between mb-5">
-              <h3 className="text-lg font-bold text-gray-800 dark-theme:text-white">{editing ? 'Edit Event' : 'Create Event'}</h3>
+              <h3 className="text-lg font-bold text-gray-800 dark-theme:text-gray-100">{editing ? 'Edit Event' : 'Create Event'}</h3>
               <button onClick={() => setShowModal(false)} className="w-8 h-8 rounded-lg hover:bg-gray-100 flex items-center justify-center"><i className="ri-close-line text-lg text-gray-500"></i></button>
             </div>
             <form onSubmit={handleSubmit} className="space-y-4">

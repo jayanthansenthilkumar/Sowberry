@@ -57,7 +57,7 @@ const CodeEditor = () => {
       <div className="space-y-4 h-full">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <div>
-            <h1 className="text-xl font-bold text-gray-800 dark-theme:text-white">{problem ? problem.title : 'Code Editor'}</h1>
+            <h1 className="text-xl font-bold text-gray-800 dark-theme:text-gray-100">{problem ? problem.title : 'Code Editor'}</h1>
             {problem && <div className="flex items-center gap-2 mt-1">
               <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${diffColors[problem.difficulty] || ''}`}>{problem.difficulty}</span>
               {problem.category && <span className="text-xs text-gray-400">{problem.category}</span>}
@@ -79,7 +79,7 @@ const CodeEditor = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           {problem && (
             <div className="lg:col-span-1 bg-white dark-theme:bg-gray-900 rounded-2xl p-5 border border-sand dark-theme:border-gray-800 max-h-[70vh] overflow-y-auto">
-              <h3 className="font-semibold text-gray-800 dark-theme:text-white text-sm mb-3">Problem Description</h3>
+              <h3 className="font-semibold text-gray-800 dark-theme:text-gray-100 text-sm mb-3">Problem Description</h3>
               <p className="text-xs text-gray-600 dark-theme:text-gray-300 whitespace-pre-wrap mb-4">{problem.description}</p>
               {problem.constraints && <><h4 className="font-medium text-gray-700 dark-theme:text-gray-300 text-xs mb-1">Constraints</h4><p className="text-xs text-gray-500 mb-3 whitespace-pre-wrap">{problem.constraints}</p></>}
               {problem.sampleInput && <><h4 className="font-medium text-gray-700 dark-theme:text-gray-300 text-xs mb-1">Sample Input</h4><pre className="text-xs bg-cream dark-theme:bg-gray-800 p-2 rounded-lg mb-3 overflow-x-auto">{problem.sampleInput}</pre></>}

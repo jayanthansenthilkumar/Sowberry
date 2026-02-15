@@ -64,7 +64,7 @@ const AptitudeTests = () => {
       <DashboardLayout pageTitle="Aptitude Test" role="student">
         <div className="space-y-4">
           <div className="flex items-center justify-between bg-white dark-theme:bg-gray-900 rounded-2xl p-4 border border-sand dark-theme:border-gray-800 sticky top-0 z-10">
-            <div><h2 className="font-bold text-gray-800 dark-theme:text-white text-sm">{activeTest.title}</h2><p className="text-[11px] text-gray-400">{Object.keys(answers).length}/{questions.length} answered</p></div>
+            <div><h2 className="font-bold text-gray-800 dark-theme:text-gray-100 text-sm">{activeTest.title}</h2><p className="text-[11px] text-gray-400">{Object.keys(answers).length}/{questions.length} answered</p></div>
             <div className="flex items-center gap-3">
               <span className={`text-lg font-mono font-bold ${timeLeft < 60 ? 'text-red-500 animate-pulse' : 'text-primary'}`}><i className="ri-time-line mr-1"></i>{formatTime(timeLeft)}</span>
               <button onClick={() => submitTest()} disabled={submitting} className="px-4 py-2 rounded-xl bg-primary text-white text-xs font-medium hover:bg-primary-dark disabled:opacity-50">{submitting ? 'Submitting...' : 'Submit'}</button>
@@ -75,7 +75,7 @@ const AptitudeTests = () => {
             <div key={idx} className="bg-white dark-theme:bg-gray-900 rounded-2xl p-5 border border-sand dark-theme:border-gray-800">
               <div className="flex items-start gap-3 mb-3">
                 <span className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center text-xs font-bold text-primary flex-shrink-0">{idx + 1}</span>
-                <p className="text-sm text-gray-800 dark-theme:text-white font-medium">{q.question}</p>
+                <p className="text-sm text-gray-800 dark-theme:text-gray-100 font-medium">{q.question}</p>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 ml-10">
                 {['A', 'B', 'C', 'D'].map(opt => (
@@ -96,7 +96,7 @@ const AptitudeTests = () => {
   return (
     <DashboardLayout pageTitle="Aptitude Tests" role="student">
       <div className="space-y-6">
-        <h1 className="text-2xl font-bold text-gray-800 dark-theme:text-white">Aptitude Tests</h1>
+        <h1 className="text-2xl font-bold text-gray-800 dark-theme:text-gray-100">Aptitude Tests</h1>
 
         {loading ? <div className="flex justify-center py-20"><div className="w-8 h-8 border-3 border-primary border-t-transparent rounded-full animate-spin"></div></div> :
         tests.length === 0 ? <div className="text-center py-20 text-gray-400"><i className="ri-question-answer-line text-4xl mb-3 block"></i><p>No aptitude tests available</p></div> :
@@ -104,7 +104,7 @@ const AptitudeTests = () => {
           {tests.map(t => (
             <div key={t.id} className="bg-white dark-theme:bg-gray-900 rounded-2xl p-5 border border-sand dark-theme:border-gray-800 hover:shadow-md transition-shadow">
               <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center mb-3"><i className="ri-question-answer-line text-primary"></i></div>
-              <h3 className="font-semibold text-gray-800 dark-theme:text-white text-sm mb-1">{t.title}</h3>
+              <h3 className="font-semibold text-gray-800 dark-theme:text-gray-100 text-sm mb-1">{t.title}</h3>
               <p className="text-xs text-gray-500 line-clamp-2 mb-3">{t.description}</p>
               <div className="flex items-center gap-3 text-xs text-gray-400 mb-4">
                 <span><i className="ri-time-line mr-1"></i>{t.duration} min</span>

@@ -41,14 +41,14 @@ const MyAssignments = () => {
   };
 
   const getStatusStyle = (status) => {
-    const styles = { pending: 'bg-amber-100 text-amber-700', submitted: 'bg-blue-100 text-blue-700', graded: 'bg-green-100 text-green-700', late: 'bg-red-100 text-red-700' };
+    const styles = { pending: 'bg-amber-500/15 text-amber-400', submitted: 'bg-blue-500/15 text-blue-400', graded: 'bg-green-500/15 text-green-400', late: 'bg-red-500/15 text-red-400' };
     return styles[status] || styles.pending;
   };
 
   return (
     <DashboardLayout pageTitle="My Assignments" role="student">
       <div className="space-y-6">
-        <h1 className="text-2xl font-bold text-gray-800 dark-theme:text-white">My Assignments</h1>
+        <h1 className="text-2xl font-bold text-gray-800 dark-theme:text-gray-100">My Assignments</h1>
 
         {loading ? <div className="flex justify-center py-20"><div className="w-8 h-8 border-3 border-primary border-t-transparent rounded-full animate-spin"></div></div> :
         assignments.length === 0 ? <div className="text-center py-20 text-gray-400"><i className="ri-task-line text-4xl mb-3 block"></i><p>No assignments yet</p></div> :
@@ -59,7 +59,7 @@ const MyAssignments = () => {
                 <div className="flex items-start gap-3">
                   <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0"><i className="ri-task-line text-primary"></i></div>
                   <div>
-                    <h3 className="font-semibold text-gray-800 dark-theme:text-white text-sm">{a.title}</h3>
+                    <h3 className="font-semibold text-gray-800 dark-theme:text-gray-100 text-sm">{a.title}</h3>
                     <p className="text-xs text-gray-500 mt-0.5">{a.courseName || 'Course'}</p>
                     <div className="flex items-center gap-3 mt-2 text-[11px] text-gray-400">
                       <span><i className="ri-calendar-line mr-1"></i>Due: {a.dueDate ? new Date(a.dueDate).toLocaleDateString() : 'No deadline'}</span>

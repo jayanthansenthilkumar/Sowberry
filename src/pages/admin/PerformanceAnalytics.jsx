@@ -20,7 +20,7 @@ const PerformanceAnalytics = () => {
   return (
     <AdminLayout pageTitle="Performance Analytics">
       <div className="space-y-6">
-        <h1 className="text-2xl font-bold text-gray-800 dark-theme:text-white">Performance Analytics</h1>
+        <h1 className="text-2xl font-bold text-gray-800 dark-theme:text-gray-100">Performance Analytics</h1>
 
         {/* Key Metrics */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -36,7 +36,7 @@ const PerformanceAnalytics = () => {
                 <span className="text-xs text-green-500 font-medium bg-green-50 dark-theme:bg-green-900/20 px-2 py-0.5 rounded-full">{m.change}</span>
               </div>
               <p className="text-xs text-gray-400 mb-1">{m.label}</p>
-              <p className="text-2xl font-bold text-gray-800 dark-theme:text-white">{m.value}</p>
+              <p className="text-2xl font-bold text-gray-800 dark-theme:text-gray-100">{m.value}</p>
             </div>
           ))}
         </div>
@@ -44,7 +44,7 @@ const PerformanceAnalytics = () => {
         {/* Course Performance */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="bg-white dark-theme:bg-gray-900 rounded-2xl p-6 border border-sand dark-theme:border-gray-800">
-            <h3 className="text-lg font-bold text-gray-800 dark-theme:text-white mb-4">Top Courses by Enrollment</h3>
+            <h3 className="text-lg font-bold text-gray-800 dark-theme:text-gray-100 mb-4">Top Courses by Enrollment</h3>
             <div className="space-y-4">
               {(analytics?.courseCompletion || []).slice(0, 5).map((c, i) => (
                 <div key={i} className="flex items-center gap-4">
@@ -63,7 +63,7 @@ const PerformanceAnalytics = () => {
           </div>
 
           <div className="bg-white dark-theme:bg-gray-900 rounded-2xl p-6 border border-sand dark-theme:border-gray-800">
-            <h3 className="text-lg font-bold text-gray-800 dark-theme:text-white mb-4">Monthly Trends</h3>
+            <h3 className="text-lg font-bold text-gray-800 dark-theme:text-gray-100 mb-4">Monthly Trends</h3>
             <div className="space-y-4">
               {(analytics?.registrationTrends || []).map((t, i) => (
                 <div key={i} className="flex items-center justify-between p-3 rounded-xl bg-cream/50 dark-theme:bg-gray-800/50">
@@ -72,7 +72,7 @@ const PerformanceAnalytics = () => {
                     <span className="text-sm font-medium text-gray-700 dark-theme:text-gray-200">{t.month}</span>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm font-semibold text-gray-800 dark-theme:text-white">{t.enrollments} enrollments</p>
+                    <p className="text-sm font-semibold text-gray-800 dark-theme:text-gray-100">{t.enrollments} enrollments</p>
                     <p className="text-[11px] text-gray-400">{t.newStudents} new students</p>
                   </div>
                 </div>

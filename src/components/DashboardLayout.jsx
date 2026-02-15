@@ -65,7 +65,7 @@ const DashboardLayout = ({ children, pageTitle, role = 'student' }) => {
   const handleSignOut = () => {
     Swal.fire({
       title: 'Sign Out?', text: 'Are you sure you want to sign out?', icon: 'question',
-      showCancelButton: true, confirmButtonColor: '#c96442', confirmButtonText: 'Yes, sign out',
+      showCancelButton: true, confirmButtonColor: '#d4a574', confirmButtonText: 'Yes, sign out',
       background: '#fff', color: '#1f2937'
     }).then(result => {
       if (result.isConfirmed) { logout(); navigate('/auth'); }

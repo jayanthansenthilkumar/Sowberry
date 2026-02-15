@@ -64,7 +64,7 @@ const CourseViewer = () => {
   const progress = enrollment?.completionPercentage || 0;
 
   const contentIcons = { video: 'ri-play-circle-line', pdf: 'ri-file-pdf-2-line', text: 'ri-file-text-line' };
-  const contentColors = { video: 'text-blue-500 bg-blue-50', pdf: 'text-red-500 bg-red-50', text: 'text-green-500 bg-green-50' };
+  const contentColors = { video: 'text-blue-500 bg-blue-500/10', pdf: 'text-red-500 bg-red-500/10', text: 'text-green-500 bg-green-500/10' };
 
   if (loading) {
     return (
@@ -93,7 +93,7 @@ const CourseViewer = () => {
         <div className="flex items-center gap-3">
           <button onClick={() => navigate('/student/my-courses')} className="w-8 h-8 rounded-lg bg-gray-100 dark-theme:bg-gray-800 flex items-center justify-center hover:bg-gray-200 dark-theme:hover:bg-gray-700"><i className="ri-arrow-left-line text-gray-600 dark-theme:text-gray-300"></i></button>
           <div className="flex-1">
-            <h1 className="text-lg font-bold text-gray-800 dark-theme:text-white">{course.title}</h1>
+            <h1 className="text-lg font-bold text-gray-800 dark-theme:text-gray-100">{course.title}</h1>
             <p className="text-xs text-gray-400">{course.mentorName && `By ${course.mentorName} • `}{course.category || 'General'} • {course.courseType || 'Theory'}</p>
           </div>
         </div>
@@ -127,7 +127,7 @@ const CourseViewer = () => {
                   <button onClick={() => toggleSubject(sub.id)} className="w-full px-4 py-3 flex items-center justify-between hover:bg-gray-50 dark-theme:hover:bg-gray-800/50 transition-colors">
                     <div className="flex items-center gap-2.5">
                       <span className="w-6 h-6 rounded-full bg-primary/10 text-primary text-[10px] font-bold flex items-center justify-center">{si + 1}</span>
-                      <span className="text-sm font-medium text-gray-800 dark-theme:text-white text-left">{sub.title}</span>
+                      <span className="text-sm font-medium text-gray-800 dark-theme:text-gray-100 text-left">{sub.title}</span>
                     </div>
                     <i className={`ri-arrow-${expandedSubjects[sub.id] ? 'up' : 'down'}-s-line text-gray-400`}></i>
                   </button>
@@ -137,7 +137,7 @@ const CourseViewer = () => {
                         const isCompleted = completedTopics.includes(topic.id);
                         return (
                           <div key={topic.id} className="flex items-center gap-2 pl-8 py-1.5 group">
-                            <button onClick={() => toggleTopic(topic.id)} className={`w-5 h-5 rounded-md border-2 flex items-center justify-center flex-shrink-0 transition-colors ${isCompleted ? 'bg-green-500 border-green-500 text-white' : 'border-gray-300 dark-theme:border-gray-600 hover:border-primary'}`}>
+                            <button onClick={() => toggleTopic(topic.id)} className={`w-5 h-5 rounded-md border-2 flex items-center justify-center flex-shrink-0 transition-colors ${isCompleted ? 'bg-green-500/100 border-green-500 text-white' : 'border-gray-300 dark-theme:border-gray-600 hover:border-primary'}`}>
                               {isCompleted && <i className="ri-check-line text-xs"></i>}
                             </button>
                             <span className={`text-xs ${isCompleted ? 'text-gray-400 line-through' : 'text-gray-700 dark-theme:text-gray-300'}`}>{si + 1}.{ti + 1} {topic.title}</span>
@@ -176,7 +176,7 @@ const CourseViewer = () => {
                   <div className="bg-white dark-theme:bg-gray-900 rounded-2xl border border-sand dark-theme:border-gray-800 overflow-hidden">
                     <div className="px-5 py-4 border-b border-sand dark-theme:border-gray-800 flex items-center justify-between">
                       <div>
-                        <h3 className="font-semibold text-gray-800 dark-theme:text-white text-sm">{activeContent.title}</h3>
+                        <h3 className="font-semibold text-gray-800 dark-theme:text-gray-100 text-sm">{activeContent.title}</h3>
                         <p className="text-[11px] text-gray-400 mt-0.5">{activeContent.subjectTitle || 'General'} • {activeContent.contentType}</p>
                       </div>
                       <span className={`w-8 h-8 rounded-lg ${contentColors[activeContent.contentType] || 'bg-gray-100 text-gray-500'} flex items-center justify-center`}>
@@ -200,7 +200,7 @@ const CourseViewer = () => {
                       {activeContent.contentType === 'pdf' && activeContent.contentData && (
                         <div className="text-center py-8">
                           <i className="ri-file-pdf-2-line text-5xl text-red-400 mb-3 block"></i>
-                          <a href={activeContent.contentData} target="_blank" rel="noopener noreferrer" className="px-5 py-2.5 rounded-xl bg-red-500 text-white text-sm font-medium hover:bg-red-600 inline-flex items-center gap-2"><i className="ri-external-link-line"></i>Open PDF</a>
+                          <a href={activeContent.contentData} target="_blank" rel="noopener noreferrer" className="px-5 py-2.5 rounded-xl bg-red-500/100 text-white text-sm font-medium hover:bg-red-600 inline-flex items-center gap-2"><i className="ri-external-link-line"></i>Open PDF</a>
                         </div>
                       )}
                       {activeContent.contentType === 'text' && (

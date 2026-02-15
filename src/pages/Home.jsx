@@ -147,7 +147,7 @@ const Home = () => {
               </div>
 
               {/* Heading */}
-              <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-gray-900 dark-theme:text-white leading-[1.1] tracking-tight mb-6">
+              <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-gray-900 dark-theme:text-gray-100 leading-[1.1] tracking-tight mb-6">
                 Grow with{' '}
                 <span className="relative inline-block">
                   <span className="text-gradient">Sowberry</span>
@@ -329,7 +329,7 @@ const Home = () => {
               <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-sage/15 text-sage text-sm font-medium mb-4">
                 <i className="ri-seedling-line"></i> Our Story
               </div>
-              <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark-theme:text-white">
+              <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark-theme:text-gray-100">
                 About <span className="text-gradient">Sowberry</span>
               </h2>
               <p className="mt-4 text-gray-500 dark-theme:text-gray-400 max-w-2xl mx-auto">Modern education nurturing growth and fostering innovation in every learner</p>
@@ -369,7 +369,7 @@ const Home = () => {
 
               {/* Text Side */}
               <div className="space-y-6">
-                <h3 className="text-2xl font-bold text-gray-800 dark-theme:text-white">Our Vision</h3>
+                <h3 className="text-2xl font-bold text-gray-800 dark-theme:text-gray-100">Our Vision</h3>
                 <p className="text-gray-500 dark-theme:text-gray-400 leading-relaxed">
                   Sowberry Academy transforms education through innovative methods, cultivating knowledge that grows with you. We prepare learners with a global mindset for success in our interconnected world.
                 </p>
@@ -410,7 +410,7 @@ const Home = () => {
               <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blush/15 text-clay text-sm font-medium mb-4">
                 <i className="ri-team-line"></i> Our People
               </div>
-              <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark-theme:text-white">
+              <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark-theme:text-gray-100">
                 Meet the <span className="text-gradient">Team</span>
               </h2>
               <p className="mt-4 text-gray-500 dark-theme:text-gray-400 max-w-2xl mx-auto">The passionate educators and innovators behind Sowberry Academy</p>
@@ -433,7 +433,7 @@ const Home = () => {
                       </div>
                     </div>
                     <div className="p-4 text-center">
-                      <h3 className="font-semibold text-gray-800 dark-theme:text-white text-[15px]">{member.name}</h3>
+                      <h3 className="font-semibold text-gray-800 dark-theme:text-gray-100 text-[15px]">{member.name}</h3>
                       <p className="text-sm text-primary font-medium mt-1">{member.role}</p>
                       <p className="text-xs text-gray-500 dark-theme:text-gray-400 mt-2 leading-relaxed line-clamp-2">{member.description}</p>
                     </div>
@@ -461,7 +461,7 @@ const Home = () => {
               <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber/15 text-amber text-sm font-medium mb-4">
                 <i className="ri-sparkle-line"></i> What We Offer
               </div>
-              <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark-theme:text-white">
+              <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark-theme:text-gray-100">
                 Our <span className="text-gradient">Features</span>
               </h2>
               <p className="mt-4 text-gray-500 dark-theme:text-gray-400 max-w-2xl mx-auto">Discover what makes our learning experience unique</p>
@@ -480,7 +480,7 @@ const Home = () => {
                 </div>
               </div>
               <div className="space-y-5">
-                <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 dark-theme:text-white">
+                <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 dark-theme:text-gray-100">
                   Learn Anywhere, <span className="text-gradient">Anytime</span>
                 </h2>
                 <p className="text-gray-500 dark-theme:text-gray-400 leading-relaxed">
@@ -520,7 +520,7 @@ const Home = () => {
                     <div className={`w-12 h-12 rounded-xl ${p.icon} flex items-center justify-center mb-4`}>
                       <i className={`${feature.icon} text-xl`}></i>
                     </div>
-                    <h3 className="text-lg font-semibold text-gray-800 dark-theme:text-white mb-2">{feature.title}</h3>
+                    <h3 className="text-lg font-semibold text-gray-800 dark-theme:text-gray-100 mb-2">{feature.title}</h3>
                     <p className="text-sm text-gray-500 dark-theme:text-gray-400 mb-4 leading-relaxed">{feature.description}</p>
                     <a href="#" className="inline-flex items-center gap-1 text-sm font-medium text-primary group-hover:gap-2 transition-all">
                       Learn More <i className="ri-arrow-right-line text-xs"></i>
@@ -535,7 +535,7 @@ const Home = () => {
               <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/8 text-primary text-sm font-medium mb-4">
                 <i className="ri-graduation-cap-line"></i> Learn & Grow
               </div>
-              <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 dark-theme:text-white">
+              <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 dark-theme:text-gray-100">
                 Popular <span className="text-gradient">Courses</span>
               </h3>
               <p className="mt-3 text-gray-500 dark-theme:text-gray-400">Start your learning journey with our most sought-after programs</p>
@@ -565,7 +565,7 @@ const Home = () => {
                       <span className="flex items-center gap-1"><i className="ri-time-line"></i> {course.duration}</span>
                       <span className="flex items-center gap-1"><i className="ri-user-line"></i> {course.students}</span>
                     </div>
-                    <h3 className="font-semibold text-gray-800 dark-theme:text-white mb-2">{course.title}</h3>
+                    <h3 className="font-semibold text-gray-800 dark-theme:text-gray-100 mb-2">{course.title}</h3>
                     <p className="text-sm text-gray-500 dark-theme:text-gray-400 line-clamp-2 mb-4">{course.description}</p>
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-1">
@@ -607,7 +607,7 @@ const Home = () => {
               <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/8 text-primary text-sm font-medium mb-4">
                 <i className="ri-chat-smile-line"></i> Let's Connect
               </div>
-              <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark-theme:text-white">
+              <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark-theme:text-gray-100">
                 Get in <span className="text-gradient">Touch</span>
               </h2>
               <p className="mt-4 text-gray-500 dark-theme:text-gray-400 max-w-2xl mx-auto">Have questions or want to learn more? We're here to help you on your learning journey.</p>
@@ -666,7 +666,7 @@ const Home = () => {
 
               {/* Contact Form — warm white */}
               <div className="lg:col-span-3 bg-white dark-theme:bg-gray-900 rounded-2xl p-8 border border-sand dark-theme:border-gray-800">
-                <h3 className="text-xl font-bold text-gray-800 dark-theme:text-white mb-1">Send Us a Message</h3>
+                <h3 className="text-xl font-bold text-gray-800 dark-theme:text-gray-100 mb-1">Send Us a Message</h3>
                 <p className="text-sm text-gray-400 mb-6">We'll get back to you within 24 hours</p>
                 <form onSubmit={handleContactFormSubmit} className="space-y-4">
                   <div className="grid sm:grid-cols-2 gap-4">

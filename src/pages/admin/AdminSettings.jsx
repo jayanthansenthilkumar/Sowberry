@@ -72,7 +72,7 @@ const AdminSettings = () => {
   return (
     <AdminLayout pageTitle="Settings">
       <div className="space-y-6">
-        <h1 className="text-2xl font-bold text-gray-800 dark-theme:text-white">Settings</h1>
+        <h1 className="text-2xl font-bold text-gray-800 dark-theme:text-gray-100">Settings</h1>
 
         {/* Tabs */}
         <div className="flex gap-1 bg-white dark-theme:bg-gray-900 rounded-xl p-1 border border-sand dark-theme:border-gray-800 w-fit">
@@ -87,7 +87,7 @@ const AdminSettings = () => {
         {/* Profile Tab */}
         {activeTab === 'profile' && (
           <div className="bg-white dark-theme:bg-gray-900 rounded-2xl p-6 border border-sand dark-theme:border-gray-800 max-w-lg">
-            <h3 className="text-lg font-bold text-gray-800 dark-theme:text-white mb-5">Profile Information</h3>
+            <h3 className="text-lg font-bold text-gray-800 dark-theme:text-gray-100 mb-5">Profile Information</h3>
             <form onSubmit={handleProfileUpdate} className="space-y-4">
               <div><label className="block text-xs font-medium text-gray-500 mb-1">Full Name</label>
                 <input type="text" value={profile.fullName} onChange={(e) => setProfile({ ...profile, fullName: e.target.value })} className="w-full px-4 py-2.5 rounded-xl bg-cream dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 focus:border-primary outline-none text-sm" /></div>
@@ -103,7 +103,7 @@ const AdminSettings = () => {
         {/* Password Tab */}
         {activeTab === 'password' && (
           <div className="bg-white dark-theme:bg-gray-900 rounded-2xl p-6 border border-sand dark-theme:border-gray-800 max-w-lg">
-            <h3 className="text-lg font-bold text-gray-800 dark-theme:text-white mb-5">Change Password</h3>
+            <h3 className="text-lg font-bold text-gray-800 dark-theme:text-gray-100 mb-5">Change Password</h3>
             <form onSubmit={handlePasswordChange} className="space-y-4">
               <div><label className="block text-xs font-medium text-gray-500 mb-1">Current Password</label>
                 <input type="password" required value={passwords.currentPassword} onChange={(e) => setPasswords({ ...passwords, currentPassword: e.target.value })} className="w-full px-4 py-2.5 rounded-xl bg-cream dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 focus:border-primary outline-none text-sm" /></div>
@@ -119,7 +119,7 @@ const AdminSettings = () => {
         {/* Platform Tab */}
         {activeTab === 'platform' && (
           <div className="bg-white dark-theme:bg-gray-900 rounded-2xl p-6 border border-sand dark-theme:border-gray-800 max-w-lg">
-            <h3 className="text-lg font-bold text-gray-800 dark-theme:text-white mb-5">Platform Settings</h3>
+            <h3 className="text-lg font-bold text-gray-800 dark-theme:text-gray-100 mb-5">Platform Settings</h3>
             <form onSubmit={handleSettingsUpdate} className="space-y-4">
               <div><label className="block text-xs font-medium text-gray-500 mb-1">Site Name</label>
                 <input type="text" value={settings.siteName || 'Sowberry'} onChange={(e) => setSettings({ ...settings, siteName: e.target.value })} className="w-full px-4 py-2.5 rounded-xl bg-cream dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 focus:border-primary outline-none text-sm" /></div>

@@ -184,7 +184,7 @@ const NewCourses = () => {
                 <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
                   <div>
                     <div className="flex items-center gap-2 mb-2">
-                      <h1 className="text-xl font-bold text-gray-800 dark-theme:text-white">{detailCourse.title}</h1>
+                      <h1 className="text-xl font-bold text-gray-800 dark-theme:text-gray-100">{detailCourse.title}</h1>
                       <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${statusColors[detailCourse.status] || statusColors.draft}`}>{detailCourse.status}</span>
                     </div>
                     {detailCourse.courseCode && <p className="text-sm text-gray-500 mb-1"><i className="ri-hashtag mr-1"></i>{detailCourse.courseCode}</p>}
@@ -216,7 +216,7 @@ const NewCourses = () => {
               {activeTab === 'info' && (
                 <div className="space-y-4">
                   <div className="flex justify-between items-center">
-                    <h2 className="text-lg font-bold text-gray-800 dark-theme:text-white">Units / Subjects</h2>
+                    <h2 className="text-lg font-bold text-gray-800 dark-theme:text-gray-100">Units / Subjects</h2>
                     <button onClick={addSubjectToDetail} className="px-3 py-2 rounded-xl bg-primary text-white text-xs font-medium hover:bg-primary-dark flex items-center gap-1"><i className="ri-add-line"></i>Add Unit</button>
                   </div>
                   {(detailCourse.subjects || []).length === 0 ? <p className="text-sm text-gray-400 text-center py-8">No units added yet. Add units to structure your course.</p> :
@@ -226,7 +226,7 @@ const NewCourses = () => {
                           <div>
                             <div className="flex items-center gap-2">
                               <span className="w-6 h-6 rounded-full bg-primary/10 text-primary text-xs font-bold flex items-center justify-center">{si + 1}</span>
-                              <h3 className="font-semibold text-gray-800 dark-theme:text-white text-sm">{sub.title}</h3>
+                              <h3 className="font-semibold text-gray-800 dark-theme:text-gray-100 text-sm">{sub.title}</h3>
                               {sub.code && <span className="text-[10px] text-gray-400">({sub.code})</span>}
                             </div>
                             {sub.description && <p className="text-xs text-gray-500 mt-1 ml-8">{sub.description}</p>}
@@ -259,13 +259,13 @@ const NewCourses = () => {
               {activeTab === 'subjects' && (
                 <div className="space-y-4">
                   <div className="flex justify-between items-center">
-                    <h2 className="text-lg font-bold text-gray-800 dark-theme:text-white">Manage Subjects</h2>
+                    <h2 className="text-lg font-bold text-gray-800 dark-theme:text-gray-100">Manage Subjects</h2>
                     <button onClick={addSubjectToDetail} className="px-3 py-2 rounded-xl bg-primary text-white text-xs font-medium hover:bg-primary-dark flex items-center gap-1"><i className="ri-add-line"></i>Add Subject</button>
                   </div>
                   {(detailCourse.subjects || []).map(sub => (
                     <div key={sub.id} className="bg-white dark-theme:bg-gray-900 rounded-xl p-4 border border-sand dark-theme:border-gray-800 flex items-center justify-between">
                       <div>
-                        <h3 className="font-semibold text-sm text-gray-800 dark-theme:text-white">{sub.title}</h3>
+                        <h3 className="font-semibold text-sm text-gray-800 dark-theme:text-gray-100">{sub.title}</h3>
                         <p className="text-xs text-gray-400">{sub.code || 'No code'} • {sub.topicCount || 0} topics • {sub.contentCount || 0} content</p>
                       </div>
                       <button onClick={() => deleteSubject(sub.id)} className="px-2 py-1 rounded-lg bg-red-50 text-red-500 text-xs hover:bg-red-100"><i className="ri-delete-bin-line"></i></button>
@@ -278,7 +278,7 @@ const NewCourses = () => {
               {activeTab === 'content' && (
                 <div className="space-y-4">
                   <div className="flex justify-between items-center">
-                    <h2 className="text-lg font-bold text-gray-800 dark-theme:text-white">Course Content</h2>
+                    <h2 className="text-lg font-bold text-gray-800 dark-theme:text-gray-100">Course Content</h2>
                     <button onClick={addContent} className="px-3 py-2 rounded-xl bg-primary text-white text-xs font-medium hover:bg-primary-dark flex items-center gap-1"><i className="ri-add-line"></i>Add Content</button>
                   </div>
                   {contentLoading ? <div className="flex justify-center py-12"><div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin"></div></div> :
@@ -290,7 +290,7 @@ const NewCourses = () => {
                           <i className={`${contentIcons[c.contentType] || 'ri-file-line'} text-lg`}></i>
                         </div>
                         <div className="flex-1 min-w-0">
-                          <h4 className="text-sm font-medium text-gray-800 dark-theme:text-white truncate">{c.title}</h4>
+                          <h4 className="text-sm font-medium text-gray-800 dark-theme:text-gray-100 truncate">{c.title}</h4>
                           <p className="text-[11px] text-gray-400">{c.subjectTitle || 'General'} • {c.contentType}</p>
                         </div>
                         <button onClick={() => deleteContent(c.id)} className="w-8 h-8 rounded-lg bg-red-50 dark-theme:bg-red-900/20 text-red-500 flex items-center justify-center hover:bg-red-100"><i className="ri-delete-bin-line text-sm"></i></button>
@@ -310,7 +310,7 @@ const NewCourses = () => {
     <DashboardLayout pageTitle="Courses" role="mentor">
       <div className="space-y-6">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div><h1 className="text-2xl font-bold text-gray-800 dark-theme:text-white">My Courses</h1><p className="text-sm text-gray-500 mt-1">{courses.length} courses</p></div>
+          <div><h1 className="text-2xl font-bold text-gray-800 dark-theme:text-gray-100">My Courses</h1><p className="text-sm text-gray-500 mt-1">{courses.length} courses</p></div>
           <button onClick={openCreate} className="px-4 py-2.5 rounded-xl bg-primary text-white text-sm font-medium hover:bg-primary-dark flex items-center gap-2"><i className="ri-add-line"></i>New Course</button>
         </div>
 
@@ -325,7 +325,7 @@ const NewCourses = () => {
               </div>
               <div className="p-5">
                 <div className="flex items-start justify-between mb-1">
-                  <h3 className="font-semibold text-gray-800 dark-theme:text-white text-sm">{c.title}</h3>
+                  <h3 className="font-semibold text-gray-800 dark-theme:text-gray-100 text-sm">{c.title}</h3>
                 </div>
                 {c.courseCode && <p className="text-[10px] text-gray-400 mb-1"><i className="ri-hashtag mr-0.5"></i>{c.courseCode}</p>}
                 <p className="text-xs text-gray-500 line-clamp-2 mb-3">{c.description}</p>
@@ -354,7 +354,7 @@ const NewCourses = () => {
         <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40">
           <div className="bg-white dark-theme:bg-gray-900 rounded-2xl p-6 w-full max-w-xl mx-4 border border-sand dark-theme:border-gray-800 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-5">
-              <h3 className="text-lg font-bold text-gray-800 dark-theme:text-white">{editCourse ? 'Edit Course' : 'New Course'}</h3>
+              <h3 className="text-lg font-bold text-gray-800 dark-theme:text-gray-100">{editCourse ? 'Edit Course' : 'New Course'}</h3>
               <button onClick={() => setShowModal(false)} className="w-8 h-8 rounded-lg hover:bg-gray-100 dark-theme:hover:bg-gray-800 flex items-center justify-center"><i className="ri-close-line text-lg text-gray-500"></i></button>
             </div>
             <form onSubmit={handleSubmit} className="space-y-3">

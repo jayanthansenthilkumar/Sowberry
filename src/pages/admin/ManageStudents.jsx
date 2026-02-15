@@ -89,7 +89,7 @@ const ManageStudents = () => {
         {/* Header */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-gray-800 dark-theme:text-white">Manage Students</h1>
+            <h1 className="text-2xl font-bold text-gray-800 dark-theme:text-gray-100">Manage Students</h1>
             <p className="text-sm text-gray-500 dark-theme:text-gray-400 mt-1">{students.length} total students</p>
           </div>
           <div className="flex gap-3">
@@ -166,7 +166,7 @@ const ManageStudents = () => {
         <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40">
           <div className="bg-white dark-theme:bg-gray-900 rounded-2xl p-6 w-full max-w-md mx-4 border border-sand dark-theme:border-gray-800">
             <div className="flex items-center justify-between mb-5">
-              <h3 className="text-lg font-bold text-gray-800 dark-theme:text-white">{editStudent ? 'Edit Student' : 'Add Student'}</h3>
+              <h3 className="text-lg font-bold text-gray-800 dark-theme:text-gray-100">{editStudent ? 'Edit Student' : 'Add Student'}</h3>
               <button onClick={() => setShowModal(false)} className="w-8 h-8 rounded-lg hover:bg-gray-100 dark-theme:hover:bg-gray-800 flex items-center justify-center"><i className="ri-close-line text-lg text-gray-500"></i></button>
             </div>
             <form onSubmit={handleSubmit} className="space-y-3">

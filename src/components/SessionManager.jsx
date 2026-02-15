@@ -30,7 +30,7 @@ const SessionManager = () => {
       icon: 'warning',
       title: 'Session Expired',
       text: 'Your session has timed out due to inactivity. Please log in again.',
-      confirmButtonColor: '#c96442',
+      confirmButtonColor: '#d4a574',
       allowOutsideClick: false,
       allowEscapeKey: false,
     }).then(() => {
@@ -86,7 +86,7 @@ const SessionManager = () => {
       showCancelButton: true,
       confirmButtonText: 'Extend Session',
       cancelButtonText: 'Log Out',
-      confirmButtonColor: '#7c3aed',
+      confirmButtonColor: '#d4a574',
       cancelButtonColor: '#dc2626',
       allowOutsideClick: false,
       allowEscapeKey: false,

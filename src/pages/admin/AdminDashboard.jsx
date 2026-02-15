@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import AdminLayout from '../../components/AdminLayout';
 import { adminApi } from '../../utils/api';
+import Swal from 'sweetalert2';
 import { useAuth } from '../../context/AuthContext';
 
 
@@ -8,6 +9,8 @@ const AdminDashboard = () => {
   const { user } = useAuth();
   const [stats, setStats] = useState({ totalStudents: 0, totalMentors: 0, totalCourses: 0, totalEnrollments: 0, avgCompletion: 0, activeStudents: 0, recentActivities: [], pendingVerifications: 0 });
   const [activeLearnersCount, setActiveLearnersCount] = useState(0);
+  const [uploadInfo, setUploadInfo] = useState({ count: 0, totalSize: 0, files: [] });
+  const [downloadingUploads, setDownloadingUploads] = useState(false);
   
   const studentsChartRef = useRef(null);
   const mentorChartRef = useRef(null);
@@ -22,6 +25,12 @@ const AdminDashboard = () => {
       }
     };
     fetchDashboard();
+
+    const fetchUploads = async () => {
+      const res = await adminApi.listUploads();
+      if (res.success) setUploadInfo({ count: res.count || 0, totalSize: res.totalSize || 0, files: res.files || [] });
+    };
+    fetchUploads();
 
     // Sample data for charts
     const monthlyData = {
@@ -126,6 +135,38 @@ const AdminDashboard = () => {
     };
   }, []);
 
+  const formatBytes = (bytes) => {
+    if (bytes === 0) return '0 B';
+    const k = 1024;
+    const sizes = ['B', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+  };
+
+  const handleDownloadUploads = async () => {
+    setDownloadingUploads(true);
+    try {
+      const token = localStorage.getItem('sowberry_token');
+      const res = await fetch(adminApi.downloadUploads(), {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (!res.ok) throw new Error('Download failed');
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'profile-photos.zip';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      Swal.fire({ icon: 'error', title: 'Download Failed', text: err.message, background: '#fff', color: '#1f2937' });
+    } finally {
+      setDownloadingUploads(false);
+    }
+  };
+
   return (
     <AdminLayout>
       {/* Welcome Section */}
@@ -163,7 +204,7 @@ const AdminDashboard = () => {
             <h3 className="text-sm font-semibold text-gray-500 dark-theme:text-gray-400">Student Enrollment Trends</h3>
             <i className="ri-line-chart-line text-primary text-xl"></i>
           </div>
-          <h2 className="text-3xl font-bold text-gray-800 dark-theme:text-white mb-4">{activeLearnersCount.toLocaleString()}</h2>
+          <h2 className="text-3xl font-bold text-gray-800 dark-theme:text-gray-100 mb-4">{activeLearnersCount.toLocaleString()}</h2>
           <div className="h-40">
             <canvas ref={studentsChartRef}></canvas>
           </div>
@@ -173,7 +214,7 @@ const AdminDashboard = () => {
             <h3 className="text-sm font-semibold text-gray-500 dark-theme:text-gray-400">Mentor Performance</h3>
             <i className="ri-team-line text-cyan-500 text-xl"></i>
           </div>
-          <h2 className="text-3xl font-bold text-gray-800 dark-theme:text-white mb-4">{stats.totalMentors || 0}</h2>
+          <h2 className="text-3xl font-bold text-gray-800 dark-theme:text-gray-100 mb-4">{stats.totalMentors || 0}</h2>
           <div className="h-40">
             <canvas ref={mentorChartRef}></canvas>
           </div>
@@ -183,7 +224,7 @@ const AdminDashboard = () => {
             <h3 className="text-sm font-semibold text-gray-500 dark-theme:text-gray-400">Course Completion Rate</h3>
             <i className="ri-medal-line text-violet-500 text-xl"></i>
           </div>
-          <h2 className="text-3xl font-bold text-gray-800 dark-theme:text-white mb-4">{stats.avgCompletion || 0}%</h2>
+          <h2 className="text-3xl font-bold text-gray-800 dark-theme:text-gray-100 mb-4">{stats.avgCompletion || 0}%</h2>
           <div className="h-40">
             <canvas ref={completionChartRef}></canvas>
           </div>
@@ -193,7 +234,7 @@ const AdminDashboard = () => {
       {/* Activity Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="bg-white dark-theme:bg-gray-900 rounded-2xl p-6 border border-sand dark-theme:border-gray-800">
-          <h3 className="text-lg font-bold text-gray-800 dark-theme:text-white mb-4">Recent Activities</h3>
+          <h3 className="text-lg font-bold text-gray-800 dark-theme:text-gray-100 mb-4">Recent Activities</h3>
           <div className="space-y-4">
             <div className="flex items-center gap-4 p-3 rounded-xl hover:bg-cream dark-theme:hover:bg-gray-800 transition-colors">
               <div className="w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center"><i className="ri-user-add-line"></i></div>
@@ -219,7 +260,7 @@ const AdminDashboard = () => {
           </div>
         </div>
         <div className="bg-white dark-theme:bg-gray-900 rounded-2xl p-6 border border-sand dark-theme:border-gray-800">
-          <h3 className="text-lg font-bold text-gray-800 dark-theme:text-white mb-4">System Alerts</h3>
+          <h3 className="text-lg font-bold text-gray-800 dark-theme:text-gray-100 mb-4">System Alerts</h3>
           <div className="space-y-4">
             <div className="flex items-center gap-4 p-3 rounded-xl bg-red-50 dark-theme:bg-red-900/20 border border-red-100 dark-theme:border-red-800/30">
               <div className="w-10 h-10 rounded-lg bg-red-500/10 text-red-500 flex items-center justify-center"><i className="ri-error-warning-line"></i></div>
@@ -243,6 +284,51 @@ const AdminDashboard = () => {
               </div>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Profile Photos Management */}
+      <div className="mt-6">
+        <div className="bg-white dark-theme:bg-gray-900 rounded-2xl p-6 border border-sand dark-theme:border-gray-800">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
+                <i className="ri-image-line text-xl"></i>
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-gray-800 dark-theme:text-gray-100">Profile Photos</h3>
+                <p className="text-xs text-gray-400">{uploadInfo.count} files · {formatBytes(uploadInfo.totalSize)} total</p>
+              </div>
+            </div>
+            <button
+              onClick={handleDownloadUploads}
+              disabled={downloadingUploads || uploadInfo.count === 0}
+              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-white font-medium text-sm hover:bg-primary-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {downloadingUploads ? (
+                <><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div> Downloading...</>
+              ) : (
+                <><i className="ri-download-2-line"></i> Download All</>
+              )}
+            </button>
+          </div>
+          {uploadInfo.files.length > 0 && (
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 mt-4">
+              {uploadInfo.files.slice(0, 12).map((file, idx) => (
+                <div key={idx} className="group relative">
+                  <div className="aspect-square rounded-xl overflow-hidden bg-cream dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700">
+                    <img src={`http://localhost:5000/uploads/profiles/${file.name}`} alt={file.name} className="w-full h-full object-cover" />
+                  </div>
+                  <p className="text-[10px] text-gray-500 mt-1 truncate">{file.name}</p>
+                </div>
+              ))}
+              {uploadInfo.count > 12 && (
+                <div className="aspect-square rounded-xl bg-cream dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 flex items-center justify-center">
+                  <p className="text-sm font-medium text-gray-500">+{uploadInfo.count - 12} more</p>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </AdminLayout>

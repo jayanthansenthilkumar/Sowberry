@@ -54,11 +54,11 @@ const NewAssignments = () => {
   const gradeSubmission = async (subId) => {
     const { value } = await Swal.fire({
       title: 'Grade Submission', input: 'number', inputLabel: 'Score', inputPlaceholder: 'Enter score',
-      showCancelButton: true, confirmButtonColor: '#c96442', background: '#fff', color: '#1f2937',
+      showCancelButton: true, confirmButtonColor: '#d4a574', background: '#fff', color: '#1f2937',
       inputValidator: v => { if (!v || v < 0) return 'Enter a valid score'; }
     });
     if (value !== undefined) {
-      const { value: feedback } = await Swal.fire({ title: 'Feedback', input: 'textarea', inputPlaceholder: 'Optional feedback...', showCancelButton: true, confirmButtonColor: '#c96442', background: '#fff', color: '#1f2937' });
+      const { value: feedback } = await Swal.fire({ title: 'Feedback', input: 'textarea', inputPlaceholder: 'Optional feedback...', showCancelButton: true, confirmButtonColor: '#d4a574', background: '#fff', color: '#1f2937' });
       const res = await mentorApi.gradeSubmission(subId, { score: parseInt(value), feedback: feedback || '' });
       if (res.success) { Swal.fire({ icon: 'success', title: 'Graded!', timer: 1500, showConfirmButton: false, background: '#fff', color: '#1f2937' }); viewSubmissions(showSubmissions); }
     }
@@ -68,7 +68,7 @@ const NewAssignments = () => {
     <Layout {...layoutProps}>
       <div className="space-y-6">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div><h1 className="text-2xl font-bold text-gray-800 dark-theme:text-white">Assignments</h1><p className="text-sm text-gray-500 mt-1">{assignments.length} assignments</p></div>
+          <div><h1 className="text-2xl font-bold text-gray-800 dark-theme:text-gray-100">Assignments</h1><p className="text-sm text-gray-500 mt-1">{assignments.length} assignments</p></div>
           <button onClick={openCreate} className="px-4 py-2.5 rounded-xl bg-primary text-white text-sm font-medium hover:bg-primary-dark flex items-center gap-2"><i className="ri-add-line"></i>New Assignment</button>
         </div>
 
@@ -81,7 +81,7 @@ const NewAssignments = () => {
                 <div className="flex items-start gap-3">
                   <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0"><i className="ri-task-line text-primary"></i></div>
                   <div>
-                    <h3 className="font-semibold text-gray-800 dark-theme:text-white text-sm">{a.title}</h3>
+                    <h3 className="font-semibold text-gray-800 dark-theme:text-gray-100 text-sm">{a.title}</h3>
                     <p className="text-xs text-gray-500 mt-0.5">{a.courseName || 'No course'} • Max Score: {a.maxScore} • Due: {a.dueDate ? new Date(a.dueDate).toLocaleDateString() : 'No deadline'}</p>
                   </div>
                 </div>
@@ -101,7 +101,7 @@ const NewAssignments = () => {
         <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40">
           <div className="bg-white dark-theme:bg-gray-900 rounded-2xl p-6 w-full max-w-lg mx-4 border border-sand dark-theme:border-gray-800">
             <div className="flex items-center justify-between mb-5">
-              <h3 className="text-lg font-bold text-gray-800 dark-theme:text-white">{editItem ? 'Edit' : 'New'} Assignment</h3>
+              <h3 className="text-lg font-bold text-gray-800 dark-theme:text-gray-100">{editItem ? 'Edit' : 'New'} Assignment</h3>
               <button onClick={() => setShowModal(false)} className="w-8 h-8 rounded-lg hover:bg-gray-100 flex items-center justify-center"><i className="ri-close-line text-lg text-gray-500"></i></button>
             </div>
             <form onSubmit={handleSubmit} className="space-y-3">
@@ -132,7 +132,7 @@ const NewAssignments = () => {
         <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40">
           <div className="bg-white dark-theme:bg-gray-900 rounded-2xl p-6 w-full max-w-2xl mx-4 border border-sand dark-theme:border-gray-800 max-h-[80vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-5">
-              <h3 className="text-lg font-bold text-gray-800 dark-theme:text-white">Submissions</h3>
+              <h3 className="text-lg font-bold text-gray-800 dark-theme:text-gray-100">Submissions</h3>
               <button onClick={() => setShowSubmissions(null)} className="w-8 h-8 rounded-lg hover:bg-gray-100 flex items-center justify-center"><i className="ri-close-line text-lg text-gray-500"></i></button>
             </div>
             {submissions.length === 0 ? <p className="text-center py-10 text-gray-400">No submissions yet</p> :

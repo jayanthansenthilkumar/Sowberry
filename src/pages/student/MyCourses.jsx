@@ -51,7 +51,7 @@ const MyCourses = () => {
     <DashboardLayout pageTitle="My Courses" role="student">
       <div className="space-y-6">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <h1 className="text-2xl font-bold text-gray-800 dark-theme:text-white">My Courses</h1>
+          <h1 className="text-2xl font-bold text-gray-800 dark-theme:text-gray-100">My Courses</h1>
           <div className="flex bg-cream dark-theme:bg-gray-800 rounded-xl p-1">
             <button onClick={() => setTab('enrolled')} className={`px-4 py-2 rounded-lg text-xs font-medium transition-colors ${tab === 'enrolled' ? 'bg-primary text-white' : 'text-gray-500 hover:text-gray-700'}`}>Enrolled ({enrolled.length})</button>
             <button onClick={() => setTab('browse')} className={`px-4 py-2 rounded-lg text-xs font-medium transition-colors ${tab === 'browse' ? 'bg-primary text-white' : 'text-gray-500 hover:text-gray-700'}`}>Browse</button>
@@ -72,7 +72,7 @@ const MyCourses = () => {
                       <span className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-primary/10 text-primary">{c.category || 'General'}</span>
                       {c.courseCode && <span className="text-[10px] text-gray-400"><i className="ri-hashtag mr-0.5"></i>{c.courseCode}</span>}
                     </div>
-                    <h3 className="font-semibold text-gray-800 dark-theme:text-white text-sm mb-1">{c.title}</h3>
+                    <h3 className="font-semibold text-gray-800 dark-theme:text-gray-100 text-sm mb-1">{c.title}</h3>
                     <p className="text-xs text-gray-500 line-clamp-2 mb-2">{c.description}</p>
                     <div className="flex items-center gap-2 text-[10px] text-gray-400 mb-3">
                       {c.mentorName && <span><i className="ri-user-line mr-0.5"></i>{c.mentorName}</span>}
@@ -104,11 +104,11 @@ const MyCourses = () => {
                   <div className="h-2 bg-gradient-to-r from-green-400 to-green-600"></div>
                   <div className="p-5">
                     <div className="flex items-center gap-2 mb-2 flex-wrap">
-                      <span className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-green-100 text-green-700">{c.category || 'General'}</span>
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-green-500/15 text-green-400">{c.category || 'General'}</span>
                       <span className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-amber-100 text-amber-700">{c.difficulty || 'Beginner'}</span>
                       {c.courseCode && <span className="text-[10px] text-gray-400"><i className="ri-hashtag mr-0.5"></i>{c.courseCode}</span>}
                     </div>
-                    <h3 className="font-semibold text-gray-800 dark-theme:text-white text-sm mb-1">{c.title}</h3>
+                    <h3 className="font-semibold text-gray-800 dark-theme:text-gray-100 text-sm mb-1">{c.title}</h3>
                     <p className="text-xs text-gray-500 line-clamp-2 mb-2">{c.description}</p>
                     <div className="flex items-center gap-2 text-[10px] text-gray-400 mb-3 flex-wrap">
                       <span><i className="ri-user-line mr-0.5"></i>{c.mentorName || 'Instructor'}</span>

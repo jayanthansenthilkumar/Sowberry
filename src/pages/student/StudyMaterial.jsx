@@ -19,13 +19,13 @@ const StudyMaterial = () => {
   const filtered = materials.filter(m => m.title?.toLowerCase().includes(search.toLowerCase()) || m.courseName?.toLowerCase().includes(search.toLowerCase()));
 
   const typeIcons = { pdf: 'ri-file-pdf-2-line', video: 'ri-video-line', document: 'ri-file-text-line', link: 'ri-link', presentation: 'ri-slideshow-line', notes: 'ri-sticky-note-line' };
-  const typeColors = { pdf: 'bg-red-100 text-red-600', video: 'bg-blue-100 text-blue-600', document: 'bg-green-100 text-green-600', link: 'bg-purple-100 text-purple-600', presentation: 'bg-amber-100 text-amber-600', notes: 'bg-teal-100 text-teal-600' };
+  const typeColors = { pdf: 'bg-red-500/15 text-red-400 dark-theme:bg-red-500/15 dark-theme:text-red-400', video: 'bg-blue-500/15 text-blue-400 dark-theme:bg-blue-500/15 dark-theme:text-blue-400', document: 'bg-green-500/15 text-green-400 dark-theme:bg-green-500/15 dark-theme:text-green-400', link: 'bg-primary/15 text-primary dark-theme:bg-primary/15 dark-theme:text-primary', presentation: 'bg-amber-500/15 text-amber-400 dark-theme:bg-amber-500/15 dark-theme:text-amber-400', notes: 'bg-teal-500/15 text-teal-400 dark-theme:bg-teal-500/15 dark-theme:text-teal-400' };
 
   return (
     <DashboardLayout pageTitle="Study Material" role="student">
       <div className="space-y-6">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <h1 className="text-2xl font-bold text-gray-800 dark-theme:text-white">Study Materials</h1>
+          <h1 className="text-2xl font-bold text-gray-800 dark-theme:text-gray-100">Study Materials</h1>
           <div className="relative w-full sm:w-64">
             <i className="ri-search-line absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
             <input type="text" placeholder="Search materials..." value={search} onChange={e => setSearch(e.target.value)}
@@ -45,7 +45,7 @@ const StudyMaterial = () => {
                     <i className={`${typeIcons[mType] || typeIcons.document} text-lg`}></i>
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-semibold text-gray-800 dark-theme:text-white text-sm truncate">{m.title}</h3>
+                    <h3 className="font-semibold text-gray-800 dark-theme:text-gray-100 text-sm truncate">{m.title}</h3>
                     <p className="text-[11px] text-gray-400 mt-0.5">{m.courseName || 'General'}</p>
                   </div>
                 </div>

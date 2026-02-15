@@ -42,7 +42,7 @@ const MentorDashboard = () => {
               <div key={i} className="bg-white dark-theme:bg-gray-900 rounded-2xl p-5 border border-sand dark-theme:border-gray-800">
                 <div className="flex items-center gap-3">
                   <div className={`w-10 h-10 rounded-xl ${s.bg} flex items-center justify-center`}><i className={`${s.icon} ${s.tc} text-lg`}></i></div>
-                  <div><p className="text-xs text-gray-400">{s.label}</p><p className="text-xl font-bold text-gray-800 dark-theme:text-white">{s.value}</p></div>
+                  <div><p className="text-xs text-gray-400">{s.label}</p><p className="text-xl font-bold text-gray-800 dark-theme:text-gray-100">{s.value}</p></div>
                 </div>
               </div>
             ))}
@@ -51,7 +51,7 @@ const MentorDashboard = () => {
           {/* Recent activity */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div className="bg-white dark-theme:bg-gray-900 rounded-2xl p-6 border border-sand dark-theme:border-gray-800">
-              <h3 className="text-lg font-bold text-gray-800 dark-theme:text-white mb-4">Recent Submissions</h3>
+              <h3 className="text-lg font-bold text-gray-800 dark-theme:text-gray-100 mb-4">Recent Submissions</h3>
               <div className="space-y-3">
                 {(stats?.recentSubmissions || []).length === 0 ? (
                   <p className="text-sm text-gray-400 text-center py-6">No recent submissions</p>
@@ -70,7 +70,7 @@ const MentorDashboard = () => {
               </div>
             </div>
             <div className="bg-white dark-theme:bg-gray-900 rounded-2xl p-6 border border-sand dark-theme:border-gray-800">
-              <h3 className="text-lg font-bold text-gray-800 dark-theme:text-white mb-4">Upcoming Events</h3>
+              <h3 className="text-lg font-bold text-gray-800 dark-theme:text-gray-100 mb-4">Upcoming Events</h3>
               <div className="space-y-3">
                 {(stats?.upcomingEvents || []).length === 0 ? (
                   <p className="text-sm text-gray-400 text-center py-6">No upcoming events</p>
