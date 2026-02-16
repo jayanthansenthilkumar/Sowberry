@@ -231,10 +231,12 @@ export const studentApi = {
   getCodingProblems: (params = '') => apiCall(`/student/coding-problems${params ? '?' + params : ''}`),
   getCodingProblem: (id) => apiCall(`/student/coding-problems/${id}`),
   submitCode: (id, body) => apiCall(`/student/coding-problems/${id}/submit`, { method: 'POST', body: JSON.stringify(body) }),
+  executeCode: (body) => apiCall('/student/execute', { method: 'POST', body: JSON.stringify(body) }),
   // Aptitude
   getAptitudeTests: () => apiCall('/student/aptitude-tests'),
   startAptitudeTest: (id) => apiCall(`/student/aptitude-tests/${id}/start`, { method: 'POST' }),
   submitAptitudeTest: (attemptId, body) => apiCall(`/student/aptitude-tests/${attemptId}/submit`, { method: 'POST', body: JSON.stringify(body) }),
+  getAptitudeResult: (attemptId) => apiCall(`/student/aptitude-tests/attempts/${attemptId}`),
   // Study Materials
   getStudyMaterials: (params = '') => apiCall(`/student/study-materials${params ? '?' + params : ''}`),
   // Events

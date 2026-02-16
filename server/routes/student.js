@@ -1,6 +1,10 @@
 import { Router } from 'express';
 import pool from '../config/db.js';
 import { authenticate, authorize } from '../middleware/auth.js';
+import { spawn, execSync } from 'child_process';
+import fs from 'fs';
+import path from 'path';
+import os from 'os';
 
 const router = Router();
 
@@ -497,22 +501,295 @@ router.get('/coding-problems/:id', async (req, res) => {
   }
 });
 
-// Submit code
+// ── Local Code Execution Engine (child_process) ──
+const EXEC_TIMEOUT = 15000; // 15 seconds
+const MAX_OUTPUT = 100 * 1024; // 100KB
+
+// Check if a command is available on this system
+function commandExists(cmd) {
+  try {
+    execSync(process.platform === 'win32' ? `where ${cmd}` : `which ${cmd}`, { stdio: 'ignore' });
+    return true;
+  } catch { return false; }
+}
+
+// Resolve the best available command from a list of candidates
+function resolveCmd(candidates) {
+  for (const cmd of candidates) {
+    if (commandExists(cmd)) return cmd;
+  }
+  return null;
+}
+
+// Language configuration for local execution
+const LANG_CONFIG = {
+  python:     { candidates: ['python', 'python3', 'py'], ext: 'py', type: 'interpreted' },
+  javascript: { candidates: ['node'], ext: 'js', type: 'interpreted' },
+  typescript: { candidates: ['npx'], ext: 'ts', type: 'interpreted', args: ['tsx'] },
+  java:       { candidates: ['javac'], ext: 'java', type: 'compiled', runCmd: 'java' },
+  cpp:        { candidates: ['g++'], ext: 'cpp', type: 'compiled' },
+  c:          { candidates: ['gcc'], ext: 'c', type: 'compiled' },
+  go:         { candidates: ['go'], ext: 'go', type: 'run', runArgs: ['run'] },
+  rust:       { candidates: ['rustc'], ext: 'rs', type: 'compiled' },
+  php:        { candidates: ['php'], ext: 'php', type: 'interpreted' },
+  ruby:       { candidates: ['ruby'], ext: 'rb', type: 'interpreted' },
+  bash:       { candidates: ['bash', 'sh'], ext: 'sh', type: 'interpreted' },
+  perl:       { candidates: ['perl'], ext: 'pl', type: 'interpreted' },
+  lua:        { candidates: ['lua'], ext: 'lua', type: 'interpreted' },
+  r:          { candidates: ['Rscript'], ext: 'r', type: 'interpreted' },
+  kotlin:     { candidates: ['kotlinc'], ext: 'kt', type: 'compiled-kt' },
+  dart:       { candidates: ['dart'], ext: 'dart', type: 'run', runArgs: ['run'] },
+  swift:      { candidates: ['swift'], ext: 'swift', type: 'interpreted' },
+  scala:      { candidates: ['scala'], ext: 'scala', type: 'interpreted' },
+};
+
+// Cache resolved commands at startup
+const resolvedCmds = {};
+for (const [lang, cfg] of Object.entries(LANG_CONFIG)) {
+  resolvedCmds[lang] = resolveCmd(cfg.candidates);
+}
+console.log('Available execution languages:', Object.entries(resolvedCmds).filter(([, v]) => v).map(([k, v]) => `${k}(${v})`).join(', '));
+
+// Run a process and capture output
+function runProcess(cmd, args, cwd, stdin, timeout) {
+  return new Promise((resolve) => {
+    let stdout = '';
+    let stderr = '';
+    let killed = false;
+
+    const proc = spawn(cmd, args, {
+      cwd,
+      timeout,
+      stdio: ['pipe', 'pipe', 'pipe'],
+      shell: process.platform === 'win32',
+    });
+
+    proc.stdout.on('data', (data) => {
+      stdout += data.toString();
+      if (stdout.length > MAX_OUTPUT) {
+        stdout = stdout.slice(0, MAX_OUTPUT) + '\n[Output truncated]';
+        proc.kill('SIGKILL');
+        killed = true;
+      }
+    });
+
+    proc.stderr.on('data', (data) => {
+      stderr += data.toString();
+      if (stderr.length > MAX_OUTPUT) {
+        stderr = stderr.slice(0, MAX_OUTPUT) + '\n[Output truncated]';
+      }
+    });
+
+    proc.on('error', (err) => {
+      resolve({ stdout, stderr: stderr || err.message, code: -1, signal: null, killed });
+    });
+
+    proc.on('close', (code, signal) => {
+      resolve({ stdout, stderr, code, signal, killed });
+    });
+
+    // Write stdin if provided
+    if (stdin) {
+      proc.stdin.write(stdin);
+    }
+    proc.stdin.end();
+
+    // Fallback timeout (in case spawn timeout doesn't work on all platforms)
+    setTimeout(() => {
+      if (!proc.killed) {
+        proc.kill('SIGKILL');
+        killed = true;
+      }
+    }, timeout + 1000);
+  });
+}
+
+// Execute code locally
+async function executeLocally(language, code, stdin = '') {
+  const lang = language || 'python';
+  const cfg = LANG_CONFIG[lang];
+
+  if (!cfg) {
+    return { output: `Language "${lang}" is not supported.`, status: 'error' };
+  }
+
+  const cmd = resolvedCmds[lang];
+  if (!cmd) {
+    return { output: `Language "${lang}" is not available on this server. Install the runtime and restart the server.`, status: 'error' };
+  }
+
+  // Create temp directory
+  const execId = Date.now() + '-' + Math.random().toString(36).slice(2, 8);
+  const execDir = path.join(os.tmpdir(), 'sowberry-exec', execId);
+  fs.mkdirSync(execDir, { recursive: true });
+
+  try {
+    const startTime = Date.now();
+    let fileName;
+    let output = '';
+    let status = 'success';
+
+    // For Java, extract public class name or use Main
+    if (lang === 'java') {
+      const classMatch = code.match(/public\s+class\s+(\w+)/);
+      const className = classMatch ? classMatch[1] : 'Main';
+      fileName = `${className}.java`;
+    } else {
+      fileName = `code.${cfg.ext}`;
+    }
+
+    const filePath = path.join(execDir, fileName);
+    fs.writeFileSync(filePath, code, 'utf8');
+
+    if (cfg.type === 'interpreted') {
+      // Interpreted: run directly
+      const args = cfg.args ? [...cfg.args, filePath] : [filePath];
+      const result = await runProcess(cmd, args, execDir, stdin, EXEC_TIMEOUT);
+
+      if (result.stdout) output += result.stdout;
+      if (result.stderr) {
+        output += (output ? '\n' : '') + `[Error]\n${result.stderr}`;
+        if (!result.stdout) status = 'error';
+      }
+      if (result.killed || result.signal === 'SIGKILL') {
+        output += '\n[Time Limit Exceeded]';
+        status = 'error';
+      }
+    } else if (cfg.type === 'compiled') {
+      // Compiled: compile then run
+      const outName = process.platform === 'win32' ? 'program.exe' : 'program';
+      const outPath = path.join(execDir, outName);
+      let compileArgs;
+
+      if (lang === 'java') {
+        compileArgs = [filePath];
+      } else {
+        // C/C++/Rust: compile to binary
+        compileArgs = [filePath, '-o', outPath];
+      }
+
+      const compResult = await runProcess(cmd, compileArgs, execDir, '', EXEC_TIMEOUT);
+
+      if (compResult.code !== 0) {
+        output = `[Compilation Error]\n${compResult.stderr || compResult.stdout}`;
+        status = 'error';
+      } else {
+        // Run the compiled program
+        let runCmd, runArgs;
+        if (lang === 'java') {
+          const classMatch = code.match(/public\s+class\s+(\w+)/);
+          const className = classMatch ? classMatch[1] : 'Main';
+          runCmd = cfg.runCmd || 'java';
+          runArgs = ['-cp', execDir, className];
+        } else {
+          runCmd = outPath;
+          runArgs = [];
+        }
+
+        const runResult = await runProcess(runCmd, runArgs, execDir, stdin, EXEC_TIMEOUT);
+
+        if (runResult.stdout) output += runResult.stdout;
+        if (runResult.stderr) {
+          output += (output ? '\n' : '') + `[Error]\n${runResult.stderr}`;
+          if (!runResult.stdout) status = 'error';
+        }
+        if (runResult.killed || runResult.signal === 'SIGKILL') {
+          output += '\n[Time Limit Exceeded]';
+          status = 'error';
+        }
+      }
+    } else if (cfg.type === 'run') {
+      // Languages with `run` subcommand (go run, dart run)
+      const args = [...(cfg.runArgs || []), filePath];
+      const result = await runProcess(cmd, args, execDir, stdin, EXEC_TIMEOUT);
+
+      if (result.stdout) output += result.stdout;
+      if (result.stderr) {
+        output += (output ? '\n' : '') + `[Error]\n${result.stderr}`;
+        if (!result.stdout) status = 'error';
+      }
+      if (result.killed || result.signal === 'SIGKILL') {
+        output += '\n[Time Limit Exceeded]';
+        status = 'error';
+      }
+    }
+
+    const elapsed = Date.now() - startTime;
+
+    return {
+      output: (output || '').trim() || '(No output)',
+      status,
+      language: lang,
+      executionTime: `${elapsed}ms`,
+    };
+  } finally {
+    // Clean up temp files
+    try {
+      fs.rmSync(execDir, { recursive: true, force: true });
+    } catch (e) {
+      // Ignore cleanup errors
+    }
+  }
+}
+
+// ── Execute code endpoint ──
+router.post('/execute', async (req, res) => {
+  try {
+    const { code, language, stdin } = req.body;
+
+    if (!code || !code.trim()) {
+      return res.status(400).json({ success: false, message: 'Code is required.' });
+    }
+
+    const result = await executeLocally(language, code, stdin || '');
+
+    res.json({
+      success: true,
+      data: {
+        output: result.output,
+        status: result.status,
+        language: result.language,
+        executionTime: result.executionTime,
+      }
+    });
+  } catch (error) {
+    console.error('Execute code error:', error);
+    res.status(500).json({ success: false, message: 'Failed to execute code. Please try again.' });
+  }
+});
+
+// Submit code (save to DB + execute for problem solving)
 router.post('/coding-problems/:id/submit', async (req, res) => {
   try {
-    const { code, language } = req.body;
+    const { code, language, stdin } = req.body;
 
     if (!code) {
       return res.status(400).json({ success: false, message: 'Code is required.' });
     }
 
-    // Simple status for now (in production, integrate with a code execution service)
+    const lang = language || 'python';
+    let output = '';
+    let status = 'pending';
+
+    // Try to execute locally
+    try {
+      const result = await executeLocally(lang, code, stdin || '');
+      output = result.output;
+      status = result.status === 'success' ? 'accepted' : (result.status === 'error' && result.output.includes('[Compilation Error]') ? 'compile_error' : 'wrong_answer');
+    } catch (execErr) {
+      console.error('Execution during submit:', execErr);
+    }
+
     const [result] = await pool.query(
       'INSERT INTO codingSubmissions (problemId, studentId, code, language, status) VALUES (?, ?, ?, ?, ?)',
-      [req.params.id, req.user.id, code, language || 'javascript', 'pending']
+      [req.params.id, req.user.id, code, lang, status]
     );
 
-    res.status(201).json({ success: true, message: 'Code submitted successfully!', data: { id: result.insertId } });
+    res.status(201).json({
+      success: true,
+      message: 'Code submitted successfully!',
+      data: { id: result.insertId, output: output.trim() || 'Code submitted for evaluation.', status }
+    });
   } catch (error) {
     console.error('Submit code error:', error);
     res.status(500).json({ success: false, message: 'Server error.' });
@@ -523,16 +800,19 @@ router.post('/coding-problems/:id/submit', async (req, res) => {
 router.get('/aptitude-tests', async (req, res) => {
   try {
     const [tests] = await pool.query(`
-      SELECT at.*, u.fullName as mentorName,
+      SELECT at.id, at.title, at.description, at.category, at.difficulty, at.icon,
+             at.duration, at.totalQuestions, at.totalMarks, at.createdAt,
+             u.fullName as mentorName,
         (SELECT COUNT(*) FROM aptitudeTestAttempts WHERE testId = at.id AND studentId = ?) as myAttempts,
-        (SELECT score FROM aptitudeTestAttempts WHERE testId = at.id AND studentId = ? ORDER BY startedAt DESC LIMIT 1) as lastScore
+        (SELECT score FROM aptitudeTestAttempts WHERE testId = at.id AND studentId = ? ORDER BY startedAt DESC LIMIT 1) as lastScore,
+        (SELECT MAX(score) FROM aptitudeTestAttempts WHERE testId = at.id AND studentId = ? AND status = 'completed') as bestScore
       FROM aptitudeTests at
       JOIN users u ON at.mentorId = u.id
       WHERE at.isPublished = 1
-      ORDER BY at.createdAt DESC
-    `, [req.user.id, req.user.id]);
+      ORDER BY at.category, at.difficulty, at.createdAt DESC
+    `, [req.user.id, req.user.id, req.user.id]);
 
-    res.json({ success: true, data: { tests } });
+    res.json({ success: true, tests });
   } catch (error) {
     console.error('Get tests error:', error);
     res.status(500).json({ success: false, message: 'Server error.' });
@@ -555,17 +835,15 @@ router.post('/aptitude-tests/:id/start', async (req, res) => {
     );
 
     const [questions] = await pool.query(
-      'SELECT id, question, optionA, optionB, optionC, optionD, marks, orderIndex FROM aptitudeQuestions WHERE testId = ? ORDER BY orderIndex',
+      'SELECT id, question, optionA, optionB, optionC, optionD, marks, explanation, orderIndex FROM aptitudeQuestions WHERE testId = ? ORDER BY orderIndex',
       [testId]
     );
 
     res.status(201).json({
       success: true,
-      data: {
-        attemptId: result.insertId,
-        test: { title: test[0].title, duration: test[0].duration, totalMarks: test[0].totalMarks },
-        questions
-      }
+      attemptId: result.insertId,
+      test: { title: test[0].title, duration: test[0].duration, totalMarks: test[0].totalMarks, category: test[0].category },
+      questions
     });
   } catch (error) {
     console.error('Start test error:', error);
@@ -583,10 +861,11 @@ router.post('/aptitude-tests/:attemptId/submit', async (req, res) => {
     }
 
     let totalScore = 0;
+    const results = [];
 
     for (const answer of answers) {
       const [question] = await pool.query(
-        'SELECT correctOption, marks FROM aptitudeQuestions WHERE id = ?',
+        'SELECT id, question, optionA, optionB, optionC, optionD, correctOption, marks, explanation FROM aptitudeQuestions WHERE id = ?',
         [answer.questionId]
       );
 
@@ -597,6 +876,22 @@ router.post('/aptitude-tests/:attemptId/submit', async (req, res) => {
         'INSERT INTO aptitudeAnswers (attemptId, questionId, selectedOption, isCorrect) VALUES (?, ?, ?, ?)',
         [req.params.attemptId, answer.questionId, answer.selectedOption, isCorrect ? 1 : 0]
       );
+
+      if (question.length > 0) {
+        results.push({
+          questionId: question[0].id,
+          question: question[0].question,
+          optionA: question[0].optionA,
+          optionB: question[0].optionB,
+          optionC: question[0].optionC,
+          optionD: question[0].optionD,
+          correctOption: question[0].correctOption,
+          selectedOption: answer.selectedOption,
+          isCorrect,
+          explanation: question[0].explanation,
+          marks: question[0].marks
+        });
+      }
     }
 
     // Update attempt
@@ -618,10 +913,58 @@ router.post('/aptitude-tests/:attemptId/submit', async (req, res) => {
     res.json({
       success: true,
       message: 'Test submitted successfully!',
-      data: { score: totalScore, totalMarks: attempt[0]?.totalMarks || 0 }
+      score: totalScore,
+      totalMarks: attempt[0]?.totalMarks || 0,
+      results
     });
   } catch (error) {
     console.error('Submit test error:', error);
+    res.status(500).json({ success: false, message: 'Server error.' });
+  }
+});
+
+// Get aptitude test attempt result
+router.get('/aptitude-tests/attempts/:id', async (req, res) => {
+  try {
+    const attemptId = req.params.id;
+
+    const [attempt] = await pool.query(`
+      SELECT ata.*, at.title, at.totalQuestions, at.duration, at.totalMarks as maxMarks
+      FROM aptitudeTestAttempts ata
+      JOIN aptitudeTests at ON ata.testId = at.id
+      WHERE ata.id = ? AND ata.studentId = ?
+    `, [attemptId, req.user.id]);
+
+    if (attempt.length === 0) {
+      return res.status(404).json({ success: false, message: 'Attempt not found.' });
+    }
+
+    const [answers] = await pool.query(`
+      SELECT aa.*, aq.question, aq.optionA, aq.optionB, aq.optionC, aq.optionD, aq.correctOption, aq.explanation, aq.marks
+      FROM aptitudeAnswers aa
+      JOIN aptitudeQuestions aq ON aa.questionId = aq.id
+      WHERE aa.attemptId = ?
+    `, [attemptId]);
+
+    // Calculate stats
+    const answered = answers.length;
+    let score = 0;
+    answers.forEach(a => { if(a.isCorrect) score += a.marks; });
+
+    res.json({
+      success: true,
+      data: {
+        attempt: attempt[0],
+        results: answers,
+        score,
+        total: attempt[0].maxMarks,
+        answered,
+        questions: attempt[0].totalQuestions
+      }
+    });
+
+  } catch (error) {
+    console.error('Get attempt error:', error);
     res.status(500).json({ success: false, message: 'Server error.' });
   }
 });

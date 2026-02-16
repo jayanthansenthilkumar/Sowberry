@@ -64,8 +64,8 @@ const MyGrades = () => {
                   const pct = g.maxScore ? Math.round((g.grade / g.maxScore) * 100) : 0;
                   return (
                     <tr key={i} className="hover:bg-cream/50 dark-theme:hover:bg-gray-800/50">
-                      <td className="px-5 py-3 font-medium text-gray-800 dark-theme:text-gray-100">{g.assignmentTitle}</td>
-                      <td className="px-5 py-3 text-gray-500">{g.courseName}</td>
+                      <td className="px-5 py-3 font-medium text-gray-800 dark-theme:text-gray-100">{g.assignmentTitle || g.testTitle || 'Untitled Assessment'}</td>
+                      <td className="px-5 py-3 text-gray-500">{g.courseName || (g.testTitle ? 'Aptitude Test' : '-')}</td>
                       <td className="px-5 py-3 text-gray-600 dark-theme:text-gray-300">{g.grade}/{g.maxScore}</td>
                       <td className="px-5 py-3"><span className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${getGradeBg(pct)} ${getGradeColor(pct)}`}>{pct}%</span></td>
                       <td className="px-5 py-3 text-gray-500 text-xs max-w-[200px] truncate">{g.feedback || '-'}</td>

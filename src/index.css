@@ -328,3 +328,17 @@
   background: var(--color-gray-800);
   opacity: 0.15;
 }
+
+/* CodeMirror Editor Styles */
+.codemirror-editor-wrapper .cm-editor {
+  height: 40vh;
+  border-radius: 0 0 1rem 1rem;
+  outline: none !important;
+}
+.codemirror-editor-wrapper .cm-editor.cm-focused {
+  outline: none !important;
+}
+.codemirror-editor-wrapper .cm-scroller {
+  overflow: auto;
+  font-family: "Fira Code", "JetBrains Mono", "Cascadia Code", "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+}

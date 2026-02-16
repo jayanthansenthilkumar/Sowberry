@@ -24,6 +24,7 @@ import StudyMaterial from './pages/student/StudyMaterial'
 import MyCourses from './pages/student/MyCourses'
 import CodingPractice from './pages/student/CodingPractice'
 import AptitudeTests from './pages/student/AptitudeTests'
+import AptitudeResult from './pages/student/AptitudeResult'
 import CodeEditor from './pages/student/CodeEditor'
 import MyAssignments from './pages/student/MyAssignments'
 import MyGrades from './pages/student/MyGrades'
@@ -114,6 +115,7 @@ function App() {
           <Route path="/student/my-courses" element={<ProtectedRoute allowedRoles={['student']}><MyCourses /></ProtectedRoute>} />
           <Route path="/student/coding-practice" element={<ProtectedRoute allowedRoles={['student']}><CodingPractice /></ProtectedRoute>} />
           <Route path="/student/aptitude-tests" element={<ProtectedRoute allowedRoles={['student']}><AptitudeTests /></ProtectedRoute>} />
+          <Route path="/student/aptitude-tests/result/:attemptId" element={<ProtectedRoute allowedRoles={['student']}><AptitudeResult /></ProtectedRoute>} />
           <Route path="/student/code-editor" element={<ProtectedRoute allowedRoles={['student']}><CodeEditor /></ProtectedRoute>} />
           <Route path="/student/my-assignments" element={<ProtectedRoute allowedRoles={['student']}><MyAssignments /></ProtectedRoute>} />
           <Route path="/student/my-grades" element={<ProtectedRoute allowedRoles={['student']}><MyGrades /></ProtectedRoute>} />
