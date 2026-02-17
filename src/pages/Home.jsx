@@ -66,9 +66,10 @@ const Home = () => {
       <ThemeToggle />
 
       <main className="ml-0 lg:ml-20">
-        {/* Hero Section — Claude-inspired centered layout with warm gradient orbs */}
+
+        {/* ═══════════════════════════ HERO ═══════════════════════════ */}
         <section id="hero" className="relative min-h-screen flex flex-col justify-center overflow-hidden bg-cream dark-theme:bg-gray-950">
-          {/* Gradient Orbs — warm organic backdrop */}
+          {/* Gradient Orbs */}
           <div className="hero-orb hero-orb-1 -top-20 -left-24"></div>
           <div className="hero-orb hero-orb-2 top-1/4 -right-16"></div>
           <div className="hero-orb hero-orb-3 bottom-16 left-1/4"></div>
@@ -97,19 +98,10 @@ const Home = () => {
           {/* Centered Hero Content */}
           <div className="relative z-10 max-w-4xl mx-auto px-6 py-32 text-center">
             <div className="animate-fade-in-up">
-              {/* Live Activity Indicator */}
-              <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white/60 dark-theme:bg-gray-900/60 backdrop-blur-sm border border-sand/60 dark-theme:border-gray-800 text-xs text-gray-500 dark-theme:text-gray-400 mb-5">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-                </span>
-                <span><span className="font-semibold text-gray-700 dark-theme:text-gray-200">2,847</span> students learning right now</span>
-              </div>
-
               {/* Badge */}
               <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/8 border border-primary/15 text-primary text-sm font-medium mb-8">
                 <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
-                Transforming Education Since 2020
+                Free Certification Courses for Everyone
               </div>
 
               {/* Heading */}
@@ -131,8 +123,8 @@ const Home = () => {
 
               {/* Subtitle */}
               <p className="text-lg sm:text-xl text-gray-500 dark-theme:text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed">
-                Cultivating knowledge and growing your potential through
-                <span className="text-gray-700 dark-theme:text-gray-200 font-medium"> innovative learning experiences</span> designed for the future.
+                Free certification courses, hands-on coding practice, aptitude training, and mentorship —{' '}
+                <span className="text-gray-700 dark-theme:text-gray-200 font-medium">everything you need to kickstart your tech career</span>, without spending a penny.
               </p>
 
               {/* CTA Buttons */}
@@ -141,136 +133,30 @@ const Home = () => {
                   Start Learning Free
                   <i className="ri-arrow-right-line group-hover:translate-x-0.5 transition-transform"></i>
                 </Link>
-                <a href="#features" className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl bg-white dark-theme:bg-gray-900 border border-sand dark-theme:border-gray-700 text-gray-700 dark-theme:text-gray-200 font-semibold hover:border-primary/30 hover:text-primary transition-all duration-200">
-                  <i className="ri-play-circle-line"></i>
-                  Watch Demo
+                <a href="#about" className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl bg-white dark-theme:bg-gray-900 border border-sand dark-theme:border-gray-700 text-gray-700 dark-theme:text-gray-200 font-semibold hover:border-primary/30 hover:text-primary transition-all duration-200">
+                  <i className="ri-information-line"></i>
+                  Learn More
                 </a>
               </div>
 
               {/* Trust line */}
               <p className="text-xs text-gray-400 dark-theme:text-gray-500 mb-14">
-                <i className="ri-shield-check-line text-sage mr-1"></i> No credit card required &nbsp;·&nbsp; <i className="ri-time-line text-amber mr-1"></i> 14-day free trial &nbsp;·&nbsp; <i className="ri-lock-line text-primary mr-1"></i> Cancel anytime
+                <i className="ri-shield-check-line text-sage mr-1"></i> 100% Free &nbsp;·&nbsp; <i className="ri-award-line text-amber mr-1"></i> Certified Courses &nbsp;·&nbsp; <i className="ri-code-s-slash-line text-primary mr-1"></i> Hands-on Practice
               </p>
 
-              {/* Stats Row */}
-              <div className="flex flex-wrap justify-center gap-x-10 gap-y-4 mb-12">
-                {[
-                  { value: '15,000+', label: 'Students', color: 'text-primary', icon: 'ri-group-fill' },
-                  { value: '25+', label: 'Courses', color: 'text-amber', icon: 'ri-book-2-fill' },
-                  { value: '95%', label: 'Success Rate', color: 'text-sage', icon: 'ri-bar-chart-fill' },
-                  { value: '4.8', label: 'Avg Rating', color: 'text-clay', icon: 'ri-star-fill' },
-                ].map((stat, i) => (
-                  <div key={i} className="text-center group">
-                    <div className="flex items-center justify-center gap-1.5">
-                      <i className={`${stat.icon} ${stat.color} text-sm opacity-60`}></i>
-                      <p className={`text-2xl sm:text-3xl font-bold ${stat.color}`}>{stat.value}</p>
-                    </div>
-                    <p className="text-xs text-gray-400 dark-theme:text-gray-500 font-medium uppercase tracking-wider mt-1">{stat.label}</p>
-                  </div>
-                ))}
-              </div>
-
-              {/* Palette Accent Cards — floating organic tiles */}
+              {/* Highlight Cards */}
               <div className="flex flex-wrap justify-center gap-3 mb-10">
                 {[
-                  { icon: 'ri-book-open-line', text: 'Interactive Courses', bg: 'bg-peach/30 dark-theme:bg-peach/10', iconColor: 'text-terracotta' },
-                  { icon: 'ri-award-line', text: 'Certified Programs', bg: 'bg-sage/30 dark-theme:bg-sage/10', iconColor: 'text-sage' },
-                  { icon: 'ri-rocket-line', text: 'Career Growth', bg: 'bg-amber/20 dark-theme:bg-amber/10', iconColor: 'text-amber' },
+                  { icon: 'ri-book-open-line', text: 'Free Courses', bg: 'bg-peach/30 dark-theme:bg-peach/10', iconColor: 'text-terracotta' },
+                  { icon: 'ri-award-line', text: 'Certifications', bg: 'bg-sage/30 dark-theme:bg-sage/10', iconColor: 'text-sage' },
+                  { icon: 'ri-code-s-slash-line', text: 'Coding Practice', bg: 'bg-primary/10 dark-theme:bg-primary/8', iconColor: 'text-primary' },
+                  { icon: 'ri-brain-line', text: 'Aptitude Training', bg: 'bg-amber/20 dark-theme:bg-amber/10', iconColor: 'text-amber' },
                   { icon: 'ri-group-line', text: 'Expert Mentors', bg: 'bg-blush/25 dark-theme:bg-blush/10', iconColor: 'text-clay' },
-                  { icon: 'ri-code-s-slash-line', text: 'Hands-on Projects', bg: 'bg-primary/10 dark-theme:bg-primary/8', iconColor: 'text-primary' },
-                  { icon: 'ri-trophy-line', text: 'Industry Recognition', bg: 'bg-linen dark-theme:bg-sienna/10', iconColor: 'text-sienna' },
+                  { icon: 'ri-gamepad-line', text: 'Learning Games', bg: 'bg-linen dark-theme:bg-sienna/10', iconColor: 'text-sienna' },
                 ].map((card, i) => (
                   <div key={i} className={`${card.bg} px-4 py-2.5 rounded-xl border border-sand/50 dark-theme:border-gray-800 flex items-center gap-2.5 text-sm font-medium text-gray-700 dark-theme:text-gray-300 hover:scale-[1.03] transition-transform duration-200`}>
                     <i className={`${card.icon} ${card.iconColor} text-base`}></i>
                     {card.text}
-                  </div>
-                ))}
-              </div>
-
-              {/* Mini Testimonial */}
-              <div className="max-w-md mx-auto mb-10 px-6 py-4 rounded-2xl bg-white/70 dark-theme:bg-gray-900/50 backdrop-blur-sm border border-sand/60 dark-theme:border-gray-800">
-                <div className="flex gap-1 mb-2 justify-center">
-                  {[...Array(5)].map((_, i) => (
-                    <i key={i} className="ri-star-fill text-amber text-xs"></i>
-                  ))}
-                </div>
-                <p className="text-sm text-gray-600 dark-theme:text-gray-400 italic leading-relaxed">
-                  "Sowberry transformed my career. The mentorship and hands-on projects gave me skills no textbook could."
-                </p>
-                <div className="flex items-center justify-center gap-2 mt-3">
-                  <div className="w-6 h-6 rounded-full bg-peach/40 flex items-center justify-center text-[10px] font-bold text-terracotta">A</div>
-                  <span className="text-xs font-medium text-gray-700 dark-theme:text-gray-300">Aarav K.</span>
-                  <span className="text-[10px] text-gray-400">— Data Science Graduate</span>
-                </div>
-              </div>
-
-              {/* Social Icons */}
-              <div className="flex justify-center gap-2 mb-12">
-                {[
-                  { icon: 'ri-facebook-fill', hover: 'hover:bg-blue-50 hover:text-blue-600 dark-theme:hover:bg-blue-900/20' },
-                  { icon: 'ri-twitter-x-fill', hover: 'hover:bg-gray-100 hover:text-gray-900 dark-theme:hover:bg-gray-800' },
-                  { icon: 'ri-instagram-fill', hover: 'hover:bg-pink-50 hover:text-pink-500 dark-theme:hover:bg-pink-900/20' },
-                  { icon: 'ri-linkedin-fill', hover: 'hover:bg-blue-50 hover:text-blue-700 dark-theme:hover:bg-blue-900/20' },
-                  { icon: 'ri-youtube-fill', hover: 'hover:bg-red-50 hover:text-red-500 dark-theme:hover:bg-red-900/20' },
-                ].map((social, i) => (
-                  <a key={i} href="#" className={`w-9 h-9 rounded-lg bg-white dark-theme:bg-gray-900 border border-sand dark-theme:border-gray-800 flex items-center justify-center text-gray-400 transition-all duration-200 ${social.hover}`}>
-                    <i className={social.icon}></i>
-                  </a>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Trusted-by Marquee */}
-          <div className="relative z-10 mb-16">
-            <p className="text-center text-[10px] uppercase tracking-[0.2em] text-gray-400 dark-theme:text-gray-600 font-medium mb-4">Trusted by leading institutions & companies</p>
-            <div className="overflow-hidden">
-              <div className="hero-marquee flex gap-12 items-center whitespace-nowrap">
-                {[...Array(2)].map((_, setIdx) => (
-                  <div key={setIdx} className="flex gap-12 items-center shrink-0" aria-hidden={setIdx === 1}>
-                    {[
-                      { icon: 'ri-google-fill', name: 'Google' },
-                      { icon: 'ri-microsoft-fill', name: 'Microsoft' },
-                      { icon: 'ri-amazon-fill', name: 'Amazon' },
-                      { icon: 'ri-meta-fill', name: 'Meta' },
-                      { icon: 'ri-netflix-fill', name: 'Netflix' },
-                      { icon: 'ri-apple-fill', name: 'Apple' },
-                      { icon: 'ri-spotify-fill', name: 'Spotify' },
-                      { icon: 'ri-github-fill', name: 'GitHub' },
-                    ].map((brand, i) => (
-                      <div key={i} className="flex items-center gap-2 text-gray-300 dark-theme:text-gray-700">
-                        <i className={`${brand.icon} text-xl`}></i>
-                        <span className="text-sm font-medium tracking-wide">{brand.name}</span>
-                      </div>
-                    ))}
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Subjects Ticker */}
-          <div className="relative z-10 mb-20">
-            <div className="overflow-hidden">
-              <div className="hero-marquee-reverse flex gap-4 whitespace-nowrap">
-                {[...Array(2)].map((_, setIdx) => (
-                  <div key={setIdx} className="flex gap-4 shrink-0" aria-hidden={setIdx === 1}>
-                    {[
-                      { text: 'React', color: 'bg-blue-500/10 text-blue-600 dark-theme:text-blue-400' },
-                      { text: 'Python', color: 'bg-amber/15 text-amber' },
-                      { text: 'Machine Learning', color: 'bg-sage/15 text-sage' },
-                      { text: 'UI/UX Design', color: 'bg-pink-500/10 text-pink-500' },
-                      { text: 'Data Science', color: 'bg-primary/10 text-primary' },
-                      { text: 'Cybersecurity', color: 'bg-red-500/10 text-red-500 dark-theme:text-red-400' },
-                      { text: 'Cloud Computing', color: 'bg-sky-500/10 text-sky-500' },
-                      { text: 'JavaScript', color: 'bg-yellow-400/15 text-yellow-600 dark-theme:text-yellow-400' },
-                      { text: 'Blockchain', color: 'bg-purple-500/10 text-purple-500' },
-                      { text: 'DevOps', color: 'bg-blush/15 text-clay' },
-                      { text: 'AI & Deep Learning', color: 'bg-emerald-500/10 text-emerald-600 dark-theme:text-emerald-400' },
-                      { text: 'Mobile Apps', color: 'bg-peach/25 text-terracotta' },
-                    ].map((tag, i) => (
-                      <span key={i} className={`${tag.color} px-3.5 py-1.5 rounded-full text-xs font-medium border border-transparent`}>{tag.text}</span>
-                    ))}
                   </div>
                 ))}
               </div>
@@ -285,9 +171,8 @@ const Home = () => {
           </div>
         </section>
 
-        {/* About Section */}
+        {/* ═══════════════════════════ ABOUT ═══════════════════════════ */}
         <section id="about" className="relative py-24 pb-32 bg-white dark-theme:bg-gray-900 overflow-hidden">
-          {/* Decorative orb */}
           <div className="hero-orb hero-orb-2 -top-32 -right-32 opacity-20"></div>
 
           <div className="max-w-7xl mx-auto px-6 relative z-10">
@@ -296,54 +181,55 @@ const Home = () => {
                 <i className="ri-seedling-line"></i> Our Story
               </div>
               <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark-theme:text-gray-100">
-                About <span className="text-gradient">Sowberry</span>
+                About <span className="relative inline-block"><span className="text-gradient">Sowberry</span><svg className="absolute -bottom-1 left-0 w-full" viewBox="0 0 200 8" fill="none"><path d="M2 6C50 2 150 2 198 6" stroke="url(#underline-grad-about)" strokeWidth="3" strokeLinecap="round"/><defs><linearGradient id="underline-grad-about" x1="0" y1="0" x2="200" y2="0"><stop offset="0%" stopColor="#c96442"/><stop offset="100%" stopColor="#a78058"/></linearGradient></defs></svg></span>
               </h2>
-              <p className="mt-4 text-gray-500 dark-theme:text-gray-400 max-w-2xl mx-auto">Modern education nurturing growth and fostering innovation in every learner</p>
+              <p className="mt-4 text-gray-500 dark-theme:text-gray-400 max-w-2xl mx-auto">A learning platform built by students, for students — making quality tech education accessible to everyone.</p>
             </div>
 
             <div className="grid lg:grid-cols-2 gap-16 items-center">
               {/* Visual Side */}
               <div className="relative flex justify-center">
                 <div className="relative w-72 h-72 sm:w-80 sm:h-80">
-                  {/* Layered organic shapes */}
                   <div className="absolute inset-0 rounded-[2rem] bg-peach/20 dark-theme:bg-peach/10 rotate-3"></div>
                   <div className="absolute inset-0 rounded-[2rem] bg-sage/15 dark-theme:bg-sage/8 -rotate-3"></div>
                   <div className="absolute inset-2 rounded-[1.75rem] bg-cream dark-theme:bg-gray-800 flex items-center justify-center">
                     <i className="ri-plant-line text-7xl text-primary opacity-80"></i>
                   </div>
                 </div>
-                {/* Floating badges with palette colors */}
                 <div className="absolute -top-4 -left-4 px-4 py-2.5 bg-white dark-theme:bg-gray-800 rounded-xl border border-sand dark-theme:border-gray-700 shadow-sm flex items-center gap-2 text-sm font-medium text-gray-700 dark-theme:text-gray-200 animate-float">
                   <div className="w-6 h-6 rounded-md bg-sage/20 flex items-center justify-center">
-                    <i className="ri-shield-check-line text-sage text-xs"></i>
+                    <i className="ri-money-dollar-circle-line text-sage text-xs"></i>
                   </div>
-                  Trusted
+                  100% Free
                 </div>
                 <div className="absolute -bottom-4 -right-4 px-4 py-2.5 bg-white dark-theme:bg-gray-800 rounded-xl border border-sand dark-theme:border-gray-700 shadow-sm flex items-center gap-2 text-sm font-medium text-gray-700 dark-theme:text-gray-200 animate-float-delay">
                   <div className="w-6 h-6 rounded-md bg-amber/20 flex items-center justify-center">
                     <i className="ri-medal-line text-amber text-xs"></i>
                   </div>
-                  Awarded
+                  Certified
                 </div>
                 <div className="absolute top-1/2 -right-8 px-4 py-2.5 bg-white dark-theme:bg-gray-800 rounded-xl border border-sand dark-theme:border-gray-700 shadow-sm flex items-center gap-2 text-sm font-medium text-gray-700 dark-theme:text-gray-200 animate-float">
                   <div className="w-6 h-6 rounded-md bg-blush/20 flex items-center justify-center">
                     <i className="ri-heart-line text-primary text-xs"></i>
                   </div>
-                  5,000+ Reviews
+                  Built with Love
                 </div>
               </div>
 
               {/* Text Side */}
               <div className="space-y-6">
-                <h3 className="text-2xl font-bold text-gray-800 dark-theme:text-gray-100">Our Vision</h3>
+                <h3 className="text-2xl font-bold text-gray-800 dark-theme:text-gray-100">What is Sowberry?</h3>
                 <p className="text-gray-500 dark-theme:text-gray-400 leading-relaxed">
-                  Sowberry Academy transforms education through innovative methods, cultivating knowledge that grows with you. We prepare learners with a global mindset for success in our interconnected world.
+                  Sowberry is a free online learning platform that offers certification courses, hands-on coding practice, aptitude training, and personalized mentorship. We believe that financial barriers should never stand in the way of learning, so every course and resource on Sowberry is completely free.
+                </p>
+                <p className="text-gray-500 dark-theme:text-gray-400 leading-relaxed">
+                  Whether you're a complete beginner taking your first step into technology or someone looking to sharpen your skills, Sowberry provides the tools, guidance, and community to help you grow.
                 </p>
                 <div className="space-y-3">
                   {[
-                    { text: 'Personalized Learning', icon: 'ri-user-settings-line', color: 'bg-peach/20 text-terracotta' },
-                    { text: 'Expert Instructors', icon: 'ri-user-star-line', color: 'bg-sage/20 text-sage' },
-                    { text: 'Global Curriculum', icon: 'ri-global-line', color: 'bg-amber/20 text-amber' },
+                    { text: 'Free Certification Courses', icon: 'ri-award-line', color: 'bg-peach/20 text-terracotta' },
+                    { text: 'Coding & Aptitude Practice', icon: 'ri-code-box-line', color: 'bg-sage/20 text-sage' },
+                    { text: 'Mentorship & Guidance', icon: 'ri-user-star-line', color: 'bg-amber/20 text-amber' },
                   ].map((item, i) => (
                     <div key={i} className="flex items-center gap-3 p-3 rounded-xl bg-cream dark-theme:bg-gray-800 border border-sand/50 dark-theme:border-gray-700">
                       <div className={`w-8 h-8 rounded-lg ${item.color} flex items-center justify-center`}>
@@ -365,21 +251,210 @@ const Home = () => {
           </div>
         </section>
 
+        {/* ═══════════════════════════ OUR MOTO ═══════════════════════════ */}
+        <section id="moto" className="relative py-24 pb-32 bg-cream dark-theme:bg-gray-950 overflow-hidden">
+          <div className="hero-orb hero-orb-1 -top-20 -left-20 opacity-15"></div>
+          <div className="hero-orb hero-orb-4 bottom-10 right-10 opacity-15"></div>
 
+          <div className="max-w-7xl mx-auto px-6 relative z-10">
+            <div className="text-center mb-16">
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/8 text-primary text-sm font-medium mb-4">
+                <i className="ri-focus-3-line"></i> Our Moto
+              </div>
+              <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark-theme:text-gray-100">
+                Learn. Build. <span className="relative inline-block"><span className="text-gradient">Grow.</span><svg className="absolute -bottom-1 left-0 w-full" viewBox="0 0 200 8" fill="none"><path d="M2 6C50 2 150 2 198 6" stroke="url(#underline-grad-moto)" strokeWidth="3" strokeLinecap="round"/><defs><linearGradient id="underline-grad-moto" x1="0" y1="0" x2="200" y2="0"><stop offset="0%" stopColor="#c96442"/><stop offset="100%" stopColor="#a78058"/></linearGradient></defs></svg></span>
+              </h2>
+              <p className="mt-4 text-gray-500 dark-theme:text-gray-400 max-w-2xl mx-auto">Empowering every aspiring developer with free, high-quality education and the practical skills needed to thrive in the tech industry.</p>
+            </div>
 
-        {/* Contact Section */}
+            {/* Moto Cards */}
+            <div className="grid md:grid-cols-3 gap-6 mb-16">
+              {[
+                {
+                  icon: 'ri-book-open-line',
+                  title: 'Free Certification Courses',
+                  description: 'Access structured courses across web development, data science, programming, and more — all completely free with certificates on completion.',
+                  color: 'bg-peach/20 text-terracotta',
+                  border: 'border-peach/30',
+                },
+                {
+                  icon: 'ri-code-s-slash-line',
+                  title: 'Hands-on Coding Practice',
+                  description: 'Solve real-world coding challenges with our built-in code editor. Practice DSA, problem solving, and build the skills that employers look for.',
+                  color: 'bg-sage/20 text-sage',
+                  border: 'border-sage/30',
+                },
+                {
+                  icon: 'ri-brain-line',
+                  title: 'Aptitude & Interview Prep',
+                  description: 'Sharpen your logical thinking with aptitude tests and quizzes designed to prepare you for placement drives and technical interviews.',
+                  color: 'bg-amber/20 text-amber',
+                  border: 'border-amber/30',
+                },
+              ].map((card, i) => (
+                <div key={i} className={`bg-white dark-theme:bg-gray-900 rounded-2xl p-8 border ${card.border} dark-theme:border-gray-800 hover:shadow-lg transition-shadow duration-300`}>
+                  <div className={`w-12 h-12 rounded-xl ${card.color} flex items-center justify-center mb-5`}>
+                    <i className={`${card.icon} text-xl`}></i>
+                  </div>
+                  <h3 className="text-lg font-bold text-gray-800 dark-theme:text-gray-100 mb-3">{card.title}</h3>
+                  <p className="text-sm text-gray-500 dark-theme:text-gray-400 leading-relaxed">{card.description}</p>
+                </div>
+              ))}
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-6">
+              {[
+                {
+                  icon: 'ri-team-line',
+                  title: 'Mentorship & Doubt Resolution',
+                  description: 'Get your doubts cleared by mentors who have been through the same journey. No question is too small — we are here to guide you at every step.',
+                  color: 'bg-blush/20 text-clay',
+                  border: 'border-blush/30',
+                },
+                {
+                  icon: 'ri-gamepad-line',
+                  title: 'Learning Through Games',
+                  description: 'Master algorithms and data structures through interactive games that make complex concepts fun and engaging. Learn by playing, not just reading.',
+                  color: 'bg-primary/10 text-primary',
+                  border: 'border-primary/20',
+                },
+              ].map((card, i) => (
+                <div key={i} className={`bg-white dark-theme:bg-gray-900 rounded-2xl p-8 border ${card.border} dark-theme:border-gray-800 hover:shadow-lg transition-shadow duration-300`}>
+                  <div className={`w-12 h-12 rounded-xl ${card.color} flex items-center justify-center mb-5`}>
+                    <i className={`${card.icon} text-xl`}></i>
+                  </div>
+                  <h3 className="text-lg font-bold text-gray-800 dark-theme:text-gray-100 mb-3">{card.title}</h3>
+                  <p className="text-sm text-gray-500 dark-theme:text-gray-400 leading-relaxed">{card.description}</p>
+                </div>
+              ))}
+            </div>
+
+            {/* Mission Statement */}
+            <div className="mt-16 text-center max-w-3xl mx-auto">
+              <div className="bg-white dark-theme:bg-gray-900 rounded-2xl p-8 border border-sand dark-theme:border-gray-800">
+                <i className="ri-double-quotes-l text-3xl text-primary/30 mb-3 block"></i>
+                <p className="text-lg text-gray-700 dark-theme:text-gray-300 leading-relaxed italic">
+                  "We believe learning should never come with a price tag. Our mission is to break down every barrier between a curious mind and the skills they need to succeed in technology."
+                </p>
+                <div className="mt-4 flex items-center justify-center gap-2">
+                  <div className="w-8 h-8 rounded-full bg-primary/15 flex items-center justify-center">
+                    <i className="ri-seedling-fill text-primary text-sm"></i>
+                  </div>
+                  <span className="text-sm font-semibold text-gray-800 dark-theme:text-gray-200">The Sowberry Team</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom wave divider */}
+          <div className="absolute bottom-0 left-0 right-0">
+            <svg viewBox="0 0 1440 60" fill="none" className="w-full h-auto">
+              <path d="M0 60V30C300 10 600 0 900 15C1100 25 1300 40 1440 35V60H0Z" className="fill-white dark-theme:fill-gray-900"/>
+            </svg>
+          </div>
+        </section>
+
+        {/* ═══════════════════════════ WHO WE ARE ═══════════════════════════ */}
+        <section id="who-we-are" className="relative py-24 pb-32 bg-white dark-theme:bg-gray-900 overflow-hidden">
+          <div className="hero-orb hero-orb-3 -top-24 left-10 opacity-15"></div>
+          <div className="hero-orb hero-orb-5 bottom-0 -right-20 opacity-15"></div>
+
+          <div className="max-w-7xl mx-auto px-6 relative z-10">
+            <div className="text-center mb-16">
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blush/15 text-clay text-sm font-medium mb-4">
+                <i className="ri-team-line"></i> Who We Are
+              </div>
+              <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark-theme:text-gray-100">
+                Built by <span className="relative inline-block"><span className="text-gradient">Students</span><svg className="absolute -bottom-1 left-0 w-full" viewBox="0 0 200 8" fill="none"><path d="M2 6C50 2 150 2 198 6" stroke="url(#underline-grad-who)" strokeWidth="3" strokeLinecap="round"/><defs><linearGradient id="underline-grad-who" x1="0" y1="0" x2="200" y2="0"><stop offset="0%" stopColor="#c96442"/><stop offset="100%" stopColor="#a78058"/></linearGradient></defs></svg></span>, for Students
+              </h2>
+              <p className="mt-4 text-gray-500 dark-theme:text-gray-400 max-w-2xl mx-auto">We are a team of upcoming developers who turned our struggles into a solution for others.</p>
+            </div>
+
+            <div className="grid lg:grid-cols-2 gap-16 items-center">
+              {/* Story Side */}
+              <div className="space-y-6">
+                <h3 className="text-2xl font-bold text-gray-800 dark-theme:text-gray-100">Our Story</h3>
+                <p className="text-gray-500 dark-theme:text-gray-400 leading-relaxed">
+                  We are a group of new and upcoming developers who know the struggle of starting from scratch. When we began our journey into tech, we faced the same problems every beginner faces — scattered resources, expensive courses, no clear roadmap, and nobody to ask for help when we got stuck.
+                </p>
+                <p className="text-gray-500 dark-theme:text-gray-400 leading-relaxed">
+                  Finding quality learning material that was structured, beginner-friendly, and free felt nearly impossible. We spent countless hours searching for the right tutorials, figuring things out on our own, and wishing someone had made this path easier for us.
+                </p>
+                <p className="text-gray-500 dark-theme:text-gray-400 leading-relaxed">
+                  That's exactly why we built <span className="font-semibold text-gray-700 dark-theme:text-gray-200">Sowberry</span>. We wanted to create the platform we wish we had when we started — a place where anyone can learn coding, practice aptitude, earn certifications, and get mentorship, all for <span className="font-semibold text-primary">completely free</span>.
+                </p>
+                <p className="text-gray-500 dark-theme:text-gray-400 leading-relaxed">
+                  We understand the struggle because we lived it. And now we are here to make sure no one else has to go through it alone.
+                </p>
+              </div>
+
+              {/* Visual Side */}
+              <div className="space-y-6">
+                {/* Journey Cards */}
+                {[
+                  {
+                    icon: 'ri-emotion-sad-line',
+                    title: 'The Struggle Was Real',
+                    text: 'Expensive courses, scattered tutorials, no mentors — starting out in tech was overwhelming and lonely.',
+                    color: 'bg-red-500/10 text-red-500',
+                    accent: 'border-l-red-400',
+                  },
+                  {
+                    icon: 'ri-lightbulb-line',
+                    title: 'The Idea Sparked',
+                    text: 'What if we could build the platform we wished existed? Free courses, structured learning, real practice, and a community that helps.',
+                    color: 'bg-amber/15 text-amber',
+                    accent: 'border-l-amber',
+                  },
+                  {
+                    icon: 'ri-hammer-line',
+                    title: 'We Built Sowberry',
+                    text: 'As developers who learned the hard way, we poured everything we know into building a platform that makes learning free and accessible.',
+                    color: 'bg-sage/15 text-sage',
+                    accent: 'border-l-sage',
+                  },
+                  {
+                    icon: 'ri-heart-line',
+                    title: 'Now We Give Back',
+                    text: 'Every free course, every coding challenge, every doubt resolved — it is our way of ensuring the next generation of developers never has to struggle like we did.',
+                    color: 'bg-primary/10 text-primary',
+                    accent: 'border-l-primary',
+                  },
+                ].map((step, i) => (
+                  <div key={i} className={`bg-cream dark-theme:bg-gray-800 rounded-xl p-5 border border-sand/50 dark-theme:border-gray-700 border-l-4 ${step.accent} flex gap-4`}>
+                    <div className={`w-10 h-10 rounded-lg ${step.color} flex items-center justify-center shrink-0`}>
+                      <i className={`${step.icon} text-lg`}></i>
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-gray-800 dark-theme:text-gray-100 mb-1">{step.title}</h4>
+                      <p className="text-sm text-gray-500 dark-theme:text-gray-400 leading-relaxed">{step.text}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom wave divider */}
+          <div className="absolute bottom-0 left-0 right-0">
+            <svg viewBox="0 0 1440 60" fill="none" className="w-full h-auto">
+              <path d="M0 60V20C360 50 720 50 1080 30C1260 20 1380 10 1440 5V60H0Z" className="fill-cream dark-theme:fill-gray-950"/>
+            </svg>
+          </div>
+        </section>
+
+        {/* ═══════════════════════════ CONTACT ═══════════════════════════ */}
         <section id="contact" className="relative py-24 pb-32 bg-cream dark-theme:bg-gray-950 overflow-hidden">
-          {/* Decorative orbs */}
           <div className="hero-orb hero-orb-5 -top-20 -right-32 opacity-20"></div>
           <div className="hero-orb hero-orb-3 bottom-0 left-10 opacity-15"></div>
 
-          <div className="max-w-7xl mx-auto px-6 relative z-10">
+          <div className="max-w-7xl mx-auto px-6 relative z-10"> 
             <div className="text-center mb-16">
               <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/8 text-primary text-sm font-medium mb-4">
                 <i className="ri-chat-smile-line"></i> Let's Connect
               </div>
               <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark-theme:text-gray-100">
-                Get in <span className="text-gradient">Touch</span>
+                Get in <span className="relative inline-block"><span className="text-gradient">Touch</span><svg className="absolute -bottom-1 left-0 w-full" viewBox="0 0 200 8" fill="none"><path d="M2 6C50 2 150 2 198 6" stroke="url(#underline-grad-contact)" strokeWidth="3" strokeLinecap="round"/><defs><linearGradient id="underline-grad-contact" x1="0" y1="0" x2="200" y2="0"><stop offset="0%" stopColor="#c96442"/><stop offset="100%" stopColor="#a78058"/></linearGradient></defs></svg></span>
               </h2>
               <p className="mt-4 text-gray-500 dark-theme:text-gray-400 max-w-2xl mx-auto">Have questions or want to learn more? We're here to help you on your learning journey.</p>
             </div>
@@ -387,7 +462,6 @@ const Home = () => {
             <div className="grid lg:grid-cols-5 gap-6">
               {/* Contact Info — dark warm panel */}
               <div className="lg:col-span-2 bg-gray-950 rounded-2xl p-8 text-white relative overflow-hidden">
-                {/* Subtle warm gradient overlay */}
                 <div className="absolute top-0 right-0 w-48 h-48 bg-primary/10 rounded-full blur-3xl"></div>
                 <div className="absolute bottom-0 left-0 w-32 h-32 bg-sage/10 rounded-full blur-3xl"></div>
 
@@ -397,9 +471,9 @@ const Home = () => {
 
                   <div className="space-y-5">
                     {[
-                      { icon: 'ri-map-pin-line', title: 'Our Location', lines: ['123 Education Avenue', 'Chennai, Tamil Nadu 600001'], color: 'bg-primary/15' },
-                      { icon: 'ri-mail-line', title: 'Email Us', lines: ['berries@sowberry.com', 'support@sowberry.com'], color: 'bg-sage/15' },
-                      { icon: 'ri-phone-line', title: 'Call Us', lines: ['+91 8825756388', '+91 9442556789'], color: 'bg-amber/15' },
+                      { icon: 'ri-map-pin-line', title: 'Our Location', lines: ['Yelahanka','Bangalore, Karnataka 560064'], color: 'bg-primary/15' },
+                      { icon: 'ri-mail-line', title: 'Email Us', lines: ['berries@sowberry.app', 'ceo@sowberry.app'], color: 'bg-sage/15' },
+                      { icon: 'ri-phone-line', title: 'Call Us', lines: ['+91 7010707678'], color: 'bg-amber/15' },
                       { icon: 'ri-time-line', title: 'Office Hours', lines: ['Mon - Fri: 9:00 AM - 6:00 PM', 'Sat: 9:00 AM - 1:00 PM'], color: 'bg-blush/15' },
                     ].map((item, i) => (
                       <div key={i} className="flex gap-3">
@@ -435,7 +509,7 @@ const Home = () => {
                 </div>
               </div>
 
-              {/* Contact Form — warm white */}
+              {/* Contact Form */}
               <div className="lg:col-span-3 bg-white dark-theme:bg-gray-900 rounded-2xl p-8 border border-sand dark-theme:border-gray-800">
                 <h3 className="text-xl font-bold text-gray-800 dark-theme:text-gray-100 mb-1">Send Us a Message</h3>
                 <p className="text-sm text-gray-400 mb-6">We'll get back to you within 24 hours</p>
@@ -480,7 +554,7 @@ const Home = () => {
                 </form>
 
                 <div className="mt-6 rounded-xl overflow-hidden h-44 border border-sand dark-theme:border-gray-700">
-                  <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d248756.1167341455!2d80.06892704417326!3d13.047485589196454!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a5265ea4f7d3361%3A0x6e61a70b6863d433!2sChennai%2C%20Tamil%20Nadu!5e0!3m2!1sen!2sin!4v1658404965471!5m2!1sen!2sin" className="w-full h-full border-0" style={{ touchAction: 'pan-x pan-y' }} allowFullScreen="" loading="lazy" referrerPolicy="no-referrer-when-downgrade"></iframe>
+                  <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d62179.39302498498!2d77.52836804863279!3d13.100700700000002!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bae17595de01e11%3A0x98e14e7f7220bd28!2sYelahanka%2C%20Bengaluru%2C%20Karnataka!5e0!3m2!1sen!2sin!4v1708000000000!5m2!1sen!2sin" className="w-full h-full border-0" style={{ touchAction: 'pan-x pan-y' }} allowFullScreen="" loading="lazy" referrerPolicy="no-referrer-when-downgrade"></iframe>
                 </div>
               </div>
             </div>
@@ -494,9 +568,8 @@ const Home = () => {
         </section>
       </main>
 
-      {/* Footer — warm dark with palette accents */}
+      {/* ═══════════════════════════ FOOTER ═══════════════════════════ */}
       <footer className="bg-gray-950 text-white ml-0 lg:ml-20 relative overflow-hidden">
-        {/* Subtle warm gradient */}
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-[100px]"></div>
         <div className="absolute bottom-0 right-1/4 w-64 h-64 bg-sage/5 rounded-full blur-[80px]"></div>
 
@@ -510,21 +583,7 @@ const Home = () => {
                 </div>
                 <h2 className="text-lg font-bold">Sowberry <span className="text-primary-light">Academy</span></h2>
               </div>
-              <p className="text-gray-500 text-sm leading-relaxed mb-6">Cultivating knowledge and growing your potential through innovative learning experiences.</p>
-              
-              {/* Mini stats with palette colors */}
-              <div className="flex gap-5 mb-6">
-                {[
-                  { num: '15k+', label: 'Students', color: 'text-peach' },
-                  { num: '25+', label: 'Courses', color: 'text-sage' },
-                  { num: '95%', label: 'Success', color: 'text-amber' },
-                ].map((stat, i) => (
-                  <div key={i} className="text-center">
-                    <span className={`block text-lg font-bold ${stat.color}`}>{stat.num}</span>
-                    <span className="text-[10px] text-gray-500 uppercase tracking-wider">{stat.label}</span>
-                  </div>
-                ))}
-              </div>
+              <p className="text-gray-500 text-sm leading-relaxed mb-6">Free certification courses, coding practice, and mentorship — built by students who know the struggle of starting out in tech.</p>
 
               <div className="flex gap-2">
                 {[
@@ -545,22 +604,28 @@ const Home = () => {
             <div>
               <h3 className="text-sm font-semibold mb-5 uppercase tracking-wider text-gray-400">Explore</h3>
               <div className="space-y-0.5">
-                {['Home', 'About Us', 'Contact Us', 'Blog'].map((link, i) => (
-                  <a key={i} href="#" className="flex items-center gap-2 py-1.5 text-sm text-gray-500 hover:text-peach transition-colors group">
-                    <i className="ri-arrow-right-s-line text-xs text-gray-600 group-hover:text-peach transition-colors"></i> {link}
+                {[
+                  { text: 'Home', href: '#hero' },
+                  { text: 'About Us', href: '#about' },
+                  { text: 'Our Moto', href: '#moto' },
+                  { text: 'Who We Are', href: '#who-we-are' },
+                  { text: 'Contact Us', href: '#contact' },
+                ].map((link, i) => (
+                  <a key={i} href={link.href} className="flex items-center gap-2 py-1.5 text-sm text-gray-500 hover:text-peach transition-colors group">
+                    <i className="ri-arrow-right-s-line text-xs text-gray-600 group-hover:text-peach transition-colors"></i> {link.text}
                   </a>
                 ))}
               </div>
             </div>
 
-            {/* Courses Column */}
+            {/* What We Offer Column */}
             <div>
-              <h3 className="text-sm font-semibold mb-5 uppercase tracking-wider text-gray-400">Courses</h3>
+              <h3 className="text-sm font-semibold mb-5 uppercase tracking-wider text-gray-400">What We Offer</h3>
               <div className="space-y-0.5">
-                {['Web Development', 'Data Science', 'Digital Marketing', 'UI/UX Design', 'Mobile Development', 'Cybersecurity'].map((course, i) => (
-                  <a key={i} href="#" className="flex items-center gap-2 py-1.5 text-sm text-gray-500 hover:text-sage transition-colors group">
-                    <i className="ri-arrow-right-s-line text-xs text-gray-600 group-hover:text-sage transition-colors"></i> {course}
-                  </a>
+                {['Free Courses', 'Coding Practice', 'Aptitude Tests', 'Certifications', 'Mentorship', 'Learning Games'].map((item, i) => (
+                  <span key={i} className="flex items-center gap-2 py-1.5 text-sm text-gray-500 group">
+                    <i className="ri-arrow-right-s-line text-xs text-gray-600"></i> {item}
+                  </span>
                 ))}
               </div>
             </div>
@@ -572,7 +637,6 @@ const Home = () => {
                 <li className="flex gap-3"><i className="ri-map-pin-line text-primary-light mt-0.5"></i><span>123 Education Avenue<br />Chennai, TN 600001</span></li>
                 <li className="flex gap-3"><i className="ri-mail-line text-primary-light"></i><span>berries@sowberry.com</span></li>
                 <li className="flex gap-3"><i className="ri-phone-line text-primary-light"></i><span>+91 8825756388</span></li>
-                <li className="flex gap-3"><i className="ri-time-line text-primary-light"></i><span>Mon - Fri: 9 AM - 6 PM</span></li>
               </ul>
 
               <h4 className="text-sm font-medium text-gray-400 mb-2">Newsletter</h4>
@@ -582,36 +646,7 @@ const Home = () => {
                   <i className="ri-send-plane-fill text-sm"></i>
                 </button>
               </form>
-
-              <div className="mt-5">
-                <h4 className="text-sm font-medium text-gray-400 mb-2">Get Our App</h4>
-                <div className="flex gap-2">
-                  <a href="#" className="flex items-center gap-2 px-3 py-2 bg-white/5 border border-white/8 rounded-lg text-xs text-gray-400 hover:bg-white/10 hover:text-white transition-colors">
-                    <i className="ri-google-play-fill text-base text-sage"></i> Google Play
-                  </a>
-                  <a href="#" className="flex items-center gap-2 px-3 py-2 bg-white/5 border border-white/8 rounded-lg text-xs text-gray-400 hover:bg-white/10 hover:text-white transition-colors">
-                    <i className="ri-apple-fill text-base"></i> App Store
-                  </a>
-                </div>
-              </div>
             </div>
-          </div>
-        </div>
-
-        {/* Accreditations */}
-        <div className="border-t border-white/5 py-4">
-          <div className="max-w-7xl mx-auto px-6 flex flex-wrap items-center justify-center gap-6">
-            <h4 className="text-xs text-gray-500 font-medium uppercase tracking-wider">Accredited By</h4>
-            {[
-              { name: 'NAAC A++', color: 'text-peach' },
-              { name: 'ISO 9001:2015', color: 'text-sage' },
-              { name: 'UGC Approved', color: 'text-amber' },
-              { name: 'AICTE Recognized', color: 'text-blush' },
-            ].map((acc, i) => (
-              <span key={i} className={`flex items-center gap-1 text-xs text-gray-600`}>
-                <i className={`ri-award-fill ${acc.color}`}></i> {acc.name}
-              </span>
-            ))}
           </div>
         </div>
 
@@ -620,7 +655,7 @@ const Home = () => {
           <div className="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
             <p className="text-xs text-gray-600">&copy; {currentYear} Sowberry Academy. All Rights Reserved.</p>
             <div className="flex gap-4">
-              {['Privacy Policy', 'Terms of Service', 'Cookie Policy', 'Sitemap'].map((link, i) => (
+              {['Privacy Policy', 'Terms of Service'].map((link, i) => (
                 <a key={i} href="#" className="text-xs text-gray-600 hover:text-primary-light transition-colors">{link}</a>
               ))}
             </div>

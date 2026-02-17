@@ -5,7 +5,7 @@ const Sidebar = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      const sections = ['hero', 'about', 'contact'];
+      const sections = ['hero', 'about', 'moto', 'who-we-are', 'contact'];
       const scrollPosition = window.scrollY + 100;
 
       for (const section of sections) {
@@ -20,7 +20,7 @@ const Sidebar = () => {
       }
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -35,6 +35,8 @@ const Sidebar = () => {
   const navItems = [
     { id: 'home', icon: 'ri-home-4-line', label: 'Home' },
     { id: 'about', icon: 'ri-information-line', label: 'About' },
+    { id: 'moto', icon: 'ri-focus-3-line', label: 'Our Moto' },
+    { id: 'who-we-are', icon: 'ri-team-line', label: 'Who We Are' },
     { id: 'contact', icon: 'ri-mail-line', label: 'Contact' },
   ];
 
