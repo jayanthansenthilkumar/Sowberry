@@ -100,7 +100,7 @@ const ManageMentors = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {loading ? (
-            <div className="col-span-full flex items-center justify-center py-20"><div className="w-8 h-8 border-3 border-primary border-t-transparent rounded-full animate-spin"></div></div>
+            <div className="col-span-full flex items-center justify-center py-20"><i className="ri-loader-4-line animate-spin text-2xl text-primary"></i></div>
           ) : mentors.length === 0 ? (
             <div className="col-span-full text-center py-20 text-gray-400">
               <i className="ri-team-line text-4xl mb-3 block"></i>

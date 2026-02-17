@@ -177,7 +177,7 @@ const NewCourses = () => {
       <DashboardLayout pageTitle="Course Detail" role="mentor">
         <div className="space-y-6">
           <button onClick={() => setDetailCourse(null)} className="text-sm text-primary hover:underline flex items-center gap-1"><i className="ri-arrow-left-line"></i>Back to Courses</button>
-          {detailLoading ? <div className="flex justify-center py-20"><div className="w-8 h-8 border-3 border-primary border-t-transparent rounded-full animate-spin"></div></div> : detailCourse && (
+          {detailLoading ? null : detailCourse && (
             <>
               {/* Course Header Card */}
               <div className="bg-white dark-theme:bg-gray-900 rounded-2xl p-6 border border-sand dark-theme:border-gray-800">
@@ -281,7 +281,7 @@ const NewCourses = () => {
                     <h2 className="text-lg font-bold text-gray-800 dark-theme:text-gray-100">Course Content</h2>
                     <button onClick={addContent} className="px-3 py-2 rounded-xl bg-primary text-white text-xs font-medium hover:bg-primary-dark flex items-center gap-1"><i className="ri-add-line"></i>Add Content</button>
                   </div>
-                  {contentLoading ? <div className="flex justify-center py-12"><div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin"></div></div> :
+                  {contentLoading ? null :
                   contentList.length === 0 ? <p className="text-sm text-gray-400 text-center py-8">No content added yet</p> :
                   <div className="space-y-3">
                     {contentList.map(c => (
@@ -314,7 +314,7 @@ const NewCourses = () => {
           <button onClick={openCreate} className="px-4 py-2.5 rounded-xl bg-primary text-white text-sm font-medium hover:bg-primary-dark flex items-center gap-2"><i className="ri-add-line"></i>New Course</button>
         </div>
 
-        {loading ? <div className="flex justify-center py-20"><div className="w-8 h-8 border-3 border-primary border-t-transparent rounded-full animate-spin"></div></div> :
+        {loading ? null :
         courses.length === 0 ? <div className="text-center py-20 text-gray-400"><i className="ri-book-open-line text-4xl mb-3 block"></i><p>No courses yet. Create your first course!</p></div> :
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {courses.map(c => (

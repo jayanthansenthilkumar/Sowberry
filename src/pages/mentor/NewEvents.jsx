@@ -47,7 +47,7 @@ const NewEvents = () => {
           <button onClick={openCreate} className="px-4 py-2.5 rounded-xl bg-primary text-white text-sm font-medium hover:bg-primary-dark flex items-center gap-2"><i className="ri-add-line"></i>New Event</button>
         </div>
 
-        {loading ? <div className="flex justify-center py-20"><div className="w-8 h-8 border-3 border-primary border-t-transparent rounded-full animate-spin"></div></div> :
+        {loading ? null :
         events.length === 0 ? <div className="text-center py-20 text-gray-400"><i className="ri-calendar-event-line text-4xl mb-3 block"></i><p>No events scheduled</p></div> :
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {events.map(ev => (

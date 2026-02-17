@@ -100,7 +100,7 @@ const MentorDiscussion = () => {
             </form>
           </div>
         ) : (
-          loading ? <div className="flex justify-center py-20"><div className="w-8 h-8 border-3 border-primary border-t-transparent rounded-full animate-spin"></div></div> :
+          loading ? null :
           discussions.length === 0 ? <div className="text-center py-20 text-gray-400"><i className="ri-discuss-line text-4xl mb-3 block"></i><p>No discussions yet. Start a thread!</p></div> :
           <div className="space-y-3">
             {discussions.map(d => (

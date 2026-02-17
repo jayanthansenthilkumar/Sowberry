@@ -21,9 +21,7 @@ const MentorDashboard = () => {
 
   return (
     <DashboardLayout pageTitle="Dashboard" role="mentor">
-      {loading ? (
-        <div className="flex items-center justify-center py-20"><div className="w-8 h-8 border-3 border-primary border-t-transparent rounded-full animate-spin"></div></div>
-      ) : (
+      {loading ? null : (
         <div className="space-y-6">
           {/* Welcome */}
           <div className="bg-gray-950 rounded-2xl p-6 text-white">

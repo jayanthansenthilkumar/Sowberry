@@ -5,6 +5,7 @@ import Swal from 'sweetalert2';
 import { useAuth } from '../../context/AuthContext';
 
 
+
 const AdminDashboard = () => {
   const { user } = useAuth();
   const [stats, setStats] = useState({ totalStudents: 0, totalMentors: 0, totalCourses: 0, totalEnrollments: 0, avgCompletion: 0, activeStudents: 0, recentActivities: [], pendingVerifications: 0 });

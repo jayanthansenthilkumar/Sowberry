@@ -220,10 +220,7 @@ const MentorDoubts = () => {
 
           {detailLoading ? (
             <div className="flex-1 flex items-center justify-center">
-              <div className="text-center">
-                <i className="ri-loader-4-line animate-spin text-3xl text-primary"></i>
-                <p className="mt-2 text-sm text-gray-500">Loading conversation...</p>
-              </div>
+              <div className="flex items-center justify-center py-10"><i className="ri-loader-4-line animate-spin text-2xl text-primary"></i></div>
             </div>
           ) : (
             <div className="flex-1 flex flex-col bg-white dark-theme:bg-gray-800 rounded-xl shadow-lg overflow-hidden min-h-0">
@@ -456,10 +453,7 @@ const MentorDoubts = () => {
 
         {/* Doubt List */}
         {loading ? (
-          <div className="text-center py-16">
-            <i className="ri-loader-4-line animate-spin text-3xl text-primary"></i>
-            <p className="mt-3 text-gray-500">Loading doubts...</p>
-          </div>
+          <div className="flex items-center justify-center py-10"><i className="ri-loader-4-line animate-spin text-2xl text-primary"></i></div>
         ) : filtered.length === 0 ? (
           <div className="text-center py-16 bg-white dark-theme:bg-gray-800 rounded-xl">
             <i className="ri-question-answer-line text-5xl text-gray-300 dark-theme:text-gray-600 mb-3 block"></i>

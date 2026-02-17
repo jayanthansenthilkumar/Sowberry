@@ -50,7 +50,7 @@ const MyAssignments = () => {
       <div className="space-y-6">
         <h1 className="text-2xl font-bold text-gray-800 dark-theme:text-gray-100">My Assignments</h1>
 
-        {loading ? <div className="flex justify-center py-20"><div className="w-8 h-8 border-3 border-primary border-t-transparent rounded-full animate-spin"></div></div> :
+        {loading ? null :
         assignments.length === 0 ? <div className="text-center py-20 text-gray-400"><i className="ri-task-line text-4xl mb-3 block"></i><p>No assignments yet</p></div> :
         <div className="space-y-4">
           {assignments.map(a => (

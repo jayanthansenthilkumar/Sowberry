@@ -1,37 +1,39 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider, useAuth } from './context/AuthContext'
-import Home from './pages/Home'
-import AuthPage from './pages/auth/AuthPage'
-import AdminDashboard from './pages/admin/AdminDashboard'
-import AdminSettings from './pages/admin/AdminSettings'
-import SystemReports from './pages/admin/SystemReports'
-import PerformanceAnalytics from './pages/admin/PerformanceAnalytics'
-import ManageStudents from './pages/admin/ManageStudents'
-import CoursesOverview from './pages/admin/CoursesOverview'
-import ManageMentors from './pages/admin/ManageMentors'
-import MentorDashboard from './pages/mentor/MentorDashboard'
-import MentorDoubts from './pages/mentor/Doubts'
-import NewProblemSolving from './pages/mentor/NewProblemSolving'
-import StudentsProgress from './pages/mentor/StudentsProgress'
-import NewEvents from './pages/mentor/NewEvents'
-import NewAptitude from './pages/mentor/NewAptitude'
-import NewAssignments from './pages/mentor/NewAssignments'
-import MentorDiscussion from './pages/mentor/MentorDiscussion'
-import StudentDashboard from './pages/student/StudentDashboard'
-import LearningGames from './pages/student/LearningGames'
-import StudyMaterial from './pages/student/StudyMaterial'
-import MyCourses from './pages/student/MyCourses'
-import CodingPractice from './pages/student/CodingPractice'
-import AptitudeTests from './pages/student/AptitudeTests'
-import AptitudeResult from './pages/student/AptitudeResult'
-import CodeEditor from './pages/student/CodeEditor'
-import MyAssignments from './pages/student/MyAssignments'
-import MyGrades from './pages/student/MyGrades'
-import MyProgress from './pages/student/MyProgress'
-import CourseViewer from './pages/student/CourseViewer'
-import MyDoubts from './pages/student/MyDoubts'
 import SessionManager from './components/SessionManager'
+
+// Lazy-loaded pages — each gets a loading screen during code-split transitions
+const Home = React.lazy(() => import('./pages/Home'))
+const AuthPage = React.lazy(() => import('./pages/auth/AuthPage'))
+const AdminDashboard = React.lazy(() => import('./pages/admin/AdminDashboard'))
+const AdminSettings = React.lazy(() => import('./pages/admin/AdminSettings'))
+const SystemReports = React.lazy(() => import('./pages/admin/SystemReports'))
+const PerformanceAnalytics = React.lazy(() => import('./pages/admin/PerformanceAnalytics'))
+const ManageStudents = React.lazy(() => import('./pages/admin/ManageStudents'))
+const CoursesOverview = React.lazy(() => import('./pages/admin/CoursesOverview'))
+const ManageMentors = React.lazy(() => import('./pages/admin/ManageMentors'))
+const MentorDashboard = React.lazy(() => import('./pages/mentor/MentorDashboard'))
+const MentorDoubts = React.lazy(() => import('./pages/mentor/Doubts'))
+const NewProblemSolving = React.lazy(() => import('./pages/mentor/NewProblemSolving'))
+const StudentsProgress = React.lazy(() => import('./pages/mentor/StudentsProgress'))
+const NewEvents = React.lazy(() => import('./pages/mentor/NewEvents'))
+const NewAptitude = React.lazy(() => import('./pages/mentor/NewAptitude'))
+const NewAssignments = React.lazy(() => import('./pages/mentor/NewAssignments'))
+const MentorDiscussion = React.lazy(() => import('./pages/mentor/MentorDiscussion'))
+const StudentDashboard = React.lazy(() => import('./pages/student/StudentDashboard'))
+const LearningGames = React.lazy(() => import('./pages/student/LearningGames'))
+const StudyMaterial = React.lazy(() => import('./pages/student/StudyMaterial'))
+const MyCourses = React.lazy(() => import('./pages/student/MyCourses'))
+const CodingPractice = React.lazy(() => import('./pages/student/CodingPractice'))
+const AptitudeTests = React.lazy(() => import('./pages/student/AptitudeTests'))
+const AptitudeResult = React.lazy(() => import('./pages/student/AptitudeResult'))
+const CodeEditor = React.lazy(() => import('./pages/student/CodeEditor'))
+const MyAssignments = React.lazy(() => import('./pages/student/MyAssignments'))
+const MyGrades = React.lazy(() => import('./pages/student/MyGrades'))
+const MyProgress = React.lazy(() => import('./pages/student/MyProgress'))
+const CourseViewer = React.lazy(() => import('./pages/student/CourseViewer'))
+const MyDoubts = React.lazy(() => import('./pages/student/MyDoubts'))
 
 // Error Boundary to catch runtime errors and show a visible message
 class ErrorBoundary extends React.Component {
@@ -66,7 +68,7 @@ class ErrorBoundary extends React.Component {
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const { user, loading, isAuthenticated } = useAuth();
-  if (loading) return <div className="flex items-center justify-center h-screen bg-cream dark-theme:bg-gray-950"><div className="w-8 h-8 border-3 border-primary border-t-transparent rounded-full animate-spin"></div></div>;
+  if (loading) return null;
   if (!isAuthenticated) return <Navigate to="/auth" replace />;
   if (allowedRoles && !allowedRoles.includes(user?.role)) return <Navigate to="/auth" replace />;
   return children;
@@ -78,6 +80,7 @@ function App() {
       <Router basename="/">
         <AuthProvider>
           <SessionManager />
+          <Suspense fallback={null}>
           <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/auth" element={<AuthPage />} />
@@ -123,6 +126,7 @@ function App() {
           <Route path="/student/my-doubts" element={<ProtectedRoute allowedRoles={['student']}><MyDoubts /></ProtectedRoute>} />
           <Route path="/student/course-viewer/:id" element={<ProtectedRoute allowedRoles={['student']}><CourseViewer /></ProtectedRoute>} />
         </Routes>
+        </Suspense>
       </AuthProvider>
     </Router>
     </ErrorBoundary>

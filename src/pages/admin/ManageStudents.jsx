@@ -107,7 +107,7 @@ const ManageStudents = () => {
         {/* Table */}
         <div className="bg-white dark-theme:bg-gray-900 rounded-2xl border border-sand dark-theme:border-gray-800 overflow-hidden">
           {loading ? (
-            <div className="flex items-center justify-center py-20"><div className="w-8 h-8 border-3 border-primary border-t-transparent rounded-full animate-spin"></div></div>
+            <div className="flex items-center justify-center py-20"><i className="ri-loader-4-line animate-spin text-2xl text-primary"></i></div>
           ) : students.length === 0 ? (
             <div className="text-center py-20 text-gray-400">
               <i className="ri-user-line text-4xl mb-3 block"></i>

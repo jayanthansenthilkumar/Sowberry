@@ -15,7 +15,7 @@ const SystemReports = () => {
     fetch();
   }, []);
 
-  if (loading) return <AdminLayout pageTitle="System Reports"><div className="flex items-center justify-center py-20"><div className="w-8 h-8 border-3 border-primary border-t-transparent rounded-full animate-spin"></div></div></AdminLayout>;
+  if (loading) return <AdminLayout pageTitle="System Reports"><div className="flex items-center justify-center py-20"><i className="ri-loader-4-line animate-spin text-2xl text-primary"></i></div></AdminLayout>;
 
   return (
     <AdminLayout pageTitle="System Reports">

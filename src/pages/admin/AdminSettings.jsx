@@ -4,6 +4,7 @@ import Swal from 'sweetalert2';
 import { adminApi, authApi } from '../../utils/api';
 import { useAuth } from '../../context/AuthContext';
 
+
 const AdminSettings = () => {
   const { user, updateUser } = useAuth();
   const [activeTab, setActiveTab] = useState('profile');

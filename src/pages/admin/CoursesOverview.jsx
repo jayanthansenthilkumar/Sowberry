@@ -141,7 +141,7 @@ const CoursesOverview = () => {
             <i className="ri-arrow-left-line"></i> Back to Courses
           </button>
           {detailLoading ? (
-            <div className="text-center py-16"><i className="ri-loader-4-line animate-spin text-3xl text-primary"></i></div>
+            <div className="flex items-center justify-center py-10"><i className="ri-loader-4-line animate-spin text-2xl text-primary"></i></div>
           ) : (
             <div className="bg-white dark-theme:bg-gray-800 rounded-xl shadow-lg">
               {/* Course Header */}
@@ -222,7 +222,7 @@ const CoursesOverview = () => {
                       <button onClick={addContent} className="px-4 py-2 bg-primary text-white text-sm rounded-lg hover:bg-primary-dark transition"><i className="ri-add-line mr-1"></i>Add Content</button>
                     </div>
                     {contentLoading ? (
-                      <div className="text-center py-8"><i className="ri-loader-4-line animate-spin text-2xl text-primary"></i></div>
+                      <div className="flex items-center justify-center py-10"><i className="ri-loader-4-line animate-spin text-2xl text-primary"></i></div>
                     ) : contentList.length === 0 ? (
                       <p className="text-center text-gray-500 py-8">No content yet. Add videos, documents, or text content.</p>
                     ) : (
@@ -314,7 +314,7 @@ const CoursesOverview = () => {
 
         {/* Course Grid */}
         {loading ? (
-          <div className="text-center py-16"><i className="ri-loader-4-line animate-spin text-3xl text-primary"></i></div>
+          <div className="flex items-center justify-center py-20"><i className="ri-loader-4-line animate-spin text-2xl text-primary"></i></div>
         ) : filtered.length === 0 ? (
           <div className="text-center py-16 bg-white dark-theme:bg-gray-800 rounded-xl">
             <i className="ri-book-open-line text-5xl text-gray-300 dark-theme:text-gray-600 mb-3 block"></i>

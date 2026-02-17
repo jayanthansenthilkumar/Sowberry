@@ -69,7 +69,7 @@ const CourseViewer = () => {
   if (loading) {
     return (
       <DashboardLayout pageTitle="Course Viewer" role="student">
-        <div className="flex justify-center items-center py-32"><div className="w-10 h-10 border-3 border-primary border-t-transparent rounded-full animate-spin"></div></div>
+        <div className="flex items-center justify-center py-20"><i className="ri-loader-4-line animate-spin text-2xl text-primary"></i></div>
       </DashboardLayout>
     );
   }

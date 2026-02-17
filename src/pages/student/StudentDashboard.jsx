@@ -30,7 +30,7 @@ const StudentDashboard = () => {
     { label: 'Avg Grade', value: `${stats.avgGrade}%`, icon: 'ri-bar-chart-box-line', color: 'from-purple-500 to-purple-600' },
   ];
 
-  if (loading) return <DashboardLayout pageTitle="Dashboard" role="student"><div className="flex justify-center py-20"><div className="w-8 h-8 border-3 border-primary border-t-transparent rounded-full animate-spin"></div></div></DashboardLayout>;
+  if (loading) return <DashboardLayout pageTitle="Dashboard" role="student"><div className="flex items-center justify-center py-20"><i className="ri-loader-4-line animate-spin text-2xl text-primary"></i></div></DashboardLayout>;
 
   return (
     <DashboardLayout pageTitle="Dashboard" role="student">

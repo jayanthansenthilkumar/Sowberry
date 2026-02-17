@@ -6,6 +6,7 @@ import { authApi, publicApi } from '../../utils/api';
 import { useAuth } from '../../context/AuthContext';
 
 
+
 const AuthPage = () => {
   const navigate = useNavigate();
   const { login, isAuthenticated, user } = useAuth();

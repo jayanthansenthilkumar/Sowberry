@@ -209,7 +209,7 @@ const AptitudeTests = () => {
           ))}
         </div>
 
-        {loading ? <div className="flex justify-center py-20"><div className="w-8 h-8 border-3 border-primary border-t-transparent rounded-full animate-spin"></div></div> :
+        {loading ? null :
         filteredTests.length === 0 ? <div className="text-center py-20 text-gray-400 dark-theme:text-gray-500"><i className="ri-question-answer-line text-4xl mb-3 block"></i><p>No tests in this category</p></div> :
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {filteredTests.map(t => {

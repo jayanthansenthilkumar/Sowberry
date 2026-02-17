@@ -28,6 +28,10 @@
 /* Custom dark-theme variant for .dark-theme class on body */
 @custom-variant dark-theme (.dark-theme &);
 
+/* Improve touch responsiveness — hint browser that touch handlers are passive */
+iframe {
+  touch-action: pan-x pan-y;
+}
 /* Claude-inspired dark theme — gold/sand accent */
 @theme {
   /* Gold/sand accent — Claude's signature tone */
