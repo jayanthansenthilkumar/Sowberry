@@ -851,6 +851,113 @@ router.post('/coding-problems/:id/submit', async (req, res) => {
   }
 });
 
+// ──────────────── GAME CHALLENGES ────────────────
+
+// GET all game challenges with unlock status
+router.get('/game-challenges', async (req, res) => {
+  try {
+    const [challenges] = await pool.query(
+      `SELECT gc.*, 
+        (SELECT COUNT(*) FROM gameUnlocks WHERE challengeSlug = gc.slug AND studentId = ?) > 0 as unlocked
+       FROM gameChallenges gc ORDER BY gc.sortOrder`,
+      [req.user.id]
+    );
+    res.json({ success: true, data: challenges });
+  } catch (error) {
+    console.error('Get game challenges error:', error);
+    res.status(500).json({ success: false, message: 'Server error.' });
+  }
+});
+
+// GET single game challenge by slug
+router.get('/game-challenges/:slug', async (req, res) => {
+  try {
+    const [rows] = await pool.query('SELECT * FROM gameChallenges WHERE slug = ?', [req.params.slug]);
+    if (!rows.length) return res.status(404).json({ success: false, message: 'Challenge not found.' });
+    const challenge = rows[0];
+    // Parse testCases JSON
+    challenge.testCases = typeof challenge.testCases === 'string' ? JSON.parse(challenge.testCases) : challenge.testCases;
+    const [unlockRows] = await pool.query('SELECT id FROM gameUnlocks WHERE challengeSlug = ? AND studentId = ?', [req.params.slug, req.user.id]);
+    challenge.unlocked = unlockRows.length > 0;
+    res.json({ success: true, data: challenge });
+  } catch (error) {
+    console.error('Get game challenge error:', error);
+    res.status(500).json({ success: false, message: 'Server error.' });
+  }
+});
+
+// POST submit code for a game challenge – validates using server-side Python execution
+router.post('/game-challenges/:slug/submit', async (req, res) => {
+  try {
+    const { code } = req.body;
+    if (!code || !code.trim()) {
+      return res.status(400).json({ success: false, message: 'Code is required.' });
+    }
+
+    // Fetch challenge
+    const [rows] = await pool.query('SELECT * FROM gameChallenges WHERE slug = ?', [req.params.slug]);
+    if (!rows.length) return res.status(404).json({ success: false, message: 'Challenge not found.' });
+    const challenge = rows[0];
+    const testCases = typeof challenge.testCases === 'string' ? JSON.parse(challenge.testCases) : challenge.testCases;
+
+    // Extract the function name from the boilerplate
+    const fnMatch = challenge.boilerplate.match(/def\s+(\w+)\s*\(/);
+    const funcName = fnMatch ? fnMatch[1] : null;
+    if (!funcName) {
+      return res.status(400).json({ success: false, message: 'Could not determine function name from challenge.' });
+    }
+
+    // Build a test runner that executes the user's code and runs assertions
+    let testRunner = code + '\n\n# === AUTO-GENERATED TEST RUNNER ===\n_all_passed = True\n_results = []\n';
+
+    testCases.forEach((tc, i) => {
+      testRunner += `\ntry:\n    _result_${i} = ${funcName}(${tc.input})\n`;
+      testRunner += `    _expected_${i} = ${tc.expected}\n`;
+      testRunner += `    if str(_result_${i}) != str(_expected_${i}):\n        _all_passed = False\n        _results.append(f"Test ${i + 1}: FAILED (got {_result_${i}}, expected {_expected_${i}})")\n    else:\n        _results.append(f"Test ${i + 1}: PASSED")\n`;
+      testRunner += `except Exception as e:\n    _all_passed = False\n    _results.append(f"Test ${i + 1}: ERROR - {e}")\n`;
+    });
+
+    testRunner += '\nfor r in _results:\n    print(r)\nif _all_passed:\n    print("ALL_TESTS_PASSED")\n';
+
+    // Execute using the server-side Python runner
+    const result = await executeLocally('python', testRunner, '');
+
+    const passed = result.output && result.output.includes('ALL_TESTS_PASSED');
+
+    // If passed, unlock the game
+    if (passed) {
+      await pool.query(
+        'INSERT IGNORE INTO gameUnlocks (studentId, challengeSlug) VALUES (?, ?)',
+        [req.user.id, req.params.slug]
+      );
+    }
+
+    res.json({
+      success: true,
+      passed,
+      output: result.output || '',
+      message: passed ? 'All tests passed! Game unlocked!' : 'Some tests failed. Check your output.'
+    });
+  } catch (error) {
+    console.error('Submit game challenge error:', error);
+    res.status(500).json({ success: false, message: 'Server error.' });
+  }
+});
+
+// GET unlocked games list
+router.get('/game-unlocks', async (req, res) => {
+  try {
+    const [unlocks] = await pool.query(
+      'SELECT challengeSlug FROM gameUnlocks WHERE studentId = ?',
+      [req.user.id]
+    );
+    res.json({ success: true, data: unlocks.map(u => u.challengeSlug) });
+  } catch (error) {
+    console.error('Get game unlocks error:', error);
+    res.status(500).json({ success: false, message: 'Server error.' });
+  }
+});
+
 // ──────────────── APTITUDE TESTS ────────────────
 router.get('/aptitude-tests', async (req, res) => {
   try {

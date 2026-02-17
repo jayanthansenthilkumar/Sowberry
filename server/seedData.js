@@ -195,6 +195,7 @@ async function seed() {
       await seedAptitude(connection);
       await seedCourses(connection);
       await seedCodingProblems(connection);
+      await seedGameChallenges(connection);
   } catch (err) {
       console.error('❌ Error during seeding:', err);
   } finally {
@@ -872,53 +873,61 @@ async function seedCourses(connection) {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-//  SEED 45 CODING PROBLEMS
+//  SEED 45 CODING PROBLEMS (Python-based)
 // ═══════════════════════════════════════════════════════════════════
 async function seedCodingProblems(connection) {
-  console.log('\n--- Seeding Coding Problems (45) ---');
+  console.log('\n--- Seeding Coding Problems (45 · Python) ---');
+
+  // Add boilerplate column if missing
+  try { await connection.query("ALTER TABLE codingProblems ADD COLUMN boilerplate TEXT DEFAULT NULL AFTER sampleOutput"); } catch {}
 
   const [mentors] = await connection.query(`SELECT id FROM users WHERE role = 'mentor' ORDER BY id LIMIT 1`);
   if (!mentors.length) { console.error('No mentor found for coding problems'); return; }
   const mid = mentors[0].id;
 
-  // Delete old seeded problems (keep any manually created ones with id < 100)
+  // Delete old seeded problems
   await connection.query("DELETE FROM codingProblems WHERE title LIKE '%(Seeded)%'");
 
   const problems = [
     // ═══ EASY (15) ═══
     {
       title: 'Two Sum (Seeded)', difficulty: 'easy', category: 'Arrays',
-      description: 'Given an array of integers and a target, return the indices of two numbers that add up to the target.',
-      inputFormat: 'Array of integers and a target integer', outputFormat: 'Array of two indices',
-      constraints: '2 ≤ arr.length ≤ 10⁴', sampleInput: '[2,7,11,15]\\n9', sampleOutput: '[0,1]',
+      description: 'Given a list of integers and a target, return the indices of two numbers that add up to the target.',
+      inputFormat: 'List of integers and a target integer', outputFormat: 'List of two indices',
+      constraints: '2 ≤ len(arr) ≤ 10⁴', sampleInput: '[2,7,11,15]\\n9', sampleOutput: '[0,1]',
+      boilerplate: 'def two_sum(nums, target):\\n    # Return indices of two numbers that add up to target\\n    pass',
       testCases: [{"input":"[2,7,11,15]\\n9","output":"[0,1]"},{"input":"[3,2,4]\\n6","output":"[1,2]"}]
     },
     {
       title: 'Palindrome Check (Seeded)', difficulty: 'easy', category: 'Strings',
       description: 'Determine if a given string is a palindrome (reads the same forwards and backwards).',
-      inputFormat: 'A string', outputFormat: 'true or false',
-      constraints: '1 ≤ s.length ≤ 10⁵', sampleInput: 'racecar', sampleOutput: 'true',
-      testCases: [{"input":"racecar","output":"true"},{"input":"hello","output":"false"}]
+      inputFormat: 'A string', outputFormat: 'True or False',
+      constraints: '1 ≤ len(s) ≤ 10⁵', sampleInput: 'racecar', sampleOutput: 'True',
+      boilerplate: 'def is_palindrome(s):\\n    # Return True if s is a palindrome\\n    pass',
+      testCases: [{"input":"racecar","output":"True"},{"input":"hello","output":"False"}]
     },
     {
-      title: 'Reverse Array (Seeded)', difficulty: 'easy', category: 'Arrays',
-      description: 'Reverse an array of integers in-place and return it.',
-      inputFormat: 'Array of integers', outputFormat: 'Reversed array',
-      constraints: '1 ≤ arr.length ≤ 10⁴', sampleInput: '[1,2,3,4,5]', sampleOutput: '[5,4,3,2,1]',
+      title: 'Reverse List (Seeded)', difficulty: 'easy', category: 'Arrays',
+      description: 'Reverse a list of integers in-place and return it.',
+      inputFormat: 'List of integers', outputFormat: 'Reversed list',
+      constraints: '1 ≤ len(arr) ≤ 10⁴', sampleInput: '[1,2,3,4,5]', sampleOutput: '[5,4,3,2,1]',
+      boilerplate: 'def reverse_list(arr):\\n    # Reverse the list in-place and return it\\n    pass',
       testCases: [{"input":"[1,2,3,4,5]","output":"[5,4,3,2,1]"},{"input":"[10,20]","output":"[20,10]"}]
     },
     {
       title: 'Count Vowels (Seeded)', difficulty: 'easy', category: 'Strings',
       description: 'Count the number of vowels (a, e, i, o, u) in a given string (case-insensitive).',
       inputFormat: 'A string', outputFormat: 'Integer count',
-      constraints: '1 ≤ s.length ≤ 10⁴', sampleInput: 'Hello World', sampleOutput: '3',
+      constraints: '1 ≤ len(s) ≤ 10⁴', sampleInput: 'Hello World', sampleOutput: '3',
+      boilerplate: 'def count_vowels(s):\\n    # Return the count of vowels in s\\n    pass',
       testCases: [{"input":"Hello World","output":"3"},{"input":"aeiou","output":"5"}]
     },
     {
       title: 'Find Maximum (Seeded)', difficulty: 'easy', category: 'Arrays',
-      description: 'Find and return the maximum element in an array of integers.',
-      inputFormat: 'Array of integers', outputFormat: 'Maximum integer',
-      constraints: '1 ≤ arr.length ≤ 10⁴', sampleInput: '[3,7,2,9,1]', sampleOutput: '9',
+      description: 'Find and return the maximum element in a list of integers.',
+      inputFormat: 'List of integers', outputFormat: 'Maximum integer',
+      constraints: '1 ≤ len(arr) ≤ 10⁴', sampleInput: '[3,7,2,9,1]', sampleOutput: '9',
+      boilerplate: 'def find_max(arr):\\n    # Return the maximum element\\n    pass',
       testCases: [{"input":"[3,7,2,9,1]","output":"9"},{"input":"[-5,-1,-8]","output":"-1"}]
     },
     {
@@ -926,6 +935,7 @@ async function seedCodingProblems(connection) {
       description: 'Calculate the factorial of a non-negative integer n (n!).',
       inputFormat: 'Non-negative integer n', outputFormat: 'n!',
       constraints: '0 ≤ n ≤ 20', sampleInput: '5', sampleOutput: '120',
+      boilerplate: 'def factorial(n):\\n    # Return n!\\n    pass',
       testCases: [{"input":"5","output":"120"},{"input":"0","output":"1"},{"input":"10","output":"3628800"}]
     },
     {
@@ -933,6 +943,7 @@ async function seedCodingProblems(connection) {
       description: 'Return the nth Fibonacci number (0-indexed). F(0)=0, F(1)=1, F(n)=F(n-1)+F(n-2).',
       inputFormat: 'Integer n', outputFormat: 'F(n)',
       constraints: '0 ≤ n ≤ 30', sampleInput: '6', sampleOutput: '8',
+      boilerplate: 'def fibonacci(n):\\n    # Return the nth Fibonacci number\\n    pass',
       testCases: [{"input":"6","output":"8"},{"input":"0","output":"0"},{"input":"10","output":"55"}]
     },
     {
@@ -940,99 +951,113 @@ async function seedCodingProblems(connection) {
       description: 'Calculate the sum of all digits of a positive integer.',
       inputFormat: 'Positive integer', outputFormat: 'Sum of digits',
       constraints: '1 ≤ n ≤ 10⁹', sampleInput: '1234', sampleOutput: '10',
+      boilerplate: 'def sum_of_digits(n):\\n    # Return the sum of digits of n\\n    pass',
       testCases: [{"input":"1234","output":"10"},{"input":"999","output":"27"}]
     },
     {
       title: 'FizzBuzz (Seeded)', difficulty: 'easy', category: 'Math',
-      description: 'For a given number n, print "Fizz" if divisible by 3, "Buzz" if by 5, "FizzBuzz" if by both, else the number.',
+      description: 'For a given number n, return "Fizz" if divisible by 3, "Buzz" if by 5, "FizzBuzz" if by both, else the number as string.',
       inputFormat: 'Integer n', outputFormat: 'String result',
       constraints: '1 ≤ n ≤ 100', sampleInput: '15', sampleOutput: 'FizzBuzz',
+      boilerplate: 'def fizzbuzz(n):\\n    # Return "Fizz", "Buzz", "FizzBuzz" or str(n)\\n    pass',
       testCases: [{"input":"15","output":"FizzBuzz"},{"input":"7","output":"7"},{"input":"9","output":"Fizz"}]
     },
     {
       title: 'Remove Duplicates (Seeded)', difficulty: 'easy', category: 'Arrays',
-      description: 'Remove duplicate values from a sorted array and return the unique elements.',
-      inputFormat: 'Sorted array of integers', outputFormat: 'Array of unique integers',
-      constraints: '1 ≤ arr.length ≤ 10⁴', sampleInput: '[1,1,2,2,3]', sampleOutput: '[1,2,3]',
+      description: 'Remove duplicate values from a sorted list and return the unique elements.',
+      inputFormat: 'Sorted list of integers', outputFormat: 'List of unique integers',
+      constraints: '1 ≤ len(arr) ≤ 10⁴', sampleInput: '[1,1,2,2,3]', sampleOutput: '[1,2,3]',
+      boilerplate: 'def remove_duplicates(arr):\\n    # Return list with duplicates removed\\n    pass',
       testCases: [{"input":"[1,1,2,2,3]","output":"[1,2,3]"},{"input":"[5,5,5]","output":"[5]"}]
     },
     {
       title: 'Count Occurrences (Seeded)', difficulty: 'easy', category: 'Arrays',
-      description: 'Count how many times a target value appears in an array.',
-      inputFormat: 'Array and target integer', outputFormat: 'Count',
-      constraints: '1 ≤ arr.length ≤ 10⁴', sampleInput: '[1,2,3,2,2,4]\\n2', sampleOutput: '3',
+      description: 'Count how many times a target value appears in a list.',
+      inputFormat: 'List and target integer', outputFormat: 'Count',
+      constraints: '1 ≤ len(arr) ≤ 10⁴', sampleInput: '[1,2,3,2,2,4]\\n2', sampleOutput: '3',
+      boilerplate: 'def count_occurrences(arr, target):\\n    # Return count of target in arr\\n    pass',
       testCases: [{"input":"[1,2,3,2,2,4]\\n2","output":"3"},{"input":"[5,5,5]\\n5","output":"3"}]
     },
     {
       title: 'Capitalize First Letter (Seeded)', difficulty: 'easy', category: 'Strings',
       description: 'Capitalize the first letter of each word in a sentence.',
       inputFormat: 'A string sentence', outputFormat: 'Capitalized sentence',
-      constraints: '1 ≤ s.length ≤ 10³', sampleInput: 'hello world', sampleOutput: 'Hello World',
-      testCases: [{"input":"hello world","output":"Hello World"},{"input":"javaScript is fun","output":"JavaScript Is Fun"}]
+      constraints: '1 ≤ len(s) ≤ 10³', sampleInput: 'hello world', sampleOutput: 'Hello World',
+      boilerplate: 'def capitalize_words(s):\\n    # Return sentence with each word capitalized\\n    pass',
+      testCases: [{"input":"hello world","output":"Hello World"},{"input":"javaScript is fun","output":"Javascript Is Fun"}]
     },
     {
       title: 'Check Prime (Seeded)', difficulty: 'easy', category: 'Math',
       description: 'Determine if a given number is a prime number.',
-      inputFormat: 'Positive integer', outputFormat: 'true or false',
-      constraints: '2 ≤ n ≤ 10⁶', sampleInput: '17', sampleOutput: 'true',
-      testCases: [{"input":"17","output":"true"},{"input":"4","output":"false"},{"input":"2","output":"true"}]
+      inputFormat: 'Positive integer', outputFormat: 'True or False',
+      constraints: '2 ≤ n ≤ 10⁶', sampleInput: '17', sampleOutput: 'True',
+      boilerplate: 'def is_prime(n):\\n    # Return True if n is prime\\n    pass',
+      testCases: [{"input":"17","output":"True"},{"input":"4","output":"False"},{"input":"2","output":"True"}]
     },
     {
-      title: 'Merge Two Arrays (Seeded)', difficulty: 'easy', category: 'Arrays',
-      description: 'Merge two sorted arrays into one sorted array.',
-      inputFormat: 'Two sorted arrays', outputFormat: 'One merged sorted array',
-      constraints: 'Arrays length ≤ 10⁴', sampleInput: '[1,3,5]\\n[2,4,6]', sampleOutput: '[1,2,3,4,5,6]',
+      title: 'Merge Two Sorted Lists (Seeded)', difficulty: 'easy', category: 'Arrays',
+      description: 'Merge two sorted lists into one sorted list.',
+      inputFormat: 'Two sorted lists', outputFormat: 'One merged sorted list',
+      constraints: 'Lists length ≤ 10⁴', sampleInput: '[1,3,5]\\n[2,4,6]', sampleOutput: '[1,2,3,4,5,6]',
+      boilerplate: 'def merge_sorted(a, b):\\n    # Merge two sorted lists into one sorted list\\n    pass',
       testCases: [{"input":"[1,3,5]\\n[2,4,6]","output":"[1,2,3,4,5,6]"},{"input":"[1]\\n[2,3]","output":"[1,2,3]"}]
     },
     {
       title: 'String Reverse (Seeded)', difficulty: 'easy', category: 'Strings',
       description: 'Reverse a string without using built-in reverse methods.',
       inputFormat: 'A string', outputFormat: 'Reversed string',
-      constraints: '1 ≤ s.length ≤ 10⁴', sampleInput: 'algorithm', sampleOutput: 'mhtirogla',
+      constraints: '1 ≤ len(s) ≤ 10⁴', sampleInput: 'algorithm', sampleOutput: 'mhtirogla',
+      boilerplate: 'def reverse_string(s):\\n    # Reverse the string without slicing[::-1]\\n    pass',
       testCases: [{"input":"algorithm","output":"mhtirogla"},{"input":"hello","output":"olleh"}]
     },
 
     // ═══ MEDIUM (15) ═══
     {
       title: 'Binary Search (Seeded)', difficulty: 'medium', category: 'Searching',
-      description: 'Implement binary search on a sorted array. Return the index of the target or -1.',
-      inputFormat: 'Sorted array and target', outputFormat: 'Index or -1',
-      constraints: '1 ≤ arr.length ≤ 10⁵', sampleInput: '[1,3,5,7,9]\\n5', sampleOutput: '2',
+      description: 'Implement binary search on a sorted list. Return the index of the target or -1.',
+      inputFormat: 'Sorted list and target', outputFormat: 'Index or -1',
+      constraints: '1 ≤ len(arr) ≤ 10⁵', sampleInput: '[1,3,5,7,9]\\n5', sampleOutput: '2',
+      boilerplate: 'def binary_search(arr, target):\\n    # Return index of target in sorted arr, or -1\\n    pass',
       testCases: [{"input":"[1,3,5,7,9]\\n5","output":"2"},{"input":"[1,3,5,7,9]\\n4","output":"-1"}]
     },
     {
       title: 'Valid Parentheses (Seeded)', difficulty: 'medium', category: 'Stack',
       description: 'Check if a string of brackets ()[]\\{\\} is valid — every open bracket is closed in order.',
-      inputFormat: 'String of brackets', outputFormat: 'true or false',
-      constraints: '1 ≤ s.length ≤ 10⁴', sampleInput: '({[]})', sampleOutput: 'true',
-      testCases: [{"input":"({[]})","output":"true"},{"input":"([)]","output":"false"}]
+      inputFormat: 'String of brackets', outputFormat: 'True or False',
+      constraints: '1 ≤ len(s) ≤ 10⁴', sampleInput: '({[]})', sampleOutput: 'True',
+      boilerplate: 'def is_valid(s):\\n    # Return True if brackets are balanced\\n    pass',
+      testCases: [{"input":"({[]})","output":"True"},{"input":"([)]","output":"False"}]
     },
     {
-      title: 'Rotate Array (Seeded)', difficulty: 'medium', category: 'Arrays',
-      description: 'Rotate an array to the right by k steps.',
-      inputFormat: 'Array and integer k', outputFormat: 'Rotated array',
-      constraints: '1 ≤ arr.length ≤ 10⁵', sampleInput: '[1,2,3,4,5]\\n2', sampleOutput: '[4,5,1,2,3]',
+      title: 'Rotate List (Seeded)', difficulty: 'medium', category: 'Arrays',
+      description: 'Rotate a list to the right by k steps.',
+      inputFormat: 'List and integer k', outputFormat: 'Rotated list',
+      constraints: '1 ≤ len(arr) ≤ 10⁵', sampleInput: '[1,2,3,4,5]\\n2', sampleOutput: '[4,5,1,2,3]',
+      boilerplate: 'def rotate_list(arr, k):\\n    # Return arr rotated right by k steps\\n    pass',
       testCases: [{"input":"[1,2,3,4,5]\\n2","output":"[4,5,1,2,3]"},{"input":"[1,2,3]\\n1","output":"[3,1,2]"}]
     },
     {
       title: 'Anagram Check (Seeded)', difficulty: 'medium', category: 'Strings',
       description: 'Determine if two strings are anagrams of each other (same characters, different order).',
-      inputFormat: 'Two strings', outputFormat: 'true or false',
-      constraints: '1 ≤ length ≤ 10⁴', sampleInput: 'listen\\nsilent', sampleOutput: 'true',
-      testCases: [{"input":"listen\\nsilent","output":"true"},{"input":"hello\\nworld","output":"false"}]
+      inputFormat: 'Two strings', outputFormat: 'True or False',
+      constraints: '1 ≤ length ≤ 10⁴', sampleInput: 'listen\\nsilent', sampleOutput: 'True',
+      boilerplate: 'def is_anagram(s1, s2):\\n    # Return True if s1 and s2 are anagrams\\n    pass',
+      testCases: [{"input":"listen\\nsilent","output":"True"},{"input":"hello\\nworld","output":"False"}]
     },
     {
       title: 'GCD of Two Numbers (Seeded)', difficulty: 'medium', category: 'Math',
       description: 'Find the Greatest Common Divisor of two positive integers using Euclid\'s algorithm.',
       inputFormat: 'Two positive integers', outputFormat: 'GCD',
       constraints: '1 ≤ a, b ≤ 10⁹', sampleInput: '48\\n18', sampleOutput: '6',
+      boilerplate: 'def gcd(a, b):\\n    # Return GCD using Euclid\'s algorithm\\n    pass',
       testCases: [{"input":"48\\n18","output":"6"},{"input":"100\\n75","output":"25"}]
     },
     {
       title: 'Matrix Transpose (Seeded)', difficulty: 'medium', category: 'Arrays',
       description: 'Return the transpose of a given m×n matrix.',
-      inputFormat: '2D array (matrix)', outputFormat: 'Transposed matrix',
+      inputFormat: '2D list (matrix)', outputFormat: 'Transposed matrix',
       constraints: '1 ≤ m,n ≤ 100', sampleInput: '[[1,2,3],[4,5,6]]', sampleOutput: '[[1,4],[2,5],[3,6]]',
+      boilerplate: 'def transpose(matrix):\\n    # Return the transposed matrix\\n    pass',
       testCases: [{"input":"[[1,2,3],[4,5,6]]","output":"[[1,4],[2,5],[3,6]]"}]
     },
     {
@@ -1040,55 +1065,63 @@ async function seedCodingProblems(connection) {
       description: 'Implement pow(base, exponent) without using built-in power functions.',
       inputFormat: 'Base and exponent integers', outputFormat: 'Result',
       constraints: '-10 ≤ base ≤ 10, 0 ≤ exp ≤ 20', sampleInput: '2\\n10', sampleOutput: '1024',
+      boilerplate: 'def power(base, exp):\\n    # Return base ** exp without using **\\n    pass',
       testCases: [{"input":"2\\n10","output":"1024"},{"input":"3\\n4","output":"81"}]
     },
     {
-      title: 'Flatten Nested Array (Seeded)', difficulty: 'medium', category: 'Arrays',
-      description: 'Flatten a nested array into a single-level array.',
-      inputFormat: 'Nested array', outputFormat: 'Flat array',
+      title: 'Flatten Nested List (Seeded)', difficulty: 'medium', category: 'Arrays',
+      description: 'Flatten a nested list into a single-level list.',
+      inputFormat: 'Nested list', outputFormat: 'Flat list',
       constraints: 'Depth ≤ 5', sampleInput: '[1,[2,[3,4],5]]', sampleOutput: '[1,2,3,4,5]',
+      boilerplate: 'def flatten(lst):\\n    # Recursively flatten the nested list\\n    pass',
       testCases: [{"input":"[1,[2,[3,4],5]]","output":"[1,2,3,4,5]"},{"input":"[[1,2],[3,[4]]]","output":"[1,2,3,4]"}]
     },
     {
       title: 'Find Missing Number (Seeded)', difficulty: 'medium', category: 'Arrays',
-      description: 'Given an array containing n distinct numbers from 0 to n, find the missing one.',
-      inputFormat: 'Array of n distinct integers [0..n]', outputFormat: 'Missing number',
+      description: 'Given a list containing n distinct numbers from 0 to n, find the missing one.',
+      inputFormat: 'List of n distinct integers [0..n]', outputFormat: 'Missing number',
       constraints: '1 ≤ n ≤ 10⁴', sampleInput: '[3,0,1]', sampleOutput: '2',
+      boilerplate: 'def missing_number(nums):\\n    # Find the missing number in 0..n\\n    pass',
       testCases: [{"input":"[3,0,1]","output":"2"},{"input":"[0,1,2,4]","output":"3"}]
     },
     {
       title: 'Product Except Self (Seeded)', difficulty: 'medium', category: 'Arrays',
-      description: 'Return an array where each element is the product of all other elements (no division).',
-      inputFormat: 'Array of integers', outputFormat: 'Array of products',
-      constraints: '2 ≤ arr.length ≤ 10⁴', sampleInput: '[1,2,3,4]', sampleOutput: '[24,12,8,6]',
+      description: 'Return a list where each element is the product of all other elements (no division).',
+      inputFormat: 'List of integers', outputFormat: 'List of products',
+      constraints: '2 ≤ len(arr) ≤ 10⁴', sampleInput: '[1,2,3,4]', sampleOutput: '[24,12,8,6]',
+      boilerplate: 'def product_except_self(nums):\\n    # Return list of products without division\\n    pass',
       testCases: [{"input":"[1,2,3,4]","output":"[24,12,8,6]"},{"input":"[2,3]","output":"[3,2]"}]
     },
     {
       title: 'String Compression (Seeded)', difficulty: 'medium', category: 'Strings',
       description: 'Compress a string using counts of repeated characters. Return original if compressed is not shorter.',
       inputFormat: 'A string', outputFormat: 'Compressed string or original',
-      constraints: '1 ≤ s.length ≤ 10⁴', sampleInput: 'aabcccccaaa', sampleOutput: 'a2b1c5a3',
+      constraints: '1 ≤ len(s) ≤ 10⁴', sampleInput: 'aabcccccaaa', sampleOutput: 'a2b1c5a3',
+      boilerplate: 'def compress(s):\\n    # Return compressed string or original\\n    pass',
       testCases: [{"input":"aabcccccaaa","output":"a2b1c5a3"},{"input":"abc","output":"abc"}]
     },
     {
       title: 'Spiral Matrix (Seeded)', difficulty: 'medium', category: 'Arrays',
       description: 'Return all elements of an m×n matrix in spiral order.',
-      inputFormat: '2D matrix', outputFormat: 'Array in spiral order',
+      inputFormat: '2D matrix', outputFormat: 'List in spiral order',
       constraints: '1 ≤ m,n ≤ 10', sampleInput: '[[1,2,3],[4,5,6],[7,8,9]]', sampleOutput: '[1,2,3,6,9,8,7,4,5]',
+      boilerplate: 'def spiral_order(matrix):\\n    # Return elements in spiral order\\n    pass',
       testCases: [{"input":"[[1,2,3],[4,5,6],[7,8,9]]","output":"[1,2,3,6,9,8,7,4,5]"}]
     },
     {
       title: 'Longest Substring Without Repeats (Seeded)', difficulty: 'medium', category: 'Strings',
       description: 'Find the length of the longest substring without repeating characters.',
       inputFormat: 'A string', outputFormat: 'Integer length',
-      constraints: '0 ≤ s.length ≤ 5×10⁴', sampleInput: 'abcabcbb', sampleOutput: '3',
+      constraints: '0 ≤ len(s) ≤ 5×10⁴', sampleInput: 'abcabcbb', sampleOutput: '3',
+      boilerplate: 'def length_of_longest_substring(s):\\n    # Return length of longest substring without repeats\\n    pass',
       testCases: [{"input":"abcabcbb","output":"3"},{"input":"bbbbb","output":"1"}]
     },
     {
       title: 'Kadane Maximum Subarray (Seeded)', difficulty: 'medium', category: 'Arrays',
       description: 'Find the contiguous subarray with the largest sum (Kadane\'s algorithm).',
-      inputFormat: 'Array of integers', outputFormat: 'Maximum subarray sum',
-      constraints: '1 ≤ arr.length ≤ 10⁵', sampleInput: '[-2,1,-3,4,-1,2,1,-5,4]', sampleOutput: '6',
+      inputFormat: 'List of integers', outputFormat: 'Maximum subarray sum',
+      constraints: '1 ≤ len(arr) ≤ 10⁵', sampleInput: '[-2,1,-3,4,-1,2,1,-5,4]', sampleOutput: '6',
+      boilerplate: 'def max_subarray(nums):\\n    # Return max subarray sum using Kadane\'s algorithm\\n    pass',
       testCases: [{"input":"[-2,1,-3,4,-1,2,1,-5,4]","output":"6"},{"input":"[1]","output":"1"}]
     },
     {
@@ -1096,6 +1129,7 @@ async function seedCodingProblems(connection) {
       description: 'Convert an integer to its Roman numeral representation.',
       inputFormat: 'Integer (1 to 3999)', outputFormat: 'Roman numeral string',
       constraints: '1 ≤ num ≤ 3999', sampleInput: '1994', sampleOutput: 'MCMXCIV',
+      boilerplate: 'def int_to_roman(num):\\n    # Convert integer to Roman numeral string\\n    pass',
       testCases: [{"input":"1994","output":"MCMXCIV"},{"input":"58","output":"LVIII"}]
     },
 
@@ -1105,6 +1139,7 @@ async function seedCodingProblems(connection) {
       description: 'Find the length of the longest common subsequence of two strings.',
       inputFormat: 'Two strings', outputFormat: 'LCS length',
       constraints: '1 ≤ length ≤ 10³', sampleInput: 'abcde\\nace', sampleOutput: '3',
+      boilerplate: 'def lcs(a, b):\\n    # Return length of longest common subsequence\\n    pass',
       testCases: [{"input":"abcde\\nace","output":"3"},{"input":"abc\\ndef","output":"0"}]
     },
     {
@@ -1112,27 +1147,31 @@ async function seedCodingProblems(connection) {
       description: 'Given items with weights and values, maximise total value without exceeding capacity.',
       inputFormat: 'capacity, weights[], values[]', outputFormat: 'Maximum value',
       constraints: 'n ≤ 100, W ≤ 10⁴', sampleInput: '50\\n[10,20,30]\\n[60,100,120]', sampleOutput: '220',
+      boilerplate: 'def knapsack(capacity, weights, values):\\n    # Return maximum value within capacity\\n    pass',
       testCases: [{"input":"50\\n[10,20,30]\\n[60,100,120]","output":"220"}]
     },
     {
       title: 'N-Queens Validator (Seeded)', difficulty: 'hard', category: 'Backtracking',
       description: 'Given an n×n board, validate if queens placement is valid (no two queens attack each other).',
-      inputFormat: 'Array of column positions per row', outputFormat: 'true or false',
-      constraints: '1 ≤ n ≤ 15', sampleInput: '[1,3,0,2]', sampleOutput: 'true',
-      testCases: [{"input":"[1,3,0,2]","output":"true"},{"input":"[0,1,2,3]","output":"false"}]
+      inputFormat: 'List of column positions per row', outputFormat: 'True or False',
+      constraints: '1 ≤ n ≤ 15', sampleInput: '[1,3,0,2]', sampleOutput: 'True',
+      boilerplate: 'def is_valid_queens(positions):\\n    # Return True if no two queens attack each other\\n    pass',
+      testCases: [{"input":"[1,3,0,2]","output":"True"},{"input":"[0,1,2,3]","output":"False"}]
     },
     {
       title: 'Merge Intervals (Seeded)', difficulty: 'hard', category: 'Arrays',
       description: 'Given a collection of intervals, merge all overlapping intervals.',
-      inputFormat: 'Array of [start, end] intervals', outputFormat: 'Merged intervals',
-      constraints: '1 ≤ intervals.length ≤ 10⁴', sampleInput: '[[1,3],[2,6],[8,10],[15,18]]', sampleOutput: '[[1,6],[8,10],[15,18]]',
+      inputFormat: 'List of [start, end] intervals', outputFormat: 'Merged intervals',
+      constraints: '1 ≤ len(intervals) ≤ 10⁴', sampleInput: '[[1,3],[2,6],[8,10],[15,18]]', sampleOutput: '[[1,6],[8,10],[15,18]]',
+      boilerplate: 'def merge_intervals(intervals):\\n    # Merge overlapping intervals\\n    pass',
       testCases: [{"input":"[[1,3],[2,6],[8,10],[15,18]]","output":"[[1,6],[8,10],[15,18]]"}]
     },
     {
       title: 'Longest Increasing Subsequence (Seeded)', difficulty: 'hard', category: 'Dynamic Programming',
       description: 'Find the length of the longest strictly increasing subsequence.',
-      inputFormat: 'Array of integers', outputFormat: 'LIS length',
-      constraints: '1 ≤ arr.length ≤ 2500', sampleInput: '[10,9,2,5,3,7,101,18]', sampleOutput: '4',
+      inputFormat: 'List of integers', outputFormat: 'LIS length',
+      constraints: '1 ≤ len(arr) ≤ 2500', sampleInput: '[10,9,2,5,3,7,101,18]', sampleOutput: '4',
+      boilerplate: 'def length_of_lis(nums):\\n    # Return length of longest increasing subsequence\\n    pass',
       testCases: [{"input":"[10,9,2,5,3,7,101,18]","output":"4"},{"input":"[0,1,0,3,2,3]","output":"4"}]
     },
     {
@@ -1140,41 +1179,47 @@ async function seedCodingProblems(connection) {
       description: 'Find the minimum number of operations (insert, delete, replace) to convert one string to another.',
       inputFormat: 'Two strings', outputFormat: 'Minimum operations',
       constraints: '0 ≤ length ≤ 500', sampleInput: 'horse\\nros', sampleOutput: '3',
+      boilerplate: 'def edit_distance(word1, word2):\\n    # Return minimum edit distance\\n    pass',
       testCases: [{"input":"horse\\nros","output":"3"},{"input":"intention\\nexecution","output":"5"}]
     },
     {
       title: 'Coin Change (Min Coins) (Seeded)', difficulty: 'hard', category: 'Dynamic Programming',
       description: 'Find the fewest number of coins needed to make up a given amount.',
-      inputFormat: 'Coins array and amount', outputFormat: 'Minimum coins or -1',
-      constraints: '1 ≤ coins.length ≤ 12', sampleInput: '[1,5,10,25]\\n30', sampleOutput: '2',
+      inputFormat: 'Coins list and amount', outputFormat: 'Minimum coins or -1',
+      constraints: '1 ≤ len(coins) ≤ 12', sampleInput: '[1,5,10,25]\\n30', sampleOutput: '2',
+      boilerplate: 'def coin_change(coins, amount):\\n    # Return min coins needed, or -1 if impossible\\n    pass',
       testCases: [{"input":"[1,5,10,25]\\n30","output":"2"},{"input":"[2]\\n3","output":"-1"}]
     },
     {
       title: 'Trie Implementation (Seeded)', difficulty: 'hard', category: 'Trees',
-      description: 'Implement a Trie with insert, search, and startsWith methods.',
-      inputFormat: 'Array of operations', outputFormat: 'Array of results',
-      constraints: 'Words length ≤ 200', sampleInput: 'insert(apple)\\nsearch(apple)\\nstartsWith(app)', sampleOutput: 'true\\ntrue',
-      testCases: [{"input":"insert(apple)\\nsearch(apple)","output":"true"},{"input":"insert(apple)\\nsearch(app)","output":"false"}]
+      description: 'Implement a Trie with insert, search, and starts_with methods.',
+      inputFormat: 'List of operations', outputFormat: 'List of results',
+      constraints: 'Words length ≤ 200', sampleInput: 'insert(apple)\\nsearch(apple)\\nstarts_with(app)', sampleOutput: 'True\\nTrue',
+      boilerplate: 'class Trie:\\n    def __init__(self):\\n        self.children = {}\\n        self.is_end = False\\n\\n    def insert(self, word):\\n        pass\\n\\n    def search(self, word):\\n        pass\\n\\n    def starts_with(self, prefix):\\n        pass',
+      testCases: [{"input":"insert(apple)\\nsearch(apple)","output":"True"},{"input":"insert(apple)\\nsearch(app)","output":"False"}]
     },
     {
       title: 'Graph BFS Shortest Path (Seeded)', difficulty: 'hard', category: 'Graphs',
       description: 'Find the shortest path between two nodes in an unweighted graph using BFS.',
       inputFormat: 'Adjacency list, start, end', outputFormat: 'Shortest path length',
       constraints: 'Nodes ≤ 10⁴', sampleInput: '{0:[1,2],1:[0,3],2:[0,3],3:[1,2]}\\n0\\n3', sampleOutput: '2',
+      boilerplate: 'def bfs_shortest(graph, start, end):\\n    # Return shortest path length using BFS\\n    pass',
       testCases: [{"input":"{0:[1,2],1:[0,3],2:[0,3],3:[1,2]}\\n0\\n3","output":"2"}]
     },
     {
       title: 'Dijkstra Shortest Path (Seeded)', difficulty: 'hard', category: 'Graphs',
       description: 'Implement Dijkstra\'s algorithm to find shortest distances from source to all nodes.',
-      inputFormat: 'n, edges [[from,to,weight]], source', outputFormat: 'Array of shortest distances',
+      inputFormat: 'n, edges [[from,to,weight]], source', outputFormat: 'List of shortest distances',
       constraints: 'Nodes ≤ 10³', sampleInput: '4\\n[[0,1,4],[0,2,1],[2,1,2],[1,3,1],[2,3,5]]\\n0', sampleOutput: '[0,3,1,4]',
+      boilerplate: 'import heapq\\n\\ndef dijkstra(n, edges, source):\\n    # Return list of shortest distances from source\\n    pass',
       testCases: [{"input":"4\\n[[0,1,4],[0,2,1],[2,1,2],[1,3,1],[2,3,5]]\\n0","output":"[0,3,1,4]"}]
     },
     {
       title: 'Topological Sort (Seeded)', difficulty: 'hard', category: 'Graphs',
       description: 'Return a valid topological ordering of a directed acyclic graph.',
-      inputFormat: 'n nodes, edges [[from, to]]', outputFormat: 'Array of nodes in topological order',
+      inputFormat: 'n nodes, edges [[from, to]]', outputFormat: 'List of nodes in topological order',
       constraints: 'n ≤ 10⁴', sampleInput: '4\\n[[0,1],[0,2],[1,3],[2,3]]', sampleOutput: '[0,2,1,3]',
+      boilerplate: 'from collections import deque\\n\\ndef topo_sort(n, edges):\\n    # Return topological order using Kahn\'s algorithm\\n    pass',
       testCases: [{"input":"4\\n[[0,1],[0,2],[1,3],[2,3]]","output":"[0,1,2,3] or [0,2,1,3]"}]
     },
     {
@@ -1182,39 +1227,771 @@ async function seedCodingProblems(connection) {
       description: 'Find the total weight of the minimum spanning tree of a weighted undirected graph.',
       inputFormat: 'n nodes, edges [[u,v,weight]]', outputFormat: 'Total MST weight',
       constraints: 'n ≤ 10³', sampleInput: '4\\n[[0,1,10],[0,2,6],[0,3,5],[1,3,15],[2,3,4]]', sampleOutput: '19',
+      boilerplate: 'def mst_weight(n, edges):\\n    # Return total weight of MST (Prim\'s or Kruskal\'s)\\n    pass',
       testCases: [{"input":"4\\n[[0,1,10],[0,2,6],[0,3,5],[1,3,15],[2,3,4]]","output":"19"}]
     },
     {
       title: 'Rod Cutting (Seeded)', difficulty: 'hard', category: 'Dynamic Programming',
       description: 'Given a rod of length n and price list, determine the maximum revenue from cutting.',
-      inputFormat: 'Prices array, rod length n', outputFormat: 'Maximum revenue',
+      inputFormat: 'Prices list, rod length n', outputFormat: 'Maximum revenue',
       constraints: 'n ≤ 100', sampleInput: '[1,5,8,9,10,17,17,20]\\n8', sampleOutput: '22',
+      boilerplate: 'def rod_cut(prices, n):\\n    # Return max revenue from cutting rod of length n\\n    pass',
       testCases: [{"input":"[1,5,8,9,10,17,17,20]\\n8","output":"22"}]
     },
     {
       title: 'Matrix Chain Multiplication (Seeded)', difficulty: 'hard', category: 'Dynamic Programming',
       description: 'Find the minimum number of scalar multiplications needed to multiply a chain of matrices.',
-      inputFormat: 'Array of matrix dimensions', outputFormat: 'Minimum multiplications',
+      inputFormat: 'List of matrix dimensions', outputFormat: 'Minimum multiplications',
       constraints: 'n ≤ 100', sampleInput: '[10,20,30,40,30]', sampleOutput: '30000',
+      boilerplate: 'def matrix_chain(dims):\\n    # Return minimum scalar multiplications\\n    pass',
       testCases: [{"input":"[10,20,30,40,30]","output":"30000"},{"input":"[40,20,30,10,30]","output":"26000"}]
     },
     {
       title: 'Word Break (Seeded)', difficulty: 'hard', category: 'Dynamic Programming',
       description: 'Given a string and a dictionary, determine if the string can be segmented into dictionary words.',
-      inputFormat: 'String and array of dictionary words', outputFormat: 'true or false',
-      constraints: '1 ≤ s.length ≤ 300', sampleInput: 'leetcode\\n[leet,code]', sampleOutput: 'true',
-      testCases: [{"input":"leetcode\\n[leet,code]","output":"true"},{"input":"catsandog\\n[cats,dog,sand,and,cat]","output":"false"}]
+      inputFormat: 'String and list of dictionary words', outputFormat: 'True or False',
+      constraints: '1 ≤ len(s) ≤ 300', sampleInput: 'leetcode\\n[leet,code]', sampleOutput: 'True',
+      boilerplate: 'def word_break(s, word_dict):\\n    # Return True if s can be segmented into dictionary words\\n    pass',
+      testCases: [{"input":"leetcode\\n[leet,code]","output":"True"},{"input":"catsandog\\n[cats,dog,sand,and,cat]","output":"False"}]
     }
   ];
 
   for (const p of problems) {
     await connection.query(
-      `INSERT INTO codingProblems (mentorId, title, description, difficulty, category, inputFormat, outputFormat, \`constraints\`, sampleInput, sampleOutput, testCases) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [mid, p.title, p.description, p.difficulty, p.category, p.inputFormat, p.outputFormat, p.constraints, p.sampleInput, p.sampleOutput, JSON.stringify(p.testCases)]
+      `INSERT INTO codingProblems (mentorId, title, description, difficulty, category, inputFormat, outputFormat, \`constraints\`, sampleInput, sampleOutput, testCases, boilerplate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [mid, p.title, p.description, p.difficulty, p.category, p.inputFormat, p.outputFormat, p.constraints, p.sampleInput, p.sampleOutput, JSON.stringify(p.testCases), p.boilerplate || null]
     );
   }
 
   console.log(`  ✅ Seeded ${problems.length} coding problems (Easy: 15, Medium: 15, Hard: 15)`);
+}
+
+
+// ═══════════════════════════════════════════════════════════════════
+//  6. SEED GAME CHALLENGES (Python-based, 12 original + 33 extra)
+// ═══════════════════════════════════════════════════════════════════
+async function seedGameChallenges(connection) {
+  console.log('\n🎮 Seeding Game Challenges (Python)...');
+
+  // Drop old rows so re-seed is idempotent
+  await connection.query('DELETE FROM gameUnlocks');
+  await connection.query('DELETE FROM gameChallenges');
+
+  const challenges = [
+    // ─── 12 ORIGINAL CHALLENGES ───
+    {
+      slug: 'dijkstra',
+      title: "Implement Dijkstra's Algorithm",
+      description: "Given a weighted graph as an adjacency dict, find the shortest distance from the start node to all other nodes.\nReturn a list of shortest distances.",
+      boilerplate: "import heapq\n\ndef dijkstra(graph, start):\n    # graph = {0: [(1,2),(2,4)], 1: [(2,1),(3,7)], 2: [(3,3)], 3: []}\n    # Return list of distances from start to each node\n    pass",
+      hint: "Use heapq as priority queue. Initialize distances to float('inf'), set dist[start]=0, relax edges.",
+      testCases: JSON.stringify([
+        { input: "{0:[(1,2),(2,4)],1:[(2,1),(3,7)],2:[(3,3)],3:[]}, 0", expected: "[0,2,3,6]" },
+        { input: "{0:[(1,1)],1:[(0,1)]}, 0", expected: "[0,1]" }
+      ]),
+      gameType: 'dijkstra', gameTitle: 'Shortest Path Explorer',
+      gameDescription: "Find the shortest path using Dijkstra's algorithm.",
+      gameIcon: 'ri-route-line', gameColor: 'from-blue-500 to-cyan-500',
+      gameAlgorithm: "Dijkstra's Algorithm", difficulty: 'Medium', sortOrder: 1
+    },
+    {
+      slug: 'sorting',
+      title: 'Implement Bubble Sort',
+      description: "Sort a list of numbers in ascending order using Bubble Sort.\nReturn the sorted list.",
+      boilerplate: "def bubble_sort(arr):\n    # Sort arr in ascending order using bubble sort\n    pass",
+      hint: "Nested loops: outer for passes, inner for comparing adjacent elements and swapping if out of order.",
+      testCases: JSON.stringify([
+        { input: "[5,3,8,4,2]", expected: "[2,3,4,5,8]" },
+        { input: "[1]", expected: "[1]" },
+        { input: "[9,1,5,3]", expected: "[1,3,5,9]" }
+      ]),
+      gameType: 'sorting', gameTitle: 'Sort Visualizer',
+      gameDescription: 'Race against time! Manually sort the array.',
+      gameIcon: 'ri-bar-chart-line', gameColor: 'from-violet-500 to-purple-500',
+      gameAlgorithm: 'Bubble Sort', difficulty: 'Easy', sortOrder: 2
+    },
+    {
+      slug: 'bfs',
+      title: 'Implement BFS (Breadth-First Search)',
+      description: "Given an adjacency dict, return the BFS traversal order starting from start node.\nReturn a list of visited node IDs.",
+      boilerplate: "from collections import deque\n\ndef bfs(graph, start):\n    # graph = {0:[1,2], 1:[3], 2:[3], 3:[]}\n    # Return list of nodes visited in BFS order\n    pass",
+      hint: "Use a deque as queue. Start by enqueueing the start node. Dequeue, visit neighbors, enqueue unvisited ones.",
+      testCases: JSON.stringify([
+        { input: "{0:[1,2],1:[3],2:[3],3:[]}, 0", expected: "[0,1,2,3]" }
+      ]),
+      gameType: 'bfs', gameTitle: 'Maze Runner (BFS)',
+      gameDescription: 'Navigate a maze using BFS strategy.',
+      gameIcon: 'ri-layout-grid-line', gameColor: 'from-green-500 to-emerald-500',
+      gameAlgorithm: 'BFS Traversal', difficulty: 'Medium', sortOrder: 3
+    },
+    {
+      slug: 'binary_search',
+      title: 'Implement Binary Search',
+      description: "Given a sorted list and a target, return the index of the target.\nReturn -1 if not found.",
+      boilerplate: "def binary_search(arr, target):\n    # arr is sorted ascending\n    # Return index of target, or -1\n    pass",
+      hint: "Maintain low and high pointers. Calculate mid, compare with target, adjust low or high.",
+      testCases: JSON.stringify([
+        { input: "[1,3,5,7,9], 5", expected: "2" },
+        { input: "[2,4,6,8], 3", expected: "-1" },
+        { input: "[1,2,3,4,5], 1", expected: "0" }
+      ]),
+      gameType: 'binary_search', gameTitle: 'Number Hunter',
+      gameDescription: 'Guess the hidden number with Binary Search.',
+      gameIcon: 'ri-search-line', gameColor: 'from-amber-500 to-orange-500',
+      gameAlgorithm: 'Binary Search', difficulty: 'Easy', sortOrder: 4
+    },
+    {
+      slug: 'stack',
+      title: 'Validate Balanced Brackets',
+      description: "Given a string of brackets ()[]{}. Return True if brackets are balanced, False otherwise.",
+      boilerplate: "def is_balanced(s):\n    # Use a stack to check if brackets are balanced\n    pass",
+      hint: "Push opening brackets onto a stack. For closing brackets, pop and check if they match.",
+      testCases: JSON.stringify([
+        { input: '"()[]{}"', expected: "True" },
+        { input: '"([)]"', expected: "False" },
+        { input: '"{[]}"', expected: "True" }
+      ]),
+      gameType: 'stack', gameTitle: 'Stack Overflow',
+      gameDescription: 'Push/pop brackets to match the valid sequence!',
+      gameIcon: 'ri-stack-line', gameColor: 'from-red-500 to-rose-500',
+      gameAlgorithm: 'Stack (LIFO)', difficulty: 'Easy', sortOrder: 5
+    },
+    {
+      slug: 'recursion',
+      title: 'Tower of Hanoi - Count Moves',
+      description: "Return the minimum number of moves needed to solve Tower of Hanoi for n discs.",
+      boilerplate: "def hanoi(n):\n    # Return minimum moves for n discs\n    pass",
+      hint: "The recurrence is: hanoi(n) = 2 * hanoi(n-1) + 1, base case hanoi(1) = 1.",
+      testCases: JSON.stringify([
+        { input: "3", expected: "7" },
+        { input: "4", expected: "15" },
+        { input: "1", expected: "1" }
+      ]),
+      gameType: 'recursion', gameTitle: 'Tower of Hanoi',
+      gameDescription: 'Move all discs from source to target peg.',
+      gameIcon: 'ri-building-4-line', gameColor: 'from-teal-500 to-cyan-500',
+      gameAlgorithm: 'Recursion', difficulty: 'Hard', sortOrder: 6
+    },
+    {
+      slug: 'greedy',
+      title: 'Greedy Coin Change',
+      description: "Given coin denominations [1,5,10,25] and a target amount, return the minimum number of coins needed using the greedy approach.",
+      boilerplate: "def min_coins(coins, amount):\n    # Return minimum number of coins using greedy\n    pass",
+      hint: "Sort coins descending. For each coin, use as many as possible, then move to the next smaller coin.",
+      testCases: JSON.stringify([
+        { input: "[1,5,10,25], 41", expected: "4" },
+        { input: "[1,5,10,25], 30", expected: "2" }
+      ]),
+      gameType: 'greedy', gameTitle: 'Coin Change Challenge',
+      gameDescription: 'Make exact change using fewest coins.',
+      gameIcon: 'ri-coin-line', gameColor: 'from-yellow-500 to-amber-500',
+      gameAlgorithm: 'Greedy Algorithm', difficulty: 'Easy', sortOrder: 7
+    },
+    {
+      slug: 'linkedlist',
+      title: 'Reverse a Linked List',
+      description: "Given a linked list as a list, reverse it and return the reversed list.\n(Simulated linked list using list)",
+      boilerplate: "def reverse_list(arr):\n    # Reverse the list (simulating linked list reversal)\n    # Do it iteratively using prev/current pointers logic\n    pass",
+      hint: "Iterate through, using a 'prev' accumulator. At each step, prepend current to result.",
+      testCases: JSON.stringify([
+        { input: "[1,2,3,4,5]", expected: "[5,4,3,2,1]" },
+        { input: "[10]", expected: "[10]" }
+      ]),
+      gameType: 'linkedlist', gameTitle: 'Chain Builder',
+      gameDescription: 'Build and manipulate a linked list.',
+      gameIcon: 'ri-links-line', gameColor: 'from-indigo-500 to-blue-500',
+      gameAlgorithm: 'Linked List', difficulty: 'Medium', sortOrder: 8
+    },
+    {
+      slug: 'hash',
+      title: 'Implement a Hash Function',
+      description: "Given a list of keys and table size, return a dict mapping each bucket index to its keys.\nHash function: key % size.",
+      boilerplate: "def hash_map(keys, size):\n    # Return dict: {bucket_index: [keys...], ...}\n    # Hash function: key % size\n    pass",
+      hint: "Loop through keys, compute key % size, group keys by their bucket index.",
+      testCases: JSON.stringify([
+        { input: "[3,10,17,24], 7", expected: "{3:[3,10,17,24]}" },
+        { input: "[1,8,15], 7", expected: "{1:[1,8,15]}" }
+      ]),
+      gameType: 'hash', gameTitle: 'Hash Table Quest',
+      gameDescription: 'Map keys to buckets - learn hashing!',
+      gameIcon: 'ri-hashtag', gameColor: 'from-pink-500 to-rose-500',
+      gameAlgorithm: 'Hash Tables', difficulty: 'Medium', sortOrder: 9
+    },
+    {
+      slug: 'dp',
+      title: '0/1 Knapsack Problem',
+      description: "Given items as list of [weight, value] pairs and a capacity, return the maximum value achievable using DP.",
+      boilerplate: "def knapsack(items, capacity):\n    # items = [[2,3], [3,4], [4,5]]\n    # Return max value within capacity\n    pass",
+      hint: "Build a 2D DP table: dp[i][w] = max value using first i items with capacity w.",
+      testCases: JSON.stringify([
+        { input: "[[2,3],[3,4],[4,5]], 5", expected: "7" },
+        { input: "[[1,1],[2,6],[3,10]], 5", expected: "16" }
+      ]),
+      gameType: 'dp', gameTitle: 'Knapsack Packer',
+      gameDescription: 'Maximize value without exceeding weight.',
+      gameIcon: 'ri-briefcase-4-line', gameColor: 'from-emerald-500 to-green-500',
+      gameAlgorithm: 'Dynamic Programming', difficulty: 'Hard', sortOrder: 10
+    },
+    {
+      slug: 'tree',
+      title: 'BST Insertion & In-Order',
+      description: "Given a sequence of values, build a BST and return the in-order traversal as a list.",
+      boilerplate: "def bst_inorder(values):\n    # Insert values into BST, then return in-order traversal\n    pass",
+      hint: "Create a Node class with val/left/right. Insert by comparing with current node. In-order: left, root, right.",
+      testCases: JSON.stringify([
+        { input: "[5,3,7,1,4]", expected: "[1,3,4,5,7]" },
+        { input: "[10,5,15]", expected: "[5,10,15]" }
+      ]),
+      gameType: 'tree', gameTitle: 'BST Explorer',
+      gameDescription: 'Build a Binary Search Tree by inserting values.',
+      gameIcon: 'ri-node-tree', gameColor: 'from-orange-500 to-red-500',
+      gameAlgorithm: 'Binary Search Tree', difficulty: 'Medium', sortOrder: 11
+    },
+    {
+      slug: 'graph_coloring',
+      title: 'Graph Coloring Check',
+      description: "Given adjacency edges and a color assignment dict, return True if no two adjacent nodes share a color.",
+      boilerplate: "def is_valid_coloring(edges, colors):\n    # edges = [[0,1],[1,2],[0,2]]\n    # colors = {0:'red', 1:'blue', 2:'green'}\n    # Return True if valid coloring\n    pass",
+      hint: "Loop through edges. For each edge [a,b], check if colors[a] != colors[b].",
+      testCases: JSON.stringify([
+        { input: "[[0,1],[1,2],[0,2]], {0:'red',1:'blue',2:'green'}", expected: "True" },
+        { input: "[[0,1],[1,2],[0,2]], {0:'red',1:'red',2:'green'}", expected: "False" }
+      ]),
+      gameType: 'graph_coloring', gameTitle: 'Map Coloring',
+      gameDescription: 'Color a map so no adjacent regions share a color.',
+      gameIcon: 'ri-palette-line', gameColor: 'from-fuchsia-500 to-pink-500',
+      gameAlgorithm: 'Graph Coloring', difficulty: 'Hard', sortOrder: 12
+    },
+
+    // ─── 33 EXTRA CHALLENGES ───
+    // Sorting family
+    {
+      slug: 'selection_sort',
+      title: 'Selection Sort',
+      description: "Implement selection sort that sorts a list in ascending order.\n\nFunction: selection_sort(arr) -> sorted list",
+      boilerplate: "def selection_sort(arr):\n    # Find minimum element, swap with first unsorted position\n    pass",
+      hint: "Loop i from 0 to n-1. Find the minimum in arr[i..n-1] and swap it with arr[i].",
+      testCases: JSON.stringify([
+        { input: "[64,25,12,22,11]", expected: "[11,12,22,25,64]" },
+        { input: "[5,1,4,2,8]", expected: "[1,2,4,5,8]" }
+      ]),
+      gameType: 'sorting', gameTitle: 'Selection Sort',
+      gameDescription: 'Find the minimum and place it at the front',
+      gameIcon: 'ri-sort-asc', gameColor: 'from-blue-500 to-blue-700',
+      gameAlgorithm: 'Selection Sort', difficulty: 'Easy', sortOrder: 13
+    },
+    {
+      slug: 'insertion_sort',
+      title: 'Insertion Sort',
+      description: "Implement insertion sort that sorts a list in ascending order.\n\nFunction: insertion_sort(arr) -> sorted list",
+      boilerplate: "def insertion_sort(arr):\n    # Insert each element into its correct position\n    pass",
+      hint: "For each element starting from index 1, shift larger elements right and insert in the correct spot.",
+      testCases: JSON.stringify([
+        { input: "[12,11,13,5,6]", expected: "[5,6,11,12,13]" },
+        { input: "[4,3,2,10,12,1,5,6]", expected: "[1,2,3,4,5,6,10,12]" }
+      ]),
+      gameType: 'sorting', gameTitle: 'Insertion Sort',
+      gameDescription: 'Insert each card into its sorted position',
+      gameIcon: 'ri-insert-column-right', gameColor: 'from-blue-300 to-blue-500',
+      gameAlgorithm: 'Insertion Sort', difficulty: 'Easy', sortOrder: 14
+    },
+    {
+      slug: 'merge_sort',
+      title: 'Merge Sort',
+      description: "Implement merge sort using divide and conquer.\n\nFunction: merge_sort(arr) -> sorted list",
+      boilerplate: "def merge_sort(arr):\n    if len(arr) <= 1:\n        return arr\n    # Split, sort halves, merge\n    pass",
+      hint: "Split list in half, recursively sort each half, then merge the two sorted halves using two pointers.",
+      testCases: JSON.stringify([
+        { input: "[38,27,43,3,9,82,10]", expected: "[3,9,10,27,38,43,82]" },
+        { input: "[5,2,8,1,9]", expected: "[1,2,5,8,9]" }
+      ]),
+      gameType: 'sorting', gameTitle: 'Merge Sort',
+      gameDescription: 'Divide, conquer, and merge the array',
+      gameIcon: 'ri-git-merge-line', gameColor: 'from-indigo-400 to-indigo-600',
+      gameAlgorithm: 'Merge Sort', difficulty: 'Medium', sortOrder: 15
+    },
+    {
+      slug: 'quick_sort',
+      title: 'Quick Sort',
+      description: "Implement quick sort.\n\nFunction: quick_sort(arr) -> sorted list",
+      boilerplate: "def quick_sort(arr):\n    if len(arr) <= 1:\n        return arr\n    # Pick pivot, partition, recurse\n    pass",
+      hint: "Choose a pivot (e.g. last element). Partition into elements < pivot, equal, > pivot. Recursively sort the partitions.",
+      testCases: JSON.stringify([
+        { input: "[10,7,8,9,1,5]", expected: "[1,5,7,8,9,10]" },
+        { input: "[3,6,8,10,1,2,1]", expected: "[1,1,2,3,6,8,10]" }
+      ]),
+      gameType: 'sorting', gameTitle: 'Quick Sort',
+      gameDescription: 'Partition around a pivot element',
+      gameIcon: 'ri-flashlight-line', gameColor: 'from-indigo-500 to-indigo-700',
+      gameAlgorithm: 'Quick Sort', difficulty: 'Medium', sortOrder: 16
+    },
+    {
+      slug: 'counting_sort',
+      title: 'Counting Sort',
+      description: "Implement counting sort for non-negative integers.\n\nFunction: counting_sort(arr) -> sorted list",
+      boilerplate: "def counting_sort(arr):\n    # Count occurrences, rebuild sorted list\n    pass",
+      hint: "Find the max value, create a count list of that size, count each element, then rebuild from counts.",
+      testCases: JSON.stringify([
+        { input: "[4,2,2,8,3,3,1]", expected: "[1,2,2,3,3,4,8]" },
+        { input: "[1,0,3,1,3,1]", expected: "[0,1,1,1,3,3]" }
+      ]),
+      gameType: 'sorting', gameTitle: 'Counting Sort',
+      gameDescription: 'Count occurrences for linear-time sorting',
+      gameIcon: 'ri-calculator-line', gameColor: 'from-cyan-400 to-cyan-600',
+      gameAlgorithm: 'Counting Sort', difficulty: 'Easy', sortOrder: 17
+    },
+
+    // Searching family
+    {
+      slug: 'linear_search',
+      title: 'Linear Search',
+      description: "Implement linear search returning the index of the target, or -1 if not found.\n\nFunction: linear_search(arr, target) -> index",
+      boilerplate: "def linear_search(arr, target):\n    # Check each element one by one\n    pass",
+      hint: "Iterate through the list. Return the index when element == target.",
+      testCases: JSON.stringify([
+        { input: "[10,20,30,40,50], 30", expected: "2" },
+        { input: "[5,8,1,3], 7", expected: "-1" },
+        { input: "[1,2,3], 1", expected: "0" }
+      ]),
+      gameType: 'binary_search', gameTitle: 'Linear Search',
+      gameDescription: 'Find the target by scanning one by one',
+      gameIcon: 'ri-search-line', gameColor: 'from-teal-500 to-teal-700',
+      gameAlgorithm: 'Linear Search', difficulty: 'Easy', sortOrder: 18
+    },
+    {
+      slug: 'jump_search',
+      title: 'Jump Search',
+      description: "Implement jump search on a sorted list. Jump by sqrt(n) steps, then do linear search in the block.\n\nFunction: jump_search(arr, target) -> index or -1",
+      boilerplate: "import math\n\ndef jump_search(arr, target):\n    n = len(arr)\n    step = int(math.sqrt(n))\n    # Jump then linear search\n    pass",
+      hint: "Jump ahead by sqrt(n) until arr[min(step, n)-1] >= target. Then linear search backwards in that block.",
+      testCases: JSON.stringify([
+        { input: "[0,1,2,3,5,8,13,21,34], 13", expected: "6" },
+        { input: "[1,3,5,7,9], 4", expected: "-1" },
+        { input: "[1,3,5,7,9], 7", expected: "3" }
+      ]),
+      gameType: 'binary_search', gameTitle: 'Jump Search',
+      gameDescription: 'Jump by sqrt(n) blocks then linear scan',
+      gameIcon: 'ri-speed-line', gameColor: 'from-teal-300 to-teal-500',
+      gameAlgorithm: 'Jump Search', difficulty: 'Medium', sortOrder: 19
+    },
+    {
+      slug: 'range_sum',
+      title: 'Prefix Sum - Range Query',
+      description: "Build a prefix sum and answer range sum queries in O(1).\n\nFunction: range_sum(arr, l, r) -> sum of arr[l..r] inclusive",
+      boilerplate: "def range_sum(arr, l, r):\n    # Build prefix sums for O(1) range queries\n    pass",
+      hint: "Compute prefix[i] = arr[0]+...+arr[i]. Then range_sum(l,r) = prefix[r] - (prefix[l-1] if l > 0 else 0).",
+      testCases: JSON.stringify([
+        { input: "[1,2,3,4,5], 1, 3", expected: "9" },
+        { input: "[10,20,30], 0, 2", expected: "60" },
+        { input: "[5,5,5,5], 0, 0", expected: "5" }
+      ]),
+      gameType: 'binary_search', gameTitle: 'Prefix Sum Query',
+      gameDescription: 'Answer range sum queries in O(1)',
+      gameIcon: 'ri-bar-chart-line', gameColor: 'from-emerald-400 to-emerald-600',
+      gameAlgorithm: 'Prefix Sums', difficulty: 'Easy', sortOrder: 20
+    },
+
+    // Graph / Maze family
+    {
+      slug: 'dfs_traversal',
+      title: 'DFS Graph Traversal',
+      description: "Implement Depth-First Search on an adjacency dict.\n\nFunction: dfs(graph, start) -> list of visited nodes in DFS order\ngraph: dict {0:[1,2], 1:[3], ...}",
+      boilerplate: "def dfs(graph, start):\n    visited = []\n    # Use stack or recursion\n    return visited",
+      hint: "Use a stack (append start). Pop a node, if not visited mark it and push its neighbors.",
+      testCases: JSON.stringify([
+        { input: "{0:[1,2], 1:[3], 2:[], 3:[]}, 0", expected: "[0,1,3,2]" },
+        { input: "{0:[1], 1:[2], 2:[]}, 0", expected: "[0,1,2]" }
+      ]),
+      gameType: 'bfs', gameTitle: 'DFS Explorer',
+      gameDescription: 'Traverse the graph depth-first',
+      gameIcon: 'ri-compass-3-line', gameColor: 'from-sky-500 to-sky-700',
+      gameAlgorithm: 'Depth-First Search', difficulty: 'Medium', sortOrder: 21
+    },
+    {
+      slug: 'flood_fill',
+      title: 'Flood Fill',
+      description: "Fill connected same-color cells with a new color (like paint bucket).\n\nFunction: flood_fill(grid, sr, sc, new_color) -> modified grid",
+      boilerplate: "def flood_fill(grid, sr, sc, new_color):\n    # BFS/DFS from (sr,sc)\n    pass",
+      hint: "Get original color at (sr,sc). BFS/DFS to all connected cells with that color, change them to new_color.",
+      testCases: JSON.stringify([
+        { input: "[[1,1,1],[1,1,0],[1,0,1]], 1, 1, 2", expected: "[[2,2,2],[2,2,0],[2,0,1]]" },
+        { input: "[[0,0],[0,0]], 0, 0, 3", expected: "[[3,3],[3,3]]" }
+      ]),
+      gameType: 'bfs', gameTitle: 'Paint Bucket',
+      gameDescription: 'Flood-fill connected regions with colour',
+      gameIcon: 'ri-paint-fill', gameColor: 'from-sky-300 to-sky-500',
+      gameAlgorithm: 'Flood Fill (BFS)', difficulty: 'Medium', sortOrder: 22
+    },
+    {
+      slug: 'island_count',
+      title: 'Count Islands',
+      description: "Count the number of islands in a 2-D grid (1 = land, 0 = water). Connected horizontally/vertically.\n\nFunction: count_islands(grid) -> number",
+      boilerplate: "def count_islands(grid):\n    count = 0\n    # For each unvisited 1, BFS/DFS and increment count\n    return count",
+      hint: "Iterate every cell. When you find a 1, increment count and BFS/DFS to mark all connected 1s as visited (set to 0).",
+      testCases: JSON.stringify([
+        { input: "[[1,1,0,0],[0,0,1,0],[0,0,0,1]]", expected: "3" },
+        { input: "[[1,1,1],[0,1,0],[1,0,1]]", expected: "3" }
+      ]),
+      gameType: 'bfs', gameTitle: 'Island Counter',
+      gameDescription: 'Count islands in a grid of land & water',
+      gameIcon: 'ri-landscape-line', gameColor: 'from-lime-400 to-lime-600',
+      gameAlgorithm: 'Connected Components', difficulty: 'Hard', sortOrder: 23
+    },
+    {
+      slug: 'prims_mst',
+      title: "Prim's MST Weight",
+      description: "Find the total weight of the Minimum Spanning Tree.\n\nFunction: prims_mst(n, edges) -> total weight\nedges: [[from, to, weight], ...]",
+      boilerplate: "import heapq\n\ndef prims_mst(n, edges):\n    # Greedy: always add cheapest edge to the growing tree\n    pass",
+      hint: "Start from node 0, maintain a visited set. Always pick the minimum weight edge connecting visited to unvisited.",
+      testCases: JSON.stringify([
+        { input: "4, [[0,1,10],[0,2,6],[0,3,5],[1,3,15],[2,3,4]]", expected: "19" },
+        { input: "3, [[0,1,1],[1,2,2],[0,2,3]]", expected: "3" }
+      ]),
+      gameType: 'dijkstra', gameTitle: "Prim's MST",
+      gameDescription: 'Build the minimum spanning tree',
+      gameIcon: 'ri-share-line', gameColor: 'from-purple-500 to-purple-700',
+      gameAlgorithm: "Prim's Algorithm", difficulty: 'Hard', sortOrder: 24
+    },
+    {
+      slug: 'bellman_ford',
+      title: 'Bellman-Ford Shortest Path',
+      description: "Find shortest distances from a source to all nodes (handles negative weights).\n\nFunction: bellman_ford(n, edges, src) -> distances list\nedges: [[from, to, weight], ...]",
+      boilerplate: "def bellman_ford(n, edges, src):\n    dist = [float('inf')] * n\n    dist[src] = 0\n    # Relax all edges (n-1) times\n    return dist",
+      hint: "Repeat n-1 times: for each edge (u,v,w), if dist[u]+w < dist[v] then dist[v] = dist[u]+w.",
+      testCases: JSON.stringify([
+        { input: "5, [[0,1,6],[0,2,7],[1,2,8],[1,3,5],[1,4,-4],[2,3,-3],[2,4,9],[3,1,-2],[4,0,2],[4,3,7]], 0", expected: "[0,2,7,4,-2]" }
+      ]),
+      gameType: 'dijkstra', gameTitle: 'Bellman-Ford',
+      gameDescription: 'Shortest path with negative weights',
+      gameIcon: 'ri-road-map-line', gameColor: 'from-fuchsia-400 to-fuchsia-600',
+      gameAlgorithm: 'Bellman-Ford', difficulty: 'Hard', sortOrder: 25
+    },
+    {
+      slug: 'topo_sort',
+      title: 'Topological Sort',
+      description: "Topological order of a DAG using Kahn's algorithm.\n\nFunction: topo_sort(n, edges) -> list of node ids in topological order\nedges: [[from, to], ...]",
+      boilerplate: "from collections import deque\n\ndef topo_sort(n, edges):\n    # Compute in-degree, BFS from 0-degree nodes\n    pass",
+      hint: "Build in-degree list. Enqueue all nodes with in-degree 0. Dequeue, add to result, reduce neighbours' in-degree.",
+      testCases: JSON.stringify([
+        { input: "6, [[5,2],[5,0],[4,0],[4,1],[2,3],[3,1]]", expected: "valid topological order" }
+      ]),
+      gameType: 'dijkstra', gameTitle: 'Topological Sort',
+      gameDescription: 'Order tasks respecting dependencies',
+      gameIcon: 'ri-flow-chart', gameColor: 'from-fuchsia-500 to-fuchsia-700',
+      gameAlgorithm: 'Topological Sort', difficulty: 'Hard', sortOrder: 26
+    },
+
+    // Stack/Queue family
+    {
+      slug: 'queue_impl',
+      title: 'Queue Implementation',
+      description: "Implement a Queue class with enqueue, dequeue, front and size methods.",
+      boilerplate: "class Queue:\n    def __init__(self):\n        self.items = []\n\n    def enqueue(self, val):\n        # Add to back\n        pass\n\n    def dequeue(self):\n        # Remove & return front\n        pass\n\n    def front(self):\n        # Peek front\n        pass\n\n    def size(self):\n        # Return length\n        pass",
+      hint: "Use append() to add to the back and pop(0) to remove from the front.",
+      testCases: JSON.stringify([
+        { input: "enqueue(1), enqueue(2), front(), dequeue(), size()", expected: "front=1, dequeue=1, size=1" }
+      ]),
+      gameType: 'stack', gameTitle: 'Queue Builder',
+      gameDescription: 'Build a FIFO queue from scratch',
+      gameIcon: 'ri-align-justify', gameColor: 'from-green-500 to-green-700',
+      gameAlgorithm: 'Queue Operations', difficulty: 'Easy', sortOrder: 27
+    },
+    {
+      slug: 'prefix_eval',
+      title: 'Evaluate Prefix Expression',
+      description: "Evaluate a prefix (Polish notation) expression.\n\nFunction: eval_prefix(tokens) -> number\ntokens: list of strings, e.g. ['+','3','4'] -> 7",
+      boilerplate: "def eval_prefix(tokens):\n    # Process right-to-left with a stack\n    pass",
+      hint: "Traverse tokens right to left. Push numbers onto stack. On operator, pop two operands, compute, push result.",
+      testCases: JSON.stringify([
+        { input: "['+','3','4']", expected: "7" },
+        { input: "['*','+','2','3','4']", expected: "20" },
+        { input: "['-','10','5']", expected: "5" }
+      ]),
+      gameType: 'stack', gameTitle: 'Prefix Evaluator',
+      gameDescription: 'Evaluate Polish notation expressions',
+      gameIcon: 'ri-terminal-box-line', gameColor: 'from-green-300 to-green-500',
+      gameAlgorithm: 'Stack + Prefix', difficulty: 'Medium', sortOrder: 28
+    },
+    {
+      slug: 'infix_postfix',
+      title: 'Infix to Postfix',
+      description: "Convert infix expression to postfix (Reverse Polish Notation).\n\nFunction: to_postfix(tokens) -> list in postfix order\nSupport +, -, *, / and parentheses",
+      boilerplate: "def to_postfix(tokens):\n    # Shunting-yard algorithm\n    pass",
+      hint: "Use an operator stack and output list. Pop higher/equal precedence ops before pushing new op. Parentheses reset precedence.",
+      testCases: JSON.stringify([
+        { input: "['3','+','4']", expected: "['3','4','+']" },
+        { input: "['(','3','+','4',')','*','2']", expected: "['3','4','+','2','*']" }
+      ]),
+      gameType: 'stack', gameTitle: 'Shunting Yard',
+      gameDescription: 'Convert infix to postfix notation',
+      gameIcon: 'ri-code-box-line', gameColor: 'from-lime-500 to-lime-700',
+      gameAlgorithm: 'Shunting-Yard', difficulty: 'Medium', sortOrder: 29
+    },
+
+    // Recursion family
+    {
+      slug: 'fibonacci_climb',
+      title: 'Stair Climbing (Fibonacci)',
+      description: "You can climb 1 or 2 steps at a time. How many distinct ways to reach step n?\n\nFunction: climb_stairs(n) -> number of ways",
+      boilerplate: "def climb_stairs(n):\n    # DP or recursion with memo\n    pass",
+      hint: "climb_stairs(n) = climb_stairs(n-1) + climb_stairs(n-2). Base cases: climb_stairs(1)=1, climb_stairs(2)=2.",
+      testCases: JSON.stringify([
+        { input: "3", expected: "3" },
+        { input: "5", expected: "8" },
+        { input: "1", expected: "1" },
+        { input: "10", expected: "89" }
+      ]),
+      gameType: 'recursion', gameTitle: 'Stair Climber',
+      gameDescription: 'Count ways to climb n stairs',
+      gameIcon: 'ri-footprint-line', gameColor: 'from-yellow-500 to-yellow-700',
+      gameAlgorithm: 'Fibonacci / DP', difficulty: 'Easy', sortOrder: 30
+    },
+    {
+      slug: 'subset_sum',
+      title: 'Subset Sum',
+      description: "Given positive integers and a target sum, return True if any subset sums to target.\n\nFunction: has_subset_sum(arr, target) -> bool",
+      boilerplate: "def has_subset_sum(arr, target):\n    # Recursion or DP\n    pass",
+      hint: "For each element: include it (reduce target) or exclude it (keep target). Base: target==0 -> True, empty list -> False.",
+      testCases: JSON.stringify([
+        { input: "[3,34,4,12,5,2], 9", expected: "True" },
+        { input: "[3,34,4,12,5,2], 30", expected: "False" },
+        { input: "[1,2,3], 6", expected: "True" }
+      ]),
+      gameType: 'recursion', gameTitle: 'Subset Sum',
+      gameDescription: 'Find if a subset sums to a target',
+      gameIcon: 'ri-checkbox-multiple-line', gameColor: 'from-yellow-300 to-yellow-500',
+      gameAlgorithm: 'Subset Sum', difficulty: 'Medium', sortOrder: 31
+    },
+
+    // Greedy family
+    {
+      slug: 'activity_select',
+      title: 'Activity Selection',
+      description: "Find the maximum number of non-overlapping activities.\n\nFunction: max_activities(acts) -> count\nacts: [[start, end], ...]",
+      boilerplate: "def max_activities(acts):\n    # Greedy: pick by earliest finish time\n    pass",
+      hint: "Sort by end time. Pick the first activity, then always pick the next whose start >= last picked end.",
+      testCases: JSON.stringify([
+        { input: "[[1,4],[3,5],[0,6],[5,7],[3,9],[5,9],[6,10],[8,11],[8,12],[2,14],[12,16]]", expected: "4" },
+        { input: "[[1,2],[2,3],[3,4]]", expected: "3" }
+      ]),
+      gameType: 'greedy', gameTitle: 'Activity Selector',
+      gameDescription: 'Pick maximum non-overlapping activities',
+      gameIcon: 'ri-calendar-check-line', gameColor: 'from-amber-500 to-amber-700',
+      gameAlgorithm: 'Activity Selection', difficulty: 'Medium', sortOrder: 32
+    },
+    {
+      slug: 'char_frequency',
+      title: 'Frequency Sort',
+      description: "Sort characters of a string by frequency (descending). Same-frequency chars in original order.\n\nFunction: freq_sort(s) -> rearranged string",
+      boilerplate: "def freq_sort(s):\n    # Count chars, sort by frequency desc\n    pass",
+      hint: "Build a frequency dict, then sort characters by their frequency descending.",
+      testCases: JSON.stringify([
+        { input: "'tree'", expected: "'eert' or 'eetr'" },
+        { input: "'aab'", expected: "'aab'" }
+      ]),
+      gameType: 'greedy', gameTitle: 'Frequency Sort',
+      gameDescription: 'Sort characters by their frequency',
+      gameIcon: 'ri-bar-chart-2-line', gameColor: 'from-amber-300 to-amber-500',
+      gameAlgorithm: 'Frequency Counting', difficulty: 'Medium', sortOrder: 33
+    },
+    {
+      slug: 'job_schedule',
+      title: 'Job Scheduling',
+      description: "Schedule jobs with deadlines to maximise profit (at most one job per time slot).\n\nFunction: job_schedule(jobs) -> max profit\njobs: [[deadline, profit], ...]",
+      boilerplate: "def job_schedule(jobs):\n    # Sort by profit desc, assign to latest free slot\n    pass",
+      hint: "Sort by profit descending. For each job try to schedule it at the latest free slot <= its deadline.",
+      testCases: JSON.stringify([
+        { input: "[[2,100],[1,19],[2,27],[1,25],[3,15]]", expected: "142" }
+      ]),
+      gameType: 'greedy', gameTitle: 'Job Scheduler',
+      gameDescription: 'Schedule jobs for maximum profit',
+      gameIcon: 'ri-time-line', gameColor: 'from-orange-500 to-orange-700',
+      gameAlgorithm: 'Job Scheduling', difficulty: 'Hard', sortOrder: 34
+    },
+
+    // Linked-list family
+    {
+      slug: 'doubly_linked',
+      title: 'Reverse Doubly Linked List',
+      description: "Simulate reversing a doubly linked list by reversing a list in-place.\n\nFunction: reverse_list(arr) -> reversed list",
+      boilerplate: "def reverse_list(arr):\n    # Swap from both ends toward the center\n    pass",
+      hint: "Use two pointers (start and end), swap elements, move inward until they meet.",
+      testCases: JSON.stringify([
+        { input: "[1,2,3,4,5]", expected: "[5,4,3,2,1]" },
+        { input: "[10,20]", expected: "[20,10]" }
+      ]),
+      gameType: 'linkedlist', gameTitle: 'Reverse List',
+      gameDescription: 'Reverse a doubly linked list',
+      gameIcon: 'ri-arrow-left-right-line', gameColor: 'from-orange-300 to-orange-500',
+      gameAlgorithm: 'Doubly Linked List', difficulty: 'Medium', sortOrder: 35
+    },
+    {
+      slug: 'cycle_detect',
+      title: 'Detect Cycle in Graph',
+      description: "Given an undirected graph, detect if it contains a cycle.\n\nFunction: has_cycle(n, edges) -> bool\nedges: [[u, v], ...]",
+      boilerplate: "def has_cycle(n, edges):\n    # Union-Find or DFS\n    pass",
+      hint: "Union-Find: for each edge, if both endpoints already share the same root, a cycle exists.",
+      testCases: JSON.stringify([
+        { input: "4, [[0,1],[1,2],[2,3],[3,0]]", expected: "True" },
+        { input: "3, [[0,1],[1,2]]", expected: "False" }
+      ]),
+      gameType: 'linkedlist', gameTitle: 'Cycle Detector',
+      gameDescription: 'Detect a cycle in a graph',
+      gameIcon: 'ri-refresh-line', gameColor: 'from-red-500 to-red-700',
+      gameAlgorithm: 'Union-Find', difficulty: 'Medium', sortOrder: 36
+    },
+    {
+      slug: 'merge_sorted',
+      title: 'Merge Two Sorted Lists',
+      description: "Merge two sorted lists into one sorted list.\n\nFunction: merge_sorted(a, b) -> merged sorted list",
+      boilerplate: "def merge_sorted(a, b):\n    result = []\n    # Two-pointer merge\n    return result",
+      hint: "Maintain two indices i, j. Compare a[i] and b[j], append the smaller one, advance that pointer.",
+      testCases: JSON.stringify([
+        { input: "[1,3,5], [2,4,6]", expected: "[1,2,3,4,5,6]" },
+        { input: "[1,1], [2,2]", expected: "[1,1,2,2]" }
+      ]),
+      gameType: 'linkedlist', gameTitle: 'Merge Sorted',
+      gameDescription: 'Merge two sorted arrays into one',
+      gameIcon: 'ri-merge-cells-horizontal', gameColor: 'from-red-300 to-red-500',
+      gameAlgorithm: 'Two-Pointer Merge', difficulty: 'Easy', sortOrder: 37
+    },
+
+    // Hash family
+    {
+      slug: 'two_sum_hash',
+      title: 'Two Sum (Hash Map)',
+      description: "Find two indices whose values sum to target using a hash map.\n\nFunction: two_sum(arr, target) -> [i, j]",
+      boilerplate: "def two_sum(arr, target):\n    seen = {}\n    # Store complement -> index\n    pass",
+      hint: "For each number, check if (target - number) exists in the dict. If yes return both indices; otherwise store number->index.",
+      testCases: JSON.stringify([
+        { input: "[2,7,11,15], 9", expected: "[0,1]" },
+        { input: "[3,2,4], 6", expected: "[1,2]" }
+      ]),
+      gameType: 'hash', gameTitle: 'Two Sum Hash',
+      gameDescription: 'Solve Two Sum with a hash map',
+      gameIcon: 'ri-add-circle-line', gameColor: 'from-rose-500 to-rose-700',
+      gameAlgorithm: 'Hash Map Lookup', difficulty: 'Easy', sortOrder: 38
+    },
+    {
+      slug: 'anagram_group',
+      title: 'Group Anagrams',
+      description: "Group words that are anagrams of each other.\n\nFunction: group_anagrams(words) -> list of groups",
+      boilerplate: "def group_anagrams(words):\n    groups = {}\n    # Sort each word as key\n    pass",
+      hint: "For each word, sort its letters to create a key. Map key -> [words]. Return all values of the dict.",
+      testCases: JSON.stringify([
+        { input: "['eat','tea','tan','ate','nat','bat']", expected: "[['eat','tea','ate'],['tan','nat'],['bat']]" }
+      ]),
+      gameType: 'hash', gameTitle: 'Anagram Groups',
+      gameDescription: 'Group words that are anagrams',
+      gameIcon: 'ri-text', gameColor: 'from-rose-300 to-rose-500',
+      gameAlgorithm: 'Hash Grouping', difficulty: 'Medium', sortOrder: 39
+    },
+
+    // DP family
+    {
+      slug: 'lcs_dp',
+      title: 'Longest Common Subsequence',
+      description: "Find the length of the longest common subsequence of two strings.\n\nFunction: lcs(a, b) -> number",
+      boilerplate: "def lcs(a, b):\n    # Build a 2-D DP table\n    pass",
+      hint: "dp[i][j] = LCS length of a[0..i-1] and b[0..j-1]. If a[i-1]==b[j-1] -> dp[i-1][j-1]+1, else max(dp[i-1][j], dp[i][j-1]).",
+      testCases: JSON.stringify([
+        { input: "'abcde', 'ace'", expected: "3" },
+        { input: "'abc', 'def'", expected: "0" },
+        { input: "'abc', 'abc'", expected: "3" }
+      ]),
+      gameType: 'dp', gameTitle: 'LCS Challenge',
+      gameDescription: 'Find the longest common subsequence',
+      gameIcon: 'ri-text-wrap', gameColor: 'from-pink-500 to-pink-700',
+      gameAlgorithm: 'LCS (DP)', difficulty: 'Hard', sortOrder: 40
+    },
+    {
+      slug: 'lis_dp',
+      title: 'Longest Increasing Subsequence',
+      description: "Find length of the longest strictly increasing subsequence.\n\nFunction: lis(arr) -> number",
+      boilerplate: "def lis(arr):\n    # dp[i] = LIS length ending at index i\n    pass",
+      hint: "dp[i] = 1 + max(dp[j]) for all j < i where arr[j] < arr[i]. Answer is max(dp).",
+      testCases: JSON.stringify([
+        { input: "[10,9,2,5,3,7,101,18]", expected: "4" },
+        { input: "[0,1,0,3,2,3]", expected: "4" }
+      ]),
+      gameType: 'dp', gameTitle: 'LIS Challenge',
+      gameDescription: 'Find the longest increasing subsequence',
+      gameIcon: 'ri-line-chart-line', gameColor: 'from-pink-300 to-pink-500',
+      gameAlgorithm: 'LIS (DP)', difficulty: 'Hard', sortOrder: 41
+    },
+    {
+      slug: 'rod_cutting',
+      title: 'Rod Cutting',
+      description: "Given a rod of length n and prices for each length, find maximum revenue.\n\nFunction: rod_cut(prices, n) -> max revenue\nprices[i] = price for length (i+1)",
+      boilerplate: "def rod_cut(prices, n):\n    # dp[i] = max revenue for rod of length i\n    pass",
+      hint: "dp[i] = max(prices[j-1] + dp[i-j]) for j = 1..i. Base: dp[0] = 0.",
+      testCases: JSON.stringify([
+        { input: "[1,5,8,9,10,17,17,20], 8", expected: "22" },
+        { input: "[3,5,8,9,10,17,17,20], 4", expected: "12" }
+      ]),
+      gameType: 'dp', gameTitle: 'Rod Cutter',
+      gameDescription: 'Cut a rod for maximum revenue',
+      gameIcon: 'ri-scissors-cut-line', gameColor: 'from-violet-500 to-violet-700',
+      gameAlgorithm: 'Rod Cutting (DP)', difficulty: 'Hard', sortOrder: 42
+    },
+
+    // Tree family
+    {
+      slug: 'heap_build',
+      title: 'Build Min-Heap',
+      description: "Rearrange a list into a valid min-heap (parent <= children).\n\nFunction: build_min_heap(arr) -> min-heap list",
+      boilerplate: "def build_min_heap(arr):\n    # Heapify from last non-leaf up to root\n    pass",
+      hint: "Start from i = len(arr)//2 - 1 down to 0. Swap with smallest child if needed, then sift down.",
+      testCases: JSON.stringify([
+        { input: "[5,3,8,1,2]", expected: "valid min-heap" }
+      ]),
+      gameType: 'tree', gameTitle: 'Heap Builder',
+      gameDescription: 'Build a min-heap from an array',
+      gameIcon: 'ri-stack-line', gameColor: 'from-violet-300 to-violet-500',
+      gameAlgorithm: 'Min-Heap', difficulty: 'Medium', sortOrder: 43
+    },
+    {
+      slug: 'avl_check',
+      title: 'Balanced BST Check',
+      description: "Check if a binary tree (given as level-order list, None for missing) is a balanced BST.\n\nFunction: is_balanced_bst(arr) -> bool\nBalanced = height diff of subtrees <= 1 AND BST property holds",
+      boilerplate: "def is_balanced_bst(arr):\n    # Rebuild tree, verify BST + balance\n    pass",
+      hint: "Reconstruct the tree from the list. Check in-order traversal is sorted (BST) and height difference <= 1 at every node.",
+      testCases: JSON.stringify([
+        { input: "[2,1,3]", expected: "True" },
+        { input: "[5,3,7,2,4,6,8]", expected: "True" }
+      ]),
+      gameType: 'tree', gameTitle: 'Balance Checker',
+      gameDescription: 'Check if a tree is a balanced BST',
+      gameIcon: 'ri-scales-3-line', gameColor: 'from-purple-300 to-purple-500',
+      gameAlgorithm: 'Balanced BST', difficulty: 'Hard', sortOrder: 44
+    },
+
+    // Graph coloring family
+    {
+      slug: 'bipartite_check',
+      title: 'Bipartite Graph Check',
+      description: "Determine if an undirected graph is bipartite (2-colourable).\n\nFunction: is_bipartite(n, edges) -> bool\nedges: [[u, v], ...]",
+      boilerplate: "from collections import deque\n\ndef is_bipartite(n, edges):\n    # BFS/DFS 2-colouring\n    pass",
+      hint: "Colour start node 0. BFS: colour every uncoloured neighbour with the opposite colour. If a neighbour already has the same colour -> not bipartite.",
+      testCases: JSON.stringify([
+        { input: "4, [[0,1],[1,2],[2,3],[3,0]]", expected: "True" },
+        { input: "3, [[0,1],[1,2],[2,0]]", expected: "False" }
+      ]),
+      gameType: 'graph_coloring', gameTitle: 'Bipartite Tester',
+      gameDescription: 'Check if a graph is 2-colourable',
+      gameIcon: 'ri-split-cells-horizontal', gameColor: 'from-fuchsia-300 to-fuchsia-500',
+      gameAlgorithm: 'Bipartite Check', difficulty: 'Hard', sortOrder: 45
+    }
+  ];
+
+  for (const c of challenges) {
+    await connection.query(
+      `INSERT INTO gameChallenges (slug, title, description, boilerplate, hint, testCases, gameType, gameTitle, gameDescription, gameIcon, gameColor, gameAlgorithm, difficulty, sortOrder) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [c.slug, c.title, c.description, c.boilerplate, c.hint, c.testCases, c.gameType, c.gameTitle, c.gameDescription, c.gameIcon, c.gameColor, c.gameAlgorithm, c.difficulty, c.sortOrder]
+    );
+  }
+
+  console.log(`  ✅ Seeded ${challenges.length} game challenges (12 original + 33 extra)`);
 }
 
 

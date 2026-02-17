@@ -242,6 +242,11 @@ export const studentApi = {
   getCodingProblem: (id) => apiCall(`/student/coding-problems/${id}`),
   submitCode: (id, body) => apiCall(`/student/coding-problems/${id}/submit`, { method: 'POST', body: JSON.stringify(body) }),
   executeCode: (body) => apiCall('/student/execute', { method: 'POST', body: JSON.stringify(body) }),
+  // Game Challenges
+  getGameChallenges: () => apiCall('/student/game-challenges'),
+  getGameChallenge: (slug) => apiCall(`/student/game-challenges/${slug}`),
+  submitGameChallenge: (slug, body) => apiCall(`/student/game-challenges/${slug}/submit`, { method: 'POST', body: JSON.stringify(body) }),
+  getGameUnlocks: () => apiCall('/student/game-unlocks'),
   // Aptitude
   getAptitudeTests: () => apiCall('/student/aptitude-tests'),
   startAptitudeTest: (id) => apiCall(`/student/aptitude-tests/${id}/start`, { method: 'POST' }),

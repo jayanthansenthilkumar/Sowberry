@@ -323,12 +323,47 @@ async function setup() {
       constraints TEXT,
       sampleInput TEXT,
       sampleOutput TEXT,
+      boilerplate TEXT DEFAULT NULL,
       testCases JSON DEFAULT NULL,
       createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
       FOREIGN KEY (mentorId) REFERENCES users(id) ON DELETE CASCADE,
       INDEX idx_mentor (mentorId),
       INDEX idx_difficulty (difficulty)
+    ) ENGINE=InnoDB
+  `);
+
+  // 12b. gameChallenges — stores coding challenges + game card data for Learning Games
+  await connection.query(`
+    CREATE TABLE IF NOT EXISTS gameChallenges (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      slug VARCHAR(100) UNIQUE NOT NULL,
+      title VARCHAR(255) NOT NULL,
+      description TEXT,
+      boilerplate TEXT,
+      hint TEXT,
+      testCases JSON DEFAULT NULL,
+      gameType VARCHAR(50) NOT NULL,
+      gameTitle VARCHAR(255) NOT NULL,
+      gameDescription VARCHAR(500),
+      gameIcon VARCHAR(100),
+      gameColor VARCHAR(100),
+      gameAlgorithm VARCHAR(100),
+      difficulty ENUM('Easy', 'Medium', 'Hard') DEFAULT 'Medium',
+      sortOrder INT DEFAULT 0,
+      createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    ) ENGINE=InnoDB
+  `);
+
+  // 12c. gameUnlocks — tracks which games a student has unlocked
+  await connection.query(`
+    CREATE TABLE IF NOT EXISTS gameUnlocks (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      studentId INT NOT NULL,
+      challengeSlug VARCHAR(100) NOT NULL,
+      unlockedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      UNIQUE KEY uq_student_challenge (studentId, challengeSlug),
+      FOREIGN KEY (studentId) REFERENCES users(id) ON DELETE CASCADE
     ) ENGINE=InnoDB
   `);
 
