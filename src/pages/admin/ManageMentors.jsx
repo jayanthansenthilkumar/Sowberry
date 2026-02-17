@@ -1,74 +1,45 @@
 import { useState, useEffect } from 'react';
 import AdminLayout from '../../components/AdminLayout';
+import DataTable from '../../components/DataTable';
 import Swal, { getSwalOpts } from '../../utils/swal';
 import { adminApi } from '../../utils/api';
-import { exportToPDF, exportToExcel } from '../../utils/exportData';
 
 const ManageMentors = () => {
   const [mentors, setMentors] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [editMentor, setEditMentor] = useState(null);
   const [form, setForm] = useState({ email: '', username: '', fullName: '', phone: '', password: '' });
 
   const fetchMentors = async () => {
     setLoading(true);
-    const res = await adminApi.getMentors(search ? `search=${search}` : '');
+    const res = await adminApi.getMentors('');
     if (res.success) setMentors(res.mentors || []);
     setLoading(false);
   };
 
   useEffect(() => { fetchMentors(); }, []);
 
-  const handleSearch = (e) => { e.preventDefault(); fetchMentors(); };
-
-  const openCreate = () => {
-    setEditMentor(null);
-    setForm({ email: '', username: '', fullName: '', phone: '', password: '' });
-    setShowModal(true);
-  };
-
-  const openEdit = (m) => {
-    setEditMentor(m);
-    setForm({ email: m.email, username: m.username, fullName: m.fullName, phone: m.phone || '', password: '' });
-    setShowModal(true);
-  };
+  const openCreate = () => { setEditMentor(null); setForm({ email: '', username: '', fullName: '', phone: '', password: '' }); setShowModal(true); };
+  const openEdit = (m) => { setEditMentor(m); setForm({ email: m.email, username: m.username, fullName: m.fullName, phone: m.phone || '', password: '' }); setShowModal(true); };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (editMentor) {
-      const body = { ...form };
-      if (!body.password) delete body.password;
+      const body = { ...form }; if (!body.password) delete body.password;
       const res = await adminApi.updateMentor(editMentor.id, body);
-      if (res.success) {
-        Swal.fire({ ...getSwalOpts(), icon: 'success', title: 'Updated!', timer: 1500, showConfirmButton: false});
-        setShowModal(false); fetchMentors();
-      } else {
-        Swal.fire({ ...getSwalOpts(), icon: 'error', title: 'Error', text: res.message});
-      }
+      if (res.success) { Swal.fire({ ...getSwalOpts(), icon: 'success', title: 'Updated!', timer: 1500, showConfirmButton: false }); setShowModal(false); fetchMentors(); }
+      else Swal.fire({ ...getSwalOpts(), icon: 'error', title: 'Error', text: res.message });
     } else {
       const res = await adminApi.createMentor({ ...form, role: 'mentor' });
-      if (res.success) {
-        Swal.fire({ ...getSwalOpts(), icon: 'success', title: 'Mentor Created!', timer: 1500, showConfirmButton: false});
-        setShowModal(false); fetchMentors();
-      } else {
-        Swal.fire({ ...getSwalOpts(), icon: 'error', title: 'Error', text: res.message});
-      }
+      if (res.success) { Swal.fire({ ...getSwalOpts(), icon: 'success', title: 'Mentor Created!', timer: 1500, showConfirmButton: false }); setShowModal(false); fetchMentors(); }
+      else Swal.fire({ ...getSwalOpts(), icon: 'error', title: 'Error', text: res.message });
     }
   };
 
   const handleDelete = (id, name) => {
-    Swal.fire({ ...getSwalOpts(), title: 'Delete Mentor?', text: `Remove ${name}? This cannot be undone.`, icon: 'warning',
-      showCancelButton: true, confirmButtonColor: '#dc2626', confirmButtonText: 'Delete'}).then(async (result) => {
-      if (result.isConfirmed) {
-        const res = await adminApi.deleteMentor(id);
-        if (res.success) {
-          Swal.fire({ ...getSwalOpts(), icon: 'success', title: 'Deleted!', timer: 1500, showConfirmButton: false});
-          fetchMentors();
-        }
-      }
-    });
+    Swal.fire({ ...getSwalOpts(), title: 'Delete Mentor?', text: `Remove ${name}? This cannot be undone.`, icon: 'warning', showCancelButton: true, confirmButtonColor: '#dc2626', confirmButtonText: 'Delete' })
+      .then(async (r) => { if (r.isConfirmed) { const res = await adminApi.deleteMentor(id); if (res.success) { Swal.fire({ ...getSwalOpts(), icon: 'success', title: 'Deleted!', timer: 1500, showConfirmButton: false }); fetchMentors(); } } });
   };
 
   const handleToggleStatus = async (m) => {
@@ -76,82 +47,58 @@ const ManageMentors = () => {
     if (res.success) fetchMentors();
   };
 
-  const getExportData = () => {
-    const columns = ['Name', 'Username', 'Email', 'Phone', 'Status', 'Joined'];
-    const rows = mentors.map(m => [
-      m.fullName,
-      m.username,
-      m.email,
-      m.phone || '—',
-      m.isActive ? 'Active' : 'Inactive',
-      new Date(m.createdAt).toLocaleDateString(),
-    ]);
-    return { title: 'Mentors Report', columns, rows, fileName: 'Sowberry_Mentors' };
-  };
+  const columns = [
+    { key: 'id', label: 'ID', sortable: true, visible: false },
+    { key: 'fullName', label: 'Name', sortable: true, render: (_, m) => (
+      <div className="flex items-center gap-2.5">
+        <img src={m.profileImage ? `http://localhost:5000${m.profileImage}` : `https://ui-avatars.com/api/?name=${encodeURIComponent(m.fullName)}&size=36&background=c96442&color=fff`} className="w-8 h-8 rounded-lg object-cover" alt="" />
+        <div>
+          <span className="font-medium text-gray-800 dark-theme:text-gray-200">{m.fullName}</span>
+          <p className="text-[11px] text-gray-400">@{m.username}</p>
+        </div>
+      </div>
+    ), exportValue: (m) => m.fullName },
+    { key: 'username', label: 'Username', sortable: true, visible: false },
+    { key: 'email', label: 'Email', sortable: true },
+    { key: 'phone', label: 'Phone', sortable: false, render: (v) => v || '—' },
+    { key: 'isActive', label: 'Status', sortable: true, render: (_, m) => (
+      <button onClick={(e) => { e.stopPropagation(); handleToggleStatus(m); }} className={`px-2.5 py-1 rounded-full text-xs font-medium ${m.isActive ? 'bg-green-100 text-green-700 dark-theme:bg-green-900/30 dark-theme:text-green-400' : 'bg-red-100 text-red-700 dark-theme:bg-red-900/30 dark-theme:text-red-400'}`}>
+        {m.isActive ? 'Active' : 'Inactive'}
+      </button>
+    ), exportValue: (m) => m.isActive ? 'Active' : 'Inactive' },
+    { key: 'createdAt', label: 'Joined', sortable: true, render: (v) => new Date(v).toLocaleDateString(), exportValue: (m) => new Date(m.createdAt).toLocaleDateString() },
+    { key: 'actions', label: 'Actions', render: (_, m) => (
+      <div className="flex items-center justify-end gap-2">
+        <button onClick={(e) => { e.stopPropagation(); openEdit(m); }} className="w-8 h-8 rounded-lg bg-blue-50 dark-theme:bg-blue-900/20 text-blue-500 flex items-center justify-center hover:bg-blue-100 transition-colors" title="Edit"><i className="ri-edit-line text-sm"></i></button>
+        <button onClick={(e) => { e.stopPropagation(); handleDelete(m.id, m.fullName); }} className="w-8 h-8 rounded-lg bg-red-50 dark-theme:bg-red-900/20 text-red-500 flex items-center justify-center hover:bg-red-100 transition-colors" title="Delete"><i className="ri-delete-bin-line text-sm"></i></button>
+      </div>
+    ) },
+  ];
 
   return (
     <AdminLayout pageTitle="Manage Mentors">
-      <div className="space-y-6">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-800 dark-theme:text-gray-100">Manage Mentors</h1>
-            <p className="text-sm text-gray-500 dark-theme:text-gray-400 mt-1">{mentors.length} total mentors</p>
-          </div>
-          <div className="flex gap-3">
-            <form onSubmit={handleSearch} className="relative">
-              <i className="ri-search-line absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
-              <input type="text" placeholder="Search mentors..." value={search} onChange={(e) => setSearch(e.target.value)}
-                className="pl-9 pr-4 py-2.5 rounded-xl bg-white dark-theme:bg-gray-900 border border-sand dark-theme:border-gray-700 focus:border-primary outline-none text-sm w-64" />
-            </form>
-            <div className="flex items-center gap-1 bg-white dark-theme:bg-gray-900 border border-sand dark-theme:border-gray-700 rounded-xl px-1">
-              <button onClick={() => exportToPDF(getExportData())} className="px-3 py-2 rounded-lg text-xs font-medium text-red-500 hover:bg-red-50 dark-theme:hover:bg-red-900/20 transition-colors flex items-center gap-1.5" title="Download PDF">
-                <i className="ri-file-pdf-2-line text-sm"></i> PDF
-              </button>
-              <div className="w-px h-5 bg-sand dark-theme:bg-gray-700"></div>
-              <button onClick={() => exportToExcel(getExportData())} className="px-3 py-2 rounded-lg text-xs font-medium text-green-600 hover:bg-green-50 dark-theme:hover:bg-green-900/20 transition-colors flex items-center gap-1.5" title="Download Excel">
-                <i className="ri-file-excel-2-line text-sm"></i> Excel
-              </button>
-            </div>
-            <button onClick={openCreate} className="px-4 py-2.5 rounded-xl bg-primary text-white text-sm font-medium hover:bg-primary-dark transition-colors flex items-center gap-2">
-              <i className="ri-add-line"></i> Add Mentor
-            </button>
-          </div>
+      <div className="space-y-5">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-800 dark-theme:text-gray-100">Manage Mentors</h1>
+          <p className="text-sm text-gray-500 dark-theme:text-gray-400 mt-1">{mentors.length} total mentors</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {loading ? (
-            <div className="col-span-full flex items-center justify-center py-20"><i className="ri-loader-4-line animate-spin text-2xl text-primary"></i></div>
-          ) : mentors.length === 0 ? (
-            <div className="col-span-full text-center py-20 text-gray-400">
-              <i className="ri-team-line text-4xl mb-3 block"></i>
-              <p>No mentors found</p>
-            </div>
-          ) : mentors.map(m => (
-            <div key={m.id} className="bg-white dark-theme:bg-gray-900 rounded-2xl border border-sand dark-theme:border-gray-800 p-5 hover:shadow-md transition-shadow">
-              <div className="flex items-start justify-between mb-4">
-                <div className="flex items-center gap-3">
-                  <img src={`https://ui-avatars.com/api/?name=${encodeURIComponent(m.fullName)}&size=44&background=c96442&color=fff`} className="w-11 h-11 rounded-xl" alt="" />
-                  <div>
-                    <h3 className="font-semibold text-gray-800 dark-theme:text-gray-100 text-sm">{m.fullName}</h3>
-                    <p className="text-xs text-gray-400">@{m.username}</p>
-                  </div>
-                </div>
-                <button onClick={() => handleToggleStatus(m)} className={`px-2.5 py-1 rounded-full text-xs font-medium ${m.isActive ? 'bg-green-100 text-green-700 dark-theme:bg-green-900/30 dark-theme:text-green-400' : 'bg-red-100 text-red-700 dark-theme:bg-red-900/30 dark-theme:text-red-400'}`}>
-                  {m.isActive ? 'Active' : 'Inactive'}
-                </button>
-              </div>
-              <div className="space-y-2 mb-4">
-                <p className="text-xs text-gray-500 dark-theme:text-gray-400 flex items-center gap-2"><i className="ri-mail-line"></i>{m.email}</p>
-                <p className="text-xs text-gray-500 dark-theme:text-gray-400 flex items-center gap-2"><i className="ri-phone-line"></i>{m.phone || 'No phone'}</p>
-                <p className="text-xs text-gray-500 dark-theme:text-gray-400 flex items-center gap-2"><i className="ri-calendar-line"></i>Joined {new Date(m.createdAt).toLocaleDateString()}</p>
-              </div>
-              <div className="flex gap-2">
-                <button onClick={() => openEdit(m)} className="flex-1 py-2 rounded-xl bg-blue-50 dark-theme:bg-blue-900/20 text-blue-600 dark-theme:text-blue-400 text-xs font-medium hover:bg-blue-100 transition-colors"><i className="ri-edit-line mr-1"></i>Edit</button>
-                <button onClick={() => handleDelete(m.id, m.fullName)} className="flex-1 py-2 rounded-xl bg-red-50 dark-theme:bg-red-900/20 text-red-600 dark-theme:text-red-400 text-xs font-medium hover:bg-red-100 transition-colors"><i className="ri-delete-bin-line mr-1"></i>Delete</button>
-              </div>
-            </div>
-          ))}
-        </div>
+        <DataTable
+          columns={columns}
+          data={mentors}
+          loading={loading}
+          searchPlaceholder="Search mentors..."
+          storageKey="sowberry_mentors_cols"
+          exportTitle="Mentors Report"
+          exportFileName="Sowberry_Mentors"
+          emptyIcon="ri-team-line"
+          emptyMessage="No mentors found"
+          headerActions={
+            <button onClick={openCreate} className="px-4 py-2 rounded-xl bg-primary text-white text-sm font-medium hover:bg-primary-dark transition-colors flex items-center gap-2">
+              <i className="ri-add-line"></i> Add Mentor
+            </button>
+          }
+        />
       </div>
 
       {showModal && (
@@ -162,18 +109,13 @@ const ManageMentors = () => {
               <button onClick={() => setShowModal(false)} className="w-8 h-8 rounded-lg hover:bg-gray-100 dark-theme:hover:bg-gray-800 flex items-center justify-center"><i className="ri-close-line text-lg text-gray-500"></i></button>
             </div>
             <form onSubmit={handleSubmit} className="space-y-3">
-              <input type="email" placeholder="Email" required value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })}
-                className="w-full px-4 py-2.5 rounded-xl bg-cream dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 focus:border-primary outline-none text-sm" />
-              <input type="text" placeholder="Username" required value={form.username} onChange={(e) => setForm({ ...form, username: e.target.value })}
-                className="w-full px-4 py-2.5 rounded-xl bg-cream dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 focus:border-primary outline-none text-sm" />
-              <input type="text" placeholder="Full Name" required value={form.fullName} onChange={(e) => setForm({ ...form, fullName: e.target.value })}
-                className="w-full px-4 py-2.5 rounded-xl bg-cream dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 focus:border-primary outline-none text-sm" />
-              <input type="tel" placeholder="Phone" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                className="w-full px-4 py-2.5 rounded-xl bg-cream dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 focus:border-primary outline-none text-sm" />
-              <input type="password" placeholder={editMentor ? 'New Password (leave blank to keep)' : 'Password'} required={!editMentor} value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })}
-                className="w-full px-4 py-2.5 rounded-xl bg-cream dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 focus:border-primary outline-none text-sm" />
+              <input type="email" placeholder="Email" required value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="w-full px-4 py-2.5 rounded-xl bg-cream dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 focus:border-primary outline-none text-sm" />
+              <input type="text" placeholder="Username" required value={form.username} onChange={(e) => setForm({ ...form, username: e.target.value })} className="w-full px-4 py-2.5 rounded-xl bg-cream dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 focus:border-primary outline-none text-sm" />
+              <input type="text" placeholder="Full Name" required value={form.fullName} onChange={(e) => setForm({ ...form, fullName: e.target.value })} className="w-full px-4 py-2.5 rounded-xl bg-cream dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 focus:border-primary outline-none text-sm" />
+              <input type="tel" placeholder="Phone" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className="w-full px-4 py-2.5 rounded-xl bg-cream dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 focus:border-primary outline-none text-sm" />
+              <input type="password" placeholder={editMentor ? 'New Password (leave blank to keep)' : 'Password'} required={!editMentor} value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} className="w-full px-4 py-2.5 rounded-xl bg-cream dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 focus:border-primary outline-none text-sm" />
               <div className="flex gap-3 pt-2">
-                <button type="button" onClick={() => setShowModal(false)} className="flex-1 py-2.5 rounded-xl border border-sand dark-theme:border-gray-700 text-sm font-medium text-gray-600 dark-theme:text-gray-400 hover:bg-gray-50">Cancel</button>
+                <button type="button" onClick={() => setShowModal(false)} className="flex-1 py-2.5 rounded-xl border border-sand dark-theme:border-gray-700 text-sm font-medium text-gray-600 dark-theme:text-gray-400 hover:bg-gray-50 dark-theme:hover:bg-gray-800">Cancel</button>
                 <button type="submit" className="flex-1 py-2.5 rounded-xl bg-primary text-white text-sm font-medium hover:bg-primary-dark">{editMentor ? 'Update' : 'Create'}</button>
               </div>
             </form>

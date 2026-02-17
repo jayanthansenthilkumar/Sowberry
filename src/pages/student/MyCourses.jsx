@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../../components/DashboardLayout';
 import Swal, { getSwalOpts } from '../../utils/swal';
 import { studentApi } from '../../utils/api';
+import { generateCertificate } from '../../utils/certificateGenerator';
 
 const CAT_COLORS = {
   'Web Development': 'from-blue-500 to-indigo-500',
@@ -51,6 +52,20 @@ const MyCourses = () => {
           else Swal.fire({ ...getSwalOpts(), icon: 'error', title: 'Error', text: res.message });
         }
       });
+  };
+
+  const handleDownloadCertificate = async (courseId) => {
+    try {
+      const res = await studentApi.getCertificate(courseId);
+      if (res.success) {
+        generateCertificate(res.data);
+        Swal.fire({ ...getSwalOpts(), icon: 'success', title: 'Certificate Downloaded!', text: 'Your certificate has been saved.', timer: 2000, showConfirmButton: false });
+      } else {
+        Swal.fire({ ...getSwalOpts(), icon: 'error', title: 'Error', text: res.message || 'Could not generate certificate.' });
+      }
+    } catch {
+      Swal.fire({ ...getSwalOpts(), icon: 'error', title: 'Error', text: 'Failed to download certificate.' });
+    }
   };
 
   const categories = ['All', ...new Set(browse.map(c => c.category || 'General').filter(Boolean))];
@@ -118,7 +133,14 @@ const MyCourses = () => {
                       <div className="w-full h-1.5 bg-cream dark-theme:bg-gray-800 rounded-full"><div className={`h-1.5 rounded-full transition-all ${pct === 100 ? 'bg-green-500' : 'bg-primary'}`} style={{ width: `${pct}%` }}></div></div>
                     </div>
                     <div className="flex gap-2">
-                      <button onClick={() => navigate(`/student/course-viewer/${c.courseId || c.id}`)} className="flex-1 py-2.5 rounded-xl bg-primary text-white text-xs font-semibold hover:bg-primary-dark transition-colors"><i className="ri-play-circle-line mr-1"></i>Continue</button>
+                      {pct >= 100 ? (
+                        <>
+                          <button onClick={() => handleDownloadCertificate(c.courseId || c.id)} className="flex-1 py-2.5 rounded-xl bg-green-500 text-white text-xs font-semibold hover:bg-green-600 transition-colors"><i className="ri-award-line mr-1"></i>Certificate</button>
+                          <button onClick={() => navigate(`/student/course-viewer/${c.courseId || c.id}`)} className="py-2.5 px-3 rounded-xl bg-primary/10 text-primary text-xs font-medium hover:bg-primary/20 transition-colors" title="Review Course"><i className="ri-eye-line"></i></button>
+                        </>
+                      ) : (
+                        <button onClick={() => navigate(`/student/course-viewer/${c.courseId || c.id}`)} className="flex-1 py-2.5 rounded-xl bg-primary text-white text-xs font-semibold hover:bg-primary-dark transition-colors"><i className="ri-play-circle-line mr-1"></i>Continue</button>
+                      )}
                       <button onClick={() => handleUnenroll(c.courseId || c.id, c.title)} className="py-2.5 px-3 rounded-xl bg-red-500/10 text-red-400 text-xs hover:bg-red-500/20 transition-colors" title="Unenroll"><i className="ri-logout-box-r-line"></i></button>
                     </div>
                   </div>

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import DashboardLayout from '../../components/DashboardLayout';
+import DataTable from '../../components/DataTable';
 import { studentApi } from '../../utils/api';
 
 const MyGrades = () => {
@@ -21,6 +22,23 @@ const MyGrades = () => {
 
   const getGradeColor = (pct) => pct >= 80 ? 'text-green-600' : pct >= 60 ? 'text-amber-600' : 'text-red-600';
   const getGradeBg = (pct) => pct >= 80 ? 'bg-green-500/15' : pct >= 60 ? 'bg-amber-500/15' : 'bg-red-500/15';
+
+  const columns = [
+    { key: 'assignmentTitle', label: 'Assignment', sortable: true, render: (_, g) => (
+      <span className="font-medium text-gray-800 dark-theme:text-gray-100">{g.assignmentTitle || g.testTitle || 'Untitled Assessment'}</span>
+    ), exportValue: (g) => g.assignmentTitle || g.testTitle || 'Untitled Assessment' },
+    { key: 'courseName', label: 'Course', sortable: true, render: (_, g) => g.courseName || (g.testTitle ? 'Aptitude Test' : '-'), exportValue: (g) => g.courseName || (g.testTitle ? 'Aptitude Test' : '-') },
+    { key: 'grade', label: 'Score', sortable: true, render: (_, g) => (
+      <span className="text-gray-600 dark-theme:text-gray-300">{g.grade}/{g.maxScore}</span>
+    ), exportValue: (g) => `${g.grade}/${g.maxScore}` },
+    { key: 'percentage', label: 'Grade', sortable: true, render: (_, g) => {
+      const pct = g.maxScore ? Math.round((g.grade / g.maxScore) * 100) : 0;
+      return <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${getGradeBg(pct)} ${getGradeColor(pct)}`}>{pct}%</span>;
+    }, exportValue: (g) => g.maxScore ? `${Math.round((g.grade / g.maxScore) * 100)}%` : '0%' },
+    { key: 'feedback', label: 'Feedback', sortable: false, render: (v) => (
+      <span className="text-gray-500 text-xs max-w-[200px] truncate block">{v || '-'}</span>
+    ) },
+  ];
 
   return (
     <DashboardLayout pageTitle="My Grades" role="student">
@@ -45,37 +63,17 @@ const MyGrades = () => {
           </div>
         </div>
 
-        {loading ? null :
-        grades.length === 0 ? <div className="text-center py-20 text-gray-400"><i className="ri-bar-chart-box-line text-4xl mb-3 block"></i><p>No grades yet</p></div> :
-        <div className="bg-white dark-theme:bg-gray-900 rounded-2xl border border-sand dark-theme:border-gray-800 overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-cream dark-theme:bg-gray-800">
-                <tr className="text-left text-xs text-gray-500">
-                  <th className="px-5 py-3 font-medium">Assignment</th>
-                  <th className="px-5 py-3 font-medium">Course</th>
-                  <th className="px-5 py-3 font-medium">Score</th>
-                  <th className="px-5 py-3 font-medium">Grade</th>
-                  <th className="px-5 py-3 font-medium">Feedback</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-sand dark-theme:divide-gray-800">
-                {grades.map((g, i) => {
-                  const pct = g.maxScore ? Math.round((g.grade / g.maxScore) * 100) : 0;
-                  return (
-                    <tr key={i} className="hover:bg-cream/50 dark-theme:hover:bg-gray-800/50">
-                      <td className="px-5 py-3 font-medium text-gray-800 dark-theme:text-gray-100">{g.assignmentTitle || g.testTitle || 'Untitled Assessment'}</td>
-                      <td className="px-5 py-3 text-gray-500">{g.courseName || (g.testTitle ? 'Aptitude Test' : '-')}</td>
-                      <td className="px-5 py-3 text-gray-600 dark-theme:text-gray-300">{g.grade}/{g.maxScore}</td>
-                      <td className="px-5 py-3"><span className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${getGradeBg(pct)} ${getGradeColor(pct)}`}>{pct}%</span></td>
-                      <td className="px-5 py-3 text-gray-500 text-xs max-w-[200px] truncate">{g.feedback || '-'}</td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        </div>}
+        <DataTable
+          columns={columns}
+          data={grades}
+          loading={loading}
+          searchPlaceholder="Search grades..."
+          storageKey="sowberry_grades_cols"
+          exportTitle="My Grades Report"
+          exportFileName="Sowberry_My_Grades"
+          emptyIcon="ri-bar-chart-box-line"
+          emptyMessage="No grades yet"
+        />
       </div>
     </DashboardLayout>
   );

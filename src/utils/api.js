@@ -227,6 +227,7 @@ export const studentApi = {
   getGrades: () => apiCall('/student/grades'),
   // Progress
   getProgress: () => apiCall('/student/progress'),
+  getCertificate: (courseId) => apiCall(`/student/certificate/${courseId}`),
   // Coding
   getCodingProblems: (params = '') => apiCall(`/student/coding-problems${params ? '?' + params : ''}`),
   getCodingProblem: (id) => apiCall(`/student/coding-problems/${id}`),

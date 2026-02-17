@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import AdminLayout from '../../components/AdminLayout';
+import DataTable from '../../components/DataTable';
 import { adminApi } from '../../utils/api';
-import { exportToPDF, exportToExcel } from '../../utils/exportData';
 
 const SystemReports = () => {
   const [reports, setReports] = useState(null);
@@ -18,16 +18,20 @@ const SystemReports = () => {
 
   if (loading) return <AdminLayout pageTitle="System Reports"><div className="flex items-center justify-center py-20"><i className="ri-loader-4-line animate-spin text-2xl text-primary"></i></div></AdminLayout>;
 
-  const getExportData = () => {
-    const columns = ['User', 'Action', 'Description', 'Date'];
-    const rows = (reports?.activityLogs || []).map(log => [
-      log.fullName || log.userId || 'System',
-      log.action,
-      log.description,
-      new Date(log.createdAt).toLocaleString(),
-    ]);
-    return { title: 'Activity Logs Report', columns, rows, fileName: 'Sowberry_Activity_Logs' };
-  };
+  const logs = reports?.activityLogs || [];
+
+  const columns = [
+    { key: 'fullName', label: 'User', sortable: true, render: (_, log) => (
+      <span className="font-medium text-gray-700 dark-theme:text-gray-300">{log.fullName || log.userId || 'System'}</span>
+    ), exportValue: (log) => log.fullName || log.userId || 'System' },
+    { key: 'action', label: 'Action', sortable: true, render: (v) => (
+      <span className="px-2 py-0.5 rounded-md bg-primary/10 text-primary text-xs font-medium">{v}</span>
+    ) },
+    { key: 'description', label: 'Description', sortable: false, render: (v) => (
+      <span className="text-gray-500 dark-theme:text-gray-400">{v}</span>
+    ) },
+    { key: 'createdAt', label: 'Date', sortable: true, render: (v) => new Date(v).toLocaleString(), exportValue: (log) => new Date(log.createdAt).toLocaleString() },
+  ];
 
   return (
     <AdminLayout pageTitle="System Reports">
@@ -54,45 +58,20 @@ const SystemReports = () => {
           </div>
         </div>
 
-        {/* Activity Logs */}
-        <div className="bg-white dark-theme:bg-gray-900 rounded-2xl border border-sand dark-theme:border-gray-800 overflow-hidden">
-          <div className="px-6 py-4 border-b border-sand dark-theme:border-gray-800 flex items-center justify-between">
-            <h3 className="font-bold text-gray-800 dark-theme:text-gray-100">Recent Activity Logs</h3>
-            <div className="flex items-center gap-1 bg-cream/50 dark-theme:bg-gray-800/50 border border-sand dark-theme:border-gray-700 rounded-xl px-1">
-              <button onClick={() => exportToPDF(getExportData())} className="px-3 py-1.5 rounded-lg text-xs font-medium text-red-500 hover:bg-red-50 dark-theme:hover:bg-red-900/20 transition-colors flex items-center gap-1.5" title="Download PDF">
-                <i className="ri-file-pdf-2-line text-sm"></i> PDF
-              </button>
-              <div className="w-px h-4 bg-sand dark-theme:bg-gray-700"></div>
-              <button onClick={() => exportToExcel(getExportData())} className="px-3 py-1.5 rounded-lg text-xs font-medium text-green-600 hover:bg-green-50 dark-theme:hover:bg-green-900/20 transition-colors flex items-center gap-1.5" title="Download Excel">
-                <i className="ri-file-excel-2-line text-sm"></i> Excel
-              </button>
-            </div>
-          </div>
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="bg-cream/50 dark-theme:bg-gray-800/50">
-                  <th className="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase">User</th>
-                  <th className="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase">Action</th>
-                  <th className="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase">Description</th>
-                  <th className="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase">Date</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-sand dark-theme:divide-gray-800">
-                {(reports?.activityLogs || []).map((log, i) => (
-                  <tr key={i} className="hover:bg-cream/30 dark-theme:hover:bg-gray-800/30">
-                    <td className="px-6 py-3 text-sm text-gray-700 dark-theme:text-gray-300">{log.fullName || log.userId || 'System'}</td>
-                    <td className="px-6 py-3"><span className="px-2 py-0.5 rounded-md bg-primary/10 text-primary text-xs font-medium">{log.action}</span></td>
-                    <td className="px-6 py-3 text-sm text-gray-500 dark-theme:text-gray-400">{log.description}</td>
-                    <td className="px-6 py-3 text-sm text-gray-400">{new Date(log.createdAt).toLocaleString()}</td>
-                  </tr>
-                ))}
-                {(!reports?.activityLogs || reports.activityLogs.length === 0) && (
-                  <tr><td colSpan="4" className="px-6 py-10 text-center text-gray-400">No activity logs yet</td></tr>
-                )}
-              </tbody>
-            </table>
-          </div>
+        {/* Activity Logs DataTable */}
+        <div>
+          <h3 className="font-bold text-gray-800 dark-theme:text-gray-100 mb-4">Recent Activity Logs</h3>
+          <DataTable
+            columns={columns}
+            data={logs}
+            loading={false}
+            searchPlaceholder="Search logs..."
+            storageKey="sowberry_activity_logs_cols"
+            exportTitle="Activity Logs Report"
+            exportFileName="Sowberry_Activity_Logs"
+            emptyIcon="ri-file-list-3-line"
+            emptyMessage="No activity logs yet"
+          />
         </div>
       </div>
     </AdminLayout>

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import AdminLayout from '../../components/AdminLayout';
+import DataTable from '../../components/DataTable';
 import { adminApi } from '../../utils/api';
-import { exportToPDF, exportToExcel } from '../../utils/exportData';
 
 const PerformanceAnalytics = () => {
   const [analytics, setAnalytics] = useState(null);
@@ -18,17 +18,35 @@ const PerformanceAnalytics = () => {
 
   if (loading) return <AdminLayout pageTitle="Performance Analytics"><div className="flex items-center justify-center py-20"><i className="ri-loader-4-line animate-spin text-2xl text-primary"></i></div></AdminLayout>;
 
-  const getCourseExportData = () => {
-    const columns = ['Rank', 'Course', 'Enrollments'];
-    const rows = (analytics?.courseCompletion || []).map((c, i) => [i + 1, c.title, c.enrollmentCount]);
-    return { title: 'Top Courses by Enrollment', columns, rows, fileName: 'Sowberry_Top_Courses' };
-  };
+  const courseData = (analytics?.courseCompletion || []).map((c, i) => ({ ...c, rank: i + 1 }));
+  const trendsData = analytics?.registrationTrends || [];
 
-  const getTrendsExportData = () => {
-    const columns = ['Month', 'Enrollments', 'New Students'];
-    const rows = (analytics?.registrationTrends || []).map(t => [t.month, t.enrollments, t.newStudents]);
-    return { title: 'Monthly Trends Report', columns, rows, fileName: 'Sowberry_Monthly_Trends' };
-  };
+  const courseColumns = [
+    { key: 'rank', label: '#', sortable: true, render: (v) => (
+      <span className="w-6 h-6 rounded-md bg-primary/10 text-primary text-xs font-bold inline-flex items-center justify-center">{v}</span>
+    ) },
+    { key: 'title', label: 'Course', sortable: true, render: (v) => (
+      <span className="font-medium text-gray-700 dark-theme:text-gray-200">{v}</span>
+    ) },
+    { key: 'enrollmentCount', label: 'Enrollments', sortable: true, render: (v) => (
+      <span className="font-semibold text-gray-600 dark-theme:text-gray-400">{v}</span>
+    ) },
+  ];
+
+  const trendsColumns = [
+    { key: 'month', label: 'Month', sortable: true, render: (v) => (
+      <div className="flex items-center gap-2">
+        <div className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center"><i className="ri-calendar-line text-primary text-xs"></i></div>
+        <span className="font-medium text-gray-700 dark-theme:text-gray-200">{v}</span>
+      </div>
+    ) },
+    { key: 'enrollments', label: 'Enrollments', sortable: true, render: (v) => (
+      <span className="font-semibold text-gray-800 dark-theme:text-gray-100">{v}</span>
+    ) },
+    { key: 'newStudents', label: 'New Students', sortable: true, render: (v) => (
+      <span className="text-gray-500 dark-theme:text-gray-400">{v}</span>
+    ) },
+  ];
 
   return (
     <AdminLayout pageTitle="Performance Analytics">
@@ -54,66 +72,39 @@ const PerformanceAnalytics = () => {
           ))}
         </div>
 
-        {/* Course Performance */}
+        {/* DataTables side by side */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="bg-white dark-theme:bg-gray-900 rounded-2xl p-6 border border-sand dark-theme:border-gray-800">
-            <h3 className="text-lg font-bold text-gray-800 dark-theme:text-gray-100 mb-4 flex items-center justify-between">
-              Top Courses by Enrollment
-              <span className="flex items-center gap-1 bg-cream/50 dark-theme:bg-gray-800/50 border border-sand dark-theme:border-gray-700 rounded-xl px-1">
-                <button onClick={() => exportToPDF(getCourseExportData())} className="px-2.5 py-1 rounded-lg text-[11px] font-medium text-red-500 hover:bg-red-50 dark-theme:hover:bg-red-900/20 transition-colors flex items-center gap-1" title="Download PDF">
-                  <i className="ri-file-pdf-2-line text-xs"></i> PDF
-                </button>
-                <span className="w-px h-3.5 bg-sand dark-theme:bg-gray-700"></span>
-                <button onClick={() => exportToExcel(getCourseExportData())} className="px-2.5 py-1 rounded-lg text-[11px] font-medium text-green-600 hover:bg-green-50 dark-theme:hover:bg-green-900/20 transition-colors flex items-center gap-1" title="Download Excel">
-                  <i className="ri-file-excel-2-line text-xs"></i> Excel
-                </button>
-              </span>
-            </h3>
-            <div className="space-y-4">
-              {(analytics?.courseCompletion || []).slice(0, 5).map((c, i) => (
-                <div key={i} className="flex items-center gap-4">
-                  <span className="w-6 h-6 rounded-md bg-primary/10 text-primary text-xs font-bold flex items-center justify-center">{i + 1}</span>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-gray-700 dark-theme:text-gray-200 truncate">{c.title}</p>
-                    <div className="mt-1 h-1.5 bg-gray-100 dark-theme:bg-gray-800 rounded-full overflow-hidden">
-                      <div className="h-full bg-primary rounded-full transition-all" style={{ width: `${Math.min(100, (c.enrollmentCount / (analytics?.totalStudents || 1)) * 100)}%` }}></div>
-                    </div>
-                  </div>
-                  <span className="text-sm font-semibold text-gray-600 dark-theme:text-gray-400">{c.enrollmentCount}</span>
-                </div>
-              ))}
-              {(!analytics?.courseCompletion || analytics.courseCompletion.length === 0) && <p className="text-sm text-gray-400 text-center py-4">No course data available</p>}
-            </div>
+          <div>
+            <h3 className="text-lg font-bold text-gray-800 dark-theme:text-gray-100 mb-3">Top Courses by Enrollment</h3>
+            <DataTable
+              columns={courseColumns}
+              data={courseData}
+              loading={false}
+              searchPlaceholder="Search courses..."
+              exportTitle="Top Courses by Enrollment"
+              exportFileName="Sowberry_Top_Courses"
+              emptyIcon="ri-book-open-line"
+              emptyMessage="No course data available"
+              columnToggle={false}
+              copyable={false}
+              defaultPageSize={10}
+            />
           </div>
-
-          <div className="bg-white dark-theme:bg-gray-900 rounded-2xl p-6 border border-sand dark-theme:border-gray-800">
-            <h3 className="text-lg font-bold text-gray-800 dark-theme:text-gray-100 mb-4 flex items-center justify-between">
-              Monthly Trends
-              <span className="flex items-center gap-1 bg-cream/50 dark-theme:bg-gray-800/50 border border-sand dark-theme:border-gray-700 rounded-xl px-1">
-                <button onClick={() => exportToPDF(getTrendsExportData())} className="px-2.5 py-1 rounded-lg text-[11px] font-medium text-red-500 hover:bg-red-50 dark-theme:hover:bg-red-900/20 transition-colors flex items-center gap-1" title="Download PDF">
-                  <i className="ri-file-pdf-2-line text-xs"></i> PDF
-                </button>
-                <span className="w-px h-3.5 bg-sand dark-theme:bg-gray-700"></span>
-                <button onClick={() => exportToExcel(getTrendsExportData())} className="px-2.5 py-1 rounded-lg text-[11px] font-medium text-green-600 hover:bg-green-50 dark-theme:hover:bg-green-900/20 transition-colors flex items-center gap-1" title="Download Excel">
-                  <i className="ri-file-excel-2-line text-xs"></i> Excel
-                </button>
-              </span>
-            </h3>
-            <div className="space-y-4">
-              {(analytics?.registrationTrends || []).map((t, i) => (
-                <div key={i} className="flex items-center justify-between p-3 rounded-xl bg-cream/50 dark-theme:bg-gray-800/50">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center"><i className="ri-calendar-line text-primary text-sm"></i></div>
-                    <span className="text-sm font-medium text-gray-700 dark-theme:text-gray-200">{t.month}</span>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-sm font-semibold text-gray-800 dark-theme:text-gray-100">{t.enrollments} enrollments</p>
-                    <p className="text-[11px] text-gray-400">{t.newStudents} new students</p>
-                  </div>
-                </div>
-              ))}
-              {(!analytics?.registrationTrends || analytics.registrationTrends.length === 0) && <p className="text-sm text-gray-400 text-center py-4">No trend data available</p>}
-            </div>
+          <div>
+            <h3 className="text-lg font-bold text-gray-800 dark-theme:text-gray-100 mb-3">Monthly Trends</h3>
+            <DataTable
+              columns={trendsColumns}
+              data={trendsData}
+              loading={false}
+              searchPlaceholder="Search months..."
+              exportTitle="Monthly Trends Report"
+              exportFileName="Sowberry_Monthly_Trends"
+              emptyIcon="ri-line-chart-line"
+              emptyMessage="No trend data available"
+              columnToggle={false}
+              copyable={false}
+              defaultPageSize={10}
+            />
           </div>
         </div>
       </div>

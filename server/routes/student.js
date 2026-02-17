@@ -293,6 +293,45 @@ router.put('/courses/:id/progress', async (req, res) => {
   }
 });
 
+// ──────────────── CERTIFICATE ────────────────
+router.get('/certificate/:courseId', async (req, res) => {
+  try {
+    const [rows] = await pool.query(`
+      SELECT ce.completionPercentage, ce.status as enrollmentStatus, ce.completedAt, ce.enrolledAt,
+        c.title as courseTitle, c.courseCode, c.category,
+        u.fullName as studentName,
+        m.fullName as mentorName
+      FROM courseEnrollments ce
+      JOIN courses c ON ce.courseId = c.id
+      JOIN users u ON ce.studentId = u.id
+      JOIN users m ON c.mentorId = m.id
+      WHERE ce.courseId = ? AND ce.studentId = ?
+    `, [req.params.courseId, req.user.id]);
+
+    if (rows.length === 0) return res.status(404).json({ success: false, message: 'Enrollment not found.' });
+    const enrollment = rows[0];
+    if (enrollment.enrollmentStatus !== 'completed' && enrollment.completionPercentage < 100) {
+      return res.status(400).json({ success: false, message: 'Course not yet completed.' });
+    }
+
+    res.json({
+      success: true,
+      data: {
+        studentName: enrollment.studentName,
+        courseTitle: enrollment.courseTitle,
+        courseCode: enrollment.courseCode,
+        category: enrollment.category,
+        mentorName: enrollment.mentorName,
+        completedAt: enrollment.completedAt,
+        enrolledAt: enrollment.enrolledAt,
+      }
+    });
+  } catch (error) {
+    console.error('Certificate data error:', error);
+    res.status(500).json({ success: false, message: 'Server error.' });
+  }
+});
+
 // Get course materials (legacy)
 router.get('/courses/:id/materials', async (req, res) => {
   try {
