@@ -194,6 +194,7 @@ async function seed() {
   try {
       await seedAptitude(connection);
       await seedCourses(connection);
+      await seedCodingProblems(connection);
   } catch (err) {
       console.error('❌ Error during seeding:', err);
   } finally {
@@ -868,6 +869,352 @@ async function seedCourses(connection) {
   console.log('\n🎉 Course seeding complete!');
   console.log(`   ${Object.keys(courseData).length} new courses with subjects, topics & content`);
   console.log('   Existing courses updated with more content');
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  SEED 45 CODING PROBLEMS
+// ═══════════════════════════════════════════════════════════════════
+async function seedCodingProblems(connection) {
+  console.log('\n--- Seeding Coding Problems (45) ---');
+
+  const [mentors] = await connection.query(`SELECT id FROM users WHERE role = 'mentor' ORDER BY id LIMIT 1`);
+  if (!mentors.length) { console.error('No mentor found for coding problems'); return; }
+  const mid = mentors[0].id;
+
+  // Delete old seeded problems (keep any manually created ones with id < 100)
+  await connection.query("DELETE FROM codingProblems WHERE title LIKE '%(Seeded)%'");
+
+  const problems = [
+    // ═══ EASY (15) ═══
+    {
+      title: 'Two Sum (Seeded)', difficulty: 'easy', category: 'Arrays',
+      description: 'Given an array of integers and a target, return the indices of two numbers that add up to the target.',
+      inputFormat: 'Array of integers and a target integer', outputFormat: 'Array of two indices',
+      constraints: '2 ≤ arr.length ≤ 10⁴', sampleInput: '[2,7,11,15]\\n9', sampleOutput: '[0,1]',
+      testCases: [{"input":"[2,7,11,15]\\n9","output":"[0,1]"},{"input":"[3,2,4]\\n6","output":"[1,2]"}]
+    },
+    {
+      title: 'Palindrome Check (Seeded)', difficulty: 'easy', category: 'Strings',
+      description: 'Determine if a given string is a palindrome (reads the same forwards and backwards).',
+      inputFormat: 'A string', outputFormat: 'true or false',
+      constraints: '1 ≤ s.length ≤ 10⁵', sampleInput: 'racecar', sampleOutput: 'true',
+      testCases: [{"input":"racecar","output":"true"},{"input":"hello","output":"false"}]
+    },
+    {
+      title: 'Reverse Array (Seeded)', difficulty: 'easy', category: 'Arrays',
+      description: 'Reverse an array of integers in-place and return it.',
+      inputFormat: 'Array of integers', outputFormat: 'Reversed array',
+      constraints: '1 ≤ arr.length ≤ 10⁴', sampleInput: '[1,2,3,4,5]', sampleOutput: '[5,4,3,2,1]',
+      testCases: [{"input":"[1,2,3,4,5]","output":"[5,4,3,2,1]"},{"input":"[10,20]","output":"[20,10]"}]
+    },
+    {
+      title: 'Count Vowels (Seeded)', difficulty: 'easy', category: 'Strings',
+      description: 'Count the number of vowels (a, e, i, o, u) in a given string (case-insensitive).',
+      inputFormat: 'A string', outputFormat: 'Integer count',
+      constraints: '1 ≤ s.length ≤ 10⁴', sampleInput: 'Hello World', sampleOutput: '3',
+      testCases: [{"input":"Hello World","output":"3"},{"input":"aeiou","output":"5"}]
+    },
+    {
+      title: 'Find Maximum (Seeded)', difficulty: 'easy', category: 'Arrays',
+      description: 'Find and return the maximum element in an array of integers.',
+      inputFormat: 'Array of integers', outputFormat: 'Maximum integer',
+      constraints: '1 ≤ arr.length ≤ 10⁴', sampleInput: '[3,7,2,9,1]', sampleOutput: '9',
+      testCases: [{"input":"[3,7,2,9,1]","output":"9"},{"input":"[-5,-1,-8]","output":"-1"}]
+    },
+    {
+      title: 'Factorial (Seeded)', difficulty: 'easy', category: 'Math',
+      description: 'Calculate the factorial of a non-negative integer n (n!).',
+      inputFormat: 'Non-negative integer n', outputFormat: 'n!',
+      constraints: '0 ≤ n ≤ 20', sampleInput: '5', sampleOutput: '120',
+      testCases: [{"input":"5","output":"120"},{"input":"0","output":"1"},{"input":"10","output":"3628800"}]
+    },
+    {
+      title: 'Fibonacci Number (Seeded)', difficulty: 'easy', category: 'Math',
+      description: 'Return the nth Fibonacci number (0-indexed). F(0)=0, F(1)=1, F(n)=F(n-1)+F(n-2).',
+      inputFormat: 'Integer n', outputFormat: 'F(n)',
+      constraints: '0 ≤ n ≤ 30', sampleInput: '6', sampleOutput: '8',
+      testCases: [{"input":"6","output":"8"},{"input":"0","output":"0"},{"input":"10","output":"55"}]
+    },
+    {
+      title: 'Sum of Digits (Seeded)', difficulty: 'easy', category: 'Math',
+      description: 'Calculate the sum of all digits of a positive integer.',
+      inputFormat: 'Positive integer', outputFormat: 'Sum of digits',
+      constraints: '1 ≤ n ≤ 10⁹', sampleInput: '1234', sampleOutput: '10',
+      testCases: [{"input":"1234","output":"10"},{"input":"999","output":"27"}]
+    },
+    {
+      title: 'FizzBuzz (Seeded)', difficulty: 'easy', category: 'Math',
+      description: 'For a given number n, print "Fizz" if divisible by 3, "Buzz" if by 5, "FizzBuzz" if by both, else the number.',
+      inputFormat: 'Integer n', outputFormat: 'String result',
+      constraints: '1 ≤ n ≤ 100', sampleInput: '15', sampleOutput: 'FizzBuzz',
+      testCases: [{"input":"15","output":"FizzBuzz"},{"input":"7","output":"7"},{"input":"9","output":"Fizz"}]
+    },
+    {
+      title: 'Remove Duplicates (Seeded)', difficulty: 'easy', category: 'Arrays',
+      description: 'Remove duplicate values from a sorted array and return the unique elements.',
+      inputFormat: 'Sorted array of integers', outputFormat: 'Array of unique integers',
+      constraints: '1 ≤ arr.length ≤ 10⁴', sampleInput: '[1,1,2,2,3]', sampleOutput: '[1,2,3]',
+      testCases: [{"input":"[1,1,2,2,3]","output":"[1,2,3]"},{"input":"[5,5,5]","output":"[5]"}]
+    },
+    {
+      title: 'Count Occurrences (Seeded)', difficulty: 'easy', category: 'Arrays',
+      description: 'Count how many times a target value appears in an array.',
+      inputFormat: 'Array and target integer', outputFormat: 'Count',
+      constraints: '1 ≤ arr.length ≤ 10⁴', sampleInput: '[1,2,3,2,2,4]\\n2', sampleOutput: '3',
+      testCases: [{"input":"[1,2,3,2,2,4]\\n2","output":"3"},{"input":"[5,5,5]\\n5","output":"3"}]
+    },
+    {
+      title: 'Capitalize First Letter (Seeded)', difficulty: 'easy', category: 'Strings',
+      description: 'Capitalize the first letter of each word in a sentence.',
+      inputFormat: 'A string sentence', outputFormat: 'Capitalized sentence',
+      constraints: '1 ≤ s.length ≤ 10³', sampleInput: 'hello world', sampleOutput: 'Hello World',
+      testCases: [{"input":"hello world","output":"Hello World"},{"input":"javaScript is fun","output":"JavaScript Is Fun"}]
+    },
+    {
+      title: 'Check Prime (Seeded)', difficulty: 'easy', category: 'Math',
+      description: 'Determine if a given number is a prime number.',
+      inputFormat: 'Positive integer', outputFormat: 'true or false',
+      constraints: '2 ≤ n ≤ 10⁶', sampleInput: '17', sampleOutput: 'true',
+      testCases: [{"input":"17","output":"true"},{"input":"4","output":"false"},{"input":"2","output":"true"}]
+    },
+    {
+      title: 'Merge Two Arrays (Seeded)', difficulty: 'easy', category: 'Arrays',
+      description: 'Merge two sorted arrays into one sorted array.',
+      inputFormat: 'Two sorted arrays', outputFormat: 'One merged sorted array',
+      constraints: 'Arrays length ≤ 10⁴', sampleInput: '[1,3,5]\\n[2,4,6]', sampleOutput: '[1,2,3,4,5,6]',
+      testCases: [{"input":"[1,3,5]\\n[2,4,6]","output":"[1,2,3,4,5,6]"},{"input":"[1]\\n[2,3]","output":"[1,2,3]"}]
+    },
+    {
+      title: 'String Reverse (Seeded)', difficulty: 'easy', category: 'Strings',
+      description: 'Reverse a string without using built-in reverse methods.',
+      inputFormat: 'A string', outputFormat: 'Reversed string',
+      constraints: '1 ≤ s.length ≤ 10⁴', sampleInput: 'algorithm', sampleOutput: 'mhtirogla',
+      testCases: [{"input":"algorithm","output":"mhtirogla"},{"input":"hello","output":"olleh"}]
+    },
+
+    // ═══ MEDIUM (15) ═══
+    {
+      title: 'Binary Search (Seeded)', difficulty: 'medium', category: 'Searching',
+      description: 'Implement binary search on a sorted array. Return the index of the target or -1.',
+      inputFormat: 'Sorted array and target', outputFormat: 'Index or -1',
+      constraints: '1 ≤ arr.length ≤ 10⁵', sampleInput: '[1,3,5,7,9]\\n5', sampleOutput: '2',
+      testCases: [{"input":"[1,3,5,7,9]\\n5","output":"2"},{"input":"[1,3,5,7,9]\\n4","output":"-1"}]
+    },
+    {
+      title: 'Valid Parentheses (Seeded)', difficulty: 'medium', category: 'Stack',
+      description: 'Check if a string of brackets ()[]\\{\\} is valid — every open bracket is closed in order.',
+      inputFormat: 'String of brackets', outputFormat: 'true or false',
+      constraints: '1 ≤ s.length ≤ 10⁴', sampleInput: '({[]})', sampleOutput: 'true',
+      testCases: [{"input":"({[]})","output":"true"},{"input":"([)]","output":"false"}]
+    },
+    {
+      title: 'Rotate Array (Seeded)', difficulty: 'medium', category: 'Arrays',
+      description: 'Rotate an array to the right by k steps.',
+      inputFormat: 'Array and integer k', outputFormat: 'Rotated array',
+      constraints: '1 ≤ arr.length ≤ 10⁵', sampleInput: '[1,2,3,4,5]\\n2', sampleOutput: '[4,5,1,2,3]',
+      testCases: [{"input":"[1,2,3,4,5]\\n2","output":"[4,5,1,2,3]"},{"input":"[1,2,3]\\n1","output":"[3,1,2]"}]
+    },
+    {
+      title: 'Anagram Check (Seeded)', difficulty: 'medium', category: 'Strings',
+      description: 'Determine if two strings are anagrams of each other (same characters, different order).',
+      inputFormat: 'Two strings', outputFormat: 'true or false',
+      constraints: '1 ≤ length ≤ 10⁴', sampleInput: 'listen\\nsilent', sampleOutput: 'true',
+      testCases: [{"input":"listen\\nsilent","output":"true"},{"input":"hello\\nworld","output":"false"}]
+    },
+    {
+      title: 'GCD of Two Numbers (Seeded)', difficulty: 'medium', category: 'Math',
+      description: 'Find the Greatest Common Divisor of two positive integers using Euclid\'s algorithm.',
+      inputFormat: 'Two positive integers', outputFormat: 'GCD',
+      constraints: '1 ≤ a, b ≤ 10⁹', sampleInput: '48\\n18', sampleOutput: '6',
+      testCases: [{"input":"48\\n18","output":"6"},{"input":"100\\n75","output":"25"}]
+    },
+    {
+      title: 'Matrix Transpose (Seeded)', difficulty: 'medium', category: 'Arrays',
+      description: 'Return the transpose of a given m×n matrix.',
+      inputFormat: '2D array (matrix)', outputFormat: 'Transposed matrix',
+      constraints: '1 ≤ m,n ≤ 100', sampleInput: '[[1,2,3],[4,5,6]]', sampleOutput: '[[1,4],[2,5],[3,6]]',
+      testCases: [{"input":"[[1,2,3],[4,5,6]]","output":"[[1,4],[2,5],[3,6]]"}]
+    },
+    {
+      title: 'Power Function (Seeded)', difficulty: 'medium', category: 'Recursion',
+      description: 'Implement pow(base, exponent) without using built-in power functions.',
+      inputFormat: 'Base and exponent integers', outputFormat: 'Result',
+      constraints: '-10 ≤ base ≤ 10, 0 ≤ exp ≤ 20', sampleInput: '2\\n10', sampleOutput: '1024',
+      testCases: [{"input":"2\\n10","output":"1024"},{"input":"3\\n4","output":"81"}]
+    },
+    {
+      title: 'Flatten Nested Array (Seeded)', difficulty: 'medium', category: 'Arrays',
+      description: 'Flatten a nested array into a single-level array.',
+      inputFormat: 'Nested array', outputFormat: 'Flat array',
+      constraints: 'Depth ≤ 5', sampleInput: '[1,[2,[3,4],5]]', sampleOutput: '[1,2,3,4,5]',
+      testCases: [{"input":"[1,[2,[3,4],5]]","output":"[1,2,3,4,5]"},{"input":"[[1,2],[3,[4]]]","output":"[1,2,3,4]"}]
+    },
+    {
+      title: 'Find Missing Number (Seeded)', difficulty: 'medium', category: 'Arrays',
+      description: 'Given an array containing n distinct numbers from 0 to n, find the missing one.',
+      inputFormat: 'Array of n distinct integers [0..n]', outputFormat: 'Missing number',
+      constraints: '1 ≤ n ≤ 10⁴', sampleInput: '[3,0,1]', sampleOutput: '2',
+      testCases: [{"input":"[3,0,1]","output":"2"},{"input":"[0,1,2,4]","output":"3"}]
+    },
+    {
+      title: 'Product Except Self (Seeded)', difficulty: 'medium', category: 'Arrays',
+      description: 'Return an array where each element is the product of all other elements (no division).',
+      inputFormat: 'Array of integers', outputFormat: 'Array of products',
+      constraints: '2 ≤ arr.length ≤ 10⁴', sampleInput: '[1,2,3,4]', sampleOutput: '[24,12,8,6]',
+      testCases: [{"input":"[1,2,3,4]","output":"[24,12,8,6]"},{"input":"[2,3]","output":"[3,2]"}]
+    },
+    {
+      title: 'String Compression (Seeded)', difficulty: 'medium', category: 'Strings',
+      description: 'Compress a string using counts of repeated characters. Return original if compressed is not shorter.',
+      inputFormat: 'A string', outputFormat: 'Compressed string or original',
+      constraints: '1 ≤ s.length ≤ 10⁴', sampleInput: 'aabcccccaaa', sampleOutput: 'a2b1c5a3',
+      testCases: [{"input":"aabcccccaaa","output":"a2b1c5a3"},{"input":"abc","output":"abc"}]
+    },
+    {
+      title: 'Spiral Matrix (Seeded)', difficulty: 'medium', category: 'Arrays',
+      description: 'Return all elements of an m×n matrix in spiral order.',
+      inputFormat: '2D matrix', outputFormat: 'Array in spiral order',
+      constraints: '1 ≤ m,n ≤ 10', sampleInput: '[[1,2,3],[4,5,6],[7,8,9]]', sampleOutput: '[1,2,3,6,9,8,7,4,5]',
+      testCases: [{"input":"[[1,2,3],[4,5,6],[7,8,9]]","output":"[1,2,3,6,9,8,7,4,5]"}]
+    },
+    {
+      title: 'Longest Substring Without Repeats (Seeded)', difficulty: 'medium', category: 'Strings',
+      description: 'Find the length of the longest substring without repeating characters.',
+      inputFormat: 'A string', outputFormat: 'Integer length',
+      constraints: '0 ≤ s.length ≤ 5×10⁴', sampleInput: 'abcabcbb', sampleOutput: '3',
+      testCases: [{"input":"abcabcbb","output":"3"},{"input":"bbbbb","output":"1"}]
+    },
+    {
+      title: 'Kadane Maximum Subarray (Seeded)', difficulty: 'medium', category: 'Arrays',
+      description: 'Find the contiguous subarray with the largest sum (Kadane\'s algorithm).',
+      inputFormat: 'Array of integers', outputFormat: 'Maximum subarray sum',
+      constraints: '1 ≤ arr.length ≤ 10⁵', sampleInput: '[-2,1,-3,4,-1,2,1,-5,4]', sampleOutput: '6',
+      testCases: [{"input":"[-2,1,-3,4,-1,2,1,-5,4]","output":"6"},{"input":"[1]","output":"1"}]
+    },
+    {
+      title: 'Integer to Roman (Seeded)', difficulty: 'medium', category: 'Math',
+      description: 'Convert an integer to its Roman numeral representation.',
+      inputFormat: 'Integer (1 to 3999)', outputFormat: 'Roman numeral string',
+      constraints: '1 ≤ num ≤ 3999', sampleInput: '1994', sampleOutput: 'MCMXCIV',
+      testCases: [{"input":"1994","output":"MCMXCIV"},{"input":"58","output":"LVIII"}]
+    },
+
+    // ═══ HARD (15) ═══
+    {
+      title: 'Longest Common Subsequence (Seeded)', difficulty: 'hard', category: 'Dynamic Programming',
+      description: 'Find the length of the longest common subsequence of two strings.',
+      inputFormat: 'Two strings', outputFormat: 'LCS length',
+      constraints: '1 ≤ length ≤ 10³', sampleInput: 'abcde\\nace', sampleOutput: '3',
+      testCases: [{"input":"abcde\\nace","output":"3"},{"input":"abc\\ndef","output":"0"}]
+    },
+    {
+      title: '0/1 Knapsack Problem (Seeded)', difficulty: 'hard', category: 'Dynamic Programming',
+      description: 'Given items with weights and values, maximise total value without exceeding capacity.',
+      inputFormat: 'capacity, weights[], values[]', outputFormat: 'Maximum value',
+      constraints: 'n ≤ 100, W ≤ 10⁴', sampleInput: '50\\n[10,20,30]\\n[60,100,120]', sampleOutput: '220',
+      testCases: [{"input":"50\\n[10,20,30]\\n[60,100,120]","output":"220"}]
+    },
+    {
+      title: 'N-Queens Validator (Seeded)', difficulty: 'hard', category: 'Backtracking',
+      description: 'Given an n×n board, validate if queens placement is valid (no two queens attack each other).',
+      inputFormat: 'Array of column positions per row', outputFormat: 'true or false',
+      constraints: '1 ≤ n ≤ 15', sampleInput: '[1,3,0,2]', sampleOutput: 'true',
+      testCases: [{"input":"[1,3,0,2]","output":"true"},{"input":"[0,1,2,3]","output":"false"}]
+    },
+    {
+      title: 'Merge Intervals (Seeded)', difficulty: 'hard', category: 'Arrays',
+      description: 'Given a collection of intervals, merge all overlapping intervals.',
+      inputFormat: 'Array of [start, end] intervals', outputFormat: 'Merged intervals',
+      constraints: '1 ≤ intervals.length ≤ 10⁴', sampleInput: '[[1,3],[2,6],[8,10],[15,18]]', sampleOutput: '[[1,6],[8,10],[15,18]]',
+      testCases: [{"input":"[[1,3],[2,6],[8,10],[15,18]]","output":"[[1,6],[8,10],[15,18]]"}]
+    },
+    {
+      title: 'Longest Increasing Subsequence (Seeded)', difficulty: 'hard', category: 'Dynamic Programming',
+      description: 'Find the length of the longest strictly increasing subsequence.',
+      inputFormat: 'Array of integers', outputFormat: 'LIS length',
+      constraints: '1 ≤ arr.length ≤ 2500', sampleInput: '[10,9,2,5,3,7,101,18]', sampleOutput: '4',
+      testCases: [{"input":"[10,9,2,5,3,7,101,18]","output":"4"},{"input":"[0,1,0,3,2,3]","output":"4"}]
+    },
+    {
+      title: 'Edit Distance (Seeded)', difficulty: 'hard', category: 'Dynamic Programming',
+      description: 'Find the minimum number of operations (insert, delete, replace) to convert one string to another.',
+      inputFormat: 'Two strings', outputFormat: 'Minimum operations',
+      constraints: '0 ≤ length ≤ 500', sampleInput: 'horse\\nros', sampleOutput: '3',
+      testCases: [{"input":"horse\\nros","output":"3"},{"input":"intention\\nexecution","output":"5"}]
+    },
+    {
+      title: 'Coin Change (Min Coins) (Seeded)', difficulty: 'hard', category: 'Dynamic Programming',
+      description: 'Find the fewest number of coins needed to make up a given amount.',
+      inputFormat: 'Coins array and amount', outputFormat: 'Minimum coins or -1',
+      constraints: '1 ≤ coins.length ≤ 12', sampleInput: '[1,5,10,25]\\n30', sampleOutput: '2',
+      testCases: [{"input":"[1,5,10,25]\\n30","output":"2"},{"input":"[2]\\n3","output":"-1"}]
+    },
+    {
+      title: 'Trie Implementation (Seeded)', difficulty: 'hard', category: 'Trees',
+      description: 'Implement a Trie with insert, search, and startsWith methods.',
+      inputFormat: 'Array of operations', outputFormat: 'Array of results',
+      constraints: 'Words length ≤ 200', sampleInput: 'insert(apple)\\nsearch(apple)\\nstartsWith(app)', sampleOutput: 'true\\ntrue',
+      testCases: [{"input":"insert(apple)\\nsearch(apple)","output":"true"},{"input":"insert(apple)\\nsearch(app)","output":"false"}]
+    },
+    {
+      title: 'Graph BFS Shortest Path (Seeded)', difficulty: 'hard', category: 'Graphs',
+      description: 'Find the shortest path between two nodes in an unweighted graph using BFS.',
+      inputFormat: 'Adjacency list, start, end', outputFormat: 'Shortest path length',
+      constraints: 'Nodes ≤ 10⁴', sampleInput: '{0:[1,2],1:[0,3],2:[0,3],3:[1,2]}\\n0\\n3', sampleOutput: '2',
+      testCases: [{"input":"{0:[1,2],1:[0,3],2:[0,3],3:[1,2]}\\n0\\n3","output":"2"}]
+    },
+    {
+      title: 'Dijkstra Shortest Path (Seeded)', difficulty: 'hard', category: 'Graphs',
+      description: 'Implement Dijkstra\'s algorithm to find shortest distances from source to all nodes.',
+      inputFormat: 'n, edges [[from,to,weight]], source', outputFormat: 'Array of shortest distances',
+      constraints: 'Nodes ≤ 10³', sampleInput: '4\\n[[0,1,4],[0,2,1],[2,1,2],[1,3,1],[2,3,5]]\\n0', sampleOutput: '[0,3,1,4]',
+      testCases: [{"input":"4\\n[[0,1,4],[0,2,1],[2,1,2],[1,3,1],[2,3,5]]\\n0","output":"[0,3,1,4]"}]
+    },
+    {
+      title: 'Topological Sort (Seeded)', difficulty: 'hard', category: 'Graphs',
+      description: 'Return a valid topological ordering of a directed acyclic graph.',
+      inputFormat: 'n nodes, edges [[from, to]]', outputFormat: 'Array of nodes in topological order',
+      constraints: 'n ≤ 10⁴', sampleInput: '4\\n[[0,1],[0,2],[1,3],[2,3]]', sampleOutput: '[0,2,1,3]',
+      testCases: [{"input":"4\\n[[0,1],[0,2],[1,3],[2,3]]","output":"[0,1,2,3] or [0,2,1,3]"}]
+    },
+    {
+      title: 'Minimum Spanning Tree (Seeded)', difficulty: 'hard', category: 'Graphs',
+      description: 'Find the total weight of the minimum spanning tree of a weighted undirected graph.',
+      inputFormat: 'n nodes, edges [[u,v,weight]]', outputFormat: 'Total MST weight',
+      constraints: 'n ≤ 10³', sampleInput: '4\\n[[0,1,10],[0,2,6],[0,3,5],[1,3,15],[2,3,4]]', sampleOutput: '19',
+      testCases: [{"input":"4\\n[[0,1,10],[0,2,6],[0,3,5],[1,3,15],[2,3,4]]","output":"19"}]
+    },
+    {
+      title: 'Rod Cutting (Seeded)', difficulty: 'hard', category: 'Dynamic Programming',
+      description: 'Given a rod of length n and price list, determine the maximum revenue from cutting.',
+      inputFormat: 'Prices array, rod length n', outputFormat: 'Maximum revenue',
+      constraints: 'n ≤ 100', sampleInput: '[1,5,8,9,10,17,17,20]\\n8', sampleOutput: '22',
+      testCases: [{"input":"[1,5,8,9,10,17,17,20]\\n8","output":"22"}]
+    },
+    {
+      title: 'Matrix Chain Multiplication (Seeded)', difficulty: 'hard', category: 'Dynamic Programming',
+      description: 'Find the minimum number of scalar multiplications needed to multiply a chain of matrices.',
+      inputFormat: 'Array of matrix dimensions', outputFormat: 'Minimum multiplications',
+      constraints: 'n ≤ 100', sampleInput: '[10,20,30,40,30]', sampleOutput: '30000',
+      testCases: [{"input":"[10,20,30,40,30]","output":"30000"},{"input":"[40,20,30,10,30]","output":"26000"}]
+    },
+    {
+      title: 'Word Break (Seeded)', difficulty: 'hard', category: 'Dynamic Programming',
+      description: 'Given a string and a dictionary, determine if the string can be segmented into dictionary words.',
+      inputFormat: 'String and array of dictionary words', outputFormat: 'true or false',
+      constraints: '1 ≤ s.length ≤ 300', sampleInput: 'leetcode\\n[leet,code]', sampleOutput: 'true',
+      testCases: [{"input":"leetcode\\n[leet,code]","output":"true"},{"input":"catsandog\\n[cats,dog,sand,and,cat]","output":"false"}]
+    }
+  ];
+
+  for (const p of problems) {
+    await connection.query(
+      `INSERT INTO codingProblems (mentorId, title, description, difficulty, category, inputFormat, outputFormat, \`constraints\`, sampleInput, sampleOutput, testCases) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [mid, p.title, p.description, p.difficulty, p.category, p.inputFormat, p.outputFormat, p.constraints, p.sampleInput, p.sampleOutput, JSON.stringify(p.testCases)]
+    );
+  }
+
+  console.log(`  ✅ Seeded ${problems.length} coding problems (Easy: 15, Medium: 15, Hard: 15)`);
 }
 
 
