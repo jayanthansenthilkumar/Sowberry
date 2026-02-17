@@ -1,8 +1,8 @@
-﻿import React, { useState, useEffect, useCallback } from 'react';
+﻿import React, { useState, useEffect, useCallback, useRef } from 'react';
 import Cropper from 'react-easy-crop';
 import { Link, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
-import { authApi } from '../../utils/api';
+import { authApi, publicApi } from '../../utils/api';
 import { useAuth } from '../../context/AuthContext';
 
 
@@ -41,6 +41,23 @@ const AuthPage = () => {
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
+  // College search state
+  const [collegeSearch, setCollegeSearch] = useState('');
+  const [collegeResults, setCollegeResults] = useState([]);
+  const [collegeLoading, setCollegeLoading] = useState(false);
+  const [showCollegeDropdown, setShowCollegeDropdown] = useState(false);
+  const collegeInputRef = useRef(null);
+  const collegeDropdownRef = useRef(null);
+  // Department search state
+  const [deptSearch, setDeptSearch] = useState('');
+  const [deptResults, setDeptResults] = useState([]);
+  const [deptLoading, setDeptLoading] = useState(false);
+  const [showDeptDropdown, setShowDeptDropdown] = useState(false);
+  const [selectedDeptLabel, setSelectedDeptLabel] = useState('');
+  const deptInputRef = useRef(null);
+  const deptDropdownRef = useRef(null);
+  // Dynamic academic year config (fetched from API)
+  const [academicConfig, setAcademicConfig] = useState(null);
   const [forgotData, setForgotData] = useState({
     email: '',
     otp: ['', '', '', '', '', ''],
@@ -145,30 +162,41 @@ const AuthPage = () => {
     if (name === 'department') {
       // CYBER only allows I year
       const newYear = value === 'CYBER' ? 'I year' : registerData.year;
-      // Recalculate roll prefix
-      const yCode = yearCodes[newYear] || '';
-      let dCode = deptCodes[value] || '';
-      if (value === 'AIML' && newYear === 'IV year') dCode = 'BAL';
-      const prefix = (yCode && dCode) ? yCode + dCode : '';
-      setRegisterData(prev => ({ ...prev, department: value, year: newYear, rollNumber: prefix }));
+      if (isMKC) {
+        // Recalculate roll prefix for MKC
+        const yCode = yearCodes[newYear] || '';
+        const dCode = getDeptCode(value, newYear);
+        const prefix = (yCode && dCode) ? yCode + dCode : '';
+        setRegisterData(prev => ({ ...prev, department: value, year: newYear, rollNumber: prefix }));
+      } else {
+        setRegisterData(prev => ({ ...prev, department: value, year: newYear }));
+      }
       return;
     }
 
     if (name === 'year') {
-      // Recalc roll prefix when year changes
-      const yCode = yearCodes[value] || '';
-      let dCode = deptCodes[registerData.department] || '';
-      if (registerData.department === 'AIML' && value === 'IV year') dCode = 'BAL';
-      const prefix = (yCode && dCode) ? yCode + dCode : '';
-      setRegisterData(prev => ({ ...prev, year: value, rollNumber: prefix }));
+      if (isMKC) {
+        // Recalc roll prefix when year changes for MKC
+        const yCode = yearCodes[value] || '';
+        const dCode = getDeptCode(registerData.department, value);
+        const prefix = (yCode && dCode) ? yCode + dCode : '';
+        setRegisterData(prev => ({ ...prev, year: value, rollNumber: prefix }));
+      } else {
+        setRegisterData(prev => ({ ...prev, year: value }));
+      }
       return;
     }
 
     if (name === 'rollNumber') {
-      // Enforce prefix lock — user cannot delete the auto-generated prefix
-      const currentPrefix = generateRollPrefix();
-      if (currentPrefix && !value.startsWith(currentPrefix)) return;
-      if (value.length > 12) return;
+      if (isMKC) {
+        // Enforce prefix lock for MKC — user cannot delete the auto-generated prefix
+        const currentPrefix = generateRollPrefix();
+        if (currentPrefix && !value.startsWith(currentPrefix)) return;
+        if (value.length > 12) return;
+      } else {
+        // Free-form for other colleges (max 20 chars)
+        if (value.length > 20) return;
+      }
       setRegisterData(prev => ({ ...prev, rollNumber: value }));
       return;
     }
@@ -243,40 +271,118 @@ const AuthPage = () => {
   };
 
   // College/Department/Year lists
-  const colleges = [
-    'Anna University', 'IIT Madras', 'VIT University', 'SRM University', 'PSG College of Technology',
-    'NIT Trichy', 'Madras Institute of Technology', 'SSN College of Engineering',
-    'Amrita Vishwa Vidyapeetham', 'SASTRA University', 'Karunya University',
-    'Mepco Schlenk Engineering College', 'Thiagarajar College of Engineering',
-    'Kongu Engineering College', 'Coimbatore Institute of Technology',
-    'Velammal Engineering College', 'Saveetha Engineering College',
-    'Rajalakshmi Engineering College', 'St. Joseph\'s College of Engineering'
-  ];
-  const departments = [
-    { value: 'AIDS', label: 'Artificial Intelligence and Data Science' },
-    { value: 'AIML', label: 'Artificial Intelligence and Machine Learning' },
-    { value: 'CYBER', label: 'Computer Science and Engineering (Cyber Security)' },
-    { value: 'CSE', label: 'Computer Science Engineering' },
-    { value: 'CSBS', label: 'Computer Science And Business Systems' },
-    { value: 'ECE', label: 'Electronics & Communication Engineering' },
-    { value: 'EEE', label: 'Electrical & Electronics Engineering' },
-    { value: 'MECH', label: 'Mechanical Engineering' },
-    { value: 'CIVIL', label: 'Civil Engineering' },
-    { value: 'IT', label: 'Information Technology' },
-    { value: 'VLSI', label: 'Electronics Engineering (VLSI Design)' }
-  ];
+  // College search with debounce
+  useEffect(() => {
+    if (!collegeSearch || collegeSearch.trim().length < 2) {
+      setCollegeResults([]);
+      return;
+    }
+    setCollegeLoading(true);
+    const timer = setTimeout(async () => {
+      try {
+        const res = await publicApi.searchColleges(collegeSearch.trim());
+        if (res.success) {
+          setCollegeResults(res.colleges || []);
+          setShowCollegeDropdown(true);
+        }
+      } catch (err) {
+        console.error('College search error:', err);
+        setCollegeResults([]);
+      } finally {
+        setCollegeLoading(false);
+      }
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [collegeSearch]);
+
+  // Click outside to close college dropdown
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (
+        collegeInputRef.current && !collegeInputRef.current.contains(e.target) &&
+        collegeDropdownRef.current && !collegeDropdownRef.current.contains(e.target)
+      ) {
+        setShowCollegeDropdown(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  // Department search with debounce
+  useEffect(() => {
+    if (!deptSearch || deptSearch.trim().length < 2) {
+      setDeptResults([]);
+      return;
+    }
+    setDeptLoading(true);
+    const timer = setTimeout(async () => {
+      try {
+        const res = await publicApi.searchDepartments(deptSearch.trim());
+        if (res.success) {
+          setDeptResults(res.departments || []);
+          setShowDeptDropdown(true);
+        }
+      } catch (err) {
+        console.error('Department search error:', err);
+        setDeptResults([]);
+      } finally {
+        setDeptLoading(false);
+      }
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [deptSearch]);
+
+  // Click outside to close department dropdown
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (
+        deptInputRef.current && !deptInputRef.current.contains(e.target) &&
+        deptDropdownRef.current && !deptDropdownRef.current.contains(e.target)
+      ) {
+        setShowDeptDropdown(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   const years = ['I year', 'II year', 'III year', 'IV year'];
 
-  // Department codes for roll number
-  const deptCodes = {
+  // Fetch academic year config from API
+  useEffect(() => {
+    const fetchConfig = async () => {
+      try {
+        const res = await publicApi.getAcademicYear();
+        if (res.success) {
+          setAcademicConfig(res);
+        }
+      } catch (err) {
+        console.error('Failed to fetch academic year config:', err);
+      }
+    };
+    fetchConfig();
+  }, []);
+
+  // Dynamic codes from API (with fallbacks)
+  const targetCollege = academicConfig?.targetCollege || 'M.Kumarasamy College of Engineering';
+  const isMKC = registerData.college === targetCollege;
+  const deptCodes = academicConfig?.deptCodes || {
     'AIDS': 'BAD', 'AIML': 'BAM', 'CSE': 'BCS', 'CSBS': 'BCB',
     'CYBER': 'BSC', 'ECE': 'BEC', 'EEE': 'BEE', 'MECH': 'BME',
-    'CIVIL': 'BCE', 'IT': 'BIT', 'VLSI': 'BEV', 'MBA': 'MBA', 'MCA': 'MCA'
+    'CIVIL': 'BCE', 'IT': 'BIT', 'VLSI': 'BEV'
   };
-
-  // Year codes for roll number
-  const yearCodes = {
+  const yearCodes = academicConfig?.yearCodes || {
     'I year': '927625', 'II year': '927624', 'III year': '927623', 'IV year': '927622'
+  };
+  // Per-academic-year dept code overrides (e.g. AIML IV year = BAL only in 2025-2026)
+  const specialDeptOverrides = academicConfig?.specialDeptOverrides || {};
+
+  // Get effective dept code, applying any year-specific overrides
+  const getDeptCode = (dept, yr) => {
+    const override = specialDeptOverrides[dept]?.[yr];
+    if (override) return override;
+    return deptCodes[dept] || '';
   };
 
   // Get filtered years based on department (CYBER = I year only)
@@ -285,19 +391,18 @@ const AuthPage = () => {
     return years;
   };
 
-  // Generate roll number prefix from dept + year codes
+  // Generate roll number prefix from dept + year codes (MKC only)
   const generateRollPrefix = () => {
+    if (!isMKC) return '';
     if (!registerData.department || !registerData.year) return '';
     const yCode = yearCodes[registerData.year];
     if (!yCode) return '';
-    let dCode = deptCodes[registerData.department] || '';
-    // Special case: AIML IV year uses BAL instead of BAM
-    if (registerData.department === 'AIML' && registerData.year === 'IV year') dCode = 'BAL';
+    const dCode = getDeptCode(registerData.department, registerData.year);
     return dCode ? yCode + dCode : '';
   };
 
-  // Roll number validity (must be 12 chars)
-  const isRollNumberValid = registerData.rollNumber.length === 12;
+  // Roll number validity: MKC = 12 chars, others = at least 1 char
+  const isRollNumberValid = isMKC ? registerData.rollNumber.length === 12 : registerData.rollNumber.trim().length > 0;
   const rollPrefix = generateRollPrefix();
 
   // Password strength
@@ -314,7 +419,8 @@ const AuthPage = () => {
     if (step === 1) {
       const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(registerData.email);
       const phoneValid = /^\d{10,15}$/.test(registerData.phone.replace(/\D/g, ''));
-      return registerData.fullName.trim() && registerData.college && registerData.department && registerData.year && registerData.rollNumber.length === 12 && emailValid && phoneValid;
+      const rollValid = isMKC ? registerData.rollNumber.length === 12 : registerData.rollNumber.trim().length > 0;
+      return registerData.fullName.trim() && registerData.college && registerData.department && registerData.year && rollValid && emailValid && phoneValid;
     }
     if (step === 2) return true; // all optional
     if (step === 3) return true; // photo optional
@@ -560,7 +666,7 @@ const AuthPage = () => {
                   <div className="relative">
                     <input
                       type={passwordVisibility.login ? 'text' : 'password'}
-                      name="password" placeholder="Password"
+                      name="password" placeholder="Password" autoComplete="current-password"
                       value={loginData.password} onChange={handleLoginChange} required
                       className="w-full px-4 py-3 rounded-xl bg-cream dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 focus:border-primary outline-none text-sm text-gray-700 dark-theme:text-gray-200 transition-colors pr-10"
                     />
@@ -652,23 +758,155 @@ const AuthPage = () => {
                         <input type="text" name="fullName" placeholder="Enter your full name" value={registerData.fullName} onChange={handleRegisterChange}
                           className="w-full px-4 py-2.5 rounded-xl bg-cream dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 focus:border-primary focus:ring-1 focus:ring-primary/20 outline-none text-sm text-gray-700 dark-theme:text-gray-200 placeholder-gray-400 dark-theme:placeholder-gray-500 transition-all" />
                       </div>
-                      <div>
-                        <label className="text-xs font-medium text-gray-600 dark-theme:text-gray-400 mb-1.5 block tracking-wide">College <span className="text-primary">*</span></label>
-                        <select name="college" value={registerData.college} onChange={handleRegisterChange}
-                          className="w-full px-4 py-2.5 rounded-xl bg-cream dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 focus:border-primary outline-none text-sm text-gray-700 dark-theme:text-gray-200 transition-all appearance-none cursor-pointer">
-                          <option value="" className="text-gray-400">Select your college</option>
-                          {colleges.map(c => <option key={c} value={c}>{c}</option>)}
-                        </select>
-                      </div>
-                      <div className="grid grid-cols-2 gap-3">
-                        <div>
-                          <label className="text-xs font-medium text-gray-600 dark-theme:text-gray-400 mb-1.5 block tracking-wide">Department <span className="text-primary">*</span></label>
-                          <select name="department" value={registerData.department} onChange={handleRegisterChange}
-                            className="w-full px-4 py-2.5 rounded-xl bg-cream dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 focus:border-primary outline-none text-sm text-gray-700 dark-theme:text-gray-200 transition-all appearance-none cursor-pointer">
-                            <option value="">Select</option>
-                            {departments.map(d => <option key={d.value} value={d.value}>{d.label}</option>)}
-                          </select>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div className="relative">
+                          <label className="text-xs font-medium text-gray-600 dark-theme:text-gray-400 mb-1.5 block tracking-wide">College <span className="text-primary">*</span></label>
+                        <div className="relative">
+                          <i className={`absolute left-3 top-1/2 -translate-y-1/2 text-sm transition-all duration-300 ${
+                            registerData.college
+                              ? 'ri-checkbox-circle-fill text-green-500'
+                              : collegeSearch
+                                ? 'ri-search-line text-primary animate-pulse'
+                                : 'ri-search-line text-gray-400 dark-theme:text-gray-500'
+                          }`}></i>
+                          <input
+                            ref={collegeInputRef}
+                            type="text"
+                            placeholder="Search your college..."
+                            value={collegeSearch || registerData.college}
+                            onChange={(e) => {
+                              setCollegeSearch(e.target.value);
+                              setRegisterData(prev => ({ ...prev, college: '', rollNumber: '' }));
+                              if (e.target.value.trim().length >= 2) setShowCollegeDropdown(true);
+                            }}
+                            onFocus={() => { if (collegeSearch.trim().length >= 2 && collegeResults.length) setShowCollegeDropdown(true); }}
+                            className={`w-full pl-9 pr-9 py-2.5 rounded-xl bg-cream dark-theme:bg-gray-800 border outline-none text-sm text-gray-700 dark-theme:text-gray-200 placeholder-gray-400 dark-theme:placeholder-gray-500 transition-all duration-300 ${
+                              registerData.college
+                                ? 'border-green-400 dark-theme:border-green-500 ring-1 ring-green-200 dark-theme:ring-green-500/20'
+                                : collegeSearch
+                                  ? 'border-primary ring-1 ring-primary/20'
+                                  : 'border-sand dark-theme:border-gray-700 focus:border-primary focus:ring-1 focus:ring-primary/20'
+                            }`}
+                            autoComplete="off"
+                          />
+                          {collegeLoading && (
+                            <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                              <i className="ri-loader-4-line animate-spin text-primary text-sm"></i>
+                            </div>
+                          )}
+                          {registerData.college && !collegeLoading && (
+                            <button type="button" onClick={() => { setRegisterData(prev => ({ ...prev, college: '', rollNumber: '' })); setCollegeSearch(''); }}
+                              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark-theme:hover:text-gray-300 transition-colors cursor-pointer">
+                              <i className="ri-close-circle-line text-sm"></i>
+                            </button>
+                          )}
                         </div>
+                        {showCollegeDropdown && collegeResults.length > 0 && (
+                          <div ref={collegeDropdownRef} className="absolute z-50 w-full mt-1 max-h-48 overflow-y-auto rounded-xl bg-white dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 shadow-lg">
+                            {collegeResults.map((c, i) => (
+                              <button
+                                key={i}
+                                type="button"
+                                onClick={() => {
+                                  setRegisterData(prev => ({ ...prev, college: c }));
+                                  setCollegeSearch('');
+                                  setShowCollegeDropdown(false);
+                                  setCollegeResults([]);
+                                }}
+                                className="w-full text-left px-4 py-2 text-sm text-gray-700 dark-theme:text-gray-200 hover:bg-primary/10 dark-theme:hover:bg-primary/20 transition-colors cursor-pointer flex items-center gap-2"
+                              >
+                                <i className="ri-building-2-line text-xs text-gray-400"></i>
+                                {c}
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                        {showCollegeDropdown && !collegeLoading && collegeSearch.trim().length >= 2 && collegeResults.length === 0 && (
+                          <div ref={collegeDropdownRef} className="absolute z-50 w-full mt-1 rounded-xl bg-white dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 shadow-lg px-4 py-3 text-sm text-gray-400">
+                            No colleges found
+                          </div>
+                        )}
+                        </div>
+                        <div className="relative">
+                          <label className="text-xs font-medium text-gray-600 dark-theme:text-gray-400 mb-1.5 block tracking-wide">Department <span className="text-primary">*</span></label>
+                          <div className="relative">
+                            <i className={`absolute left-3 top-1/2 -translate-y-1/2 text-sm transition-all duration-300 ${
+                              registerData.department
+                                ? 'ri-checkbox-circle-fill text-green-500'
+                                : deptSearch
+                                  ? 'ri-search-line text-primary animate-pulse'
+                                  : 'ri-search-line text-gray-400 dark-theme:text-gray-500'
+                            }`}></i>
+                            <input
+                              ref={deptInputRef}
+                              type="text"
+                              placeholder="Search department..."
+                              value={deptSearch || selectedDeptLabel}
+                              onChange={(e) => {
+                                setDeptSearch(e.target.value);
+                                setSelectedDeptLabel('');
+                                // Clear department so roll number recalculates
+                                setRegisterData(prev => ({ ...prev, department: '', ...(isMKC ? { rollNumber: '' } : {}) }));
+                                if (e.target.value.trim().length >= 2) setShowDeptDropdown(true);
+                              }}
+                              onFocus={() => { if (deptSearch.trim().length >= 2 && deptResults.length) setShowDeptDropdown(true); }}
+                              className={`w-full pl-9 pr-9 py-2.5 rounded-xl bg-cream dark-theme:bg-gray-800 border outline-none text-sm text-gray-700 dark-theme:text-gray-200 placeholder-gray-400 dark-theme:placeholder-gray-500 transition-all duration-300 ${
+                                registerData.department
+                                  ? 'border-green-400 dark-theme:border-green-500 ring-1 ring-green-200 dark-theme:ring-green-500/20'
+                                  : deptSearch
+                                    ? 'border-primary ring-1 ring-primary/20'
+                                    : 'border-sand dark-theme:border-gray-700 focus:border-primary focus:ring-1 focus:ring-primary/20'
+                              }`}
+                              autoComplete="off"
+                            />
+                            {deptLoading && (
+                              <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                                <i className="ri-loader-4-line animate-spin text-primary text-sm"></i>
+                              </div>
+                            )}
+                            {registerData.department && !deptLoading && (
+                              <button type="button" onClick={() => { setRegisterData(prev => ({ ...prev, department: '', year: '', rollNumber: '' })); setDeptSearch(''); setSelectedDeptLabel(''); }}
+                                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark-theme:hover:text-gray-300 transition-colors cursor-pointer">
+                                <i className="ri-close-circle-line text-sm"></i>
+                              </button>
+                            )}
+                          </div>
+                          {showDeptDropdown && deptResults.length > 0 && (
+                            <div ref={deptDropdownRef} className="absolute z-50 w-full mt-1 max-h-48 overflow-y-auto rounded-xl bg-white dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 shadow-lg">
+                              {deptResults.map((d, i) => (
+                                <button
+                                  key={i}
+                                  type="button"
+                                  onClick={() => {
+                                    let rollUpdate = {};
+                                    if (isMKC) {
+                                      const yCode = yearCodes[registerData.year] || '';
+                                      const dCode = getDeptCode(d.code, registerData.year);
+                                      const prefix = (yCode && dCode) ? yCode + dCode : '';
+                                      rollUpdate = { rollNumber: prefix };
+                                    }
+                                    setRegisterData(prev => ({ ...prev, department: d.code, ...rollUpdate }));
+                                    setSelectedDeptLabel(d.label);
+                                    setDeptSearch('');
+                                    setShowDeptDropdown(false);
+                                    setDeptResults([]);
+                                  }}
+                                  className="w-full text-left px-4 py-2 text-sm text-gray-700 dark-theme:text-gray-200 hover:bg-primary/10 dark-theme:hover:bg-primary/20 transition-colors cursor-pointer flex items-center gap-2"
+                                >
+                                  <i className="ri-graduation-cap-line text-xs text-gray-400"></i>
+                                  <span><span className="font-medium text-primary">{d.degree}</span> - {d.name}</span>
+                                </button>
+                              ))}
+                            </div>
+                          )}
+                          {showDeptDropdown && !deptLoading && deptSearch.trim().length >= 2 && deptResults.length === 0 && (
+                            <div ref={deptDropdownRef} className="absolute z-50 w-full mt-1 rounded-xl bg-white dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 shadow-lg px-4 py-3 text-sm text-gray-400">
+                              No departments found
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
                           <label className="text-xs font-medium text-gray-600 dark-theme:text-gray-400 mb-1.5 block tracking-wide">Year <span className="text-primary">*</span></label>
                           <select name="year" value={registerData.year} onChange={handleRegisterChange}
@@ -677,22 +915,25 @@ const AuthPage = () => {
                             {getFilteredYears().map(y => <option key={y} value={y}>{y}</option>)}
                           </select>
                         </div>
-                      </div>
-                      <div>
-                        <label className="text-xs font-medium text-gray-600 dark-theme:text-gray-400 mb-1.5 block tracking-wide">Roll Number <span className="text-primary">*</span></label>
-                        <div className="relative">
-                          <input type="text" name="rollNumber"
-                            placeholder={rollPrefix ? rollPrefix + '...' : 'Select dept & year first'}
-                            value={registerData.rollNumber} onChange={handleRegisterChange} maxLength="12"
-                            className={`w-full px-4 py-2.5 rounded-xl bg-cream dark-theme:bg-gray-800 border outline-none text-sm text-gray-700 dark-theme:text-gray-200 placeholder-gray-400 dark-theme:placeholder-gray-500 transition-all pr-16
-                              ${registerData.rollNumber && (isRollNumberValid ? 'border-emerald-500/50 focus:border-emerald-500' : 'border-amber-500/50 focus:border-amber-500') || 'border-sand dark-theme:border-gray-700 focus:border-primary'}`} />
-                          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-mono text-gray-400 dark-theme:text-gray-500">
-                            {registerData.rollNumber.length}/12
-                          </span>
+                        <div>
+                          <label className="text-xs font-medium text-gray-600 dark-theme:text-gray-400 mb-1.5 block tracking-wide">Roll Number <span className="text-primary">*</span></label>
+                          <div className="relative">
+                            <input type="text" name="rollNumber"
+                              placeholder={isMKC ? (rollPrefix ? rollPrefix + '...' : 'Select dept & year first') : 'Enter your roll number'}
+                              value={registerData.rollNumber} onChange={handleRegisterChange} maxLength={isMKC ? 12 : 20}
+                              className={`w-full px-4 py-2.5 rounded-xl bg-cream dark-theme:bg-gray-800 border outline-none text-sm text-gray-700 dark-theme:text-gray-200 placeholder-gray-400 dark-theme:placeholder-gray-500 transition-all pr-16
+                                ${registerData.rollNumber && (isRollNumberValid ? 'border-emerald-500/50 focus:border-emerald-500' : 'border-amber-500/50 focus:border-amber-500') || 'border-sand dark-theme:border-gray-700 focus:border-primary'}`} />
+                            {isMKC && (
+                              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-mono text-gray-400 dark-theme:text-gray-500">
+                                {registerData.rollNumber.length}/12
+                              </span>
+                            )}
+                          </div>
+                          {isMKC && rollPrefix && <p className="text-[10px] text-gray-500 dark-theme:text-gray-500 mt-1 font-mono">Prefix: {rollPrefix} (auto-filled) &middot; {academicConfig?.academicYear || ''}</p>}
+                          {!isMKC && registerData.college && <p className="text-[10px] text-gray-500 dark-theme:text-gray-500 mt-1">Enter your college roll number</p>}
                         </div>
-                        {rollPrefix && <p className="text-[10px] text-gray-500 dark-theme:text-gray-500 mt-1 font-mono">Prefix: {rollPrefix} (auto-filled)</p>}
                       </div>
-                      <div className="grid grid-cols-2 gap-3">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
                           <label className="text-xs font-medium text-gray-600 dark-theme:text-gray-400 mb-1.5 block tracking-wide">Email <span className="text-primary">*</span></label>
                           <input type="email" name="email" placeholder="you@example.com" value={registerData.email} onChange={handleRegisterChange}
@@ -839,7 +1080,7 @@ const AuthPage = () => {
                       <div>
                         <label className="text-xs font-medium text-gray-600 dark-theme:text-gray-400 mb-1.5 block tracking-wide">Password <span className="text-primary">*</span></label>
                         <div className="relative">
-                          <input type={passwordVisibility.register ? 'text' : 'password'} name="password" placeholder="Create a strong password" value={registerData.password} onChange={handleRegisterChange}
+                          <input type={passwordVisibility.register ? 'text' : 'password'} name="password" placeholder="Create a strong password" autoComplete="new-password" value={registerData.password} onChange={handleRegisterChange}
                             className="w-full px-4 py-2.5 rounded-xl bg-cream dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 focus:border-primary outline-none text-sm text-gray-700 dark-theme:text-gray-200 placeholder-gray-400 dark-theme:placeholder-gray-500 transition-all pr-10" />
                           <button type="button" onClick={() => togglePasswordVisibility('register')}
                             className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark-theme:hover:text-gray-300 transition-colors">
@@ -850,7 +1091,7 @@ const AuthPage = () => {
                       <div>
                         <label className="text-xs font-medium text-gray-600 dark-theme:text-gray-400 mb-1.5 block tracking-wide">Confirm Password <span className="text-primary">*</span></label>
                         <div className="relative">
-                          <input type={passwordVisibility.registerConfirm ? 'text' : 'password'} name="confirmPassword" placeholder="Re-enter your password" value={registerData.confirmPassword} onChange={handleRegisterChange}
+                          <input type={passwordVisibility.registerConfirm ? 'text' : 'password'} name="confirmPassword" placeholder="Re-enter your password" autoComplete="new-password" value={registerData.confirmPassword} onChange={handleRegisterChange}
                             className="w-full px-4 py-2.5 rounded-xl bg-cream dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 focus:border-primary outline-none text-sm text-gray-700 dark-theme:text-gray-200 placeholder-gray-400 dark-theme:placeholder-gray-500 transition-all pr-10" />
                           <button type="button" onClick={() => togglePasswordVisibility('registerConfirm')}
                             className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark-theme:hover:text-gray-300 transition-colors">
@@ -960,7 +1201,7 @@ const AuthPage = () => {
                     <form onSubmit={handleResetPasswordSubmit} className="space-y-4">
                       <div className="relative">
                         <input type={passwordVisibility.newPassword ? 'text' : 'password'}
-                          name="newPassword" placeholder="New password"
+                          name="newPassword" placeholder="New password" autoComplete="new-password"
                           value={forgotData.newPassword} onChange={handleForgotChange} required
                           className="w-full px-4 py-3 rounded-xl bg-cream dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 focus:border-primary outline-none text-sm text-gray-700 dark-theme:text-gray-200 transition-colors pr-10" />
                         <button type="button" onClick={() => togglePasswordVisibility('newPassword')}
@@ -970,7 +1211,7 @@ const AuthPage = () => {
                       </div>
                       <div className="relative">
                         <input type={passwordVisibility.confirmPassword ? 'text' : 'password'}
-                          name="confirmPassword" placeholder="Confirm password"
+                          name="confirmPassword" placeholder="Confirm password" autoComplete="new-password"
                           value={forgotData.confirmPassword} onChange={handleForgotChange} required
                           className="w-full px-4 py-3 rounded-xl bg-cream dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 focus:border-primary outline-none text-sm text-gray-700 dark-theme:text-gray-200 transition-colors pr-10" />
                         <button type="button" onClick={() => togglePasswordVisibility('confirmPassword')}

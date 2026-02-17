@@ -259,4 +259,7 @@ export const publicApi = {
   getCourses: () => apiCall('/public/courses'),
   submitContact: (body) => apiCall('/public/contact', { method: 'POST', body: JSON.stringify(body) }),
   subscribeNewsletter: (body) => apiCall('/public/newsletter', { method: 'POST', body: JSON.stringify(body) }),
+  searchColleges: (keyword) => apiCall('/public/colleges/search', { method: 'POST', body: JSON.stringify({ keyword }) }),
+  searchDepartments: (keyword) => apiCall('/public/departments/search', { method: 'POST', body: JSON.stringify({ keyword }) }),
+  getAcademicYear: () => apiCall('/public/academic-year'),
 };
