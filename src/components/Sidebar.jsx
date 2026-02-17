@@ -5,7 +5,7 @@ const Sidebar = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      const sections = ['hero', 'about', 'team', 'features', 'contact'];
+      const sections = ['hero', 'about', 'contact'];
       const scrollPosition = window.scrollY + 100;
 
       for (const section of sections) {
@@ -35,8 +35,6 @@ const Sidebar = () => {
   const navItems = [
     { id: 'home', icon: 'ri-home-4-line', label: 'Home' },
     { id: 'about', icon: 'ri-information-line', label: 'About' },
-    { id: 'team', icon: 'ri-team-line', label: 'Team' },
-    { id: 'features', icon: 'ri-star-line', label: 'Features' },
     { id: 'contact', icon: 'ri-mail-line', label: 'Contact' },
   ];
 

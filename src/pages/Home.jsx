@@ -58,41 +58,7 @@ const Home = () => {
     }
   };
 
-  const teamMembers = [
-    { name: 'Jayanthan S', role: 'Founder & Director', description: 'Expert in educational psychology with over 15 years of teaching experience.', image: '/team/jayanthan.jpg' },
-    { name: 'Prithika K', role: 'Head of Curriculum', description: 'Specializes in innovative teaching methods and curriculum development.', image: '/team/paasamalar.jpg' },
-    { name: 'Sreelekha S', role: 'Learning Specialist', description: 'PhD in cognitive science with expertise in personalized learning approaches.', image: '/team/sreelekha.png' },
-    { name: 'Priyadharshini B', role: 'Technology Director', description: 'Leads our educational technology initiatives and digital learning platforms.', image: '/team/pasamalar.jpg' },
-    { name: 'Sridevi S', role: 'Student Success Coach', description: 'Dedicated to helping students achieve their full potential through mentoring.', image: '/team/sri.jpg' },
-  ];
 
-  const features = [
-    { icon: 'ri-device-line', title: 'Digital Learning', description: 'Access our comprehensive curriculum anytime, anywhere through our intuitive digital platform.' },
-    { icon: 'ri-group-line', title: 'Community Support', description: 'Join our vibrant learning community for collaboration, discussion, and peer support.' },
-    { icon: 'ri-brain-line', title: 'Personalized Learning', description: 'Our adaptive learning system adjusts to your pace, style, and educational goals.' },
-    { icon: 'ri-vidicon-line', title: 'Live Sessions', description: 'Engage with instructors through interactive live sessions and master complex concepts.' },
-    { icon: 'ri-award-line', title: 'Certifications', description: 'Earn industry-recognized certifications to advance your career and showcase your skills.' },
-    { icon: 'ri-user-voice-line', title: 'Expert Mentorship', description: 'Get guidance from industry professionals who provide personalized feedback and support.' },
-  ];
-
-  const courses = [
-    { title: 'Web Development Bootcamp', description: 'Master HTML, CSS, JavaScript and modern frameworks to build responsive websites.', image: './assets/courses/web-development.jpg', duration: '8 weeks', students: '1,245', rating: 4.8, badge: 'Bestseller' },
-    { title: 'Data Science Fundamentals', description: 'Learn statistics, Python, data analysis, machine learning and visualization tools.', image: './assets/courses/data-science.jpg', duration: '12 weeks', students: '875', rating: 4.0, badge: 'New' },
-    { title: 'Digital Marketing Masterclass', description: 'Comprehensive training in SEO, social media, email, content marketing and analytics.', image: './assets/courses/digital-marketing.jpg', duration: '6 weeks', students: '1,540', rating: 4.9, badge: null },
-    { title: 'UI/UX Design Essentials', description: 'Master user interface design principles and create stunning, user-friendly digital experiences.', image: './assets/courses/ui-design.jpg', duration: '10 weeks', students: '985', rating: 4.6, badge: 'Popular' },
-    { title: 'Mobile App Development', description: 'Build native iOS and Android applications using React Native and modern mobile frameworks.', image: './assets/courses/mobile-dev.jpg', duration: '14 weeks', students: '755', rating: 4.3, badge: null },
-    { title: 'Cybersecurity Fundamentals', description: 'Learn to identify vulnerabilities, implement security measures, and protect digital assets.', image: './assets/courses/cybersecurity.jpg', duration: '12 weeks', students: '425', rating: 5.0, badge: 'New' },
-  ];
-
-  const renderStars = (rating) => {
-    const stars = [];
-    const fullStars = Math.floor(rating);
-    const hasHalfStar = rating % 1 !== 0;
-    for (let i = 0; i < fullStars; i++) stars.push(<i key={`full-${i}`} className="ri-star-fill text-yellow-400"></i>);
-    if (hasHalfStar) stars.push(<i key="half" className="ri-star-half-fill text-yellow-400"></i>);
-    for (let i = stars.length; i < 5; i++) stars.push(<i key={`empty-${i}`} className="ri-star-line text-gray-300"></i>);
-    return stars;
-  };
 
   return (
     <>
@@ -399,202 +365,7 @@ const Home = () => {
           </div>
         </section>
 
-        {/* Team Section */}
-        <section id="team" className="relative py-24 pb-32 bg-cream dark-theme:bg-gray-950 overflow-hidden">
-          {/* Decorative orbs */}
-          <div className="hero-orb hero-orb-4 top-10 -left-20 opacity-25"></div>
-          <div className="hero-orb hero-orb-3 -bottom-20 right-10 opacity-20"></div>
 
-          <div className="max-w-7xl mx-auto px-6 relative z-10">
-            <div className="text-center mb-16">
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blush/15 text-clay text-sm font-medium mb-4">
-                <i className="ri-team-line"></i> Our People
-              </div>
-              <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark-theme:text-gray-100">
-                Meet the <span className="text-gradient">Team</span>
-              </h2>
-              <p className="mt-4 text-gray-500 dark-theme:text-gray-400 max-w-2xl mx-auto">The passionate educators and innovators behind Sowberry Academy</p>
-            </div>
-
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-5">
-              {teamMembers.map((member, index) => {
-                const accents = ['peach', 'sage', 'amber', 'blush', 'clay'];
-                const accent = accents[index % accents.length];
-                return (
-                  <div key={index} className="group bg-white dark-theme:bg-gray-900 rounded-2xl overflow-hidden border border-sand dark-theme:border-gray-800 hover:border-primary/30 transition-all duration-300 hover:-translate-y-1">
-                    <div className={`relative h-48 bg-${accent}/10 dark-theme:bg-${accent}/5 overflow-hidden`}>
-                      <img src={member.image} alt={member.name} className="w-full h-full object-cover" />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-4 gap-2">
-                        {['ri-linkedin-fill', 'ri-twitter-fill', 'ri-mail-fill'].map((icon, i) => (
-                          <a key={i} href="#" className="w-8 h-8 rounded-lg bg-white/15 backdrop-blur-sm flex items-center justify-center text-white hover:bg-primary transition-colors">
-                            <i className={`${icon} text-sm`}></i>
-                          </a>
-                        ))}
-                      </div>
-                    </div>
-                    <div className="p-4 text-center">
-                      <h3 className="font-semibold text-gray-800 dark-theme:text-gray-100 text-[15px]">{member.name}</h3>
-                      <p className="text-sm text-primary font-medium mt-1">{member.role}</p>
-                      <p className="text-xs text-gray-500 dark-theme:text-gray-400 mt-2 leading-relaxed line-clamp-2">{member.description}</p>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Bottom wave divider */}
-          <div className="absolute bottom-0 left-0 right-0">
-            <svg viewBox="0 0 1440 60" fill="none" className="w-full h-auto">
-              <path d="M0 60V25C180 45 420 55 720 35C1020 15 1260 25 1440 40V60H0Z" className="fill-white dark-theme:fill-gray-900"/>
-            </svg>
-          </div>
-        </section>
-
-        {/* Features Section */}
-        <section id="features" className="relative py-24 pb-32 bg-white dark-theme:bg-gray-900 overflow-hidden">
-          {/* Decorative orb */}
-          <div className="hero-orb hero-orb-1 -bottom-32 -left-24 opacity-15"></div>
-
-          <div className="max-w-7xl mx-auto px-6 relative z-10">
-            <div className="text-center mb-16">
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber/15 text-amber text-sm font-medium mb-4">
-                <i className="ri-sparkle-line"></i> What We Offer
-              </div>
-              <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark-theme:text-gray-100">
-                Our <span className="text-gradient">Features</span>
-              </h2>
-              <p className="mt-4 text-gray-500 dark-theme:text-gray-400 max-w-2xl mx-auto">Discover what makes our learning experience unique</p>
-            </div>
-
-            {/* Video Showcase — warm treatment */}
-            <div className="grid lg:grid-cols-2 gap-10 mb-24 items-center">
-              <div className="relative rounded-2xl overflow-hidden aspect-video group cursor-pointer">
-                <div className="absolute inset-0 bg-gradient-to-br from-peach/30 via-cream to-sage/20 dark-theme:from-primary/20 dark-theme:via-gray-800 dark-theme:to-sage/10"></div>
-                <img src="./assets/video-thumbnail.jpg" alt="Feature Video" className="absolute inset-0 w-full h-full object-cover" />
-                <div className="absolute inset-0 bg-black/10 group-hover:bg-black/20 transition-colors"></div>
-                <div className="relative z-10 w-full h-full flex items-center justify-center">
-                  <div className="w-16 h-16 rounded-full bg-white/90 dark-theme:bg-gray-900/90 flex items-center justify-center text-primary shadow-lg group-hover:scale-110 transition-transform duration-300">
-                    <i className="ri-play-fill text-2xl ml-0.5"></i>
-                  </div>
-                </div>
-              </div>
-              <div className="space-y-5">
-                <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 dark-theme:text-gray-100">
-                  Learn Anywhere, <span className="text-gradient">Anytime</span>
-                </h2>
-                <p className="text-gray-500 dark-theme:text-gray-400 leading-relaxed">
-                  Experience our innovative teaching methodology that combines modern technology with proven educational practices. Watch our introduction video to see how Sowberry Academy transforms learning.
-                </p>
-                <div className="flex flex-wrap gap-3">
-                  {[
-                    { icon: 'ri-video-line', text: '200+ Video Lessons', bg: 'bg-peach/15', color: 'text-terracotta' },
-                    { icon: 'ri-live-line', text: 'Live Sessions', bg: 'bg-sage/15', color: 'text-sage' },
-                    { icon: 'ri-download-line', text: 'Offline Access', bg: 'bg-amber/15', color: 'text-amber' },
-                  ].map((tag, i) => (
-                    <span key={i} className={`${tag.bg} ${tag.color} px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5`}>
-                      <i className={tag.icon}></i> {tag.text}
-                    </span>
-                  ))}
-                </div>
-                <a href="#" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary text-white font-semibold shadow-sm hover:bg-primary-dark transition-all duration-200">
-                  Explore All Videos <i className="ri-arrow-right-line"></i>
-                </a>
-              </div>
-            </div>
-
-            {/* Feature Cards — each with unique palette accent */}
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-              {features.map((feature, index) => {
-                const palettes = [
-                  { bg: 'bg-peach/12', icon: 'bg-peach/25 text-terracotta', border: 'hover:border-terracotta/25' },
-                  { bg: 'bg-sage/12', icon: 'bg-sage/25 text-sage', border: 'hover:border-sage/25' },
-                  { bg: 'bg-amber/12', icon: 'bg-amber/25 text-amber', border: 'hover:border-amber/25' },
-                  { bg: 'bg-blush/12', icon: 'bg-blush/25 text-clay', border: 'hover:border-clay/25' },
-                  { bg: 'bg-linen', icon: 'bg-primary/15 text-primary', border: 'hover:border-primary/25' },
-                  { bg: 'bg-sage/8', icon: 'bg-sage/20 text-sage', border: 'hover:border-sage/25' },
-                ];
-                const p = palettes[index % palettes.length];
-                return (
-                  <div key={index} className={`group p-6 rounded-2xl border border-sand dark-theme:border-gray-700 ${p.border} bg-white dark-theme:bg-gray-800 transition-all duration-200 hover:-translate-y-0.5`}>
-                    <div className={`w-12 h-12 rounded-xl ${p.icon} flex items-center justify-center mb-4`}>
-                      <i className={`${feature.icon} text-xl`}></i>
-                    </div>
-                    <h3 className="text-lg font-semibold text-gray-800 dark-theme:text-gray-100 mb-2">{feature.title}</h3>
-                    <p className="text-sm text-gray-500 dark-theme:text-gray-400 mb-4 leading-relaxed">{feature.description}</p>
-                    <a href="#" className="inline-flex items-center gap-1 text-sm font-medium text-primary group-hover:gap-2 transition-all">
-                      Learn More <i className="ri-arrow-right-line text-xs"></i>
-                    </a>
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* Courses */}
-            <div className="text-center mt-24 mb-12">
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/8 text-primary text-sm font-medium mb-4">
-                <i className="ri-graduation-cap-line"></i> Learn & Grow
-              </div>
-              <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 dark-theme:text-gray-100">
-                Popular <span className="text-gradient">Courses</span>
-              </h3>
-              <p className="mt-3 text-gray-500 dark-theme:text-gray-400">Start your learning journey with our most sought-after programs</p>
-            </div>
-
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-              {courses.map((course, index) => (
-                <div key={index} className="bg-white dark-theme:bg-gray-800 rounded-2xl overflow-hidden border border-sand dark-theme:border-gray-700 hover:border-primary/25 transition-all duration-300 hover:-translate-y-1 group">
-                  <div className="relative h-48 bg-cream dark-theme:bg-gray-700 overflow-hidden">
-                    <img src={course.image} alt={course.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                      <div className="w-12 h-12 rounded-full bg-white/90 flex items-center justify-center text-primary">
-                        <i className="ri-play-fill text-xl ml-0.5"></i>
-                      </div>
-                    </div>
-                    {course.badge && (
-                      <span className={`absolute top-3 left-3 px-3 py-1 rounded-lg text-xs font-semibold ${
-                        course.badge === 'Bestseller' ? 'bg-amber/90 text-white' :
-                        course.badge === 'New' ? 'bg-sage/90 text-white' :
-                        course.badge === 'Popular' ? 'bg-primary/90 text-white' :
-                        'bg-primary text-white'
-                      }`}>{course.badge}</span>
-                    )}
-                  </div>
-                  <div className="p-5">
-                    <div className="flex items-center gap-4 text-xs text-gray-500 dark-theme:text-gray-400 mb-3">
-                      <span className="flex items-center gap-1"><i className="ri-time-line"></i> {course.duration}</span>
-                      <span className="flex items-center gap-1"><i className="ri-user-line"></i> {course.students}</span>
-                    </div>
-                    <h3 className="font-semibold text-gray-800 dark-theme:text-gray-100 mb-2">{course.title}</h3>
-                    <p className="text-sm text-gray-500 dark-theme:text-gray-400 line-clamp-2 mb-4">{course.description}</p>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-1">
-                        {renderStars(course.rating)}
-                        <span className="text-xs text-gray-400 ml-1">{course.rating}</span>
-                      </div>
-                      <a href="#" className="px-4 py-1.5 rounded-lg bg-primary/10 text-primary text-sm font-medium hover:bg-primary hover:text-white transition-all">
-                        Enroll Now
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div className="text-center mt-10">
-              <a href="#" className="inline-flex items-center gap-2 px-8 py-3 rounded-xl bg-white dark-theme:bg-gray-800 border border-sand dark-theme:border-gray-700 text-gray-700 dark-theme:text-gray-200 font-semibold hover:border-primary/30 hover:text-primary transition-all duration-200">
-                View All Courses <i className="ri-arrow-right-line"></i>
-              </a>
-            </div>
-          </div>
-
-          {/* Bottom wave divider */}
-          <div className="absolute bottom-0 left-0 right-0">
-            <svg viewBox="0 0 1440 60" fill="none" className="w-full h-auto">
-              <path d="M0 60V35C240 15 480 5 720 15C960 25 1200 45 1440 20V60H0Z" className="fill-cream dark-theme:fill-gray-950"/>
-            </svg>
-          </div>
-        </section>
 
         {/* Contact Section */}
         <section id="contact" className="relative py-24 pb-32 bg-cream dark-theme:bg-gray-950 overflow-hidden">
@@ -622,7 +393,7 @@ const Home = () => {
 
                 <div className="relative z-10">
                   <h3 className="text-xl font-bold mb-2">Contact Information</h3>
-                  <p className="text-white/50 text-sm mb-8">Our team is ready to assist you.</p>
+                  <p className="text-white/50 text-sm mb-8">We're here to help you succeed.</p>
 
                   <div className="space-y-5">
                     {[
@@ -774,7 +545,7 @@ const Home = () => {
             <div>
               <h3 className="text-sm font-semibold mb-5 uppercase tracking-wider text-gray-400">Explore</h3>
               <div className="space-y-0.5">
-                {['Home', 'About Us', 'Our Team', 'Features', 'Contact Us', 'Blog'].map((link, i) => (
+                {['Home', 'About Us', 'Contact Us', 'Blog'].map((link, i) => (
                   <a key={i} href="#" className="flex items-center gap-2 py-1.5 text-sm text-gray-500 hover:text-peach transition-colors group">
                     <i className="ri-arrow-right-s-line text-xs text-gray-600 group-hover:text-peach transition-colors"></i> {link}
                   </a>
