@@ -1225,4 +1225,84 @@ router.post('/doubts/:id/reply', async (req, res) => {
   }
 });
 
+// ──────────────── PROFILE REQUESTS ────────────────
+
+// Create a profile edit or account deletion request
+router.post('/profile-requests', async (req, res) => {
+  try {
+    const { type, requestData, reason } = req.body;
+
+    if (!type || !['edit', 'delete'].includes(type)) {
+      return res.status(400).json({ success: false, message: 'Invalid request type. Must be "edit" or "delete".' });
+    }
+
+    if (type === 'edit' && (!requestData || Object.keys(requestData).length === 0)) {
+      return res.status(400).json({ success: false, message: 'Please provide the fields you want to edit.' });
+    }
+
+    if (!reason || reason.trim().length === 0) {
+      return res.status(400).json({ success: false, message: 'Please provide a reason for your request.' });
+    }
+
+    // Check for existing pending request of same type
+    const [existing] = await pool.query(
+      "SELECT id FROM profileRequests WHERE studentId = ? AND type = ? AND status = 'pending'",
+      [req.user.id, type]
+    );
+
+    if (existing.length > 0) {
+      return res.status(400).json({ success: false, message: `You already have a pending ${type} request. Please wait for admin to review it.` });
+    }
+
+    await pool.query(
+      'INSERT INTO profileRequests (studentId, type, requestData, reason) VALUES (?, ?, ?, ?)',
+      [req.user.id, type, type === 'edit' ? JSON.stringify(requestData) : null, reason.trim()]
+    );
+
+    res.status(201).json({ success: true, message: `Your ${type} request has been submitted. You will be notified once admin reviews it.` });
+  } catch (error) {
+    console.error('Create profile request error:', error);
+    res.status(500).json({ success: false, message: 'Server error.' });
+  }
+});
+
+// Get own profile requests
+router.get('/profile-requests', async (req, res) => {
+  try {
+    const [requests] = await pool.query(
+      `SELECT pr.*, u.fullName as reviewerName
+       FROM profileRequests pr
+       LEFT JOIN users u ON pr.reviewedBy = u.id
+       WHERE pr.studentId = ?
+       ORDER BY pr.createdAt DESC`,
+      [req.user.id]
+    );
+
+    res.json({ success: true, data: { requests } });
+  } catch (error) {
+    console.error('Get profile requests error:', error);
+    res.status(500).json({ success: false, message: 'Server error.' });
+  }
+});
+
+// Cancel a pending request
+router.delete('/profile-requests/:id', async (req, res) => {
+  try {
+    const [requests] = await pool.query(
+      "SELECT id FROM profileRequests WHERE id = ? AND studentId = ? AND status = 'pending'",
+      [req.params.id, req.user.id]
+    );
+
+    if (requests.length === 0) {
+      return res.status(404).json({ success: false, message: 'Request not found or already processed.' });
+    }
+
+    await pool.query('DELETE FROM profileRequests WHERE id = ?', [req.params.id]);
+    res.json({ success: true, message: 'Request cancelled successfully.' });
+  } catch (error) {
+    console.error('Cancel profile request error:', error);
+    res.status(500).json({ success: false, message: 'Server error.' });
+  }
+});
+
 export default router;

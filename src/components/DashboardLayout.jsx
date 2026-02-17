@@ -186,6 +186,13 @@ const DashboardLayout = ({ children, pageTitle, role = 'student' }) => {
                   >
                     <i className="ri-dashboard-line text-sm"></i> Dashboard
                   </Link>
+                  <Link
+                    to={role === 'mentor' ? '/mentor/profile' : '/student/profile'}
+                    onClick={() => setProfileOpen(false)}
+                    className="flex items-center gap-2 px-3 py-2 text-[13px] text-gray-700 dark-theme:text-gray-200 hover:bg-cream dark-theme:hover:bg-gray-800 transition-colors"
+                  >
+                    <i className="ri-user-line text-sm"></i> My Profile
+                  </Link>
                   {role === 'student' && (
                     <Link
                       to="/student/my-progress"

@@ -47,16 +47,23 @@ const upload = multer({
 });
 
 // ──────────────── UPLOAD PROFILE IMAGE ────────────────
-router.post("/upload-profile", upload.single("profileImage"), (req, res) => {
+router.post("/upload-profile", authenticate, upload.single("profileImage"), async (req, res) => {
   try {
     if (!req.file)
       return res
         .status(400)
         .json({ success: false, message: "No file uploaded." });
-    const imageUrl = `/uploads/profiles/${req.file.filename}`;
+    const profileImage = `/uploads/profiles/${req.file.filename}`;
+
+    // Save the profile image URL to the user record
+    await pool.query("UPDATE users SET profileImage = ? WHERE id = ?", [
+      profileImage,
+      req.user.id,
+    ]);
+
     res.json({
       success: true,
-      data: { imageUrl, filename: req.file.filename },
+      data: { profileImage, filename: req.file.filename },
     });
   } catch (error) {
     console.error("Upload error:", error);
@@ -444,7 +451,7 @@ router.post("/refresh-token", authenticate, async (req, res) => {
 router.get("/me", authenticate, async (req, res) => {
   try {
     const [users] = await pool.query(
-      "SELECT id, email, username, fullName, phone, countryCode, role, profileImage, isVerified, isActive, createdAt FROM users WHERE id = ?",
+      "SELECT id, email, username, fullName, phone, countryCode, role, profileImage, college, department, year, rollNumber, gender, dateOfBirth, address, bio, github, linkedin, hackerrank, leetcode, isVerified, isActive, createdAt, updatedAt FROM users WHERE id = ?",
       [req.user.id],
     );
 
@@ -464,15 +471,39 @@ router.get("/me", authenticate, async (req, res) => {
 // ──────────────── UPDATE PROFILE ────────────────
 router.put("/profile", authenticate, async (req, res) => {
   try {
-    const { fullName, phone, countryCode, profileImage } = req.body;
+    const userRole = req.user.role;
+
+    // Students cannot directly edit their profile — they must raise a request
+    if (userRole === 'student') {
+      return res.status(403).json({ success: false, message: 'Students must raise an edit request to admin.' });
+    }
+
+    // Admin & Mentor can edit all profile fields directly
+    const { fullName, phone, countryCode, profileImage, college, department, year, gender, dateOfBirth, address, bio, github, linkedin, hackerrank, leetcode } = req.body;
 
     await pool.query(
-      "UPDATE users SET fullName = COALESCE(?, fullName), phone = COALESCE(?, phone), countryCode = COALESCE(?, countryCode), profileImage = COALESCE(?, profileImage) WHERE id = ?",
-      [fullName, phone, countryCode, profileImage, req.user.id],
+      `UPDATE users SET
+        fullName = COALESCE(?, fullName),
+        phone = COALESCE(?, phone),
+        countryCode = COALESCE(?, countryCode),
+        profileImage = COALESCE(?, profileImage),
+        college = COALESCE(?, college),
+        department = COALESCE(?, department),
+        year = COALESCE(?, year),
+        gender = COALESCE(?, gender),
+        dateOfBirth = COALESCE(?, dateOfBirth),
+        address = COALESCE(?, address),
+        bio = COALESCE(?, bio),
+        github = COALESCE(?, github),
+        linkedin = COALESCE(?, linkedin),
+        hackerrank = COALESCE(?, hackerrank),
+        leetcode = COALESCE(?, leetcode)
+      WHERE id = ?`,
+      [fullName, phone, countryCode, profileImage, college, department, year, gender, dateOfBirth, address, bio, github, linkedin, hackerrank, leetcode, req.user.id],
     );
 
     const [updated] = await pool.query(
-      "SELECT id, email, username, fullName, phone, countryCode, role, profileImage, isVerified FROM users WHERE id = ?",
+      "SELECT id, email, username, fullName, phone, countryCode, role, profileImage, college, department, year, rollNumber, gender, dateOfBirth, address, bio, github, linkedin, hackerrank, leetcode, isVerified, isActive, createdAt, updatedAt FROM users WHERE id = ?",
       [req.user.id],
     );
 

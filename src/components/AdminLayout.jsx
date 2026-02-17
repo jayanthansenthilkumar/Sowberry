@@ -90,6 +90,7 @@ const AdminLayout = ({ children, pageTitle }) => {
     { type: 'separator', label: 'Reports & Settings' },
     { path: '/admin/performance-analytics', icon: 'ri-line-chart-line', label: 'Analytics' },
     { path: '/admin/system-reports', icon: 'ri-file-chart-line', label: 'Reports' },
+    { path: '/admin/manage-requests', icon: 'ri-git-pull-request-line', label: 'Requests' },
     { path: '/admin/settings', icon: 'ri-settings-line', label: 'Settings' },
   ];
 
@@ -243,6 +244,9 @@ const AdminLayout = ({ children, pageTitle }) => {
                 <div className="absolute right-0 top-11 w-44 bg-white dark-theme:bg-gray-900 rounded-xl shadow-lg border border-sand dark-theme:border-gray-800 overflow-hidden z-50 py-1">
                   <Link to="/admin" className="flex items-center gap-2 px-3 py-2 text-[13px] text-gray-700 dark-theme:text-gray-200 hover:bg-cream dark-theme:hover:bg-gray-800 transition-colors">
                     <i className="ri-dashboard-line text-sm"></i> Dashboard
+                  </Link>
+                  <Link to="/admin/profile" className="flex items-center gap-2 px-3 py-2 text-[13px] text-gray-700 dark-theme:text-gray-200 hover:bg-cream dark-theme:hover:bg-gray-800 transition-colors">
+                    <i className="ri-user-line text-sm"></i> My Profile
                   </Link>
                   <Link to="/admin/settings" className="flex items-center gap-2 px-3 py-2 text-[13px] text-gray-700 dark-theme:text-gray-200 hover:bg-cream dark-theme:hover:bg-gray-800 transition-colors">
                     <i className="ri-settings-line text-sm"></i> Settings

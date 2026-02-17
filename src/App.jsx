@@ -13,6 +13,8 @@ const PerformanceAnalytics = React.lazy(() => import('./pages/admin/PerformanceA
 const ManageStudents = React.lazy(() => import('./pages/admin/ManageStudents'))
 const CoursesOverview = React.lazy(() => import('./pages/admin/CoursesOverview'))
 const ManageMentors = React.lazy(() => import('./pages/admin/ManageMentors'))
+const AdminProfile = React.lazy(() => import('./pages/admin/AdminProfile'))
+const ManageRequests = React.lazy(() => import('./pages/admin/ManageRequests'))
 const MentorDashboard = React.lazy(() => import('./pages/mentor/MentorDashboard'))
 const MentorDoubts = React.lazy(() => import('./pages/mentor/Doubts'))
 const NewProblemSolving = React.lazy(() => import('./pages/mentor/NewProblemSolving'))
@@ -21,6 +23,7 @@ const NewEvents = React.lazy(() => import('./pages/mentor/NewEvents'))
 const NewAptitude = React.lazy(() => import('./pages/mentor/NewAptitude'))
 const NewAssignments = React.lazy(() => import('./pages/mentor/NewAssignments'))
 const MentorDiscussion = React.lazy(() => import('./pages/mentor/MentorDiscussion'))
+const MentorProfile = React.lazy(() => import('./pages/mentor/MentorProfile'))
 const StudentDashboard = React.lazy(() => import('./pages/student/StudentDashboard'))
 const LearningGames = React.lazy(() => import('./pages/student/LearningGames'))
 const StudyMaterial = React.lazy(() => import('./pages/student/StudyMaterial'))
@@ -34,6 +37,7 @@ const MyGrades = React.lazy(() => import('./pages/student/MyGrades'))
 const MyProgress = React.lazy(() => import('./pages/student/MyProgress'))
 const CourseViewer = React.lazy(() => import('./pages/student/CourseViewer'))
 const MyDoubts = React.lazy(() => import('./pages/student/MyDoubts'))
+const StudentProfile = React.lazy(() => import('./pages/student/StudentProfile'))
 
 // Error Boundary to catch runtime errors and show a visible message
 class ErrorBoundary extends React.Component {
@@ -93,11 +97,14 @@ function App() {
           <Route path="/admin/manage-students" element={<ProtectedRoute allowedRoles={['admin']}><ManageStudents /></ProtectedRoute>} />
           <Route path="/admin/courses-overview" element={<ProtectedRoute allowedRoles={['admin']}><CoursesOverview /></ProtectedRoute>} />
           <Route path="/admin/manage-mentors" element={<ProtectedRoute allowedRoles={['admin']}><ManageMentors /></ProtectedRoute>} />
+          <Route path="/admin/profile" element={<ProtectedRoute allowedRoles={['admin']}><AdminProfile /></ProtectedRoute>} />
+          <Route path="/admin/manage-requests" element={<ProtectedRoute allowedRoles={['admin']}><ManageRequests /></ProtectedRoute>} />
           
           {/* Mentor Routes */}
           <Route path="/mentor" element={<ProtectedRoute allowedRoles={['mentor']}><MentorDashboard /></ProtectedRoute>} />
           <Route path="/mentor/doubts" element={<ProtectedRoute allowedRoles={['mentor']}><MentorDoubts /></ProtectedRoute>} />
           <Route path="/mentor/students-progress" element={<ProtectedRoute allowedRoles={['mentor']}><StudentsProgress /></ProtectedRoute>} />
+          <Route path="/mentor/profile" element={<ProtectedRoute allowedRoles={['mentor']}><MentorProfile /></ProtectedRoute>} />
           <Route path="/mentor/new-assignments" element={<ProtectedRoute allowedRoles={['mentor']}><NewAssignments /></ProtectedRoute>} />
           
           {/* Admin-accessible Mentor features (same pages, admin layout) */}
@@ -125,6 +132,7 @@ function App() {
           <Route path="/student/my-progress" element={<ProtectedRoute allowedRoles={['student']}><MyProgress /></ProtectedRoute>} />
           <Route path="/student/my-doubts" element={<ProtectedRoute allowedRoles={['student']}><MyDoubts /></ProtectedRoute>} />
           <Route path="/student/course-viewer/:id" element={<ProtectedRoute allowedRoles={['student']}><CourseViewer /></ProtectedRoute>} />
+          <Route path="/student/profile" element={<ProtectedRoute allowedRoles={['student']}><StudentProfile /></ProtectedRoute>} />
         </Routes>
         </Suspense>
       </AuthProvider>

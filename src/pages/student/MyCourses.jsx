@@ -58,12 +58,13 @@ const MyCourses = () => {
     try {
       const res = await studentApi.getCertificate(courseId);
       if (res.success) {
-        generateCertificate(res.data);
+        generateCertificate(res);
         Swal.fire({ ...getSwalOpts(), icon: 'success', title: 'Certificate Downloaded!', text: 'Your certificate has been saved.', timer: 2000, showConfirmButton: false });
       } else {
         Swal.fire({ ...getSwalOpts(), icon: 'error', title: 'Error', text: res.message || 'Could not generate certificate.' });
       }
-    } catch {
+    } catch (err) {
+      console.error('Certificate download error:', err);
       Swal.fire({ ...getSwalOpts(), icon: 'error', title: 'Error', text: 'Failed to download certificate.' });
     }
   };

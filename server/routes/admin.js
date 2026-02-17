@@ -872,6 +872,110 @@ router.get('/download-uploads', async (req, res) => {
   }
 });
 
+// ──────────────── PROFILE REQUESTS MANAGEMENT ────────────────
+
+// Get all profile requests with student info
+router.get('/profile-requests', async (req, res) => {
+  try {
+    const [requests] = await pool.query(
+      `SELECT pr.*, 
+        s.fullName as studentName, s.email as studentEmail, s.rollNumber, s.college, s.department, s.year, s.profileImage as studentImage,
+        r.fullName as reviewerName
+       FROM profileRequests pr
+       JOIN users s ON pr.studentId = s.id
+       LEFT JOIN users r ON pr.reviewedBy = r.id
+       ORDER BY FIELD(pr.status, 'pending', 'approved', 'rejected'), pr.createdAt DESC`
+    );
+
+    const pendingCount = requests.filter(r => r.status === 'pending').length;
+    res.json({ success: true, data: { requests, pendingCount } });
+  } catch (error) {
+    console.error('Get profile requests error:', error);
+    res.status(500).json({ success: false, message: 'Server error.' });
+  }
+});
+
+// Approve a profile request
+router.put('/profile-requests/:id/approve', async (req, res) => {
+  try {
+    const { adminNote } = req.body;
+    const [requests] = await pool.query(
+      "SELECT * FROM profileRequests WHERE id = ? AND status = 'pending'",
+      [req.params.id]
+    );
+
+    if (requests.length === 0) {
+      return res.status(404).json({ success: false, message: 'Request not found or already processed.' });
+    }
+
+    const request = requests[0];
+
+    if (request.type === 'edit' && request.requestData) {
+      // Apply the requested edits to the student's profile
+      const data = typeof request.requestData === 'string' ? JSON.parse(request.requestData) : request.requestData;
+      const allowedFields = ['fullName', 'phone', 'countryCode', 'college', 'department', 'year', 'gender', 'dateOfBirth', 'address', 'bio', 'github', 'linkedin', 'hackerrank', 'leetcode'];
+      const updates = [];
+      const values = [];
+
+      for (const [key, value] of Object.entries(data)) {
+        if (allowedFields.includes(key)) {
+          updates.push(`${key} = ?`);
+          values.push(value);
+        }
+      }
+
+      if (updates.length > 0) {
+        values.push(request.studentId);
+        await pool.query(`UPDATE users SET ${updates.join(', ')} WHERE id = ?`, values);
+      }
+    } else if (request.type === 'delete') {
+      // Deactivate the student account
+      await pool.query('UPDATE users SET isActive = 0 WHERE id = ?', [request.studentId]);
+    }
+
+    // Mark request as approved
+    await pool.query(
+      'UPDATE profileRequests SET status = ?, adminNote = ?, reviewedBy = ?, reviewedAt = NOW() WHERE id = ?',
+      ['approved', adminNote || null, req.user.id, req.params.id]
+    );
+
+    res.json({ success: true, message: `Request approved successfully.${request.type === 'edit' ? ' Student profile has been updated.' : ' Student account has been deactivated.'}` });
+  } catch (error) {
+    console.error('Approve profile request error:', error);
+    res.status(500).json({ success: false, message: 'Server error.' });
+  }
+});
+
+// Reject a profile request
+router.put('/profile-requests/:id/reject', async (req, res) => {
+  try {
+    const { adminNote } = req.body;
+
+    if (!adminNote || adminNote.trim().length === 0) {
+      return res.status(400).json({ success: false, message: 'Please provide a reason for rejection.' });
+    }
+
+    const [requests] = await pool.query(
+      "SELECT id FROM profileRequests WHERE id = ? AND status = 'pending'",
+      [req.params.id]
+    );
+
+    if (requests.length === 0) {
+      return res.status(404).json({ success: false, message: 'Request not found or already processed.' });
+    }
+
+    await pool.query(
+      'UPDATE profileRequests SET status = ?, adminNote = ?, reviewedBy = ?, reviewedAt = NOW() WHERE id = ?',
+      ['rejected', adminNote.trim(), req.user.id, req.params.id]
+    );
+
+    res.json({ success: true, message: 'Request rejected.' });
+  } catch (error) {
+    console.error('Reject profile request error:', error);
+    res.status(500).json({ success: false, message: 'Server error.' });
+  }
+});
+
 // ──────────────── LIST UPLOADS (Profile Photos) ────────────────
 router.get('/list-uploads', async (req, res) => {
   try {

@@ -77,11 +77,16 @@ export const authApi = {
   updateProfile: (body) => apiCall('/auth/profile', { method: 'PUT', body: JSON.stringify(body) }),
   changePassword: (body) => apiCall('/auth/change-password', { method: 'PUT', body: JSON.stringify(body) }),
   uploadProfileImage: async (file, rollNumber) => {
+    const token = getToken();
     const formData = new FormData();
     formData.append('profileImage', file);
     if (rollNumber) formData.append('rollNumber', rollNumber);
     try {
-      const res = await fetch(`${API_BASE}/auth/upload-profile`, { method: 'POST', body: formData });
+      const res = await fetch(`${API_BASE}/auth/upload-profile`, {
+        method: 'POST',
+        body: formData,
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      });
       const json = await res.json();
       if (json.success && json.data) return { success: true, ...json.data };
       return json;
@@ -144,6 +149,10 @@ export const adminApi = {
   // Upload management
   listUploads: () => apiCall('/admin/list-uploads'),
   downloadUploads: () => `${API_BASE}/admin/download-uploads`,
+  // Profile Requests
+  getProfileRequests: () => apiCall('/admin/profile-requests'),
+  approveProfileRequest: (id, body = {}) => apiCall(`/admin/profile-requests/${id}/approve`, { method: 'PUT', body: JSON.stringify(body) }),
+  rejectProfileRequest: (id, body) => apiCall(`/admin/profile-requests/${id}/reject`, { method: 'PUT', body: JSON.stringify(body) }),
 };
 
 // ──────────────── MENTOR API ────────────────
@@ -253,6 +262,10 @@ export const studentApi = {
   createDoubt: (body) => apiCall('/student/doubts', { method: 'POST', body: JSON.stringify(body) }),
   getDoubt: (id) => apiCall(`/student/doubts/${id}`),
   replyDoubt: (id, body) => apiCall(`/student/doubts/${id}/reply`, { method: 'POST', body: JSON.stringify(body) }),
+  // Profile Requests
+  createProfileRequest: (body) => apiCall('/student/profile-requests', { method: 'POST', body: JSON.stringify(body) }),
+  getProfileRequests: () => apiCall('/student/profile-requests'),
+  cancelProfileRequest: (id) => apiCall(`/student/profile-requests/${id}`, { method: 'DELETE' }),
 };
 
 // ──────────────── PUBLIC API ────────────────

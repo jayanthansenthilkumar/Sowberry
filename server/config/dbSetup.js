@@ -495,7 +495,29 @@ async function setup() {
     ) ENGINE=InnoDB
   `);
 
-  // 23. contactMessages
+  // 23. profileRequests — student edit/delete account requests
+  await connection.query(`
+    CREATE TABLE IF NOT EXISTS profileRequests (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      studentId INT NOT NULL,
+      type ENUM('edit', 'delete') NOT NULL,
+      requestData JSON DEFAULT NULL,
+      reason TEXT DEFAULT NULL,
+      status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
+      adminNote TEXT DEFAULT NULL,
+      reviewedBy INT DEFAULT NULL,
+      reviewedAt DATETIME DEFAULT NULL,
+      createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+      FOREIGN KEY (studentId) REFERENCES users(id) ON DELETE CASCADE,
+      FOREIGN KEY (reviewedBy) REFERENCES users(id) ON DELETE SET NULL,
+      INDEX idx_student (studentId),
+      INDEX idx_status (status),
+      INDEX idx_type (type)
+    ) ENGINE=InnoDB
+  `);
+
+  // 24. contactMessages
   await connection.query(`
     CREATE TABLE IF NOT EXISTS contactMessages (
       id INT AUTO_INCREMENT PRIMARY KEY,
