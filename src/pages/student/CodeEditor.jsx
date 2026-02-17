@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import DashboardLayout from '../../components/DashboardLayout';
-import Swal from 'sweetalert2';
+import Swal, { getSwalOpts } from '../../utils/swal';
 import { studentApi } from '../../utils/api';
 import { useSearchParams } from 'react-router-dom';
 
@@ -305,11 +305,11 @@ const CodeEditor = () => {
     setRunning(false);
     if (res.success) {
       const statusLabel = res.status === 'accepted' ? 'Accepted' : res.status === 'compile_error' ? 'Compilation Error' : res.status === 'wrong_answer' ? 'Wrong Answer' : 'Submitted';
-      Swal.fire({ icon: res.status === 'accepted' ? 'success' : 'info', title: statusLabel, text: res.message || 'Your code has been submitted.', background: '#fff', color: '#1f2937' });
+      Swal.fire({ ...getSwalOpts(), icon: res.status === 'accepted' ? 'success' : 'info', title: statusLabel, text: res.message || 'Your code has been submitted.'});
       setOutput(res.output || 'Submitted successfully!');
       setOutputStatus(res.status === 'accepted' ? 'success' : res.status === 'compile_error' ? 'error' : 'success');
     } else {
-      Swal.fire({ icon: 'error', title: 'Submission Failed', text: res.message, background: '#fff', color: '#1f2937' });
+      Swal.fire({ ...getSwalOpts(), icon: 'error', title: 'Submission Failed', text: res.message});
       setOutput(res.message || 'Submission failed.');
       setOutputStatus('error');
     }

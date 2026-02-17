@@ -1,12 +1,11 @@
 import { useState, useEffect } from 'react';
 import DashboardLayout from '../../components/DashboardLayout';
-import Swal from 'sweetalert2';
+import Swal, { getSwalOpts } from '../../utils/swal';
 import { studentApi } from '../../utils/api';
 
 // ════════════════════════════════════════════════════════════════
 //     Sowberry — Aptitude Tests (DB-driven)
 // ════════════════════════════════════════════════════════════════
-const getSwalOpts = () => { const isDark = document.body.classList.contains('dark-theme'); return { background: isDark ? '#1a1a1a' : '#fff', color: isDark ? '#e8e8e8' : '#1f2937', confirmButtonColor: '#d4a574' }; };
 
 const CATEGORIES = ['All', 'Quantitative', 'Logical', 'Verbal', 'Technical', 'Data'];
 const CAT_ICONS = { Quantitative: 'ri-calculator-line', Logical: 'ri-brain-line', Verbal: 'ri-book-open-line', Technical: 'ri-computer-line', Data: 'ri-pie-chart-line' };
@@ -84,8 +83,7 @@ const AptitudeTests = () => {
         const total = res.totalMarks || qs.length;
         const score = res.score || 0;
         
-        Swal.fire({ 
-          ...getSwalOpts(), 
+        Swal.fire({ ...getSwalOpts(), 
           icon: score >= total * 0.7 ? 'success' : score >= total * 0.4 ? 'info' : 'warning', 
           title: auto ? "Time's Up!" : 'Test Submitted!', 
           text: `Score: ${score}/${total} (${Math.round(score / total * 100)}%)`,

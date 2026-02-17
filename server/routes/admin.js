@@ -81,18 +81,18 @@ router.get('/students', async (req, res) => {
     const { search, status, page = 1, limit = 20 } = req.query;
     const offset = (page - 1) * limit;
 
-    let query = "SELECT id, email, username, fullName, phone, countryCode, profileImage, isVerified, isActive, createdAt FROM users WHERE role = 'student'";
+    let query = "SELECT id, email, username, fullName, phone, countryCode, profileImage, college, department, year, rollNumber, gender, dateOfBirth, bio, github, linkedin, hackerrank, leetcode, isVerified, isActive, createdAt FROM users WHERE role = 'student'";
     const params = [];
 
     if (search) {
-      query += ' AND (fullName LIKE ? OR email LIKE ? OR username LIKE ?)';
-      params.push(`%${search}%`, `%${search}%`, `%${search}%`);
+      query += ' AND (fullName LIKE ? OR email LIKE ? OR username LIKE ? OR college LIKE ? OR department LIKE ? OR rollNumber LIKE ?)';
+      params.push(`%${search}%`, `%${search}%`, `%${search}%`, `%${search}%`, `%${search}%`, `%${search}%`);
     }
     if (status === 'active') { query += ' AND isActive = 1'; }
     if (status === 'inactive') { query += ' AND isActive = 0'; }
     if (status === 'unverified') { query += ' AND isVerified = 0'; }
 
-    const [countResult] = await pool.query(query.replace('SELECT id, email, username, fullName, phone, countryCode, profileImage, isVerified, isActive, createdAt', 'SELECT COUNT(*) as total'), params);
+    const [countResult] = await pool.query(query.replace('SELECT id, email, username, fullName, phone, countryCode, profileImage, college, department, year, rollNumber, gender, dateOfBirth, bio, github, linkedin, hackerrank, leetcode, isVerified, isActive, createdAt', 'SELECT COUNT(*) as total'), params);
 
     query += ' ORDER BY createdAt DESC LIMIT ? OFFSET ?';
     params.push(Number(limit), Number(offset));

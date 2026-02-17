@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import AdminLayout from '../../components/AdminLayout';
-import Swal from 'sweetalert2';
+import Swal, { getSwalOpts } from '../../utils/swal';
 import { mentorApi } from '../../utils/api';
 import { useAuth } from '../../context/AuthContext';
 
@@ -33,9 +33,9 @@ const MentorDiscussion = () => {
     e.preventDefault();
     const res = await mentorApi.createDiscussion(form);
     if (res.success) {
-      Swal.fire({ icon: 'success', title: 'Discussion Created!', timer: 1500, showConfirmButton: false, background: '#fff', color: '#1f2937' });
+      Swal.fire({ ...getSwalOpts(), icon: 'success', title: 'Discussion Created!', timer: 1500, showConfirmButton: false});
       setShowCreate(false); setForm({ title: '', content: '' }); fetchDiscussions();
-    } else Swal.fire({ icon: 'error', title: 'Error', text: res.message, background: '#fff', color: '#1f2937' });
+    } else Swal.fire({ ...getSwalOpts(), icon: 'error', title: 'Error', text: res.message});
   };
 
   const handleReply = async (e) => {
@@ -43,7 +43,7 @@ const MentorDiscussion = () => {
     if (!replyText.trim()) return;
     const res = await mentorApi.replyDiscussion(selectedThread, { content: replyText });
     if (res.success) { setReplyText(''); openThread(selectedThread); }
-    else Swal.fire({ icon: 'error', title: 'Error', text: res.message, background: '#fff', color: '#1f2937' });
+    else Swal.fire({ ...getSwalOpts(), icon: 'error', title: 'Error', text: res.message});
   };
 
   return (

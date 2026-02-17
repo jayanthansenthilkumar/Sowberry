@@ -1,11 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../../components/DashboardLayout';
-import Swal from 'sweetalert2';
+import Swal, { getSwalOpts } from '../../utils/swal';
 import { studentApi } from '../../utils/api';
-
-const isDark = document.body.classList.contains('dark-theme');
-const swalOpts = { background: isDark ? '#1a1a1a' : '#fff', color: isDark ? '#e8e8e8' : '#1f2937', confirmButtonColor: '#d4a574' };
 
 const CAT_COLORS = {
   'Web Development': 'from-blue-500 to-indigo-500',
@@ -40,18 +37,18 @@ const MyCourses = () => {
   const handleEnroll = async (courseId) => {
     const res = await studentApi.enrollCourse(courseId);
     if (res.success) {
-      Swal.fire({ ...swalOpts, icon: 'success', title: 'Enrolled!', text: 'You have been enrolled in the course.', timer: 1500, showConfirmButton: false });
+      Swal.fire({ ...getSwalOpts(), icon: 'success', title: 'Enrolled!', text: 'You have been enrolled in the course.', timer: 1500, showConfirmButton: false });
       fetchData();
-    } else Swal.fire({ ...swalOpts, icon: 'error', title: 'Error', text: res.message });
+    } else Swal.fire({ ...getSwalOpts(), icon: 'error', title: 'Error', text: res.message });
   };
 
   const handleUnenroll = (courseId, title) => {
-    Swal.fire({ ...swalOpts, title: 'Unenroll?', text: `Leave "${title}"? Your progress will be lost.`, icon: 'warning', showCancelButton: true, confirmButtonColor: '#dc2626', cancelButtonColor: '#333', confirmButtonText: 'Unenroll' })
+    Swal.fire({ ...getSwalOpts(), title: 'Unenroll?', text: `Leave "${title}"? Your progress will be lost.`, icon: 'warning', showCancelButton: true, confirmButtonColor: '#dc2626', cancelButtonColor: '#333', confirmButtonText: 'Unenroll' })
       .then(async r => {
         if (r.isConfirmed) {
           const res = await studentApi.unenrollCourse(courseId);
-          if (res.success) { Swal.fire({ ...swalOpts, icon: 'success', title: 'Unenrolled', timer: 1500, showConfirmButton: false }); fetchData(); }
-          else Swal.fire({ ...swalOpts, icon: 'error', title: 'Error', text: res.message });
+          if (res.success) { Swal.fire({ ...getSwalOpts(), icon: 'success', title: 'Unenrolled', timer: 1500, showConfirmButton: false }); fetchData(); }
+          else Swal.fire({ ...getSwalOpts(), icon: 'error', title: 'Error', text: res.message });
         }
       });
   };
@@ -159,9 +156,9 @@ const MyCourses = () => {
                       <p className="text-[11px] text-gray-500 dark-theme:text-gray-400 line-clamp-2 mb-2">{c.description}</p>
                       <div className="flex items-center gap-2 text-[10px] text-gray-400 dark-theme:text-gray-500 mb-4 flex-wrap">
                         <span><i className="ri-user-line mr-0.5"></i>{c.mentorName || 'Instructor'}</span>
-                        {c.courseType && <span>• {c.courseType}</span>}
-                        <span>• <i className="ri-stack-line mr-0.5"></i>{c.contentCount || 0} items</span>
-                        <span>• <i className="ri-book-2-line mr-0.5"></i>{c.subjectCount || 0} units</span>
+                        {c.courseType && <span>â€¢ {c.courseType}</span>}
+                        <span>â€¢ <i className="ri-stack-line mr-0.5"></i>{c.contentCount || 0} items</span>
+                        <span>â€¢ <i className="ri-book-2-line mr-0.5"></i>{c.subjectCount || 0} units</span>
                       </div>
                       {c.isEnrolled ? (
                         <button disabled className="w-full py-2.5 rounded-xl bg-cream dark-theme:bg-gray-800 text-gray-400 dark-theme:text-gray-500 text-xs font-medium cursor-not-allowed border border-sand dark-theme:border-gray-700"><i className="ri-check-line mr-1"></i>Already Enrolled</button>

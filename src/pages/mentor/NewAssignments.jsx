@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import DashboardLayout from '../../components/DashboardLayout';
 import AdminLayout from '../../components/AdminLayout';
-import Swal from 'sweetalert2';
+import Swal, { getSwalOpts } from '../../utils/swal';
 import { mentorApi } from '../../utils/api';
 import { useAuth } from '../../context/AuthContext';
 
@@ -36,13 +36,13 @@ const NewAssignments = () => {
     e.preventDefault();
     const res = editItem ? await mentorApi.updateAssignment(editItem.id, form) : await mentorApi.createAssignment(form);
     if (res.success) {
-      Swal.fire({ icon: 'success', title: editItem ? 'Updated!' : 'Created!', timer: 1500, showConfirmButton: false, background: '#fff', color: '#1f2937' });
+      Swal.fire({ ...getSwalOpts(), icon: 'success', title: editItem ? 'Updated!' : 'Created!', timer: 1500, showConfirmButton: false});
       setShowModal(false); fetchData();
-    } else Swal.fire({ icon: 'error', title: 'Error', text: res.message, background: '#fff', color: '#1f2937' });
+    } else Swal.fire({ ...getSwalOpts(), icon: 'error', title: 'Error', text: res.message});
   };
 
   const handleDelete = (id) => {
-    Swal.fire({ title: 'Delete?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#dc2626', confirmButtonText: 'Delete', background: '#fff', color: '#1f2937' })
+    Swal.fire({ ...getSwalOpts(), title: 'Delete?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#dc2626', confirmButtonText: 'Delete'})
       .then(async r => { if (r.isConfirmed) { await mentorApi.deleteAssignment(id); fetchData(); } });
   };
 
@@ -52,15 +52,14 @@ const NewAssignments = () => {
   };
 
   const gradeSubmission = async (subId) => {
-    const { value } = await Swal.fire({
-      title: 'Grade Submission', input: 'number', inputLabel: 'Score', inputPlaceholder: 'Enter score',
-      showCancelButton: true, confirmButtonColor: '#d4a574', background: '#fff', color: '#1f2937',
+    const { value } = await Swal.fire({ ...getSwalOpts(), title: 'Grade Submission', input: 'number', inputLabel: 'Score', inputPlaceholder: 'Enter score',
+      showCancelButton: true, confirmButtonColor: '#d4a574',
       inputValidator: v => { if (!v || v < 0) return 'Enter a valid score'; }
     });
     if (value !== undefined) {
-      const { value: feedback } = await Swal.fire({ title: 'Feedback', input: 'textarea', inputPlaceholder: 'Optional feedback...', showCancelButton: true, confirmButtonColor: '#d4a574', background: '#fff', color: '#1f2937' });
+      const { value: feedback } = await Swal.fire({ ...getSwalOpts(), title: 'Feedback', input: 'textarea', inputPlaceholder: 'Optional feedback...', showCancelButton: true, confirmButtonColor: '#d4a574'});
       const res = await mentorApi.gradeSubmission(subId, { score: parseInt(value), feedback: feedback || '' });
-      if (res.success) { Swal.fire({ icon: 'success', title: 'Graded!', timer: 1500, showConfirmButton: false, background: '#fff', color: '#1f2937' }); viewSubmissions(showSubmissions); }
+      if (res.success) { Swal.fire({ ...getSwalOpts(), icon: 'success', title: 'Graded!', timer: 1500, showConfirmButton: false}); viewSubmissions(showSubmissions); }
     }
   };
 

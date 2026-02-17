@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import DashboardLayout from '../../components/DashboardLayout';
-import Swal from 'sweetalert2';
+import Swal, { getSwalOpts } from '../../utils/swal';
 import { studentApi } from '../../utils/api';
 
 const POLL_INTERVAL = 3000; // 3 seconds
@@ -112,8 +112,7 @@ const MyDoubts = () => {
   };
 
   const handleCreate = async () => {
-    const { value: formValues } = await Swal.fire({
-      title: 'Ask a Doubt',
+    const { value: formValues } = await Swal.fire({ ...getSwalOpts(), title: 'Ask a Doubt',
       html: `
         <select id="swal-course" class="swal2-select" style="width:100%;margin-bottom:8px">
           <option value="">Select Course (Optional)</option>
@@ -145,10 +144,10 @@ const MyDoubts = () => {
     if (formValues) {
       const res = await studentApi.createDoubt(formValues);
       if (res.success) {
-        Swal.fire({ icon: 'success', title: 'Doubt Posted!', text: 'A mentor will respond soon.', timer: 2000, showConfirmButton: false });
+        Swal.fire({ ...getSwalOpts(), icon: 'success', title: 'Doubt Posted!', text: 'A mentor will respond soon.', timer: 2000, showConfirmButton: false });
         fetchDoubts();
       } else {
-        Swal.fire({ icon: 'error', title: 'Error', text: res.message });
+        Swal.fire({ ...getSwalOpts(), icon: 'error', title: 'Error', text: res.message });
       }
     }
   };

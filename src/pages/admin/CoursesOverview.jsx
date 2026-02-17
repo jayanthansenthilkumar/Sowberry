@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import AdminLayout from '../../components/AdminLayout';
-import Swal from 'sweetalert2';
+import Swal, { getSwalOpts } from '../../utils/swal';
 import { adminApi } from '../../utils/api';
+import { exportToPDF, exportToExcel } from '../../utils/exportData';
 
 const CoursesOverview = () => {
   const [courses, setCourses] = useState([]);
@@ -36,11 +37,11 @@ const CoursesOverview = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!form.title.trim()) return Swal.fire({ icon: 'warning', title: 'Title required' });
+    if (!form.title.trim()) return Swal.fire({ ...getSwalOpts(), icon: 'warning', title: 'Title required' });
     const payload = { ...form, subjects: form.subjects?.filter(s => s.title?.trim()) };
     const res = editCourse ? await adminApi.updateCourse(editCourse.id, payload) : await adminApi.createCourse(payload);
-    if (res.success) { Swal.fire({ icon: 'success', title: editCourse ? 'Updated!' : 'Created!', timer: 1500, showConfirmButton: false }); setShowModal(false); fetchCourses(); }
-    else Swal.fire({ icon: 'error', title: 'Error', text: res.message });
+    if (res.success) { Swal.fire({ ...getSwalOpts(), icon: 'success', title: editCourse ? 'Updated!' : 'Created!', timer: 1500, showConfirmButton: false }); setShowModal(false); fetchCourses(); }
+    else Swal.fire({ ...getSwalOpts(), icon: 'error', title: 'Error', text: res.message });
   };
 
   // ---- Detail View ----
@@ -48,7 +49,7 @@ const CoursesOverview = () => {
     setDetailLoading(true); setDetailCourse(null); setActiveTab('subjects'); setContentList([]);
     const res = await adminApi.getCourseDetail(c.id);
     if (res.success) setDetailCourse(res.course);
-    else Swal.fire({ icon: 'error', title: 'Error', text: res.message });
+    else Swal.fire({ ...getSwalOpts(), icon: 'error', title: 'Error', text: res.message });
     setDetailLoading(false);
   };
 
@@ -66,29 +67,28 @@ const CoursesOverview = () => {
 
   // ---- Subject / Topic / Content CRUD ----
   const addSubject = async () => {
-    const { value } = await Swal.fire({ title: 'Add Subject', html: '<input id="s-title" class="swal2-input" placeholder="Subject Title"><input id="s-code" class="swal2-input" placeholder="Subject Code (optional)"><textarea id="s-desc" class="swal2-textarea" placeholder="Description (optional)"></textarea>', showCancelButton: true, confirmButtonColor: '#d4a574', preConfirm: () => { const t = document.getElementById('s-title').value; if (!t) { Swal.showValidationMessage('Title required'); return; } return { title: t, code: document.getElementById('s-code').value, description: document.getElementById('s-desc').value }; } });
+    const { value } = await Swal.fire({ ...getSwalOpts(), title: 'Add Subject', html: '<input id="s-title" class="swal2-input" placeholder="Subject Title"><input id="s-code" class="swal2-input" placeholder="Subject Code (optional)"><textarea id="s-desc" class="swal2-textarea" placeholder="Description (optional)"></textarea>', showCancelButton: true, confirmButtonColor: '#d4a574', preConfirm: () => { const t = document.getElementById('s-title').value; if (!t) { Swal.showValidationMessage('Title required'); return; } return { title: t, code: document.getElementById('s-code').value, description: document.getElementById('s-desc').value }; } });
     if (value) { const res = await adminApi.addSubject(detailCourse.id, value); if (res.success) refreshDetail(); }
   };
 
   const deleteSubject = async (id, title) => {
-    const r = await Swal.fire({ title: 'Delete Subject?', text: `Remove "${title}" and all its topics?`, icon: 'warning', showCancelButton: true, confirmButtonColor: '#dc2626', confirmButtonText: 'Delete' });
+    const r = await Swal.fire({ ...getSwalOpts(), title: 'Delete Subject?', text: `Remove "${title}" and all its topics?`, icon: 'warning', showCancelButton: true, confirmButtonColor: '#dc2626', confirmButtonText: 'Delete' });
     if (r.isConfirmed) { const res = await adminApi.deleteSubject(id); if (res.success) refreshDetail(); }
   };
 
   const addTopic = async (subjectId) => {
-    const { value } = await Swal.fire({ title: 'Add Topic', html: '<input id="t-title" class="swal2-input" placeholder="Topic Title"><textarea id="t-desc" class="swal2-textarea" placeholder="Description (optional)"></textarea>', showCancelButton: true, confirmButtonColor: '#d4a574', preConfirm: () => { const t = document.getElementById('t-title').value; if (!t) { Swal.showValidationMessage('Title required'); return; } return { title: t, description: document.getElementById('t-desc').value }; } });
+    const { value } = await Swal.fire({ ...getSwalOpts(), title: 'Add Topic', html: '<input id="t-title" class="swal2-input" placeholder="Topic Title"><textarea id="t-desc" class="swal2-textarea" placeholder="Description (optional)"></textarea>', showCancelButton: true, confirmButtonColor: '#d4a574', preConfirm: () => { const t = document.getElementById('t-title').value; if (!t) { Swal.showValidationMessage('Title required'); return; } return { title: t, description: document.getElementById('t-desc').value }; } });
     if (value) { const res = await adminApi.addTopic(subjectId, value); if (res.success) refreshDetail(); }
   };
 
   const deleteTopic = async (id) => {
-    const r = await Swal.fire({ title: 'Delete Topic?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#dc2626', confirmButtonText: 'Delete' });
+    const r = await Swal.fire({ ...getSwalOpts(), title: 'Delete Topic?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#dc2626', confirmButtonText: 'Delete' });
     if (r.isConfirmed) { const res = await adminApi.deleteTopic(id); if (res.success) refreshDetail(); }
   };
 
   const addContent = async () => {
     const subjects = detailCourse?.subjects || [];
-    const { value } = await Swal.fire({
-      title: 'Add Content', width: 520,
+    const { value } = await Swal.fire({ ...getSwalOpts(), title: 'Add Content', width: 520,
       html: `<select id="c-sub" class="swal2-select" style="width:100%;margin-bottom:8px"><option value="">No Subject</option>${subjects.map(s => `<option value="${s.id}">${s.title}</option>`).join('')}</select><input id="c-title" class="swal2-input" placeholder="Content Title" style="width:100%"><select id="c-type" class="swal2-select" style="width:100%;margin-bottom:8px"><option value="text">Text</option><option value="video">Video URL</option><option value="document">Document URL</option><option value="link">Link</option></select><textarea id="c-data" class="swal2-textarea" placeholder="Content / URL" style="width:100%"></textarea>`,
       showCancelButton: true, confirmButtonColor: '#d4a574',
       preConfirm: () => { const t = document.getElementById('c-title').value; if (!t) { Swal.showValidationMessage('Title required'); return; } return { subjectId: document.getElementById('c-sub').value || null, title: t, contentType: document.getElementById('c-type').value, contentData: document.getElementById('c-data').value }; }
@@ -97,24 +97,24 @@ const CoursesOverview = () => {
   };
 
   const deleteContent = async (id) => {
-    const r = await Swal.fire({ title: 'Delete Content?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#dc2626', confirmButtonText: 'Delete' });
+    const r = await Swal.fire({ ...getSwalOpts(), title: 'Delete Content?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#dc2626', confirmButtonText: 'Delete' });
     if (r.isConfirmed) { const res = await adminApi.deleteContent(id); if (res.success) loadContent(); }
   };
 
   // ---- Actions ----
   const handleApprove = (id, title) => {
-    Swal.fire({ title: 'Approve Course?', text: `Approve "${title}"?`, icon: 'question', showCancelButton: true, confirmButtonColor: '#16a34a', confirmButtonText: 'Approve' })
-      .then(async r => { if (r.isConfirmed) { const res = await adminApi.approveCourse(id); if (res.success) { Swal.fire({ icon: 'success', title: 'Approved!', timer: 1500, showConfirmButton: false }); fetchCourses(); } } });
+    Swal.fire({ ...getSwalOpts(), title: 'Approve Course?', text: `Approve "${title}"?`, icon: 'question', showCancelButton: true, confirmButtonColor: '#16a34a', confirmButtonText: 'Approve' })
+      .then(async r => { if (r.isConfirmed) { const res = await adminApi.approveCourse(id); if (res.success) { Swal.fire({ ...getSwalOpts(), icon: 'success', title: 'Approved!', timer: 1500, showConfirmButton: false }); fetchCourses(); } } });
   };
 
   const handleReject = async (id, title) => {
-    const { value: reason } = await Swal.fire({ title: 'Reject Course?', input: 'textarea', inputLabel: `Reason for rejecting "${title}"`, inputPlaceholder: 'Enter rejection reason...', showCancelButton: true, confirmButtonColor: '#dc2626', confirmButtonText: 'Reject', inputValidator: v => { if (!v) return 'Reason required'; } });
-    if (reason) { const res = await adminApi.rejectCourse(id, reason); if (res.success) { Swal.fire({ icon: 'success', title: 'Rejected', timer: 1500, showConfirmButton: false }); fetchCourses(); } }
+    const { value: reason } = await Swal.fire({ ...getSwalOpts(), title: 'Reject Course?', input: 'textarea', inputLabel: `Reason for rejecting "${title}"`, inputPlaceholder: 'Enter rejection reason...', showCancelButton: true, confirmButtonColor: '#dc2626', confirmButtonText: 'Reject', inputValidator: v => { if (!v) return 'Reason required'; } });
+    if (reason) { const res = await adminApi.rejectCourse(id, reason); if (res.success) { Swal.fire({ ...getSwalOpts(), icon: 'success', title: 'Rejected', timer: 1500, showConfirmButton: false }); fetchCourses(); } }
   };
 
   const handleDelete = (id, title) => {
-    Swal.fire({ title: 'Delete Course?', text: `Remove "${title}"?`, icon: 'warning', showCancelButton: true, confirmButtonColor: '#dc2626', confirmButtonText: 'Delete' })
-      .then(async r => { if (r.isConfirmed) { const res = await adminApi.deleteCourse(id); if (res.success) { fetchCourses(); if (detailCourse?.id === id) setDetailCourse(null); Swal.fire({ icon: 'success', title: 'Deleted!', timer: 1500, showConfirmButton: false }); } } });
+    Swal.fire({ ...getSwalOpts(), title: 'Delete Course?', text: `Remove "${title}"?`, icon: 'warning', showCancelButton: true, confirmButtonColor: '#dc2626', confirmButtonText: 'Delete' })
+      .then(async r => { if (r.isConfirmed) { const res = await adminApi.deleteCourse(id); if (res.success) { fetchCourses(); if (detailCourse?.id === id) setDetailCourse(null); Swal.fire({ ...getSwalOpts(), icon: 'success', title: 'Deleted!', timer: 1500, showConfirmButton: false }); } } });
   };
 
   const handleStatusChange = async (id, status) => {
@@ -131,6 +131,21 @@ const CoursesOverview = () => {
 
   const filtered = statusFilter === 'all' ? courses : courses.filter(c => c.status === statusFilter);
   const pending = courses.filter(c => c.status === 'pending');
+
+  const getExportData = () => {
+    const columns = ['Title', 'Code', 'Mentor', 'Category', 'Type', 'Difficulty', 'Status', 'Enrolled'];
+    const rows = filtered.map(c => [
+      c.title,
+      c.courseCode,
+      c.mentorName || '—',
+      c.category || '—',
+      c.courseType,
+      c.difficulty,
+      c.status,
+      c.enrollmentCount || 0,
+    ]);
+    return { title: 'Courses Report', columns, rows, fileName: 'Sowberry_Courses' };
+  };
 
   // ===================== DETAIL VIEW =====================
   if (detailCourse || detailLoading) {
@@ -262,9 +277,20 @@ const CoursesOverview = () => {
             <h1 className="text-2xl font-bold text-gray-900 dark-theme:text-gray-100">Courses Overview</h1>
             <p className="text-gray-500 dark-theme:text-gray-400 text-sm mt-1">Manage all courses, subjects, and content</p>
           </div>
-          <button onClick={openCreate} className="px-5 py-2.5 bg-primary text-white rounded-xl hover:bg-primary-dark transition shadow-lg hover:shadow-xl font-medium">
-            <i className="ri-add-line mr-1"></i>Create Course
-          </button>
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-1 bg-white dark-theme:bg-gray-900 border border-sand dark-theme:border-gray-700 rounded-xl px-1">
+              <button onClick={() => exportToPDF(getExportData())} className="px-3 py-2 rounded-lg text-xs font-medium text-red-500 hover:bg-red-50 dark-theme:hover:bg-red-900/20 transition-colors flex items-center gap-1.5" title="Download PDF">
+                <i className="ri-file-pdf-2-line text-sm"></i> PDF
+              </button>
+              <div className="w-px h-5 bg-sand dark-theme:bg-gray-700"></div>
+              <button onClick={() => exportToExcel(getExportData())} className="px-3 py-2 rounded-lg text-xs font-medium text-green-600 hover:bg-green-50 dark-theme:hover:bg-green-900/20 transition-colors flex items-center gap-1.5" title="Download Excel">
+                <i className="ri-file-excel-2-line text-sm"></i> Excel
+              </button>
+            </div>
+            <button onClick={openCreate} className="px-5 py-2.5 bg-primary text-white rounded-xl hover:bg-primary-dark transition shadow-lg hover:shadow-xl font-medium">
+              <i className="ri-add-line mr-1"></i>Create Course
+            </button>
+          </div>
         </div>
 
         {/* Stats */}

@@ -1,7 +1,7 @@
-﻿import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import Cropper from 'react-easy-crop';
 import { Link, useNavigate } from 'react-router-dom';
-import Swal from 'sweetalert2';
+import Swal, { getSwalOpts } from '../../utils/swal';
 import { authApi, publicApi } from '../../utils/api';
 import { useAuth } from '../../context/AuthContext';
 
@@ -212,7 +212,7 @@ const AuthPage = () => {
     const file = e.target.files[0];
     if (!file) return;
     if (file.size > 5 * 1024 * 1024) {
-      Swal.fire({ icon: 'warning', title: 'File Too Large', text: 'Max file size is 5MB', background: '#1f2937', color: '#fff' });
+      Swal.fire({ ...getSwalOpts(), icon: 'warning', title: 'File Too Large', text: 'Max file size is 5MB'});
       return;
     }
     const reader = new FileReader();
@@ -432,7 +432,7 @@ const AuthPage = () => {
     if (canProceedStep(registerStep)) {
       setRegisterStep(prev => Math.min(prev + 1, 4));
     } else {
-      Swal.fire({ icon: 'warning', title: 'Incomplete', text: 'Please fill all required fields before proceeding.', timer: 2000, showConfirmButton: false, background: document.body.classList.contains('dark-theme') ? '#1a1a1a' : '#fff', color: document.body.classList.contains('dark-theme') ? '#e8e8e8' : '#1f2937' });
+      Swal.fire({ ...getSwalOpts(), icon: 'warning', title: 'Incomplete', text: 'Please fill all required fields before proceeding.', timer: 2000, showConfirmButton: false });
     }
   };
   const prevStep = () => setRegisterStep(prev => Math.max(prev - 1, 1));
@@ -477,14 +477,14 @@ const AuthPage = () => {
       const res = await authApi.login({ username: loginData.username, password: loginData.password });
       if (res.success) {
         login(res.token, res.user);
-        await Swal.fire({ icon: 'success', title: 'Welcome back!', text: `Logged in as ${res.user.fullName}`, timer: 1500, showConfirmButton: false, background: '#fff', color: '#1f2937' });
+        await Swal.fire({ ...getSwalOpts(), icon: 'success', title: 'Welcome back!', text: `Logged in as ${res.user.fullName}`, timer: 1500, showConfirmButton: false});
         const path = res.user.role === 'admin' ? '/admin' : res.user.role === 'mentor' ? '/mentor' : '/student';
         navigate(path);
       } else {
-        Swal.fire({ icon: 'error', title: 'Login Failed', text: res.message || 'Invalid credentials', background: '#fff', color: '#1f2937' });
+        Swal.fire({ ...getSwalOpts(), icon: 'error', title: 'Login Failed', text: res.message || 'Invalid credentials'});
       }
     } catch {
-      Swal.fire({ icon: 'error', title: 'Error', text: 'Something went wrong. Please try again.', background: '#fff', color: '#1f2937' });
+      Swal.fire({ ...getSwalOpts(), icon: 'error', title: 'Error', text: 'Something went wrong. Please try again.'});
     } finally {
       setIsSubmitting(false);
     }
@@ -495,13 +495,13 @@ const AuthPage = () => {
     if (isSubmitting) return;
     // Validate step 4 fields
     if (!registerData.username || registerData.username.length < 4) {
-      Swal.fire({ icon: 'warning', title: 'Invalid Username', text: 'Username must be at least 4 characters', background: '#1f2937', color: '#fff' }); return;
+      Swal.fire({ ...getSwalOpts(), icon: 'warning', title: 'Invalid Username', text: 'Username must be at least 4 characters'}); return;
     }
     if (!pwChecks.length || !pwChecks.upper || !pwChecks.lower || !pwChecks.number || !pwChecks.special) {
-      Swal.fire({ icon: 'warning', title: 'Weak Password', text: 'Password must meet all requirements', background: '#1f2937', color: '#fff' }); return;
+      Swal.fire({ ...getSwalOpts(), icon: 'warning', title: 'Weak Password', text: 'Password must meet all requirements'}); return;
     }
     if (!pwChecks.match) {
-      Swal.fire({ icon: 'warning', title: 'Mismatch', text: 'Passwords do not match', background: '#1f2937', color: '#fff' }); return;
+      Swal.fire({ ...getSwalOpts(), icon: 'warning', title: 'Mismatch', text: 'Passwords do not match'}); return;
     }
     setIsSubmitting(true);
     try {
@@ -534,14 +534,14 @@ const AuthPage = () => {
         profileImage: profileImageUrl
       });
       if (res.success) {
-        await Swal.fire({ icon: 'success', title: 'Account Created!', text: 'You can now sign in with your credentials.', background: '#1f2937', color: '#fff' });
+        await Swal.fire({ ...getSwalOpts(), icon: 'success', title: 'Account Created!', text: 'You can now sign in with your credentials.'});
         setRegisterStep(1);
         toggleForm('login');
       } else {
-        Swal.fire({ icon: 'error', title: 'Registration Failed', text: res.message || 'Could not create account', background: '#1f2937', color: '#fff' });
+        Swal.fire({ ...getSwalOpts(), icon: 'error', title: 'Registration Failed', text: res.message || 'Could not create account'});
       }
     } catch {
-      Swal.fire({ icon: 'error', title: 'Error', text: 'Something went wrong. Please try again.', background: '#1f2937', color: '#fff' });
+      Swal.fire({ ...getSwalOpts(), icon: 'error', title: 'Error', text: 'Something went wrong. Please try again.'});
     } finally {
       setIsSubmitting(false);
     }
@@ -556,13 +556,13 @@ const AuthPage = () => {
     try {
       const res = await authApi.forgotPassword({ email });
       if (res.success) {
-        await Swal.fire({ icon: 'info', title: 'OTP Sent', text: res.message || 'Check your email for the OTP code.', background: '#fff', color: '#1f2937' });
+        await Swal.fire({ ...getSwalOpts(), icon: 'info', title: 'OTP Sent', text: res.message || 'Check your email for the OTP code.'});
         setForgotStep(2);
       } else {
-        Swal.fire({ icon: 'error', title: 'Error', text: res.message || 'Could not send OTP', background: '#fff', color: '#1f2937' });
+        Swal.fire({ ...getSwalOpts(), icon: 'error', title: 'Error', text: res.message || 'Could not send OTP'});
       }
     } catch {
-      Swal.fire({ icon: 'error', title: 'Error', text: 'Network error. Try again.', background: '#fff', color: '#1f2937' });
+      Swal.fire({ ...getSwalOpts(), icon: 'error', title: 'Error', text: 'Network error. Try again.'});
     } finally {
       setIsSubmitting(false);
     }
@@ -577,13 +577,13 @@ const AuthPage = () => {
     try {
       const res = await authApi.verifyOtp({ email: forgotData.email, otp });
       if (res.success) {
-        await Swal.fire({ icon: 'success', title: 'OTP Verified!', text: 'Set your new password.', timer: 1500, showConfirmButton: false, background: '#fff', color: '#1f2937' });
+        await Swal.fire({ ...getSwalOpts(), icon: 'success', title: 'OTP Verified!', text: 'Set your new password.', timer: 1500, showConfirmButton: false});
         setForgotStep(3);
       } else {
-        Swal.fire({ icon: 'error', title: 'Invalid OTP', text: res.message || 'Please check and try again.', background: '#fff', color: '#1f2937' });
+        Swal.fire({ ...getSwalOpts(), icon: 'error', title: 'Invalid OTP', text: res.message || 'Please check and try again.'});
       }
     } catch {
-      Swal.fire({ icon: 'error', title: 'Error', text: 'Network error.', background: '#fff', color: '#1f2937' });
+      Swal.fire({ ...getSwalOpts(), icon: 'error', title: 'Error', text: 'Network error.'});
     } finally {
       setIsSubmitting(false);
     }
@@ -593,11 +593,11 @@ const AuthPage = () => {
     e.preventDefault();
     if (isSubmitting) return;
     if (forgotData.newPassword !== forgotData.confirmPassword) {
-      Swal.fire({ icon: 'warning', title: 'Mismatch', text: 'Passwords do not match!', background: '#fff', color: '#1f2937' });
+      Swal.fire({ ...getSwalOpts(), icon: 'warning', title: 'Mismatch', text: 'Passwords do not match!'});
       return;
     }
     if (forgotData.newPassword.length < 6) {
-      Swal.fire({ icon: 'warning', title: 'Too Short', text: 'Password must be at least 6 characters.', background: '#fff', color: '#1f2937' });
+      Swal.fire({ ...getSwalOpts(), icon: 'warning', title: 'Too Short', text: 'Password must be at least 6 characters.'});
       return;
     }
     setIsSubmitting(true);
@@ -605,13 +605,13 @@ const AuthPage = () => {
       const otp = forgotData.otp.join('');
       const res = await authApi.resetPassword({ email: forgotData.email, otp, newPassword: forgotData.newPassword });
       if (res.success) {
-        await Swal.fire({ icon: 'success', title: 'Password Reset!', text: 'You can now sign in with your new password.', background: '#fff', color: '#1f2937' });
+        await Swal.fire({ ...getSwalOpts(), icon: 'success', title: 'Password Reset!', text: 'You can now sign in with your new password.'});
         toggleForm('login');
       } else {
-        Swal.fire({ icon: 'error', title: 'Error', text: res.message || 'Could not reset password.', background: '#fff', color: '#1f2937' });
+        Swal.fire({ ...getSwalOpts(), icon: 'error', title: 'Error', text: res.message || 'Could not reset password.'});
       }
     } catch {
-      Swal.fire({ icon: 'error', title: 'Error', text: 'Network error.', background: '#fff', color: '#1f2937' });
+      Swal.fire({ ...getSwalOpts(), icon: 'error', title: 'Error', text: 'Network error.'});
     } finally {
       setIsSubmitting(false);
     }
@@ -733,7 +733,7 @@ const AuthPage = () => {
                               let canGo = true;
                               for (let i = 1; i < s.n; i++) { if (!canProceedStep(i)) { canGo = false; break; } }
                               if (canGo) setRegisterStep(s.n);
-                              else Swal.fire({ icon: 'warning', title: 'Incomplete', text: 'Please fill all required fields before proceeding.', timer: 2000, showConfirmButton: false, background: document.body.classList.contains('dark-theme') ? '#1a1a1a' : '#fff', color: document.body.classList.contains('dark-theme') ? '#e8e8e8' : '#1f2937' });
+                              else Swal.fire({ ...getSwalOpts(), icon: 'warning', title: 'Incomplete', text: 'Please fill all required fields before proceeding.', timer: 2000, showConfirmButton: false });
                             }
                           }}
                           className={`flex flex-col items-center gap-1 group cursor-pointer`}>
@@ -917,10 +917,10 @@ const AuthPage = () => {
                           </select>
                         </div>
                         <div>
-                          <label className="text-xs font-medium text-gray-600 dark-theme:text-gray-400 mb-1.5 block tracking-wide">Roll Number <span className="text-primary">*</span></label>
+                          <label className="text-xs font-medium text-gray-600 dark-theme:text-gray-400 mb-1.5 block tracking-wide">Register Number <span className="text-primary">*</span></label>
                           <div className="relative">
                             <input type="text" name="rollNumber"
-                              placeholder={isMKC ? (rollPrefix ? rollPrefix + '...' : 'Select dept & year first') : 'Enter your roll number'}
+                              placeholder={isMKC ? (rollPrefix ? rollPrefix + '...' : 'Select dept & year first') : 'Enter your Register number'}
                               value={registerData.rollNumber} onChange={handleRegisterChange} maxLength={isMKC ? 12 : 20}
                               className={`w-full px-4 py-2.5 rounded-xl bg-cream dark-theme:bg-gray-800 border outline-none text-sm text-gray-700 dark-theme:text-gray-200 placeholder-gray-400 dark-theme:placeholder-gray-500 transition-all pr-16
                                 ${registerData.rollNumber && (isRollNumberValid ? 'border-emerald-500/50 focus:border-emerald-500' : 'border-amber-500/50 focus:border-amber-500') || 'border-sand dark-theme:border-gray-700 focus:border-primary'}`} />

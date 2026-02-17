@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import ThemeToggle from '../components/ThemeToggle';
-import Swal from 'sweetalert2';
+import Swal, { getSwalOpts } from '../utils/swal';
 import { publicApi } from '../utils/api';
 
 
@@ -38,10 +38,10 @@ const Home = () => {
     };
     const res = await publicApi.submitContact(body);
     if (res.success) {
-      Swal.fire({ icon: 'success', title: 'Sent!', text: 'Your message has been sent successfully.', timer: 2000, showConfirmButton: false, background: '#fff', color: '#1f2937' });
+      Swal.fire({ ...getSwalOpts(), icon: 'success', title: 'Sent!', text: 'Your message has been sent successfully.', timer: 2000, showConfirmButton: false});
       form.reset();
     } else {
-      Swal.fire({ icon: 'error', title: 'Error', text: res.message || 'Failed to send message.', background: '#fff', color: '#1f2937' });
+      Swal.fire({ ...getSwalOpts(), icon: 'error', title: 'Error', text: res.message || 'Failed to send message.'});
     }
   };
 
@@ -51,10 +51,10 @@ const Home = () => {
     if (!email) return;
     const res = await publicApi.subscribeNewsletter({ email });
     if (res.success) {
-      Swal.fire({ icon: 'success', title: 'Subscribed!', text: 'You have been subscribed to our newsletter.', timer: 2000, showConfirmButton: false, background: '#fff', color: '#1f2937' });
+      Swal.fire({ ...getSwalOpts(), icon: 'success', title: 'Subscribed!', text: 'You have been subscribed to our newsletter.', timer: 2000, showConfirmButton: false});
       e.target.reset();
     } else {
-      Swal.fire({ icon: 'error', title: 'Error', text: res.message || 'Could not subscribe.', background: '#fff', color: '#1f2937' });
+      Swal.fire({ ...getSwalOpts(), icon: 'error', title: 'Error', text: res.message || 'Could not subscribe.'});
     }
   };
 
@@ -87,11 +87,11 @@ const Home = () => {
           <div className="absolute top-0 left-0 right-0 flex justify-center gap-6 py-3 text-sm text-gray-500 dark-theme:text-gray-400 z-10">
             <div className="flex items-center gap-2">
               <i className="ri-mail-line text-primary"></i>
-              <span>berries@sowberry.com</span>
+              <span>berries@sowberry.app</span>
             </div>
             <div className="hidden sm:flex items-center gap-2">
               <i className="ri-phone-line text-primary"></i>
-              <span>+91 8825756388</span>
+              <span>+91 7010707678</span>
             </div>
           </div>
 

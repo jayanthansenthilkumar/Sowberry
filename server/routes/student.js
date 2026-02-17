@@ -245,7 +245,9 @@ router.get('/courses/:id/view', async (req, res) => {
 // Update progress - mark topics completed
 router.put('/courses/:id/progress', async (req, res) => {
   try {
-    const { completedTopics, progress } = req.body;
+    // Accept both 'progress' and 'completionPercentage' for compatibility
+    const { completedTopics, progress, completionPercentage } = req.body;
+    const progressValue = progress !== undefined ? progress : completionPercentage;
 
     const updates = [];
     const params = [];
@@ -254,11 +256,13 @@ router.put('/courses/:id/progress', async (req, res) => {
       updates.push('completedTopics = ?');
       params.push(JSON.stringify(completedTopics));
     }
-    if (progress !== undefined) {
+    if (progressValue !== undefined) {
       updates.push('completionPercentage = ?');
-      params.push(progress);
-      if (progress >= 100) {
+      params.push(progressValue);
+      if (progressValue >= 100) {
         updates.push("status = 'completed'", 'completedAt = NOW()');
+      } else {
+        updates.push("status = 'active'");
       }
     }
 
@@ -270,7 +274,19 @@ router.put('/courses/:id/progress', async (req, res) => {
       params
     );
 
-    res.json({ success: true, message: 'Progress updated.' });
+    // Return updated enrollment data
+    const [enrollment] = await pool.query(
+      'SELECT * FROM courseEnrollments WHERE courseId = ? AND studentId = ?',
+      [req.params.id, req.user.id]
+    );
+
+    let enrollmentData = null;
+    if (enrollment.length > 0) {
+      enrollmentData = enrollment[0];
+      try { enrollmentData.completedTopics = JSON.parse(enrollmentData.completedTopics || '[]'); } catch { enrollmentData.completedTopics = []; }
+    }
+
+    res.json({ success: true, message: 'Progress updated.', data: { enrollment: enrollmentData } });
   } catch (error) {
     console.error('Update progress error:', error);
     res.status(500).json({ success: false, message: 'Server error.' });

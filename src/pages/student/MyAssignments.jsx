@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import DashboardLayout from '../../components/DashboardLayout';
-import Swal from 'sweetalert2';
+import Swal, { getSwalOpts } from '../../utils/swal';
 import { studentApi } from '../../utils/api';
 
 const MyAssignments = () => {
@@ -18,15 +18,12 @@ const MyAssignments = () => {
   useEffect(() => { fetchAssignments(); }, []);
 
   const handleSubmit = async (assignment) => {
-    const { value: content } = await Swal.fire({
-      title: `Submit: ${assignment.title}`,
+    const { value: content } = await Swal.fire({ ...getSwalOpts(), title: `Submit: ${assignment.title}`,
       input: 'textarea',
       inputPlaceholder: 'Paste your answer or solution here...',
       showCancelButton: true,
       confirmButtonText: 'Submit',
       confirmButtonColor: '#6366f1',
-      background: '#fff',
-      color: '#1f2937',
       inputValidator: v => !v && 'Please enter your submission'
     });
     if (content) {
@@ -34,9 +31,9 @@ const MyAssignments = () => {
       const res = await studentApi.submitAssignment(assignment.id, { content });
       setSubmitting(null);
       if (res.success) {
-        Swal.fire({ icon: 'success', title: 'Submitted!', timer: 1500, showConfirmButton: false, background: '#fff', color: '#1f2937' });
+        Swal.fire({ ...getSwalOpts(), icon: 'success', title: 'Submitted!', timer: 1500, showConfirmButton: false});
         fetchAssignments();
-      } else Swal.fire({ icon: 'error', title: 'Error', text: res.message, background: '#fff', color: '#1f2937' });
+      } else Swal.fire({ ...getSwalOpts(), icon: 'error', title: 'Error', text: res.message});
     }
   };
 

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import AdminLayout from '../../components/AdminLayout';
 import { adminApi } from '../../utils/api';
+import { exportToPDF, exportToExcel } from '../../utils/exportData';
 
 const PerformanceAnalytics = () => {
   const [analytics, setAnalytics] = useState(null);
@@ -16,6 +17,18 @@ const PerformanceAnalytics = () => {
   }, []);
 
   if (loading) return <AdminLayout pageTitle="Performance Analytics"><div className="flex items-center justify-center py-20"><i className="ri-loader-4-line animate-spin text-2xl text-primary"></i></div></AdminLayout>;
+
+  const getCourseExportData = () => {
+    const columns = ['Rank', 'Course', 'Enrollments'];
+    const rows = (analytics?.courseCompletion || []).map((c, i) => [i + 1, c.title, c.enrollmentCount]);
+    return { title: 'Top Courses by Enrollment', columns, rows, fileName: 'Sowberry_Top_Courses' };
+  };
+
+  const getTrendsExportData = () => {
+    const columns = ['Month', 'Enrollments', 'New Students'];
+    const rows = (analytics?.registrationTrends || []).map(t => [t.month, t.enrollments, t.newStudents]);
+    return { title: 'Monthly Trends Report', columns, rows, fileName: 'Sowberry_Monthly_Trends' };
+  };
 
   return (
     <AdminLayout pageTitle="Performance Analytics">
@@ -44,7 +57,18 @@ const PerformanceAnalytics = () => {
         {/* Course Performance */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="bg-white dark-theme:bg-gray-900 rounded-2xl p-6 border border-sand dark-theme:border-gray-800">
-            <h3 className="text-lg font-bold text-gray-800 dark-theme:text-gray-100 mb-4">Top Courses by Enrollment</h3>
+            <h3 className="text-lg font-bold text-gray-800 dark-theme:text-gray-100 mb-4 flex items-center justify-between">
+              Top Courses by Enrollment
+              <span className="flex items-center gap-1 bg-cream/50 dark-theme:bg-gray-800/50 border border-sand dark-theme:border-gray-700 rounded-xl px-1">
+                <button onClick={() => exportToPDF(getCourseExportData())} className="px-2.5 py-1 rounded-lg text-[11px] font-medium text-red-500 hover:bg-red-50 dark-theme:hover:bg-red-900/20 transition-colors flex items-center gap-1" title="Download PDF">
+                  <i className="ri-file-pdf-2-line text-xs"></i> PDF
+                </button>
+                <span className="w-px h-3.5 bg-sand dark-theme:bg-gray-700"></span>
+                <button onClick={() => exportToExcel(getCourseExportData())} className="px-2.5 py-1 rounded-lg text-[11px] font-medium text-green-600 hover:bg-green-50 dark-theme:hover:bg-green-900/20 transition-colors flex items-center gap-1" title="Download Excel">
+                  <i className="ri-file-excel-2-line text-xs"></i> Excel
+                </button>
+              </span>
+            </h3>
             <div className="space-y-4">
               {(analytics?.courseCompletion || []).slice(0, 5).map((c, i) => (
                 <div key={i} className="flex items-center gap-4">
@@ -63,7 +87,18 @@ const PerformanceAnalytics = () => {
           </div>
 
           <div className="bg-white dark-theme:bg-gray-900 rounded-2xl p-6 border border-sand dark-theme:border-gray-800">
-            <h3 className="text-lg font-bold text-gray-800 dark-theme:text-gray-100 mb-4">Monthly Trends</h3>
+            <h3 className="text-lg font-bold text-gray-800 dark-theme:text-gray-100 mb-4 flex items-center justify-between">
+              Monthly Trends
+              <span className="flex items-center gap-1 bg-cream/50 dark-theme:bg-gray-800/50 border border-sand dark-theme:border-gray-700 rounded-xl px-1">
+                <button onClick={() => exportToPDF(getTrendsExportData())} className="px-2.5 py-1 rounded-lg text-[11px] font-medium text-red-500 hover:bg-red-50 dark-theme:hover:bg-red-900/20 transition-colors flex items-center gap-1" title="Download PDF">
+                  <i className="ri-file-pdf-2-line text-xs"></i> PDF
+                </button>
+                <span className="w-px h-3.5 bg-sand dark-theme:bg-gray-700"></span>
+                <button onClick={() => exportToExcel(getTrendsExportData())} className="px-2.5 py-1 rounded-lg text-[11px] font-medium text-green-600 hover:bg-green-50 dark-theme:hover:bg-green-900/20 transition-colors flex items-center gap-1" title="Download Excel">
+                  <i className="ri-file-excel-2-line text-xs"></i> Excel
+                </button>
+              </span>
+            </h3>
             <div className="space-y-4">
               {(analytics?.registrationTrends || []).map((t, i) => (
                 <div key={i} className="flex items-center justify-between p-3 rounded-xl bg-cream/50 dark-theme:bg-gray-800/50">

@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import AdminLayout from '../../components/AdminLayout';
-import Swal from 'sweetalert2';
+import Swal, { getSwalOpts } from '../../utils/swal';
 import { adminApi } from '../../utils/api';
+import { exportToPDF, exportToExcel } from '../../utils/exportData';
 
 const ManageMentors = () => {
   const [mentors, setMentors] = useState([]);
@@ -41,32 +42,29 @@ const ManageMentors = () => {
       if (!body.password) delete body.password;
       const res = await adminApi.updateMentor(editMentor.id, body);
       if (res.success) {
-        Swal.fire({ icon: 'success', title: 'Updated!', timer: 1500, showConfirmButton: false, background: '#fff', color: '#1f2937' });
+        Swal.fire({ ...getSwalOpts(), icon: 'success', title: 'Updated!', timer: 1500, showConfirmButton: false});
         setShowModal(false); fetchMentors();
       } else {
-        Swal.fire({ icon: 'error', title: 'Error', text: res.message, background: '#fff', color: '#1f2937' });
+        Swal.fire({ ...getSwalOpts(), icon: 'error', title: 'Error', text: res.message});
       }
     } else {
       const res = await adminApi.createMentor({ ...form, role: 'mentor' });
       if (res.success) {
-        Swal.fire({ icon: 'success', title: 'Mentor Created!', timer: 1500, showConfirmButton: false, background: '#fff', color: '#1f2937' });
+        Swal.fire({ ...getSwalOpts(), icon: 'success', title: 'Mentor Created!', timer: 1500, showConfirmButton: false});
         setShowModal(false); fetchMentors();
       } else {
-        Swal.fire({ icon: 'error', title: 'Error', text: res.message, background: '#fff', color: '#1f2937' });
+        Swal.fire({ ...getSwalOpts(), icon: 'error', title: 'Error', text: res.message});
       }
     }
   };
 
   const handleDelete = (id, name) => {
-    Swal.fire({
-      title: 'Delete Mentor?', text: `Remove ${name}? This cannot be undone.`, icon: 'warning',
-      showCancelButton: true, confirmButtonColor: '#dc2626', confirmButtonText: 'Delete',
-      background: '#fff', color: '#1f2937'
-    }).then(async (result) => {
+    Swal.fire({ ...getSwalOpts(), title: 'Delete Mentor?', text: `Remove ${name}? This cannot be undone.`, icon: 'warning',
+      showCancelButton: true, confirmButtonColor: '#dc2626', confirmButtonText: 'Delete'}).then(async (result) => {
       if (result.isConfirmed) {
         const res = await adminApi.deleteMentor(id);
         if (res.success) {
-          Swal.fire({ icon: 'success', title: 'Deleted!', timer: 1500, showConfirmButton: false, background: '#fff', color: '#1f2937' });
+          Swal.fire({ ...getSwalOpts(), icon: 'success', title: 'Deleted!', timer: 1500, showConfirmButton: false});
           fetchMentors();
         }
       }
@@ -76,6 +74,19 @@ const ManageMentors = () => {
   const handleToggleStatus = async (m) => {
     const res = await adminApi.updateMentor(m.id, { isActive: !m.isActive });
     if (res.success) fetchMentors();
+  };
+
+  const getExportData = () => {
+    const columns = ['Name', 'Username', 'Email', 'Phone', 'Status', 'Joined'];
+    const rows = mentors.map(m => [
+      m.fullName,
+      m.username,
+      m.email,
+      m.phone || '—',
+      m.isActive ? 'Active' : 'Inactive',
+      new Date(m.createdAt).toLocaleDateString(),
+    ]);
+    return { title: 'Mentors Report', columns, rows, fileName: 'Sowberry_Mentors' };
   };
 
   return (
@@ -92,6 +103,15 @@ const ManageMentors = () => {
               <input type="text" placeholder="Search mentors..." value={search} onChange={(e) => setSearch(e.target.value)}
                 className="pl-9 pr-4 py-2.5 rounded-xl bg-white dark-theme:bg-gray-900 border border-sand dark-theme:border-gray-700 focus:border-primary outline-none text-sm w-64" />
             </form>
+            <div className="flex items-center gap-1 bg-white dark-theme:bg-gray-900 border border-sand dark-theme:border-gray-700 rounded-xl px-1">
+              <button onClick={() => exportToPDF(getExportData())} className="px-3 py-2 rounded-lg text-xs font-medium text-red-500 hover:bg-red-50 dark-theme:hover:bg-red-900/20 transition-colors flex items-center gap-1.5" title="Download PDF">
+                <i className="ri-file-pdf-2-line text-sm"></i> PDF
+              </button>
+              <div className="w-px h-5 bg-sand dark-theme:bg-gray-700"></div>
+              <button onClick={() => exportToExcel(getExportData())} className="px-3 py-2 rounded-lg text-xs font-medium text-green-600 hover:bg-green-50 dark-theme:hover:bg-green-900/20 transition-colors flex items-center gap-1.5" title="Download Excel">
+                <i className="ri-file-excel-2-line text-sm"></i> Excel
+              </button>
+            </div>
             <button onClick={openCreate} className="px-4 py-2.5 rounded-xl bg-primary text-white text-sm font-medium hover:bg-primary-dark transition-colors flex items-center gap-2">
               <i className="ri-add-line"></i> Add Mentor
             </button>

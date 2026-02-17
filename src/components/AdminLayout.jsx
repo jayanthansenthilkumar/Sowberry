@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import Swal from 'sweetalert2';
+import Swal, { getSwalOpts } from '../utils/swal';
 import { useAuth } from '../context/AuthContext';
 import { adminApi } from '../utils/api';
 
@@ -65,11 +65,8 @@ const AdminLayout = ({ children, pageTitle }) => {
   };
 
   const handleSignOut = () => {
-    Swal.fire({
-      title: 'Sign Out?', text: 'Are you sure you want to sign out?', icon: 'question',
-      showCancelButton: true, confirmButtonColor: '#d4a574', confirmButtonText: 'Yes, sign out',
-      background: '#fff', color: '#1f2937'
-    }).then(result => {
+    Swal.fire({ ...getSwalOpts(), title: 'Sign Out?', text: 'Are you sure you want to sign out?', icon: 'question',
+      showCancelButton: true, confirmButtonColor: '#d4a574', confirmButtonText: 'Yes, sign out'}).then(result => {
       if (result.isConfirmed) { logout(); navigate('/auth'); }
     });
   };

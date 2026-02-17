@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import DashboardLayout from '../../components/DashboardLayout';
 import AdminLayout from '../../components/AdminLayout';
-import Swal from 'sweetalert2';
+import Swal, { getSwalOpts } from '../../utils/swal';
 import { mentorApi } from '../../utils/api';
 import { useAuth } from '../../context/AuthContext';
 
@@ -128,8 +128,7 @@ const MentorDoubts = () => {
     setSending(false);
     if (res.success) {
       if (wasUnassigned) {
-        Swal.fire({
-          icon: 'success',
+        Swal.fire({ ...getSwalOpts(), icon: 'success',
           title: 'You are now assigned!',
           text: 'This doubt has been assigned to you.',
           timer: 2500,
@@ -153,8 +152,7 @@ const MentorDoubts = () => {
   };
 
   const handleResolve = async () => {
-    const result = await Swal.fire({
-      title: 'Resolve Doubt?',
+    const result = await Swal.fire({ ...getSwalOpts(), title: 'Resolve Doubt?',
       text: 'Mark this doubt as resolved?',
       icon: 'question',
       showCancelButton: true,
@@ -164,11 +162,11 @@ const MentorDoubts = () => {
     if (result.isConfirmed) {
       const res = await mentorApi.resolveDoubt(selectedDoubt.id);
       if (res.success) {
-        Swal.fire({ icon: 'success', title: 'Resolved!', timer: 1500, showConfirmButton: false });
+        Swal.fire({ ...getSwalOpts(), icon: 'success', title: 'Resolved!', timer: 1500, showConfirmButton: false });
         setSelectedDoubt(prev => ({ ...prev, status: 'resolved' }));
         fetchDoubts();
       } else {
-        Swal.fire({ icon: 'error', title: 'Error', text: res.message || 'Could not resolve. You may not be assigned to this doubt.' });
+        Swal.fire({ ...getSwalOpts(), icon: 'error', title: 'Error', text: res.message || 'Could not resolve. You may not be assigned to this doubt.' });
       }
     }
   };

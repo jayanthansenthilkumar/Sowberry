@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import DashboardLayout from '../../components/DashboardLayout';
-import Swal from 'sweetalert2';
+import Swal, { getSwalOpts } from '../../utils/swal';
 import { mentorApi } from '../../utils/api';
 
 const NewCourses = () => {
@@ -44,7 +44,7 @@ const NewCourses = () => {
     setActiveTab('info');
     const res = await mentorApi.getCourseDetail(c.id);
     if (res.success) setDetailCourse(res.course);
-    else Swal.fire({ icon: 'error', title: 'Error', text: res.message });
+    else Swal.fire({ ...getSwalOpts(), icon: 'error', title: 'Error', text: res.message });
     setDetailLoading(false);
   };
 
@@ -55,14 +55,14 @@ const NewCourses = () => {
     payload.subjects = form.subjects.filter(s => s.title.trim());
     const res = editCourse ? await mentorApi.updateCourse(editCourse.id, payload) : await mentorApi.createCourse(payload);
     if (res.success) {
-      Swal.fire({ icon: 'success', title: editCourse ? 'Updated!' : 'Created!', text: editCourse ? 'Course updated.' : 'Course submitted for approval.', timer: 2000, showConfirmButton: false });
+      Swal.fire({ ...getSwalOpts(), icon: 'success', title: editCourse ? 'Updated!' : 'Created!', text: editCourse ? 'Course updated.' : 'Course submitted for approval.', timer: 2000, showConfirmButton: false });
       setShowModal(false); fetchCourses();
-    } else Swal.fire({ icon: 'error', title: 'Error', text: res.message });
+    } else Swal.fire({ ...getSwalOpts(), icon: 'error', title: 'Error', text: res.message });
   };
 
   const handleDelete = (id, title) => {
-    Swal.fire({ title: 'Delete Course?', text: `Remove "${title}" and all its content?`, icon: 'warning', showCancelButton: true, confirmButtonColor: '#dc2626', confirmButtonText: 'Delete' })
-      .then(async r => { if (r.isConfirmed) { const res = await mentorApi.deleteCourse(id); if (res.success) { Swal.fire({ icon: 'success', title: 'Deleted!', timer: 1500, showConfirmButton: false }); fetchCourses(); if (detailCourse?.id === id) setDetailCourse(null); } } });
+    Swal.fire({ ...getSwalOpts(), title: 'Delete Course?', text: `Remove "${title}" and all its content?`, icon: 'warning', showCancelButton: true, confirmButtonColor: '#dc2626', confirmButtonText: 'Delete' })
+      .then(async r => { if (r.isConfirmed) { const res = await mentorApi.deleteCourse(id); if (res.success) { Swal.fire({ ...getSwalOpts(), icon: 'success', title: 'Deleted!', timer: 1500, showConfirmButton: false }); fetchCourses(); if (detailCourse?.id === id) setDetailCourse(null); } } });
   };
 
   const addSubjectRow = () => setForm({ ...form, subjects: [...form.subjects, { title: '', code: '', description: '' }] });
@@ -75,8 +75,7 @@ const NewCourses = () => {
 
   // ──────── Detail View: Add Subject ────────
   const addSubjectToDetail = async () => {
-    const { value } = await Swal.fire({
-      title: 'Add Unit/Subject', html: `<input id="sw-sTitle" class="swal2-input" placeholder="Unit Title"><input id="sw-sCode" class="swal2-input" placeholder="Unit Code (optional)"><textarea id="sw-sDesc" class="swal2-textarea" placeholder="Description (optional)"></textarea>`,
+    const { value } = await Swal.fire({ ...getSwalOpts(), title: 'Add Unit/Subject', html: `<input id="sw-sTitle" class="swal2-input" placeholder="Unit Title"><input id="sw-sCode" class="swal2-input" placeholder="Unit Code (optional)"><textarea id="sw-sDesc" class="swal2-textarea" placeholder="Description (optional)"></textarea>`,
       showCancelButton: true, confirmButtonText: 'Add',
       preConfirm: () => {
         const title = document.getElementById('sw-sTitle').value;
@@ -86,20 +85,19 @@ const NewCourses = () => {
     });
     if (value) {
       const res = await mentorApi.addSubject(detailCourse.id, value);
-      if (res.success) { Swal.fire({ icon: 'success', title: 'Added!', timer: 1000, showConfirmButton: false }); openDetail(detailCourse); }
-      else Swal.fire({ icon: 'error', title: 'Error', text: res.message });
+      if (res.success) { Swal.fire({ ...getSwalOpts(), icon: 'success', title: 'Added!', timer: 1000, showConfirmButton: false }); openDetail(detailCourse); }
+      else Swal.fire({ ...getSwalOpts(), icon: 'error', title: 'Error', text: res.message });
     }
   };
 
   const deleteSubject = (id) => {
-    Swal.fire({ title: 'Delete Subject?', text: 'This will also delete all topics in this subject.', icon: 'warning', showCancelButton: true, confirmButtonColor: '#dc2626', confirmButtonText: 'Delete' })
+    Swal.fire({ ...getSwalOpts(), title: 'Delete Subject?', text: 'This will also delete all topics in this subject.', icon: 'warning', showCancelButton: true, confirmButtonColor: '#dc2626', confirmButtonText: 'Delete' })
       .then(async r => { if (r.isConfirmed) { const res = await mentorApi.deleteSubject(id); if (res.success) openDetail(detailCourse); } });
   };
 
   // ──────── Detail View: Add Topic ────────
   const addTopic = async (subjectId) => {
-    const { value } = await Swal.fire({
-      title: 'Add Topic', html: `<input id="sw-tTitle" class="swal2-input" placeholder="Topic Title"><textarea id="sw-tDesc" class="swal2-textarea" placeholder="Description (optional)"></textarea>`,
+    const { value } = await Swal.fire({ ...getSwalOpts(), title: 'Add Topic', html: `<input id="sw-tTitle" class="swal2-input" placeholder="Topic Title"><textarea id="sw-tDesc" class="swal2-textarea" placeholder="Description (optional)"></textarea>`,
       showCancelButton: true, confirmButtonText: 'Add',
       preConfirm: () => {
         const title = document.getElementById('sw-tTitle').value;
@@ -109,12 +107,12 @@ const NewCourses = () => {
     });
     if (value) {
       const res = await mentorApi.addTopic(subjectId, value);
-      if (res.success) { Swal.fire({ icon: 'success', title: 'Added!', timer: 1000, showConfirmButton: false }); openDetail(detailCourse); }
+      if (res.success) { Swal.fire({ ...getSwalOpts(), icon: 'success', title: 'Added!', timer: 1000, showConfirmButton: false }); openDetail(detailCourse); }
     }
   };
 
   const deleteTopic = async (id) => {
-    const r = await Swal.fire({ title: 'Delete Topic?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#dc2626', confirmButtonText: 'Delete' });
+    const r = await Swal.fire({ ...getSwalOpts(), title: 'Delete Topic?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#dc2626', confirmButtonText: 'Delete' });
     if (r.isConfirmed) { await mentorApi.deleteTopic(id); openDetail(detailCourse); }
   };
 
@@ -124,8 +122,7 @@ const NewCourses = () => {
     let subOpts = '<option value="0">General (No Subject)</option>';
     subjects.forEach(s => subOpts += `<option value="${s.id}">${s.title}</option>`);
 
-    const { value } = await Swal.fire({
-      title: 'Add Content', width: '600px',
+    const { value } = await Swal.fire({ ...getSwalOpts(), title: 'Add Content', width: '600px',
       html: `<div style="text-align:left"><div style="margin-bottom:8px"><label style="font-weight:600;font-size:13px">Subject</label><select id="sw-ctSub" class="swal2-select" style="width:100%">${subOpts}</select></div>
         <div style="margin-bottom:8px"><label style="font-weight:600;font-size:13px">Title *</label><input id="sw-ctTitle" class="swal2-input" style="margin:4px 0" placeholder="Content title"></div>
         <div style="margin-bottom:8px"><label style="font-weight:600;font-size:13px">Type</label><select id="sw-ctType" class="swal2-select" style="width:100%" onchange="document.getElementById('sw-ctData-label').textContent = this.value === 'video' ? 'Video URL' : this.value === 'pdf' ? 'PDF URL / Path' : 'Text Content'"><option value="video">Video</option><option value="pdf">PDF</option><option value="text">Text</option></select></div>
@@ -145,12 +142,12 @@ const NewCourses = () => {
     });
     if (value) {
       const res = await mentorApi.addContent(detailCourse.id, value);
-      if (res.success) { Swal.fire({ icon: 'success', title: 'Added!', timer: 1000, showConfirmButton: false }); openDetail(detailCourse); }
+      if (res.success) { Swal.fire({ ...getSwalOpts(), icon: 'success', title: 'Added!', timer: 1000, showConfirmButton: false }); openDetail(detailCourse); }
     }
   };
 
   const deleteContent = async (id) => {
-    const r = await Swal.fire({ title: 'Delete Content?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#dc2626', confirmButtonText: 'Delete' });
+    const r = await Swal.fire({ ...getSwalOpts(), title: 'Delete Content?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#dc2626', confirmButtonText: 'Delete' });
     if (r.isConfirmed) { await mentorApi.deleteContent(id); openDetail(detailCourse); }
   };
 

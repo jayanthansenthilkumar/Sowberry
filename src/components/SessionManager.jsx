@@ -1,7 +1,7 @@
 import { useEffect, useRef, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { authApi, setToken, getToken } from '../utils/api';
-import Swal from 'sweetalert2';
+import Swal, { getSwalOpts } from '../utils/swal';
 
 const SESSION_DURATION = 30 * 60 * 1000;  // 30 minutes inactivity timeout
 const WARNING_BEFORE = 5 * 60 * 1000;     // 5 minutes before expiry
@@ -26,8 +26,7 @@ const SessionManager = () => {
   const handleLogout = useCallback(() => {
     clearAllTimers();
     Swal.close();
-    Swal.fire({
-      icon: 'warning',
+    Swal.fire({ ...getSwalOpts(), icon: 'warning',
       title: 'Session Expired',
       text: 'Your session has timed out due to inactivity. Please log in again.',
       confirmButtonColor: '#d4a574',
@@ -79,8 +78,7 @@ const SessionManager = () => {
 
     let countdown = Math.floor(WARNING_BEFORE / 1000);
 
-    Swal.fire({
-      title: 'Session Expiring Soon',
+    Swal.fire({ ...getSwalOpts(), title: 'Session Expiring Soon',
       html: `<p>Your session will expire in <strong id="session-countdown">${formatTime(countdown)}</strong></p><p class="text-sm text-gray-500 mt-2">Click "Extend Session" to continue working.</p>`,
       icon: 'warning',
       showCancelButton: true,

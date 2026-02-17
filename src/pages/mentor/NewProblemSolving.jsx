@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import AdminLayout from '../../components/AdminLayout';
-import Swal from 'sweetalert2';
+import Swal, { getSwalOpts } from '../../utils/swal';
 import { mentorApi } from '../../utils/api';
 
 const NewProblemSolving = () => {
@@ -26,13 +26,13 @@ const NewProblemSolving = () => {
     e.preventDefault();
     const res = editItem ? await mentorApi.updateProblem(editItem.id, form) : await mentorApi.createProblem(form);
     if (res.success) {
-      Swal.fire({ icon: 'success', title: editItem ? 'Updated!' : 'Created!', timer: 1500, showConfirmButton: false, background: '#fff', color: '#1f2937' });
+      Swal.fire({ ...getSwalOpts(), icon: 'success', title: editItem ? 'Updated!' : 'Created!', timer: 1500, showConfirmButton: false});
       setShowModal(false); fetchProblems();
-    } else Swal.fire({ icon: 'error', title: 'Error', text: res.message, background: '#fff', color: '#1f2937' });
+    } else Swal.fire({ ...getSwalOpts(), icon: 'error', title: 'Error', text: res.message});
   };
 
   const handleDelete = (id) => {
-    Swal.fire({ title: 'Delete Problem?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#dc2626', confirmButtonText: 'Delete', background: '#fff', color: '#1f2937' })
+    Swal.fire({ ...getSwalOpts(), title: 'Delete Problem?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#dc2626', confirmButtonText: 'Delete'})
       .then(async r => { if (r.isConfirmed) { await mentorApi.deleteProblem(id); fetchProblems(); } });
   };
 

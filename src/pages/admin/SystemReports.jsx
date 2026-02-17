@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import AdminLayout from '../../components/AdminLayout';
 import { adminApi } from '../../utils/api';
+import { exportToPDF, exportToExcel } from '../../utils/exportData';
 
 const SystemReports = () => {
   const [reports, setReports] = useState(null);
@@ -16,6 +17,17 @@ const SystemReports = () => {
   }, []);
 
   if (loading) return <AdminLayout pageTitle="System Reports"><div className="flex items-center justify-center py-20"><i className="ri-loader-4-line animate-spin text-2xl text-primary"></i></div></AdminLayout>;
+
+  const getExportData = () => {
+    const columns = ['User', 'Action', 'Description', 'Date'];
+    const rows = (reports?.activityLogs || []).map(log => [
+      log.fullName || log.userId || 'System',
+      log.action,
+      log.description,
+      new Date(log.createdAt).toLocaleString(),
+    ]);
+    return { title: 'Activity Logs Report', columns, rows, fileName: 'Sowberry_Activity_Logs' };
+  };
 
   return (
     <AdminLayout pageTitle="System Reports">
@@ -44,8 +56,17 @@ const SystemReports = () => {
 
         {/* Activity Logs */}
         <div className="bg-white dark-theme:bg-gray-900 rounded-2xl border border-sand dark-theme:border-gray-800 overflow-hidden">
-          <div className="px-6 py-4 border-b border-sand dark-theme:border-gray-800">
+          <div className="px-6 py-4 border-b border-sand dark-theme:border-gray-800 flex items-center justify-between">
             <h3 className="font-bold text-gray-800 dark-theme:text-gray-100">Recent Activity Logs</h3>
+            <div className="flex items-center gap-1 bg-cream/50 dark-theme:bg-gray-800/50 border border-sand dark-theme:border-gray-700 rounded-xl px-1">
+              <button onClick={() => exportToPDF(getExportData())} className="px-3 py-1.5 rounded-lg text-xs font-medium text-red-500 hover:bg-red-50 dark-theme:hover:bg-red-900/20 transition-colors flex items-center gap-1.5" title="Download PDF">
+                <i className="ri-file-pdf-2-line text-sm"></i> PDF
+              </button>
+              <div className="w-px h-4 bg-sand dark-theme:bg-gray-700"></div>
+              <button onClick={() => exportToExcel(getExportData())} className="px-3 py-1.5 rounded-lg text-xs font-medium text-green-600 hover:bg-green-50 dark-theme:hover:bg-green-900/20 transition-colors flex items-center gap-1.5" title="Download Excel">
+                <i className="ri-file-excel-2-line text-sm"></i> Excel
+              </button>
+            </div>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full">

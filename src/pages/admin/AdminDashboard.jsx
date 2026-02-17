@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import AdminLayout from '../../components/AdminLayout';
 import { adminApi } from '../../utils/api';
-import Swal from 'sweetalert2';
+import Swal, { getSwalOpts } from '../../utils/swal';
 import { useAuth } from '../../context/AuthContext';
 
 
@@ -162,7 +162,7 @@ const AdminDashboard = () => {
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
     } catch (err) {
-      Swal.fire({ icon: 'error', title: 'Download Failed', text: err.message, background: '#fff', color: '#1f2937' });
+      Swal.fire({ ...getSwalOpts(), icon: 'error', title: 'Download Failed', text: err.message});
     } finally {
       setDownloadingUploads(false);
     }

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import AdminLayout from '../../components/AdminLayout';
-import Swal from 'sweetalert2';
+import Swal, { getSwalOpts } from '../../utils/swal';
 import { adminApi, authApi } from '../../utils/api';
 import { useAuth } from '../../context/AuthContext';
 
@@ -28,9 +28,9 @@ const AdminSettings = () => {
     const res = await authApi.updateProfile(profile);
     if (res.success) {
       updateUser(res.user);
-      Swal.fire({ icon: 'success', title: 'Profile Updated!', timer: 1500, showConfirmButton: false, background: '#fff', color: '#1f2937' });
+      Swal.fire({ ...getSwalOpts(), icon: 'success', title: 'Profile Updated!', timer: 1500, showConfirmButton: false});
     } else {
-      Swal.fire({ icon: 'error', title: 'Error', text: res.message, background: '#fff', color: '#1f2937' });
+      Swal.fire({ ...getSwalOpts(), icon: 'error', title: 'Error', text: res.message});
     }
     setLoading(false);
   };
@@ -38,16 +38,16 @@ const AdminSettings = () => {
   const handlePasswordChange = async (e) => {
     e.preventDefault();
     if (passwords.newPassword !== passwords.confirmPassword) {
-      Swal.fire({ icon: 'warning', title: 'Mismatch', text: 'Passwords do not match', background: '#fff', color: '#1f2937' });
+      Swal.fire({ ...getSwalOpts(), icon: 'warning', title: 'Mismatch', text: 'Passwords do not match'});
       return;
     }
     setLoading(true);
     const res = await authApi.changePassword({ currentPassword: passwords.currentPassword, newPassword: passwords.newPassword });
     if (res.success) {
-      Swal.fire({ icon: 'success', title: 'Password Changed!', timer: 1500, showConfirmButton: false, background: '#fff', color: '#1f2937' });
+      Swal.fire({ ...getSwalOpts(), icon: 'success', title: 'Password Changed!', timer: 1500, showConfirmButton: false});
       setPasswords({ currentPassword: '', newPassword: '', confirmPassword: '' });
     } else {
-      Swal.fire({ icon: 'error', title: 'Error', text: res.message, background: '#fff', color: '#1f2937' });
+      Swal.fire({ ...getSwalOpts(), icon: 'error', title: 'Error', text: res.message});
     }
     setLoading(false);
   };
@@ -57,9 +57,9 @@ const AdminSettings = () => {
     setLoading(true);
     const res = await adminApi.updateSettings({ settings });
     if (res.success) {
-      Swal.fire({ icon: 'success', title: 'Settings Saved!', timer: 1500, showConfirmButton: false, background: '#fff', color: '#1f2937' });
+      Swal.fire({ ...getSwalOpts(), icon: 'success', title: 'Settings Saved!', timer: 1500, showConfirmButton: false});
     } else {
-      Swal.fire({ icon: 'error', title: 'Error', text: res.message, background: '#fff', color: '#1f2937' });
+      Swal.fire({ ...getSwalOpts(), icon: 'error', title: 'Error', text: res.message});
     }
     setLoading(false);
   };

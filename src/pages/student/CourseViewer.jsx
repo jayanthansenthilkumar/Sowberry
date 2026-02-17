@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import DashboardLayout from '../../components/DashboardLayout';
-import Swal from 'sweetalert2';
+import Swal, { getSwalOpts } from '../../utils/swal';
 import { studentApi } from '../../utils/api';
 
 const CourseViewer = () => {
@@ -18,19 +18,21 @@ const CourseViewer = () => {
     setLoading(true);
     const res = await studentApi.getCourseView(id);
     if (res.success) {
-      setCourse(res.course);
-      setEnrollment(res.enrollment);
-      setCompletedTopics(res.enrollment?.completedTopics || []);
+      const courseData = res.course;
+      const enrollmentData = courseData?.enrollment || null;
+      setCourse(courseData);
+      setEnrollment(enrollmentData);
+      setCompletedTopics(enrollmentData?.completedTopics || []);
       // Expand first subject by default
-      if (res.course?.subjects?.length > 0) {
-        setExpandedSubjects({ [res.course.subjects[0].id]: true });
+      if (courseData?.subjects?.length > 0) {
+        setExpandedSubjects({ [courseData.subjects[0].id]: true });
       }
       // Auto-select first content
-      if (res.course?.content?.length > 0) {
-        setActiveContent(res.course.content[0]);
+      if (courseData?.content?.length > 0) {
+        setActiveContent(courseData.content[0]);
       }
     } else {
-      Swal.fire({ icon: 'error', title: 'Error', text: res.message || 'Could not load course' });
+      Swal.fire({ ...getSwalOpts(), icon: 'error', title: 'Error', text: res.message || 'Could not load course' });
     }
     setLoading(false);
   };
@@ -51,12 +53,12 @@ const CourseViewer = () => {
     setCompletedTopics(updated);
 
     // Calculate progress
-    const totalTopics = (course?.subjects || []).reduce((acc, s) => acc + (s.topics?.length || 0), 0);
-    const progress = totalTopics > 0 ? Math.round((updated.length / totalTopics) * 100) : 0;
+    const allTopics = (course?.subjects || []).reduce((acc, s) => acc + (s.topics?.length || 0), 0);
+    const newProgress = allTopics > 0 ? Math.round((updated.length / allTopics) * 100) : 0;
 
-    const res = await studentApi.updateCourseProgress(id, { completionPercentage: progress, completedTopics: updated });
-    if (res.success && res.enrollment) {
-      setEnrollment(prev => ({ ...prev, completionPercentage: progress }));
+    const res = await studentApi.updateCourseProgress(id, { progress: newProgress, completedTopics: updated });
+    if (res.success) {
+      setEnrollment(prev => ({ ...prev, completionPercentage: newProgress }));
     }
   };
 
