@@ -634,7 +634,7 @@ const Home = () => {
             <div>
               <h3 className="text-sm font-semibold mb-5 uppercase tracking-wider text-gray-400">Get In Touch</h3>
               <ul className="space-y-3 text-sm text-gray-500 mb-6">
-                <li className="flex gap-3"><i className="ri-map-pin-line text-primary-light mt-0.5"></i><span>123 Education Avenue<br />Chennai, TN 600001</span></li>
+                <li className="flex gap-3"><i className="ri-map-pin-line text-primary-light mt-0.5"></i><span>Yelahanka, Bangalore<br />Karnataka - 560064</span></li>
                 <li className="flex gap-3"><i className="ri-mail-line text-primary-light"></i><span>berries@sowberry.com</span></li>
                 <li className="flex gap-3"><i className="ri-phone-line text-primary-light"></i><span>+91 8825756388</span></li>
               </ul>
