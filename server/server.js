@@ -13,6 +13,7 @@ import adminRoutes from './routes/admin.js';
 import mentorRoutes from './routes/mentor.js';
 import studentRoutes from './routes/student.js';
 import publicRoutes from './routes/public.js';
+import chatRoutes from './routes/chat.js';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -45,6 +46,7 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/mentor', mentorRoutes);
 app.use('/api/student', studentRoutes);
 app.use('/api/public', publicRoutes);
+app.use('/api/chat', chatRoutes);
 
 // ──────────────── API UI TEMPLATE ────────────────
 const apiUIPage = () => {

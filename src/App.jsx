@@ -2,6 +2,7 @@ import React, { Suspense } from 'react'
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import SessionManager from './components/SessionManager'
+import JunniyaChat from './components/JunniyaChat'
 
 // Lazy-loaded pages — each gets a loading screen during code-split transitions
 const Home = React.lazy(() => import('./pages/Home'))
@@ -84,6 +85,7 @@ function App() {
       <Router basename="/">
         <AuthProvider>
           <SessionManager />
+          <JunniyaChat />
           <Suspense fallback={null}>
           <Routes>
           <Route path="/" element={<Home />} />

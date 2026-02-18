@@ -282,3 +282,9 @@ export const publicApi = {
   searchDepartments: (keyword) => apiCall('/public/departments/search', { method: 'POST', body: JSON.stringify({ keyword }) }),
   getAcademicYear: () => apiCall('/public/academic-year'),
 };
+
+// ──────────────── JUNNIYA CHAT API ────────────────
+export const chatApi = {
+  sendMessage: (body) => apiCall('/chat/message', { method: 'POST', body: JSON.stringify(body) }),
+  clearChat: (sessionId) => apiCall(`/chat/clear/${sessionId}`, { method: 'DELETE' }),
+};
