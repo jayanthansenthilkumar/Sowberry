@@ -63,10 +63,10 @@ const ChatMessage = ({ message }) => {
 
 // ──────────────── SUGGESTED PROMPTS ────────────────
 const suggestions = [
+  { icon: '�', text: 'Show me platform stats' },
   { icon: '📚', text: 'How do I enroll in courses?' },
-  { icon: '💻', text: 'Help me with coding practice' },
+  { icon: '💻', text: 'Explain arrays with code' },
   { icon: '🧠', text: 'Give me study tips' },
-  { icon: '🌱', text: 'What is Sowberry Academy?' },
 ];
 
 // ──────────────── MAIN COMPONENT ────────────────
