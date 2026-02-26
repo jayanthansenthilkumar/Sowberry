@@ -1,3 +1,5 @@
+https://github-repo-readme-stats.vercel.app/api?username=jayanthansenthilkumar&repo=Sowberry&theme=dark
+
 # Sowberry Academy
 
 Sowberry Academy is a comprehensive **Learning Management System (LMS)** designed to bridge the gap between students, mentors, and administrators. It provides a robust platform for course management, skill assessment, coding practice, and interactive learning.
