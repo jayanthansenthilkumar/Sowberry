@@ -1,4 +1,10 @@
-https://github-repo-readme-stats.vercel.app/api?username=jayanthansenthilkumar&repo=Sowberry&theme=dark
+<div align="center">
+
+  <img src="https://github-repo-readme-stats.vercel.app/api?username=jayanthansenthilkumar&repo=Sowberry&theme=dark" alt="Sowberry Repo Stats" />
+
+</div>
+
+---
 
 # Sowberry Academy
 
