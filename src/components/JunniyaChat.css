@@ -390,6 +390,87 @@
   font-size: inherit;
 }
 
+/* ─── Table Styles ─── */
+.junniya-table-wrap {
+  overflow-x: auto;
+  margin: 8px 0;
+  border-radius: 8px;
+  border: 1px solid #e8e0d4;
+}
+
+.junniya-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.junniya-table th {
+  background: #f5ede3;
+  color: #1a1a1a;
+  font-weight: 700;
+  padding: 8px 12px;
+  text-align: left;
+  border-bottom: 2px solid #d4a574;
+  white-space: nowrap;
+}
+
+.junniya-table td {
+  padding: 7px 12px;
+  border-bottom: 1px solid #ebe6de;
+  color: #333;
+}
+
+.junniya-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.junniya-table tbody tr:hover {
+  background: #faf7f2;
+}
+
+/* ─── List Styles ─── */
+.junniya-list {
+  margin: 6px 0;
+  padding-left: 20px;
+}
+
+.junniya-list li {
+  margin: 3px 0;
+  line-height: 1.55;
+}
+
+.junniya-list-ol {
+  list-style: decimal;
+}
+
+ul.junniya-list {
+  list-style: disc;
+}
+
+/* ─── Horizontal Rule ─── */
+.junniya-hr {
+  border: none;
+  border-top: 1px solid #e8e0d4;
+  margin: 10px 0;
+}
+
+/* ─── Streaming Cursor ─── */
+.junniya-cursor {
+  display: inline-block;
+  color: #c96442;
+  animation: junniya-blink 0.7s step-end infinite;
+  font-weight: 700;
+  margin-left: 1px;
+  font-size: 14px;
+  vertical-align: text-bottom;
+}
+
+@keyframes junniya-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
 /* ─── Typing Indicator ─── */
 .junniya-typing {
   display: flex;
@@ -460,6 +541,12 @@
 
 .junniya-input::placeholder {
   color: #aaa;
+}
+
+.junniya-input-password {
+  padding: 8px 0;
+  letter-spacing: 2px;
+  font-size: 14px;
 }
 
 .junniya-send-btn {
@@ -563,6 +650,33 @@
 .dark-theme .junniya-code-block {
   background: #0f0f0f;
   border: 1px solid #333;
+}
+
+.dark-theme .junniya-table-wrap {
+  border-color: #333;
+}
+
+.dark-theme .junniya-table th {
+  background: #333;
+  color: #e5e5e5;
+  border-bottom-color: #d4a574;
+}
+
+.dark-theme .junniya-table td {
+  color: #ccc;
+  border-bottom-color: #333;
+}
+
+.dark-theme .junniya-table tbody tr:hover {
+  background: #333;
+}
+
+.dark-theme .junniya-hr {
+  border-top-color: #333;
+}
+
+.dark-theme .junniya-cursor {
+  color: #d4a574;
 }
 
 .dark-theme .junniya-footer {
