@@ -15,14 +15,14 @@ import studentRoutes from './routes/student.js';
 import publicRoutes from './routes/public.js';
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5555;
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // ──────────────── MIDDLEWARE ────────────────
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:5173',
+  origin: true,
   credentials: true
 }));
 app.use(express.json({ limit: '10mb' }));
