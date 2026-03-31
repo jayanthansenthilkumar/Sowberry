@@ -40,6 +40,9 @@ Sowberry Academy is a comprehensive **Learning Management System (LMS)** designe
 - **Vite**: Fast build tool and development server.
 - **Tailwind CSS**: Utility-first CSS framework for styling.
 - **React Router DOM**: Client-side routing.
+- **Three.js & React Three Fiber**: For immersive 3D graphics and interactions.
+- **CodeMirror**: Integrated browser-based code editor for coding challenges.
+- **jsPDF & XLSX**: For generating downloadable rich reports.
 - **Remix Icons**: Icon library.
 - **SweetAlert2**: Beautiful replacement for JavaScript's popup boxes.
 
@@ -57,19 +60,23 @@ Sowberry Academy is a comprehensive **Learning Management System (LMS)** designe
 
 ```
 Sowberry/
-├── server/                 # Backend Node.js Application
+├── backend/                # Python FastAPI proxy (optional testing/legacy)
+├── frontend/               # Older React UI framework (deprecated setup)
+├── server/                 # Backend Node.js Application (Express)
 │   ├── config/             # Database configuration & setup scripts
 │   ├── middleware/         # Auth & validation middleware
 │   ├── routes/             # API route definitions (auth, student, mentor, admin)
 │   ├── uploads/            # Directory for uploaded files
-│   └── server.js           # Entry point for the backend
-├── src/                    # Frontend React Application
+│   ├── seedData.js         # Comprehensive database seeder
+│   └── server.js           # Entry point for the Node.js backend
+├── src/                    # Primary Frontend React Application
 │   ├── components/         # Reusable UI components
-│   ├── context/            # specific React Context (Auth)
+│   ├── context/            # React Contexts (e.g., AuthProvider)
 │   ├── pages/              # Page components (Admin, Mentor, Student, Auth)
 │   ├── App.jsx             # Main Router configuration
-│   └── main.jsx            # Entry point
-└── package.json            # Project dependencies and scripts
+│   └── main.jsx            # Frontend entry point
+├── backend_test.py         # Testing script for API endpoints
+└── package.json            # Project dependencies and concurrent scripts
 ```
 
 ---
@@ -212,17 +219,34 @@ The backend exposes RESTful endpoints at `http://localhost:5000/api`.
 
 ---
 
-<!-- ## 🧪 Default Test Credentials
+## 🧪 Default Test Credentials
 
-The `dbSetup.js` script seeds the following users for testing:
+The `dbSetup.js` and `seedData.js` scripts seed the following users for testing. You can login using either the `Username` or `Email`:
 
-| Role        | Email                   | Password      |
-| :---------- | :---------------------- | :------------ |
-| **Admin**   | `admin@sowberry.com`    | `Admin@123`   |
-| **Mentor**  | `mentor1@sowberry.com`  | `Mentor@123`  |
-| **Student** | `student1@sowberry.com` | `Student@123` |
+| Role        | Email                   | Username      | Password      |
+| :---------- | :---------------------- | :------------ | :------------ |
+| **Admin**   | `admin@sowberry.com`    | `sowadmin`    | `Admin@123`   |
+| **Mentor**  | `mentor1@sowberry.com`  | `jayanthan_m` | `Mentor@123`  |
+| **Student** | `student1@sowberry.com` | `aarav_s`     | `Student@123` |
 
---- -->
+You can also run automated endpoint tests utilizing these credentials:
+```bash
+pip install requests
+python backend_test.py
+```
+
+---
+
+## 🗺️ Roadmap
+
+Here are some of the upcoming features planned for Sowberry Academy:
+
+- **Mobile App**: A cross-platform **React Native** application for learning on the go.
+- **AI Integration**: AI-powered features including a learning chatbot and intelligent content recommendations.
+- **Advanced Code Execution**: Server-side secure code execution engine for advanced coding challenges.
+- **Real-time Notifications**: Enhanced socket-based notification system for course updates and assignments.
+
+---
 
 ## 📄 License
 
